@@ -1,0 +1,92 @@
+//
+//  ZiZaiTianProject.pch
+//  ZiZaiTianProject
+//
+//  Created by mac on 2018/6/26.
+//  Copyright © 2018年 zxd. All rights reserved.
+//
+#ifdef __OBJC__
+
+#ifndef ZiZaiTianProject_pch
+#define ZiZaiTianProject_pch
+#import "NSString+Extension.h"
+#import <MJRefresh.h>
+#import "UIColor+Hex.h"
+#import "AFNetworking.h"
+#import "UIBarButtonItem+Item.h"
+#import "UIImage+ColorWithImage.h"
+#import "EncryptionTools.h"
+#import "ZZTCartonnPlayModel.h"
+#import <MJExtension/MJExtension.h>
+#import <SDWebImage/UIImageView+WebCache.h>
+#import "ZZTCircleImage.h"
+#import "ZZTUserModel.h"
+#import "BAPickView_OC.h"
+#import "BAKit_DatePicker.h"
+#import "ZZTUserShoppingModel.h"
+#import "DCNewWelfareLayout.h"
+#import "UIView+Extension.h"
+#import "CommonMacro.h"
+#import "BaseViewController.h"
+#import <AFNetworking.h>
+#import <Masonry/Masonry.h>
+#import "UIView+Extension.h"
+#import "AFNetworking.h"
+#import "AFNHttpTool.h"
+#import "UITableView+FDTemplateLayoutCell.h"
+#import "PYSearch.h"
+#import "ZZTCarttonDetailModel.h"
+#import "ZZTWordsDetailViewController.h"
+#import "ZZTMoreViewController.h"
+#import <RTRootNavigationController/RTRootNavigationController.h>
+#import "UIBarButtonItem+Item.h"
+#import "UIImage+ColorWithImage.h"
+#import "ZZTNavigationViewController.h"
+#import "UINavigationController+FDFullscreenPopGesture.h"
+#import "UIBarButtonItem+EXtension.h"
+#import "ZZTCartoonCell.h"
+#import "MBProgressHUD.h"
+#import "UIImage+Rotate.h"
+#import "UIView+Extension.h"
+#import "UIView+Frame.h"
+
+
+#define imageHost @"p872ue3rt.bkt.clouddn.com"
+
+#define detailViewHeaderHeight 60
+#define ZZTAccessKey @"otsMMnYSaZw9UgT-OUFSc46m3UOVaqr-ysR07Dwq"
+#define ZZTSecretKey @"cJqacuOHqDq_zR4R4m2LUdFMRFMGUf8HC-1owpAw"
+#define ZZTBucket zztian
+#define MyLog(...) NSLog(__VA_ARGS__);
+/** 屏幕尺寸 */
+#define SCREEN_BOUNDS [UIScreen mainScreen].bounds
+#define Screen_Width [UIScreen mainScreen].bounds.size.width
+#define Screen_Height [UIScreen mainScreen].bounds.size.height
+//全局背景色
+#define ZZTBGColor [UIColor colorWithHexString:@"#F5F5F5"]
+#define keyStr @"ZIZAITIAN@666666"
+#define IV @"A-16-Byte-String"
+//本地
+#define ZZTAPI @"http://192.168.0.165:8888/"
+//测试
+//#define ZZTAPI @"http://192.168.0.142:8888/"
+
+//#define ZZTAPI @"http://120.79.178.191:8888/"
+
+//本地
+//192.168.0.165
+//测试
+//192.168.0.142
+/** RGB色 + 透明度 */
+#define RGB_alphaColor(r,g,b,a) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:(a)]
+
+
+
+
+
+
+#endif /* ZiZaiTianProject_pch */
+
+
+
+#endif
