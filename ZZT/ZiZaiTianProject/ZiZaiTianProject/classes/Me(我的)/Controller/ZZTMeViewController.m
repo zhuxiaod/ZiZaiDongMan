@@ -23,6 +23,7 @@
 #import "ZZTCartoonViewController.h"
 #import "ZZTMeAttentionViewController.h"
 #import "ZZTLoginRegisterViewController.h"
+#import "ZZTMyZoneViewController.h"
 
 @interface ZZTMeViewController ()<UITableViewDataSource,UITableViewDelegate,ZZTSignInViewDelegate>
 
@@ -206,7 +207,7 @@ NSString *bannerID = @"MeCell";
         [self loadUserData:@""];
     }else{
         //userId已经有了
-        [self loadUserData:@""];
+        [self loadUserData:userId];
     }
 }
 
@@ -250,6 +251,9 @@ NSString *bannerID = @"MeCell";
 {
     if (indexPath.section == 0) {
         //我的空间
+        ZZTMyZoneViewController *myZoneView = [[ZZTMyZoneViewController alloc] init];
+        myZoneView.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:myZoneView animated:YES];
     }
     else if (indexPath.section == 1){
         if(indexPath.row == 0){

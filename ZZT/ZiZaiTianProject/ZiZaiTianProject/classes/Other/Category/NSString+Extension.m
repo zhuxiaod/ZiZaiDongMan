@@ -177,9 +177,11 @@
 + (NSString *)timeStampWithDate:(NSDate *)date {
    return [[DateManager share] timeStampWithDate:date];
 }
+
 + (NSString *)timeWithTimeStamp:(NSUInteger)timeStamp {
     return [[DateManager share] timeWithTimeStamp:timeStamp];
 }
+
 +(NSString *)timeWithStr:(NSString *)string{
     NSString *time = string;
     //时间字符串
@@ -190,4 +192,13 @@
     NSString *dateString = [formatter stringFromDate: date];
     return dateString;
 }
+
+-(CGFloat)heightWithWidth:(CGFloat)width font:(CGFloat)font{
+    UIFont * fonts = [UIFont systemFontOfSize:font];
+    CGSize size  = CGSizeMake(width, 100000.0);
+    NSDictionary * dict  = [NSDictionary dictionaryWithObjectsAndKeys:fonts,NSFontAttributeName ,nil];
+    size = [self boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin attributes:dict context:nil].size;
+    return size.height;
+}
+
 @end

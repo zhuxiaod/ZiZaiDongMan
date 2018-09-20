@@ -97,6 +97,11 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_resource "${PODS_ROOT}/MJRefresh/MJRefresh/MJRefresh.bundle"
   install_resource "${PODS_ROOT}/PYSearch/PYSearch/PYSearch.bundle"
   install_resource "${PODS_ROOT}/SVProgressHUD/SVProgressHUD/SVProgressHUD.bundle"
+  install_resource "${PODS_ROOT}/XHImageViewer/Source/Resources/1_1280x800-1.jpeg"
+  install_resource "${PODS_ROOT}/XHImageViewer/Source/Resources/1_1280x800.jpeg"
+  install_resource "${PODS_ROOT}/XHImageViewer/Source/Resources/4_1366x768.jpeg"
+  install_resource "${PODS_ROOT}/XHImageViewer/Source/Resources/5_1280x800.jpeg"
+  install_resource "${PODS_ROOT}/XHImageViewer/Source/Resources/placeholder.jpeg"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_resource "${PODS_ROOT}/BAPickView/BAPickView/BAPickView/BAPickView.bundle"
@@ -104,6 +109,11 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_resource "${PODS_ROOT}/MJRefresh/MJRefresh/MJRefresh.bundle"
   install_resource "${PODS_ROOT}/PYSearch/PYSearch/PYSearch.bundle"
   install_resource "${PODS_ROOT}/SVProgressHUD/SVProgressHUD/SVProgressHUD.bundle"
+  install_resource "${PODS_ROOT}/XHImageViewer/Source/Resources/1_1280x800-1.jpeg"
+  install_resource "${PODS_ROOT}/XHImageViewer/Source/Resources/1_1280x800.jpeg"
+  install_resource "${PODS_ROOT}/XHImageViewer/Source/Resources/4_1366x768.jpeg"
+  install_resource "${PODS_ROOT}/XHImageViewer/Source/Resources/5_1280x800.jpeg"
+  install_resource "${PODS_ROOT}/XHImageViewer/Source/Resources/placeholder.jpeg"
 fi
 
 mkdir -p "${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}"

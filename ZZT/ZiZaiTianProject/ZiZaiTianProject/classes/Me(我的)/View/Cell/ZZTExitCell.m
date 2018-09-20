@@ -18,6 +18,7 @@
     [super awakeFromNib];
     
     self.exitBtn.layer.cornerRadius = 10.0f;
+    self.exitBtn.userInteractionEnabled = NO;
 
 }
 

@@ -49,7 +49,11 @@
 #import "UIImage+Rotate.h"
 #import "UIView+Extension.h"
 #import "UIView+Frame.h"
-
+#import "GlobalUI.h"
+#import "NSString+Extension.h"
+#import "UserInfo.h"
+#import "UserInfoContext.h"
+#import "Utilities.h"
 
 #define imageHost @"p872ue3rt.bkt.clouddn.com"
 
@@ -80,6 +84,7 @@
 /** RGB色 + 透明度 */
 #define RGB_alphaColor(r,g,b,a) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:(a)]
 
+#define   TOPBAR_HEIGHT       ([[UIApplication sharedApplication] statusBarFrame].size.height + [UINavigationController new].navigationBar.frame.size.height)
 
 
 

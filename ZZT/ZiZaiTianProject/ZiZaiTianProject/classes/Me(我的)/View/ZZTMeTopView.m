@@ -41,8 +41,8 @@
         self.VIPBtn.hidden = YES;
         [self.jiFenLab setText:@""];
     }
-    
 }
+
 +(instancetype)meTopView{
     return [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass(self) owner:nil options:nil] firstObject];
 }

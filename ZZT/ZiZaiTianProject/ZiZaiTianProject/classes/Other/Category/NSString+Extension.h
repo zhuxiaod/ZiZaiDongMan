@@ -28,4 +28,6 @@
 + (NSString *)timeWithTimeStamp:(NSUInteger)timeStamp;
 + (NSString *)timeWithStr:(NSString *)string;
 
+-(CGFloat)heightWithWidth:(CGFloat)width font:(CGFloat)font;
+
 @end

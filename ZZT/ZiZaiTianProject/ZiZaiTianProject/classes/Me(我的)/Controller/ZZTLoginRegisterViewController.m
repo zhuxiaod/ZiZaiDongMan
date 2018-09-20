@@ -78,11 +78,10 @@
 //        [defaults setObject: cookiesData forKey:@"Set-Cookie"];
 //        [defaults synchronize];
 //
-        [manager POST:[ZZTAPI stringByAppendingString:@"login/sendMsg"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            NSLog(@"%@---%@",[responseObject class],responseObject);
+        [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"login/sendMsg"] parameters:paramDict success:^(id responseObject) {
 
-        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            NSLog(@"请求失败 -- %@",error);
+        } failure:^(NSError *error) {
+            
         }];
 //        //取cookie
 //        NSArray * cookies = [NSKeyedUnarchiver unarchiveObjectWithData: [[NSUserDefaults standardUserDefaults] objectForKey:@"Set-Cookie"]];
@@ -107,7 +106,7 @@
 
     NSLog(@"%@",self.loginView.phoneNumber);
 }
-
+#warning 等海俊来测试一下
 -(void)loginButtonClick:(UIButton *)button{
     NSDictionary *paramDict = @{
                                     @"phone":self.loginView.phoneNumber.text,
@@ -115,6 +114,8 @@
                                     };
 
     [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"login/loginApp"] parameters:paramDict success:^(id responseObject) {
+        
+        [self loginAfterLoadUserDataWith:responseObject];
         
     } failure:^(NSError *error) {
         
@@ -241,33 +242,32 @@
                                       };
                 
                 [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"login/thirdPartyLogin"] parameters:dic success:^(id responseObject) {
-                    //成功
-                    NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-                    ZZTUserModel *user = [ZZTUserModel mj_objectWithKeyValues:dic];
-                    NSString *userId = [NSString stringWithFormat:@"%ld",user.id];
-                    //存
-                    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-                    [defaults setObject:userId forKey:@"userId"];
-                    [defaults synchronize];
-
-                    //关闭页面
-                    [self dismissViewControllerAnimated:YES completion:^{
-                        //创建通知
-                        NSNotification *notification = [NSNotification notificationWithName:@"loadMeView" object:nil userInfo:nil];
-                        //通过通知中心发送通知
-                        [[NSNotificationCenter defaultCenter] postNotification:notification];
-                    }];
+                    [self loginAfterLoadUserDataWith:responseObject];
                 } failure:^(NSError *error) {
 
                 }];
-                //返回数据
-                //存档
-                
-                
-            }else{
-                
             }
         }
+    }];
+}
+
+-(void)loginAfterLoadUserDataWith:(id)responseObject{
+    //成功
+    NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+    NSArray *array = [ZZTUserModel mj_objectArrayWithKeyValuesArray:dic];
+    ZZTUserModel *user = array[0];
+    NSString *userId = [NSString stringWithFormat:@"%ld",user.id];
+    //存
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:userId forKey:@"userId"];
+    [defaults synchronize];
+    
+    //关闭页面
+    [self dismissViewControllerAnimated:YES completion:^{
+        //创建通知
+        NSNotification *notification = [NSNotification notificationWithName:@"loadMeView" object:nil userInfo:nil];
+        //通过通知中心发送通知
+        [[NSNotificationCenter defaultCenter] postNotification:notification];
     }];
 }
 @end

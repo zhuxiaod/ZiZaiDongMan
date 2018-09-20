@@ -70,31 +70,37 @@
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xay-rU-B7f">
-                    <rect key="frame" x="0.0" y="520" width="375" height="100"/>
+                    <rect key="frame" x="0.0" y="520" width="375" height="125"/>
                     <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OH8-KZ-3BO">
-                            <rect key="frame" x="0.0" y="0.0" width="125" height="100"/>
-                            <state key="normal" title="qq"/>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OH8-KZ-3BO" customClass="ZXDCartoonFlexoBtn">
+                            <rect key="frame" x="0.0" y="0.0" width="125" height="125"/>
+                            <state key="normal" title="QQ登录" image="qq">
+                                <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </state>
                             <connections>
                                 <action selector="QQLogin:" destination="-1" eventType="touchUpInside" id="IcF-1J-Ybr"/>
                             </connections>
                         </button>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MUp-Az-Zwd">
-                            <rect key="frame" x="250" y="0.0" width="125" height="100"/>
-                            <state key="normal" title="weibo"/>
-                            <connections>
-                                <action selector="sinaLogin:" destination="-1" eventType="touchUpInside" id="XvO-7q-Qvs"/>
-                            </connections>
-                        </button>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Dpa-YY-XsD">
-                            <rect key="frame" x="125" y="0.0" width="125" height="100"/>
-                            <state key="normal" title="weixin"/>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Dpa-YY-XsD" customClass="ZXDCartoonFlexoBtn">
+                            <rect key="frame" x="125" y="0.0" width="125" height="125"/>
+                            <state key="normal" title="微信登录" image="微信">
+                                <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </state>
                             <connections>
                                 <action selector="WeChatLogin:" destination="-1" eventType="touchUpInside" id="0iV-Kw-ISi"/>
                             </connections>
                         </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MUp-Az-Zwd" customClass="ZXDCartoonFlexoBtn">
+                            <rect key="frame" x="250" y="0.0" width="125" height="125"/>
+                            <state key="normal" title="微博登录" image="微博">
+                                <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </state>
+                            <connections>
+                                <action selector="sinaLogin:" destination="-1" eventType="touchUpInside" id="XvO-7q-Qvs"/>
+                            </connections>
+                        </button>
                     </subviews>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstItem="MUp-Az-Zwd" firstAttribute="width" secondItem="OH8-KZ-3BO" secondAttribute="width" id="0vJ-Da-hWo"/>
                         <constraint firstItem="OH8-KZ-3BO" firstAttribute="width" secondItem="xay-rU-B7f" secondAttribute="width" multiplier="1 / 3" id="7o6-eh-ZYw"/>
@@ -103,7 +109,7 @@
                         <constraint firstAttribute="bottom" secondItem="MUp-Az-Zwd" secondAttribute="bottom" id="HDh-Hn-IFN"/>
                         <constraint firstAttribute="bottom" secondItem="Dpa-YY-XsD" secondAttribute="bottom" id="NNb-sv-xok"/>
                         <constraint firstItem="MUp-Az-Zwd" firstAttribute="top" secondItem="xay-rU-B7f" secondAttribute="top" id="Ozp-63-dA5"/>
-                        <constraint firstAttribute="height" constant="100" id="RCJ-BU-rhz"/>
+                        <constraint firstAttribute="height" constant="125" id="RCJ-BU-rhz"/>
                         <constraint firstItem="MUp-Az-Zwd" firstAttribute="leading" secondItem="Dpa-YY-XsD" secondAttribute="trailing" id="aZD-gG-Fed"/>
                         <constraint firstItem="Dpa-YY-XsD" firstAttribute="leading" secondItem="OH8-KZ-3BO" secondAttribute="trailing" id="sAv-rw-CD0"/>
                         <constraint firstItem="OH8-KZ-3BO" firstAttribute="leading" secondItem="xay-rU-B7f" secondAttribute="leading" id="v7R-WY-OFM"/>
@@ -114,7 +120,7 @@
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="xay-rU-B7f" firstAttribute="bottom" secondItem="Q5M-cg-NOt" secondAttribute="bottom" constant="-47" id="AzX-pL-19e"/>
+                <constraint firstItem="xay-rU-B7f" firstAttribute="bottom" secondItem="Q5M-cg-NOt" secondAttribute="bottom" constant="-22" id="AzX-pL-19e"/>
                 <constraint firstItem="cDK-zq-ND7" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="Cam-tu-G2e"/>
                 <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="cDK-zq-ND7" secondAttribute="trailing" id="JKh-ma-xq1"/>
                 <constraint firstItem="zfE-1Q-bmL" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="KB1-Pb-pSs"/>
@@ -135,5 +141,8 @@
     <resources>
         <image name="login_close_icon" width="16" height="16"/>
         <image name="login_register_background" width="320" height="568"/>
+        <image name="qq" width="29" height="29"/>
+        <image name="微信" width="32" height="32"/>
+        <image name="微博" width="32" height="32"/>
     </resources>
 </document>

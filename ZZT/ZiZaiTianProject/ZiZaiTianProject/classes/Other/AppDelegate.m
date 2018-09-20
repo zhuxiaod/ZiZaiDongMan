@@ -62,7 +62,8 @@
     [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_QQ appKey:@"1107782397" appSecret:nil redirectURL:@"http://mobile.umeng.com/social"];
     
     [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_Sina appKey:@"2702055855" appSecret:@"3c88b3d25a1cdbcc0d5807a010c9b908" redirectURL:@"https://sns.whalecloud.com/sina2/callback"];
-    
+    //取
+    [UserInfoContext sharedUserInfoContext].userInfo = [Utilities GetNSUserDefaults];
     return YES;
 }
 

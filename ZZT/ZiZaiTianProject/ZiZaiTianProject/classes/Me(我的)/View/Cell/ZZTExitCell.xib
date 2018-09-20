@@ -35,7 +35,7 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="aW0-zy-SZf"/>
             <connections>
-                <outlet property="exitBtn" destination="evb-mI-FHZ" id="AdJ-oX-fY7"/>
+                <outlet property="exitBtn" destination="evb-mI-FHZ" id="3mB-iS-8XJ"/>
             </connections>
         </tableViewCell>
     </objects>

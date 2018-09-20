@@ -77,7 +77,7 @@ NSString *ExitCell = @"ExitCell";
     _tableView.delegate = self;
     _tableView.sectionHeaderHeight = 0;
     _tableView.sectionFooterHeight = 10;
-    _tableView.contentInset = UIEdgeInsetsMake(-30, 0, 0, 0);
+    _tableView.contentInset = UIEdgeInsetsMake(-30, 0, 44, 0);
     //隐藏滚动条
     _tableView.showsVerticalScrollIndicator = NO;
 }
@@ -162,24 +162,40 @@ NSString *ExitCell = @"ExitCell";
         if (indexPath.row == 0) {
             ZZTNoTypeCell *cell = [tableView dequeueReusableCellWithIdentifier:NoTypeCell];
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
             cell.cellLab.text = self.array3[indexPath.row];
             cell.cache.text = @"39.6";
             return cell;
         }else if (indexPath.row == 4) {
             ZZTExitCell *cell = [tableView dequeueReusableCellWithIdentifier:ExitCell];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
             return cell;
         }else{
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             cell.textLabel.text = self.array3[indexPath.row];
-            
         }
         return cell;
     }
 }
 
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    if(indexPath.section == 3){
+        if(indexPath.row == 4){
+            //退出账号
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            [defaults setObject:@"" forKey:@"userId"];
+            [defaults synchronize];
+            //退出页面
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+    }
+}
+-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return 20;
+}
 
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
-//    [self.navigationController setNavigationBarHidden:YES animated:YES];
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 60;
 }
 @end
