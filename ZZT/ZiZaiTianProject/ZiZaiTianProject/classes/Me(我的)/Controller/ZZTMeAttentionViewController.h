@@ -12,6 +12,6 @@
 
 @interface ZZTMeAttentionViewController : BaseViewController
 
-@property (nonatomic,strong) ZZTUserModel *user;
+@property (nonatomic,strong) UserInfo *user;
 
 @end

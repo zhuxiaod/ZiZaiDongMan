@@ -67,7 +67,6 @@ static NSString *AttentionCell = @"AttentionCell";
 -(void)registerCell{
     UINib *nib1= [UINib nibWithNibName:@"ZZTAttentionCell" bundle:[NSBundle mainBundle]];
     [self.collectionView registerNib:nib1 forCellWithReuseIdentifier:AttentionCell];
-    
 }
 
 -(void)loadData{
@@ -77,7 +76,7 @@ static NSString *AttentionCell = @"AttentionCell";
                                 };
     [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"record/selUserAttention"] parameters:paramDict success:^(id responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-        NSArray *array = [ZZTUserModel mj_objectArrayWithKeyValuesArray:dic];
+        NSArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
         self.cartoons = array;
         [self.collectionView reloadData];
     } failure:^(NSError *error) {
@@ -135,7 +134,7 @@ static NSString *AttentionCell = @"AttentionCell";
 -(void)cancelAttention:(ZZTAttentionCell *)cell
 {
     NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
-    ZZTUserModel *user = self.cartoons[indexPath.row];
+    UserInfo *user = self.cartoons[indexPath.row];
     NSDictionary *dic = @{
                           @"userId":self.user.userId,
                           @"authorId":[NSString stringWithFormat:@"%ld",(long)user.id]

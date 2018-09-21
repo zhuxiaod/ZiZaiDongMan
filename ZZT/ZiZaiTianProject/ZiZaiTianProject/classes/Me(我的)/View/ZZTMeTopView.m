@@ -25,7 +25,7 @@
 
 @implementation ZZTMeTopView 
 
--(void)setUserModel:(ZZTUserModel *)userModel{
+-(void)setUserModel:(UserInfo *)userModel{
     _userModel = userModel;
     if(userModel.isLogin == YES){
         [self.headImage sd_setImageWithURL:[NSURL URLWithString:userModel.headimg]];

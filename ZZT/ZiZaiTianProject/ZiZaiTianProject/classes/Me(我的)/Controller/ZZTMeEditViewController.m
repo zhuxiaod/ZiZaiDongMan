@@ -373,7 +373,7 @@
     }];
 }
 
--(void)setModel:(ZZTUserModel *)model{
+-(void)setModel:(UserInfo *)model{
     _model = model;
     //背景图
     self.backImg = model.cover;

@@ -241,7 +241,6 @@
 		04B4250321227CB600FDEE58 /* ZZTBubbleImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04B4250121227CB500FDEE58 /* ZZTBubbleImageView.m */; };
 		04B9FF4120E506FC007CC582 /* ZZTChildCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04B9FF3F20E506FB007CC582 /* ZZTChildCollectionView.m */; };
 		04C39F4E2136493900F4CB4A /* ZZTFindCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C39F4C2136493900F4CB4A /* ZZTFindCommentCell.m */; };
-		04C39F4F2136493900F4CB4A /* ZZTFindCommentCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04C39F4D2136493900F4CB4A /* ZZTFindCommentCell.xib */; };
 		04C39F522136C47A00F4CB4A /* ZZTWritingSequelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C39F512136C47A00F4CB4A /* ZZTWritingSequelViewController.m */; };
 		04CF25942105AACA0026EC8F /* ZZTMaterialLibraryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CF25932105AACA0026EC8F /* ZZTMaterialLibraryView.m */; };
 		04CF25972105B0AB0026EC8F /* ZZTMaterialKindView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CF25962105B0AB0026EC8F /* ZZTMaterialKindView.m */; };
@@ -279,6 +278,8 @@
 		04E9FAD32153D28E005A3986 /* UserInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E9FAD22153D28E005A3986 /* UserInfo.m */; };
 		04E9FAD62153D2DD005A3986 /* UserInfoContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E9FAD52153D2DD005A3986 /* UserInfoContext.m */; };
 		04E9FAD92153D5BC005A3986 /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E9FAD82153D5BC005A3986 /* Utilities.m */; };
+		04E9FADC2154E0AE005A3986 /* ZZTMyZoneTotalModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E9FADB2154E0AE005A3986 /* ZZTMyZoneTotalModel.m */; };
+		04E9FAE021551879005A3986 /* NSDate+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E9FADF21551879005A3986 /* NSDate+Extension.m */; };
 		D9D2D4F33CB3B47DB08AD9C9 /* libPods-ZiZaiTianProject.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BA8586C54F8E7A26D9A888C6 /* libPods-ZiZaiTianProject.a */; };
 		F7C04BEE20DF3D190055E7A8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F7C04BEC20DF3D190055E7A8 /* Main.storyboard */; };
 		F7C04BF020DF3D190055E7A8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F7C04BEF20DF3D190055E7A8 /* Assets.xcassets */; };
@@ -700,7 +701,6 @@
 		04B9FF4020E506FC007CC582 /* ZZTChildCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZZTChildCollectionView.h; path = "ZiZaiTianProject/classes/Me(我的)/View/ZZTChildCollectionView.h"; sourceTree = SOURCE_ROOT; };
 		04C39F4B2136493900F4CB4A /* ZZTFindCommentCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ZZTFindCommentCell.h; path = "ZiZaiTianProject/classes/Find(发现)/Controller/ZZTFindCommentCell.h"; sourceTree = SOURCE_ROOT; };
 		04C39F4C2136493900F4CB4A /* ZZTFindCommentCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ZZTFindCommentCell.m; path = "ZiZaiTianProject/classes/Find(发现)/Controller/ZZTFindCommentCell.m"; sourceTree = SOURCE_ROOT; };
-		04C39F4D2136493900F4CB4A /* ZZTFindCommentCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ZZTFindCommentCell.xib; path = "ZiZaiTianProject/classes/Find(发现)/Controller/ZZTFindCommentCell.xib"; sourceTree = SOURCE_ROOT; };
 		04C39F502136C47A00F4CB4A /* ZZTWritingSequelViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTWritingSequelViewController.h; sourceTree = "<group>"; };
 		04C39F512136C47A00F4CB4A /* ZZTWritingSequelViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTWritingSequelViewController.m; sourceTree = "<group>"; };
 		04CF25922105AACA0026EC8F /* ZZTMaterialLibraryView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTMaterialLibraryView.h; sourceTree = "<group>"; };
@@ -767,6 +767,10 @@
 		04E9FAD52153D2DD005A3986 /* UserInfoContext.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserInfoContext.m; sourceTree = "<group>"; };
 		04E9FAD72153D5BC005A3986 /* Utilities.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Utilities.h; sourceTree = "<group>"; };
 		04E9FAD82153D5BC005A3986 /* Utilities.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Utilities.m; sourceTree = "<group>"; };
+		04E9FADA2154E0AE005A3986 /* ZZTMyZoneTotalModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTMyZoneTotalModel.h; sourceTree = "<group>"; };
+		04E9FADB2154E0AE005A3986 /* ZZTMyZoneTotalModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTMyZoneTotalModel.m; sourceTree = "<group>"; };
+		04E9FADE21551838005A3986 /* NSDate+Extension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSDate+Extension.h"; sourceTree = "<group>"; };
+		04E9FADF21551879005A3986 /* NSDate+Extension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Extension.m"; sourceTree = "<group>"; };
 		749399599CA48ED07BA87311 /* Pods-ZiZaiTianProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZiZaiTianProject.release.xcconfig"; path = "Pods/Target Support Files/Pods-ZiZaiTianProject/Pods-ZiZaiTianProject.release.xcconfig"; sourceTree = "<group>"; };
 		8E61AC85E4D70CE81268AC0F /* Pods-ZiZaiTianProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZiZaiTianProject.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ZiZaiTianProject/Pods-ZiZaiTianProject.debug.xcconfig"; sourceTree = "<group>"; };
 		BA8586C54F8E7A26D9A888C6 /* libPods-ZiZaiTianProject.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ZiZaiTianProject.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1244,6 +1248,8 @@
 				04E9FAD22153D28E005A3986 /* UserInfo.m */,
 				04E9FAD42153D2DD005A3986 /* UserInfoContext.h */,
 				04E9FAD52153D2DD005A3986 /* UserInfoContext.m */,
+				04E9FADA2154E0AE005A3986 /* ZZTMyZoneTotalModel.h */,
+				04E9FADB2154E0AE005A3986 /* ZZTMyZoneTotalModel.m */,
 			);
 			name = Model;
 			path = "ZiZaiTianProject/classes/Me(我的)/Model";
@@ -1394,7 +1400,6 @@
 				0450E248213586A400AE924B /* ZZTCaiNiXiHuanView.xib */,
 				04C39F4B2136493900F4CB4A /* ZZTFindCommentCell.h */,
 				04C39F4C2136493900F4CB4A /* ZZTFindCommentCell.m */,
-				04C39F4D2136493900F4CB4A /* ZZTFindCommentCell.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1604,6 +1609,8 @@
 				042BA0BA20E9C75B003E279A /* ZZTCircleImage.m */,
 				04E9FAD72153D5BC005A3986 /* Utilities.h */,
 				04E9FAD82153D5BC005A3986 /* Utilities.m */,
+				04E9FADE21551838005A3986 /* NSDate+Extension.h */,
+				04E9FADF21551879005A3986 /* NSDate+Extension.m */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -1721,7 +1728,6 @@
 				043B074720EDEDBE00ED3F5B /* ZZTWalletCell.xib in Resources */,
 				043B075220EDFC6900ED3F5B /* ZZTShoppingButtomCell.xib in Resources */,
 				049A99D420E32F2F00ED27C9 /* ZZTLoginRegisterViewController.xib in Resources */,
-				04C39F4F2136493900F4CB4A /* ZZTFindCommentCell.xib in Resources */,
 				040A03B220FD8706000FAE13 /* ZZTStoryDetailCell.xib in Resources */,
 				0498B5F4212ED35E005BD26D /* ZZTXuHuaBtn.xib in Resources */,
 				0471A86C20F72FB700ABFF35 /* ZZTWordCell.xib in Resources */,
@@ -1979,6 +1985,7 @@
 				042BA0BB20E9C75B003E279A /* ZZTCircleImage.m in Sources */,
 				0466839920F32F8F0095C6BC /* ZZTReadTableView.m in Sources */,
 				04E9FAC4215372BD005A3986 /* ZZTMyZoneViewController.m in Sources */,
+				04E9FAE021551879005A3986 /* NSDate+Extension.m in Sources */,
 				04CF259A2105BB540026EC8F /* ZZTMaterialKindModel.m in Sources */,
 				0471A85920F608A100ABFF35 /* ZZTCarttonDetailModel.m in Sources */,
 				047720F82106CC6000FC97B5 /* ZZTDetailModel.m in Sources */,
@@ -1994,6 +2001,7 @@
 				040D282D2133F044002A3B72 /* ZZTCartoonHistoryCell.m in Sources */,
 				04DE149520E4781C009DF030 /* ZZTVIPMidView.m in Sources */,
 				042769672147F7B400DE238D /* ZZTRemindView.m in Sources */,
+				04E9FADC2154E0AE005A3986 /* ZZTMyZoneTotalModel.m in Sources */,
 				040D281F2133AB5B002A3B72 /* ZZTTopUpView.m in Sources */,
 				047720FE210822AE00FC97B5 /* EditImageView.m in Sources */,
 				040A03BD2100201B000FAE13 /* ZZTMoreViewController.m in Sources */,

@@ -30,7 +30,12 @@
 
 @property (nonatomic,assign) NSInteger replycount;
 
+@property (nonatomic,strong) NSString *ifpraise;
 
+@property (nonatomic,strong) NSString *userType;
 
+@property (nonatomic,strong) NSString *ifConcern;
+
+@property (nonatomic,assign) NSInteger praisecount;
 
 @end

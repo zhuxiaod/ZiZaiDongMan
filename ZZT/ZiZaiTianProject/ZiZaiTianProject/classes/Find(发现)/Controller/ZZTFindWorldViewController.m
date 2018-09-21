@@ -9,18 +9,28 @@
 #import "ZZTFindWorldViewController.h"
 #import "ZZTFindCommentCell.h"
 #import "ZZTCaiNiXiHuanView.h"
+#import "ZZTMyZoneModel.h"
 
 @interface ZZTFindWorldViewController ()<UITableViewDelegate,UITableViewDataSource>
 
-@property (nonatomic,strong) NSArray *dataArray;
+@property (nonatomic,strong) NSMutableArray *dataArray;
 
 @property (nonatomic,strong) UITableView *contentView;
+
+@property (nonatomic,assign) NSInteger pageNumber;
 
 @end
 
 static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
 
 @implementation ZZTFindWorldViewController
+
+-(NSMutableArray *)dataArray{
+    if(!_dataArray){
+        _dataArray = [NSMutableArray array];
+    }
+    return _dataArray;
+}
 
 -(void)viewDidLoad{
     [super viewDidLoad];
@@ -30,9 +40,42 @@ static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
     contentView.delegate = self;
     contentView.dataSource = self;
     contentView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    [contentView registerNib:[UINib nibWithNibName:@"ZZTFindCommentCell" bundle:nil] forCellReuseIdentifier:CaiNiXiHuanView1];
     _contentView = contentView;
     [self.view addSubview:contentView];
+    self.pageNumber = 0;
+    [contentView registerClass:[ZZTFindCommentCell class] forCellReuseIdentifier:@"ZZTFindCommentCell"];
+    [self loadData];
+
+}
+
+-(void)loadData{
+    //请求世界数据
+    NSDictionary *dic = @{
+                          //                          @"pageNum":self.pageNumber,
+                          @"pageNum":[NSString stringWithFormat:@"%ld",self.pageNumber],
+                          @"pageSize":@"3",
+                          //                          @"userId":[[NSUserDefaults standardUserDefaults]objectForKey:@"userId"]
+                          @"userId":@"3",
+                          @"type":@"1"
+                          };
+    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"circle/selDiscover"] parameters:dic success:^(id responseObject) {
+        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        id to = [dic objectForKey:@"total"];
+        NSInteger total = [to integerValue];
+        NSArray *list = [dic objectForKey:@"list"];
+        NSMutableArray *array = [ZZTMyZoneModel mj_objectArrayWithKeyValuesArray:list];
+        [self.dataArray addObjectsFromArray:array];
+        [self.contentView reloadData];
+        if(self.dataArray.count >= total){
+            [self.contentView.mj_footer endRefreshingWithNoMoreData];
+        }else{
+            [self.contentView.mj_footer endRefreshing];
+        }
+        //page+size
+        self.pageNumber += 3;
+    } failure:^(NSError *error) {
+        
+    }];
 }
 
 #pragma mark - 设置组数
@@ -41,21 +84,21 @@ static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 10;
+    return self.dataArray.count;
 }
 #pragma mark - 内容设置
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    ZZTFindCommentCell *commentCell = [tableView dequeueReusableCellWithIdentifier:CaiNiXiHuanView1];
-    return commentCell;
+    ZZTFindCommentCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ZZTFindCommentCell"];
+    cell.model = self.dataArray[indexPath.row];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    return cell;
 }
 
 #pragma mark 高度设置
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [self.contentView fd_heightForCellWithIdentifier:CaiNiXiHuanView1 cacheByIndexPath:indexPath configuration:^(id cell) {
-        ZZTFindCommentCell *CommentCell = (ZZTFindCommentCell *)cell;
-        //            CommentCell.model = self.dataArray[indexPath.row];
-    }];
-    
+    ZZTMyZoneModel *model = _dataArray[indexPath.row];
+    NSArray *imgs = [model.contentImg componentsSeparatedByString:@","];
+    return  [ZZTFindCommentCell cellHeightWithStr:model.content imgs:imgs];
 }
 #pragma mark - headView
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{

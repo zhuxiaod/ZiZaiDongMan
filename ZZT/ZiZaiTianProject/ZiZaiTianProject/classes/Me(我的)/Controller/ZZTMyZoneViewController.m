@@ -11,12 +11,14 @@
 #import "ZZTMyZoneCell.h"
 #import "ZZTCreationCartoonTypeViewController.h"
 #import "ZZTMyZoneHeaderView.h"
+static const CGFloat MJDuration = 2.0;
 
 @interface ZZTMyZoneViewController ()<UITableViewDataSource,UITableViewDelegate>
 
 @property (nonatomic,strong)UITableView * tabelView;
 @property (nonatomic,strong)NSMutableArray * dataArray;
 @property (nonatomic,strong)NSString *pageNumber;
+@property (nonatomic,assign)NSInteger total;
 
 @end
 
@@ -37,7 +39,6 @@ NSString *myZoneCell = @"myZoneCell";
     self.view.backgroundColor = [UIColor whiteColor];
     self.pageNumber = @"0";
 
-    
     //tabView
     _tabelView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, Screen_Height) style:UITableViewStylePlain];
     _tabelView.delegate = self;
@@ -47,6 +48,7 @@ NSString *myZoneCell = @"myZoneCell";
     
     //头视图
     ZZTMyZoneHeaderView *headView = [[ZZTMyZoneHeaderView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 280)];
+    headView.user = [Utilities GetNSUserDefaults];
     _tabelView.tableHeaderView = headView;
     
     //数据源
@@ -54,29 +56,48 @@ NSString *myZoneCell = @"myZoneCell";
 
     //cell 1 编辑 跳编辑器
     //cell 2 时间 内容 图片
-    
+    [self setupMJRefresh];
+}
+
+-(void)setupMJRefresh{
+    self.tabelView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        [self loadData];
+    }];
+//    [self.tabelView.mj_footer beginRefreshing];
 }
 
 -(void)loadData{
-    _dataArray = [NSMutableArray array];
     //请求世界数据
     NSDictionary *dic = @{
-                          @"pageNum":self.pageNumber,
-                          @"pageSize":@"10",
+//                          @"pageNum":self.pageNumber,
+                        @"pageNum":@"0",
+                          @"pageSize":@"3",
 //                          @"userId":[[NSUserDefaults standardUserDefaults]objectForKey:@"userId"]
                           @"userId":@"3"
                           };
     [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"circle/selUserRoom"] parameters:dic success:^(id responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-        NSMutableArray *array = [ZZTMyZoneModel mj_objectArrayWithKeyValuesArray:dic];
-        self.dataArray = array;
+        id to = [dic objectForKey:@"total"];
+        NSInteger total = [to integerValue];
+        self.total = total;
+        NSArray *list = [dic objectForKey:@"list"];
+        NSMutableArray *array = [ZZTMyZoneModel mj_objectArrayWithKeyValuesArray:list];
+        [self.dataArray addObjectsFromArray:array];
         [self.tabelView reloadData];
+        if(self.dataArray.count >= total){
+            [self.tabelView.mj_footer endRefreshingWithNoMoreData];
+        }else{
+            [self.tabelView.mj_footer endRefreshing];
+        }
+        //page+size
+        self.pageNumber = [NSString stringWithFormat:@"%ld",([self.pageNumber integerValue] + 3)];
     } failure:^(NSError *error) {
         
     }];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    self.tabelView.mj_footer.hidden = (_dataArray.count == 0);
     return _dataArray.count;
 }
 
@@ -104,7 +125,8 @@ NSString *myZoneCell = @"myZoneCell";
             [button setBackgroundImage:[UIImage imageNamed:@"正文-续"] forState:UIControlStateNormal];
             [button addTarget:self action:@selector(startCreate) forControlEvents:UIControlEventTouchUpInside];
             [cell.contentView addSubview:button];
-            UIView *bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(cell.frame) - 1, SCREEN_WIDTH, 1)];
+            //底线
+            UIView *bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(button.frame), SCREEN_WIDTH, 1)];
             bottomView.backgroundColor = [UIColor grayColor];
             [cell.contentView addSubview:bottomView];
             return cell;

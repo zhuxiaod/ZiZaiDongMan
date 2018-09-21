@@ -106,7 +106,6 @@
 
     NSLog(@"%@",self.loginView.phoneNumber);
 }
-#warning 等海俊来测试一下
 -(void)loginButtonClick:(UIButton *)button{
     NSDictionary *paramDict = @{
                                     @"phone":self.loginView.phoneNumber.text,
@@ -238,7 +237,8 @@
                                       @"nickName":userInfo.name,
                                       @"loginMode":self.platformId,
                                       @"loginNumber":userInfo.openid,
-                                      @"sex":userInfo.unionGender
+                                      @"sex":userInfo.unionGender,
+                                      @"headimg":userInfo.iconurl
                                       };
                 
                 [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"login/thirdPartyLogin"] parameters:dic success:^(id responseObject) {
@@ -254,14 +254,11 @@
 -(void)loginAfterLoadUserDataWith:(id)responseObject{
     //成功
     NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-    NSArray *array = [ZZTUserModel mj_objectArrayWithKeyValuesArray:dic];
-    ZZTUserModel *user = array[0];
-    NSString *userId = [NSString stringWithFormat:@"%ld",user.id];
+    NSArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
+    UserInfo *user = array[0];
     //存
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:userId forKey:@"userId"];
-    [defaults synchronize];
-    
+    [Utilities SetNSUserDefaults:user];
+
     //关闭页面
     [self dismissViewControllerAnimated:YES completion:^{
         //创建通知

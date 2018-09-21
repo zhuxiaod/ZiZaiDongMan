@@ -60,7 +60,6 @@
     scrollView.contentSize = CGSizeMake(SCREEN_WIDTH, btView.y+btView.height);
     
     [MLIAPManager sharedManager].delegate = self;
-
 }
 
 #pragma mark - ================ Actions =================

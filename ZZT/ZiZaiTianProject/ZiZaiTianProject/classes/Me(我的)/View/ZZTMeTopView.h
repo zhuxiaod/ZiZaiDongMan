@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@class ZZTUserModel;
 
 @interface  ZZTMeTopView : UIView
 
@@ -20,7 +19,7 @@ typedef void(^loginClick)(UIButton * btn);
 @property (nonatomic,copy) loginClick loginAction;
 
 
-@property (nonatomic,strong) ZZTUserModel *userModel;
+@property (nonatomic,strong) UserInfo *userModel;
 
 //-(void)addTapBlock:(void(^)(UIButton *btn))block;
 

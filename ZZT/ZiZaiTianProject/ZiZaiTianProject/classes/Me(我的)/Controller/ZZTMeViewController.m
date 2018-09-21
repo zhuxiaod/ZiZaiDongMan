@@ -36,7 +36,7 @@
 //获得数据
 @property (nonatomic,strong) EncryptionTools *encryptionManager;
 
-@property (nonatomic,strong) ZZTUserModel *userData;
+@property (nonatomic,strong) UserInfo *userData;
 
 @property (nonatomic,strong) ZZTSignInView *signView;
 
@@ -57,9 +57,9 @@ NSString *bannerID = @"MeCell";
     return _encryptionManager;
 }
 
--(ZZTUserModel *)userData{
+-(UserInfo *)userData{
     if (!_userData) {
-        _userData = [[ZZTUserModel alloc] init];
+        _userData = [[UserInfo alloc] init];
     }
     return _userData;
 }
@@ -199,21 +199,20 @@ NSString *bannerID = @"MeCell";
     //隐藏Bar
     [self.navigationController setNavigationBarHidden:YES animated:YES];
     //加载用户信息
-    //判断
-    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
-    NSString *userId = [userDefault objectForKey:@"userId"];
+    UserInfo *userInfo = [Utilities GetNSUserDefaults];
     //有id
-    if([userId isEqualToString:@""]){
-        [self loadUserData:@""];
+    if(userInfo == nil){
+        [self loadUserData:0];
     }else{
         //userId已经有了
-        [self loadUserData:userId];
+        [self loadUserData:userInfo.id];
     }
 }
 
--(void)loadUserData:(NSString *)userId{
-    if([userId isEqualToString:@""]){
-        ZZTUserModel *model = [[ZZTUserModel alloc] init];
+-(void)loadUserData:(NSInteger)Id{
+    NSString *userId = [NSString stringWithFormat:@"%ld",Id];
+    if([userId isEqualToString:@"0"]){
+        UserInfo *model = [[UserInfo alloc] init];
         model.isLogin = NO;
         self.userData = model;
         [self setupTopView];
@@ -225,9 +224,9 @@ NSString *bannerID = @"MeCell";
             
             NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
             
-            NSArray *array = [ZZTUserModel mj_objectArrayWithKeyValuesArray:dic];
+            NSArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
             if(array.count != 0){
-                ZZTUserModel *model = array[0];
+                UserInfo *model = array[0];
                 model.isLogin = YES;
                 self.userData = model;
                 [self setupTopView];
@@ -237,11 +236,13 @@ NSString *bannerID = @"MeCell";
         }];
     }
 }
+
 -(void)tongzhi{
-    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
-    NSString *userId = [userDefault objectForKey:@"userId"];
-    [self loadUserData:userId];
+    //取
+    UserInfo *userInfo = [Utilities GetNSUserDefaults];
+    [self loadUserData:userInfo.id];
 }
+
 -(void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }

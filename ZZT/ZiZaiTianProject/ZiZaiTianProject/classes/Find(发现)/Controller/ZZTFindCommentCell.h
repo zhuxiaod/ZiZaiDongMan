@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+@class ZZTMyZoneModel;
+
 @interface ZZTFindCommentCell : UITableViewCell
+
+@property (nonatomic,strong) ZZTMyZoneModel *model;
+
++ (CGFloat)cellHeightWithStr:(NSString *)str imgs:(NSArray *)imgs;
+
++ (ZZTFindCommentCell *)dynamicCellWithTable:(UITableView *)table;
 
 @end

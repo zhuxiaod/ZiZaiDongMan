@@ -12,5 +12,6 @@
 +(void)SetNSUserDefaults:(UserInfo *)userInfo;
 
 +(UserInfo *)GetNSUserDefaults;
-
+// *传入时间与当前时间的差值
+- (NSDateComponents *)deltaFrom:(NSDate *)date;
 @end

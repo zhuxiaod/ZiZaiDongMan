@@ -29,5 +29,6 @@
 + (NSString *)timeWithStr:(NSString *)string;
 
 -(CGFloat)heightWithWidth:(CGFloat)width font:(CGFloat)font;
++(NSString *)compareCurrentTime:(NSString *)str;
 
 @end

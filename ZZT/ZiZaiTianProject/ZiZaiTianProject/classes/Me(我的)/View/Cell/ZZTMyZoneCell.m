@@ -28,7 +28,6 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         [self setupUI];
-        
     }
     return self;
 }
@@ -145,8 +144,8 @@
 
 #pragma mark - brower image
 - (void)browerImage:(UITapGestureRecognizer *)gest{
-    UIImageView * tapView = (UIImageView *)gest.view;
-    XHImageViewer * brower  = [[XHImageViewer alloc]init];
+    UIImageView *tapView = (UIImageView *)gest.view;
+    XHImageViewer *brower  = [[XHImageViewer alloc]init];
     [brower showWithImageViews:_groupImgArr selectedView:tapView];
 }
 

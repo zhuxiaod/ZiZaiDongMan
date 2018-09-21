@@ -22,4 +22,12 @@
     NSData *data = [defaults objectForKey:@"user"];
     return [NSKeyedUnarchiver unarchiveObjectWithData:data];
 }
+
+- (NSDateComponents *)deltaFrom:(NSDate *)date{
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSCalendarUnit unit = NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond;
+    NSDateComponents *compas = [calendar components:unit fromDate:self toDate:date options:0];
+    return compas;
+}
+
 @end

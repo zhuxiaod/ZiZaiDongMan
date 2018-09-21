@@ -12,7 +12,7 @@
 
 @interface ZZTCartoonViewController : BaseViewController
 
-@property(nonatomic,strong)ZZTUserModel *user;
+@property(nonatomic,strong)UserInfo *user;
 
 @property(nonatomic,strong)NSString *viewTitle;
 

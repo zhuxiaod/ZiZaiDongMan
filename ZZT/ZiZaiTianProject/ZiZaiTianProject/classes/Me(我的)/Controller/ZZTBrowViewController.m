@@ -52,6 +52,7 @@
 -(void)setupTitle{
     [_viewControllerTitle setText:_viewTitle];
 }
+
 #pragma mark - 加载数据
 -(void)loadData{
     //请求参数

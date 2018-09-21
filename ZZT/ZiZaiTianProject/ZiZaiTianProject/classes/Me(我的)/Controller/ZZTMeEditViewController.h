@@ -12,6 +12,6 @@
 
 @interface ZZTMeEditViewController : BaseViewController
 
-@property (nonatomic,strong) ZZTUserModel *model;
+@property (nonatomic,strong) UserInfo *model;
 
 @end

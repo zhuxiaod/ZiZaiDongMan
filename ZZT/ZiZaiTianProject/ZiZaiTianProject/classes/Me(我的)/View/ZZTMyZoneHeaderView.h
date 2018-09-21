@@ -10,6 +10,6 @@
 
 @interface ZZTMyZoneHeaderView : UIView
 
-
+@property (nonatomic,strong) UserInfo *user;
 
 @end
