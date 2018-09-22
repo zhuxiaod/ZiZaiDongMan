@@ -14,7 +14,6 @@ typedef void (^restartBtnBlock) (UIButton *sender);
 
 @property (nonatomic,copy) restartBtnBlock buttonAction;
 
-@property (weak, nonatomic) IBOutlet UIView *mainView;
 
 +(instancetype)CaiNiXiHuanView;
 

@@ -127,7 +127,7 @@
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>
-                <outlet property="mainView" destination="eXy-4o-jfB" id="SZ4-nl-kK1"/>
+                <outlet property="mainView" destination="eXy-4o-jfB" id="EVc-C4-TFh"/>
                 <outlet property="updateBtn" destination="0SZ-h8-apB" id="79X-OM-xbc"/>
             </connections>
             <point key="canvasLocation" x="-347.5" y="-40"/>

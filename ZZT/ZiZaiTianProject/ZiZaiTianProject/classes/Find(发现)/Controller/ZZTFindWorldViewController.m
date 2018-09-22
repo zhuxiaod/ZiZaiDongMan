@@ -36,16 +36,14 @@ static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
     [super viewDidLoad];
     //猜你喜欢
     self.view.backgroundColor = [UIColor whiteColor];
-    UITableView *contentView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
+    UITableView *contentView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, Screen_Height - 49 - 20) style:UITableViewStyleGrouped];
     contentView.delegate = self;
     contentView.dataSource = self;
     contentView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _contentView = contentView;
     [self.view addSubview:contentView];
     self.pageNumber = 0;
-    [contentView registerClass:[ZZTFindCommentCell class] forCellReuseIdentifier:@"ZZTFindCommentCell"];
     [self loadData];
-
 }
 
 -(void)loadData{
@@ -53,9 +51,9 @@ static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
     NSDictionary *dic = @{
                           //                          @"pageNum":self.pageNumber,
                           @"pageNum":[NSString stringWithFormat:@"%ld",self.pageNumber],
-                          @"pageSize":@"3",
+                          @"pageSize":@"12",
                           //                          @"userId":[[NSUserDefaults standardUserDefaults]objectForKey:@"userId"]
-                          @"userId":@"3",
+                          @"userId":@"1",
                           @"type":@"1"
                           };
     [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"circle/selDiscover"] parameters:dic success:^(id responseObject) {
@@ -72,7 +70,7 @@ static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
             [self.contentView.mj_footer endRefreshing];
         }
         //page+size
-        self.pageNumber += 3;
+        self.pageNumber += 6;
     } failure:^(NSError *error) {
         
     }];
@@ -88,10 +86,33 @@ static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
 }
 #pragma mark - 内容设置
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    ZZTFindCommentCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ZZTFindCommentCell"];
+    ZZTFindCommentCell *cell = [ZZTFindCommentCell dynamicCellWithTable:tableView];
+    cell.btnBlock = ^(ZZTFindCommentCell *cell,ZZTMyZoneModel *model,BOOL yesOrNo) {
+        NSIndexPath *indexPath = [tableView indexPathForCell:cell];
+        [self.dataArray replaceObjectAtIndex:indexPath.row withObject:model];
+        if(yesOrNo == YES){
+            //点赞接口
+        }else{
+            //关注接口
+            [self loadAttention:model];
+        }
+    };
     cell.model = self.dataArray[indexPath.row];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
+}
+-(void)loadAttention:(ZZTMyZoneModel *)model{
+    NSDictionary *dic = @{
+                          @"userId":@"1",
+                          @"authorId":model.userId
+                          };
+    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"record/ifUserAtAuthor"] parameters:dic success:^(id responseObject) {
+//        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+//        NSMutableArray *array = [ZZTMyZoneModel mj_objectArrayWithKeyValuesArray:dic];
+
+    } failure:^(NSError *error) {
+        
+    }];
 }
 
 #pragma mark 高度设置

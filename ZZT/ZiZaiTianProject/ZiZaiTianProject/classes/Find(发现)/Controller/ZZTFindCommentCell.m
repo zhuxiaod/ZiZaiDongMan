@@ -12,7 +12,7 @@
 #import <XHImageViewer.h>
 #import "ZZTMyZoneModel.h"
 
-@interface ZZTFindCommentCell ()
+@interface ZZTFindCommentCell ()<UIGestureRecognizerDelegate>
 
 @property (strong, nonatomic)  UIImageView *headBtn;
 @property (strong, nonatomic)  UILabel *userName;
@@ -30,6 +30,8 @@
 @property (nonatomic,strong) NSMutableArray * groupImgArr;
 @property (nonatomic,strong) NSArray *imgArray;
 @property (nonatomic,assign) BOOL isZan;
+@property (nonatomic,assign) BOOL isAttention;
+
 
 @end
 
@@ -54,7 +56,9 @@
     _vipLab.backgroundColor = [UIColor purpleColor];
     //关注
     _attentionBtn = [GlobalUI createButtonWithImg:nil title:@"+关注" titleColor:[UIColor whiteColor]];
+    [_attentionBtn addTarget:self action:@selector(attentionBtnChange) forControlEvents:UIControlEventTouchUpInside];
     _attentionBtn.backgroundColor = [UIColor purpleColor];
+    
     //内容
     _contentLab = [GlobalUI createLabelFont:14 titleColor:[UIColor blackColor] bgColor:[UIColor whiteColor]];
 
@@ -69,10 +73,10 @@
     _zanImg.image = [UIImage imageNamed:@"zan_icon"];
     _zanImg.userInteractionEnabled = YES;
     //注意测
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapZanBtn)];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapZanBtn:)];
     [_zanImg  addGestureRecognizer:tap];
     _likeNum = [GlobalUI createLabelFont:14 titleColor:[UIColor blackColor] bgColor:[UIColor whiteColor]];
-    [_likeNum  addGestureRecognizer:tap];
+//    [_likeNum  addGestureRecognizer:tap];
     //评论
     _commentImg = [GlobalUI createImageViewbgColor:[UIColor whiteColor]];
     _commentImg.image = [UIImage imageNamed:@"zan_icon"];
@@ -93,7 +97,6 @@
     _bottomView = [[UIView alloc] init];
     _bottomView.backgroundColor = [UIColor grayColor];
     [self.contentView addSubview:_bottomView];
-    
 }
 
 - (void)layoutSubviews{
@@ -120,6 +123,11 @@
 }
 
 - (void)setModel:(ZZTMyZoneModel *)model{
+    _model = model;
+    //在这个页面只用使用一个值来记录 是否点赞
+    //如果点赞 显示已点赞
+    //如果没有点赞 显示没有点
+    
     if (_groupImgArr.count) {
         [_groupImgArr enumerateObjectsUsingBlock:^(UIImageView * obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [obj removeFromSuperview];
@@ -142,19 +150,8 @@
     _contentLab.text = model.content;
 
     //时间戳显示
-//    NSString *time = [NSString timeWithStr:[NSString stringWithFormat:@"%f",model.publishtime]];
-//    [NSDate ];
-#warning 这里有问题
-    _dataLab.text = [NSString compareCurrentTime:[NSString stringWithFormat:@"%f",model.publishtime]];
-    
-//    NSDate *nowDate = [NSDate date];
-//    // 当前日期
-//    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-//    formatter.dateFormat = @"yyyy-MM-dd HH-mm-ss";
-//    NSDate *creat = [formatter dateFromString:time];
-//    // 将传入的字符串转化成时间
-//    NSTimeInterval delta = [nowDate timeIntervalSinceDate:creat];
-//    NSLog(@"%f",delta);
+    NSString *time = [NSString timeWithStr:[NSString stringWithFormat:@"%f",model.publishtime]];
+    _dataLab.text = [NSString compareCurrentTime:time];
 
     [self setNeedsLayout];
     [self layoutIfNeeded];
@@ -168,9 +165,27 @@
     
     _likeNum.text = [NSString stringWithFormat:@"%ld",model.praisecount];
     //判断是否点赞
-    _zanImg.image = [UIImage imageNamed:@"正文-点赞-已点赞"];
+    if ([model.ifpraise integerValue] == 0) {
+        //说明没有点赞 显示没有点赞的图片
+        _zanImg.image = [UIImage imageNamed:@"正文-点赞-未点赞(灰色）"];
+    }else{
+        _zanImg.image = [UIImage imageNamed:@"正文-点赞-已点赞"];
+    }
+    _isZan = [model.ifpraise integerValue];
+    
     _commentNum.text = [NSString stringWithFormat:@"%ld",model.replycount];
     _commentImg.image = [UIImage imageNamed:@"作品-作品信息-评论(灰色）"];
+    
+    //关注
+    if([model.ifConcern integerValue] == 1){
+        //如果关注了
+        [_attentionBtn setTitle:@"已关注" forState:UIControlStateNormal];
+        [_attentionBtn setBackgroundColor:[UIColor grayColor]];
+    }else{
+        [_attentionBtn setTitle:@"+关注" forState:UIControlStateNormal];
+        [_attentionBtn setBackgroundColor:[UIColor purpleColor]];
+    }
+    _isAttention = [model.ifConcern integerValue];
 }
 
 - (void)setupImageGroupView{
@@ -227,21 +242,47 @@
     }
     return cell;
 }
-//
-//-(void)tapZanBtn{
-//    _isZan = !_isZan;
-//    UIImage *selZan = [UIImage imageNamed:@"zan_icon"];
-//    if (_isZan) {
-//        _zanImg.image = selZan;
-//        NSInteger zanNum = [_likeNum.text integerValue];
-//        ++zanNum;
-//        _likeNum.text = [NSString stringWithFormat:@"%ld",zanNum];
-//    }else{
-//        _zanImg.image = [UIImage imageNamed:@"zan_icon"];
-//        NSInteger zanNum = [_likeNum.text integerValue];
-//        --zanNum;
-//        _likeNum.text = [NSString stringWithFormat:@"%ld",zanNum];
-//    }
-//}
 
+//cell里面只能设置显示的状态
+//不能控制数据
+-(void)tapZanBtn:(UIGestureRecognizer *)gesture{
+    //反状态
+    NSInteger zanNum = [_likeNum.text integerValue];
+    UIImage *selZan = [UIImage imageNamed:@"正文-点赞-未点赞(灰色）"];
+    if (_isZan) {
+        _isZan = NO;
+        _zanImg.image = selZan;
+        --zanNum;
+        _likeNum.text = [NSString stringWithFormat:@"%ld",zanNum];
+    }else{
+        _isZan = YES;
+        _zanImg.image = [UIImage imageNamed:@"正文-点赞-已点赞"];
+        ++zanNum;
+        _likeNum.text = [NSString stringWithFormat:@"%ld",zanNum];
+    }
+    _model.praisecount = zanNum;
+    _model.ifpraise = [NSString stringWithFormat:@"%d",_isZan];
+    if (self.btnBlock) {
+        // 调用block传入参数
+        self.btnBlock(self,_model,YES);
+    }
+}
+//关注
+-(void)attentionBtnChange{
+    if(_isAttention){
+        _isAttention = NO;
+        [_attentionBtn setTitle:@"+关注" forState:UIControlStateNormal];
+        [_attentionBtn setBackgroundColor:[UIColor purpleColor]];
+    }else{
+        _isAttention = YES;
+        //如果关注了
+        [_attentionBtn setTitle:@"已关注" forState:UIControlStateNormal];
+        [_attentionBtn setBackgroundColor:[UIColor grayColor]];
+    }
+    _model.ifConcern = [NSString stringWithFormat:@"%d",_isZan];
+    if (self.btnBlock) {
+        // 调用block传入参数
+        self.btnBlock(self,_model,NO);
+    }
+}
 @end

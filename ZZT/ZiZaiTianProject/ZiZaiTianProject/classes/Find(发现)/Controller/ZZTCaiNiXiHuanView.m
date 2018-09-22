@@ -10,6 +10,7 @@
 
 @interface ZZTCaiNiXiHuanView ()
 
+@property (weak, nonatomic) IBOutlet UIView *mainView;
 
 
 @property (weak, nonatomic) IBOutlet UIButton *updateBtn;
@@ -20,6 +21,33 @@
 
 +(instancetype)CaiNiXiHuanView{
     return [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass(self) owner:nil options:nil] firstObject];
+}
+
+-(id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if(self)
+    {
+        [self setupMainView];
+    }
+    return self;
+}
+
+-(void)setupMainView{
+    
+    [self layoutIfNeeded];
+    CGFloat space = 5;
+    CGFloat btnW = (SCREEN_WIDTH - space * 5)/6;
+    CGFloat btnH = btnW;
+    
+    //获得数据 几个 6个
+    for (int i = 0; i < 6; i++) {
+        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [btn setBackgroundImage:[UIImage imageNamed:@"peien"] forState:UIControlStateNormal];
+        CGFloat x = (btnW + space) * i;
+        btn.frame = CGRectMake(x, 0, btnW, btnH);
+        [self.mainView addSubview:btn];
+    }
 }
 
 -(void)awakeFromNib{

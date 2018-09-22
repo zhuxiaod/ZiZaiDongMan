@@ -9,12 +9,17 @@
 #import "ZZTFindAttentionViewController.h"
 #import "ZZTCaiNiXiHuanView.h"
 #import "ZZTFindCommentCell.h"
+#import "ZZTMyZoneModel.h"
 
 @interface ZZTFindAttentionViewController ()<UITableViewDelegate,UITableViewDataSource>
 
-@property (nonatomic,strong) NSArray *dataArray;
 
 @property (nonatomic,strong) UITableView *contentView;
+@property (nonatomic,assign) NSInteger pageNumber;
+@property (nonatomic,strong) NSMutableArray *dataArray;
+
+@property (nonatomic,strong) NSArray *CNXHArray;
+
 
 @end
 
@@ -22,11 +27,18 @@ static NSString *CaiNiXiHuanView = @"CaiNiXiHuanView";
 
 @implementation ZZTFindAttentionViewController
 
--(NSArray *)dataArray{
+-(NSMutableArray *)dataArray{
     if(!_dataArray){
-        _dataArray = [NSArray array];
+        _dataArray = [NSMutableArray array];
     }
     return _dataArray;
+}
+
+-(NSArray *)CNXHArray{
+    if(!_CNXHArray){
+        _CNXHArray = [NSArray array];
+    }
+    return _CNXHArray;
 }
 
 - (void)viewDidLoad {
@@ -34,14 +46,58 @@ static NSString *CaiNiXiHuanView = @"CaiNiXiHuanView";
     //猜你喜欢
     self.view.backgroundColor = [UIColor redColor];
     
-    
-    UITableView *contentView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
+    UITableView *contentView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, Screen_Height - 49 - 20) style:UITableViewStyleGrouped];
     contentView.delegate = self;
     contentView.dataSource = self;
     contentView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    [contentView registerNib:[UINib nibWithNibName:@"ZZTFindCommentCell" bundle:nil] forCellReuseIdentifier:CaiNiXiHuanView];
     _contentView = contentView;
     [self.view addSubview:contentView];
+    self.pageNumber = 0;
+    [self loadData];
+    [self loadCaiNiXiHuanData];
+}
+
+-(void)loadCaiNiXiHuanData{
+    NSDictionary *dic = @{
+                          
+                          };
+    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"circle/guessYouLike"] parameters:dic success:^(id responseObject) {
+        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSMutableArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
+        self.CNXHArray = array;
+        [self.contentView reloadData];
+    } failure:^(NSError *error) {
+        
+    }];
+}
+-(void)loadData{
+    //请求世界数据
+    NSDictionary *dic = @{
+                          //                          @"pageNum":self.pageNumber,
+                          @"pageNum":[NSString stringWithFormat:@"%ld",self.pageNumber],
+                          @"pageSize":@"12",
+                          //                          @"userId":[[NSUserDefaults standardUserDefaults]objectForKey:@"userId"]
+                          @"userId":@"1",
+                          @"type":@"2"
+                          };
+    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"circle/selDiscover"] parameters:dic success:^(id responseObject) {
+        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        id to = [dic objectForKey:@"total"];
+        NSInteger total = [to integerValue];
+        NSArray *list = [dic objectForKey:@"list"];
+        NSMutableArray *array = [ZZTMyZoneModel mj_objectArrayWithKeyValuesArray:list];
+        [self.dataArray addObjectsFromArray:array];
+        [self.contentView reloadData];
+        if(self.dataArray.count >= total){
+            [self.contentView.mj_footer endRefreshingWithNoMoreData];
+        }else{
+            [self.contentView.mj_footer endRefreshing];
+        }
+        //page+size
+        self.pageNumber += 6;
+    } failure:^(NSError *error) {
+        
+    }];
 }
 #pragma mark - 设置组数
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -49,22 +105,40 @@ static NSString *CaiNiXiHuanView = @"CaiNiXiHuanView";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 10;
+    return self.dataArray.count;
 }
 #pragma mark - 内容设置
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    ZZTFindCommentCell *commentCell = [tableView dequeueReusableCellWithIdentifier:CaiNiXiHuanView];
-    return commentCell;
+    ZZTFindCommentCell *cell = [ZZTFindCommentCell dynamicCellWithTable:tableView];
+    cell.btnBlock = ^(ZZTFindCommentCell *cell,ZZTMyZoneModel *model,BOOL yesOrNo) {
+        NSIndexPath *indexPath = [tableView indexPathForCell:cell];
+        [self.dataArray replaceObjectAtIndex:indexPath.row withObject:model];
+        if(yesOrNo == YES){
+            //点赞接口
+        }else{
+            //关注接口
+            [self loadAttention:model];
+        }
+    };
+    cell.model = self.dataArray[indexPath.row];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    return cell;
 }
-
+-(void)loadAttention:(ZZTMyZoneModel *)model{
+    NSDictionary *dic = @{
+                          @"userId":@"1",
+                          @"authorId":model.userId
+                          };
+    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"record/ifUserAtAuthor"] parameters:dic success:nil failure:nil];
+}
 #pragma mark 高度设置
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [self.contentView fd_heightForCellWithIdentifier:CaiNiXiHuanView cacheByIndexPath:indexPath configuration:^(id cell) {
-        ZZTFindCommentCell *CommentCell = (ZZTFindCommentCell *)cell;
-        //            CommentCell.model = self.dataArray[indexPath.row];
-    }];
-    
+    ZZTMyZoneModel *model = _dataArray[indexPath.row];
+    NSArray *imgs = [model.contentImg componentsSeparatedByString:@","];
+    return  [ZZTFindCommentCell cellHeightWithStr:model.content imgs:imgs];
 }
+
+
 #pragma mark - headView
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     ZZTCaiNiXiHuanView *view = [ZZTCaiNiXiHuanView CaiNiXiHuanView];
@@ -72,24 +146,12 @@ static NSString *CaiNiXiHuanView = @"CaiNiXiHuanView";
         //换一批
         
     };
-    view.backgroundColor = [UIColor yellowColor];
-    view.frame = CGRectMake(0, 0, SCREEN_WIDTH, 300);
-    [self.view addSubview:view];
-    
-    [self loadViewIfNeeded];
-    
-    CGFloat space = 5;
-    CGFloat btnW = (SCREEN_WIDTH - space * 5)/6;
-    CGFloat btnH = btnW;
-    
-    //获得数据 几个 6个
-    for (int i = 0; i < 6; i++) {
-        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [btn setBackgroundImage:[UIImage imageNamed:@"peien"] forState:UIControlStateNormal];
-        CGFloat x = (btnW + space) * i;
-        btn.frame = CGRectMake(x, 0, btnW, btnH);
-        [view.mainView addSubview:btn];
-    }
+//    view.backgroundColor = [UIColor yellowColor];
+//    view.frame = CGRectMake(0, 0, SCREEN_WIDTH, 300);
+//    [self.view addSubview:view];
+//
+//    [self loadViewIfNeeded];
+
     return view;
 }
 

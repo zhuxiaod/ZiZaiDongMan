@@ -188,7 +188,7 @@
     NSTimeInterval interval =[time doubleValue] / 1000.0;
     NSDate *date = [NSDate dateWithTimeIntervalSince1970:interval];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"yyyy-MM-dd"];
+    [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     NSString *dateString = [formatter stringFromDate: date];
     return dateString;
 }

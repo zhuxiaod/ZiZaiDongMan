@@ -9,10 +9,14 @@
 #import <UIKit/UIKit.h>
 
 @class ZZTMyZoneModel;
+@class ZZTFindCommentCell;
+typedef void (^ReturnValueBlock) (ZZTFindCommentCell *cell,ZZTMyZoneModel *model,BOOL yesOrNo);
 
 @interface ZZTFindCommentCell : UITableViewCell
 
 @property (nonatomic,strong) ZZTMyZoneModel *model;
+
+@property (nonatomic,copy) ReturnValueBlock btnBlock;
 
 + (CGFloat)cellHeightWithStr:(NSString *)str imgs:(NSArray *)imgs;
 
