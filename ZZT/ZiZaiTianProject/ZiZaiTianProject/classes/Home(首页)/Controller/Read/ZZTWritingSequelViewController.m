@@ -8,7 +8,7 @@
 
 #import "ZZTWritingSequelViewController.h"
 
-@interface ZZTWritingSequelViewController ()
+@interface ZZTWritingSequelViewController ()<UICollectionViewDataSource,UICollectionViewDelegate>
 
 @property (nonatomic,strong) UICollectionView *collectionView;
 
@@ -58,7 +58,6 @@ static NSString *collectionID = @"collectionID";
 -(void)registerCell{
     UINib *nib1= [UINib nibWithNibName:@"ZZTCartoonCell" bundle:[NSBundle mainBundle]];
     [self.collectionView registerNib:nib1 forCellWithReuseIdentifier:collectionID];
-    
 }
 
 #pragma mark - 创建流水布局
@@ -66,7 +65,7 @@ static NSString *collectionID = @"collectionID";
     
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc]init];
     //修改尺寸(控制)
-    layout.itemSize = CGSizeMake(120,200);
+    layout.itemSize = CGSizeMake(SCREEN_WIDTH/3 - 10,200);
     
     layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     //行距

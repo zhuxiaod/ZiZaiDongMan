@@ -10,11 +10,16 @@
 #import "ZZTWordsDetailModel.h"
 #import "ZZTCarttonDetailModel.h"
 
-#define wordsDetailHeadViewHeight  300
+#define wordsDetailHeadViewHeight  250
 
 @interface ZZTWordsDetailHeadView : UIView
 
+typedef void(^ButtonClick)(ZZTCarttonDetailModel * detailModel);
+
+@property (nonatomic,copy) ButtonClick buttonAction;
+
 @property (nonatomic,strong) ZZTCarttonDetailModel *detailModel;
+
 
 + (instancetype)wordsDetailHeadViewWithFrame:(CGRect)frame scorllView:(UIScrollView *)sc;
 

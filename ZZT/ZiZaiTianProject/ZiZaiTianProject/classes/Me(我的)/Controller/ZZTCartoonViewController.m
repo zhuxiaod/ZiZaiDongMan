@@ -91,7 +91,7 @@ static NSString *circleCell = @"circleCell";
     if([self.viewType isEqualToString:@"1"]){
         //请求参数
         NSDictionary *paramDict = @{
-                                    @"userId":self.user.userId,
+                                    @"userId":[NSString stringWithFormat:@"%ld",self.user.id],
                                     };
         [self.manager POST:[ZZTAPI stringByAppendingString:@"great/userCollect"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             

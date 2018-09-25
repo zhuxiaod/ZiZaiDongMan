@@ -31,5 +31,12 @@
     return  btn;
 }
 
-
++ (UIButton *)createButtonWithTopImg:(UIImage *)img title:(NSString *)title titleColor:(UIColor *)titleColor{
+    UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [btn setImage:img forState:UIControlStateNormal];
+    [btn setTitle:title forState:UIControlStateNormal];
+    [btn  setTitleColor:titleColor forState:UIControlStateNormal];
+    
+    return  btn;
+}
 @end

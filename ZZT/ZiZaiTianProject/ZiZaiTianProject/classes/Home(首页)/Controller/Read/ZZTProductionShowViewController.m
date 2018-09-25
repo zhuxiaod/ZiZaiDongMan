@@ -62,7 +62,7 @@ NSString *SuggestionView1 = @"SuggestionView1";
     
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     //修改尺寸(控制)
-    layout.itemSize = CGSizeMake(120,200);
+    layout.itemSize = CGSizeMake(SCREEN_WIDTH/3 - 10,200);
     
     layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     //行距
@@ -82,7 +82,6 @@ NSString *SuggestionView1 = @"SuggestionView1";
     collectionView.dataSource = self;
     collectionView.delegate = self;
     [self.view addSubview:self.collectionView];
-    
     [collectionView registerNib:[UINib nibWithNibName:@"ZZTCartoonCell" bundle:nil] forCellWithReuseIdentifier:@"cellId"];
 }
 
@@ -137,7 +136,7 @@ NSString *SuggestionView1 = @"SuggestionView1";
                               @"fuzzy":searchText
                               };
         //添加数据
-        [AFNHttpTool POST:@"http://120.79.178.191:8888/cartoon/queryFuzzy" parameters:dic success:^(id responseObject) {
+        [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"cartoon/queryFuzzy"] parameters:dic success:^(id responseObject) {
             NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
             NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
             weakSelf.searchSuggestionArray = array;

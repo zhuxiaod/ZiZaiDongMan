@@ -15,6 +15,7 @@
 #import "ZZTJiXuYueDuModel.h"
 
 @interface ZZTWordDetailViewController ()<UITableViewDelegate,UITableViewDataSource>
+
 @property (nonatomic,strong) ZZTWordsDetailHeadView *head;
 
 @property (nonatomic,strong) ZZTWordDescSectionHeadView *descHeadView;
@@ -23,7 +24,7 @@
 
 @property (nonatomic,strong) UITableView *contentView;
 
-@property (nonatomic,strong) NSArray *wordList;
+@property (nonatomic,strong) NSMutableArray *wordList;
 
 @property (nonatomic,strong) ZZTJiXuYueDuModel *model;
 
@@ -37,16 +38,15 @@ NSString *zztWordListCell = @"zztWordListCell";
 
 @implementation ZZTWordDetailViewController
 
--(NSArray *)wordList{
+-(NSMutableArray *)wordList{
     if(!_wordList){
-        _wordList = [NSArray array];
+        _wordList = [NSMutableArray array];
     }
     return _wordList;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-//    self.rr_navHidden = YES;
     
     self.isHave = NO;
 
@@ -55,7 +55,6 @@ NSString *zztWordListCell = @"zztWordListCell";
     [self setupTopView];
     //设置底部View
     [self setupBottomView];
-    
 }
 
 //设置底部View
@@ -103,7 +102,6 @@ NSString *zztWordListCell = @"zztWordListCell";
         cartoonDetailVC.testModel = _model;
     }
     [self.navigationController pushViewController:cartoonDetailVC animated:YES];
-
 }
 
 //设置数据
@@ -147,7 +145,7 @@ NSString *zztWordListCell = @"zztWordListCell";
     [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterlist"] parameters:paramDict success:^(id responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
-        NSArray *array = [ZZTChapterlistModel mj_objectArrayWithKeyValuesArray:dic];
+        NSMutableArray *array = [ZZTChapterlistModel mj_objectArrayWithKeyValuesArray:dic];
         self.wordList = array;
         [self.contentView reloadData];
     } failure:^(NSError *error) {
@@ -165,12 +163,28 @@ NSString *zztWordListCell = @"zztWordListCell";
     contenView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.contentView = contenView;
     
-    [contenView  setSeparatorColor:[UIColor blueColor]];
+    [contenView setSeparatorColor:[UIColor blueColor]];
     
     ZZTWordsDetailHeadView *head = [ZZTWordsDetailHeadView wordsDetailHeadViewWithFrame:CGRectMake(0, -20, SCREEN_WIDTH, wordsDetailHeadViewHeight) scorllView:contenView];
+    
+    //收藏业务
+    head.buttonAction = ^(ZZTCarttonDetailModel *detailModel) {
+        UserInfo *userInfo = [Utilities GetNSUserDefaults];
+        NSDictionary *dic = @{
+                              @"cartoonId":detailModel.id,
+                              @"userId":[NSString stringWithFormat:@"%ld",userInfo.id]
+                              };
+        [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"great/collects"] parameters:dic success:^(id responseObject) {
+            
+        } failure:^(NSError *error) {
+            
+        }];
+    };
+    
     self.head = head;
     //设置数据
     self.head.detailModel = self.cartoonDetail;
+    
     //先让数据显示
     [contenView registerNib:[UINib nibWithNibName:@"ZZTWordListCell" bundle:nil] forCellReuseIdentifier:zztWordListCell];
     
@@ -190,10 +204,41 @@ NSString *zztWordListCell = @"zztWordListCell";
 #pragma mark - 内容设置
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     ZZTWordListCell *cell = [tableView dequeueReusableCellWithIdentifier:zztWordListCell];
+  
     ZZTChapterlistModel *model = self.wordList[indexPath.row];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.btnBlock = ^(ZZTWordListCell *cell, ZZTChapterlistModel *model) {
+//        NSIndexPath *indexPath = [tableView indexPathForCell:cell];
+//        [self.wordList replaceObjectAtIndex:indexPath.row withObject:model];
+//        [self loadAttention:model];
+    };
     cell.model = model;
     return cell;
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    ZZTChapterlistModel *model = self.wordList[indexPath.row];
+    //跳页
+    ZZTCartoonDetailViewController *cartoonDetailVC = [[ZZTCartoonDetailViewController alloc] init];
+    cartoonDetailVC.hidesBottomBarWhenPushed = YES;
+    cartoonDetailVC.type = _cartoonDetail.type;
+    cartoonDetailVC.cartoonId = [NSString stringWithFormat:@"%ld",model.id];
+    cartoonDetailVC.viewTitle = _cartoonDetail.bookName;
+    if(self.isHave == YES){
+        cartoonDetailVC.testModel = _model;
+    }
+    [self.navigationController pushViewController:cartoonDetailVC animated:YES];
+}
+
+
+-(void)loadAttention:(ZZTChapterlistModel *)model{
+    NSDictionary *dic = @{
+                          @"userId":@"1",
+                          @"authorId":model.userId
+                          };
+    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"record/ifUserAtAuthor"] parameters:dic success:^(id responseObject) {
+    } failure:^(NSError *error) {
+    }];
 }
 
 //高度设置

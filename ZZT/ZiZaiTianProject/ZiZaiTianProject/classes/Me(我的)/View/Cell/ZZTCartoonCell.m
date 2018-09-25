@@ -21,7 +21,7 @@
 -(void)setCartoon:(ZZTCartonnPlayModel *)cartoon{
     _cartoon = cartoon;
     
-    [self.image sd_setImageWithURL:[NSURL URLWithString:cartoon.chapterCover]];
+    [self.image sd_setImageWithURL:[NSURL URLWithString:cartoon.cover]];
     
     NSString *title = [cartoon.bookType stringByReplacingOccurrencesOfString:@"," withString:@" "];
 
@@ -38,7 +38,6 @@
         [attriStr addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#779793"] range:NSMakeRange(attriStr.length - 4,4)];
         self.cartoonName.attributedText = attriStr;
     }
-
 }
 
 @end

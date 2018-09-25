@@ -86,7 +86,7 @@ NSString *SuggestionView2 = @"SuggestionView2";
     
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     //修改尺寸(控制)
-    layout.itemSize = CGSizeMake(120,200);
+    layout.itemSize = CGSizeMake(SCREEN_WIDTH/3 - 10,200);
     
     layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     //行距

@@ -17,14 +17,13 @@
 
 @implementation ZZTCycleCell
 
-
-
 -(void)setIsTime:(BOOL)isTime{
     _isTime = isTime;
     if(isTime == YES){
         [self.ps.timer begin];
     }
 }
+
 -(void)setDataArray:(NSArray *)dataArray{
     _dataArray = dataArray;
     [self setupPicScrollView];

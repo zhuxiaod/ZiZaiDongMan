@@ -13,13 +13,10 @@
 
 @interface ZZTFindAttentionViewController ()<UITableViewDelegate,UITableViewDataSource>
 
-
 @property (nonatomic,strong) UITableView *contentView;
 @property (nonatomic,assign) NSInteger pageNumber;
 @property (nonatomic,strong) NSMutableArray *dataArray;
-
 @property (nonatomic,strong) NSArray *CNXHArray;
-
 
 @end
 
@@ -58,10 +55,8 @@ static NSString *CaiNiXiHuanView = @"CaiNiXiHuanView";
 }
 
 -(void)loadCaiNiXiHuanData{
-    NSDictionary *dic = @{
-                          
-                          };
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"circle/guessYouLike"] parameters:dic success:^(id responseObject) {
+
+    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"circle/guessYouLike"] parameters:nil success:^(id responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         NSMutableArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
         self.CNXHArray = array;
@@ -124,6 +119,7 @@ static NSString *CaiNiXiHuanView = @"CaiNiXiHuanView";
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
+
 -(void)loadAttention:(ZZTMyZoneModel *)model{
     NSDictionary *dic = @{
                           @"userId":@"1",
@@ -131,6 +127,7 @@ static NSString *CaiNiXiHuanView = @"CaiNiXiHuanView";
                           };
     [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"record/ifUserAtAuthor"] parameters:dic success:nil failure:nil];
 }
+
 #pragma mark 高度设置
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     ZZTMyZoneModel *model = _dataArray[indexPath.row];
@@ -141,18 +138,16 @@ static NSString *CaiNiXiHuanView = @"CaiNiXiHuanView";
 
 #pragma mark - headView
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    ZZTCaiNiXiHuanView *view = [ZZTCaiNiXiHuanView CaiNiXiHuanView];
+    ZZTCaiNiXiHuanView *view = [[ZZTCaiNiXiHuanView alloc] init];
+    view.dataArray = self.CNXHArray;
     view.buttonAction = ^(UIButton *sender) {
         //换一批
-        
+        [self loadCaiNiXiHuanData];
     };
-//    view.backgroundColor = [UIColor yellowColor];
-//    view.frame = CGRectMake(0, 0, SCREEN_WIDTH, 300);
-//    [self.view addSubview:view];
-//
-//    [self loadViewIfNeeded];
-
     return view;
 }
 
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    return 150;
+}
 @end

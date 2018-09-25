@@ -98,7 +98,6 @@ static NSString *caiNiXiHuan = @"caiNiXiHuan";
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
-        
         ZZTCycleCell *cell = [tableView dequeueReusableCellWithIdentifier:zzTCycleCell];
         cell.dataArray = self.bannerModelArray;
         cell.isTime = YES;
@@ -125,7 +124,7 @@ static NSString *caiNiXiHuan = @"caiNiXiHuan";
     if (indexPath.section == 0) {
         return (SCREEN_HEIGHT - navHeight + 20) * 0.4;
     }else if (indexPath.section == 1){
-        return 120;
+        return 100;
     }else{
         return 400;
     }
@@ -141,7 +140,7 @@ static NSString *caiNiXiHuan = @"caiNiXiHuan";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if (section == 2) {
-        return self.height * 0.04;
+        return self.height * 0.05;
     }else{
         return 0;
     }

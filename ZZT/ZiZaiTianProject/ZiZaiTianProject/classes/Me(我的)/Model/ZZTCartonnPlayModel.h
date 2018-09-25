@@ -28,6 +28,7 @@
 
 @property (nonatomic,strong)NSString *type;
 
+@property (nonatomic,strong)NSString *cover;
 
 +(instancetype)initPlayWithImage:(NSString *)image labelName:(NSString *)labelName title:(NSString *)title;
 @end

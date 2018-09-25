@@ -10,6 +10,8 @@
 
 @interface ZZTChapterlistModel : NSObject
 
+@property(nonatomic,assign)NSInteger id;
+
 @property(nonatomic,strong)NSString *chapterId;
 
 @property(nonatomic,strong)NSString *cartoonId;
@@ -19,9 +21,14 @@
 @property(nonatomic,strong)NSString *chapterName;
 @property(nonatomic,strong)NSString *userId;
 
+@property(nonatomic,strong)NSString *commentNum;
 
 @property(nonatomic,assign)NSInteger praiseNum;
 
 @property(nonatomic,strong)NSDate *createdate;
+
+@property(nonatomic,assign)NSInteger ifrelease;
+
+@property(nonatomic,strong)NSString *chapterpage;
 
 @end

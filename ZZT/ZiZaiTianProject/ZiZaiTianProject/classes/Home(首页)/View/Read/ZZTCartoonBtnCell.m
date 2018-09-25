@@ -150,7 +150,7 @@ static NSString *const zxdCartoonBtnCell = @"zxdCartoonBtnCell";
                           @"bookType":@"",
                           //众创
                           @"cartoonType":cartoonType,
-                          @"pageNum":@"1",
+                          @"pageNum":@"0",
                           @"pageSize":@"10"
                           };
     

@@ -32,7 +32,7 @@
 @property (nonatomic,strong) NSString *cartoonType;
 
 @property (nonatomic,strong) NSString *ifrelease;
-
+@property (nonatomic,strong) NSString *ifCollect;
 @property (nonatomic,assign) NSInteger commentNum;
 
 @property (nonatomic,assign) BOOL isHave;

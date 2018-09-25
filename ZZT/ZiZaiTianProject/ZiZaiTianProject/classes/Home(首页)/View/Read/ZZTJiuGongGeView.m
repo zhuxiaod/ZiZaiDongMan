@@ -50,12 +50,12 @@
     if([model.type isEqualToString:@"1"]){
         NSString *bookName = [model.bookName stringByAppendingString:@"(漫画)"];
         NSMutableAttributedString * attriStr = [[NSMutableAttributedString alloc] initWithString:bookName];
-        [attriStr addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:NSMakeRange(attriStr.length - 4,4)];
+        [attriStr addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#598BE2"] range:NSMakeRange(attriStr.length - 4,4)];
         self.titleLabel.attributedText = attriStr;
     }else if([model.type isEqualToString:@"2"]){
         NSString *bookName = [model.bookName stringByAppendingString:@"(剧本)"];
         NSMutableAttributedString * attriStr = [[NSMutableAttributedString alloc] initWithString:bookName];
-        [attriStr addAttribute:NSForegroundColorAttributeName value:[UIColor greenColor] range:NSMakeRange(attriStr.length - 4,4)];
+        [attriStr addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#87CDBF"] range:NSMakeRange(attriStr.length - 4,4)];
         self.titleLabel.attributedText = attriStr;
     }
     

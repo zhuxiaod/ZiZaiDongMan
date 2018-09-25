@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 @class ZZTCarttonDetailModel;
 
-static CGFloat spaceing = 10;
+static CGFloat spaceing = 5;
 
 @interface ZZTJiuGongGeView : UIView
 

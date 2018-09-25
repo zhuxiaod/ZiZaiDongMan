@@ -101,20 +101,24 @@
     
     CGFloat width = self.bounds.size.width;
     CGFloat height = self.bounds.size.height;
-    CGFloat btnWidth = 60;
-    CGFloat btnY = 25;
+    
+    CGFloat btnY = 21;//25
     CGFloat btnHeight = height - height/5 * 2;
     CGFloat btnViewWidth = width - 100;
-    CGFloat btnViewHeight = height - 4;
-    CGFloat space = (btnViewWidth - btnWidth*3)/2;
-    
+
+    CGFloat btnViewHeight = height;
+//    CGFloat btnWidth = 50;
+
+    CGFloat btnWidth = (btnViewWidth - 12)/3;
+    CGFloat space = 6;
+
     self.btnView.frame = CGRectMake((width - btnViewWidth)/2, 0, btnViewWidth, btnViewHeight);
     
     self.cartoon.frame = CGRectMake(0, btnY, btnWidth, btnHeight);
     
-    self.play.frame = CGRectMake(self.cartoon.x+btnWidth+space, btnY, btnWidth, btnHeight);
+    self.play.frame = CGRectMake(CGRectGetMaxX(self.cartoon.frame)+space, btnY, btnWidth, btnHeight);
     
-    self.continuation.frame = CGRectMake(self.play.x+btnWidth+space, btnY, btnWidth, btnHeight);
+    self.continuation.frame = CGRectMake(CGRectGetMaxX(self.play.frame)+space, btnY, btnWidth, btnHeight);
     
     self.botttomView.frame = CGRectMake(0, height - 4, width, 4);
     

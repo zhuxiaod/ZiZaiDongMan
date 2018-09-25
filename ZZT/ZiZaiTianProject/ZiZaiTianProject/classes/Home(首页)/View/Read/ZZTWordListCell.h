@@ -8,8 +8,13 @@
 
 #import <UIKit/UIKit.h>
 @class ZZTChapterlistModel;
+@class ZZTWordListCell;
+
+typedef void (^ReturnValueBlock) (ZZTWordListCell *cell,ZZTChapterlistModel *model);
 
 @interface ZZTWordListCell : UITableViewCell
+
+@property (nonatomic,copy) ReturnValueBlock btnBlock;
 
 @property (nonatomic,strong) ZZTChapterlistModel *model;
 

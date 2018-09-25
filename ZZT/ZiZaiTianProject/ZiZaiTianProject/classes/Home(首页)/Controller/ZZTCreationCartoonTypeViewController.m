@@ -86,12 +86,12 @@
     
     //输入一些默认内容
     [self.typeOne setImage:[UIImage imageNamed:@"编辑资料-图标-未选"] forState:UIControlStateNormal];
-    [self.typeOne  setImage:[UIImage imageNamed:@"编辑资料-图标-男性"] forState:UIControlStateSelected];
+//    [self.typeOne setImage:[UIImage imageNamed:@"编辑资料-图标-男性"] forState:UIControlStateSelected];
     [self.typeOne setTitle:@"多人创作" forState:UIControlStateNormal];
     [self.typeOne addTarget:self action:@selector(selectType:) forControlEvents:UIControlEventTouchUpInside];
     
     [self.typeTwo setImage:[UIImage imageNamed:@"编辑资料-图标-未选"] forState:UIControlStateNormal];
-    [self.typeTwo  setImage:[UIImage imageNamed:@"编辑资料-图标-男性"] forState:UIControlStateSelected];
+//    [self.typeTwo setImage:[UIImage imageNamed:@"编辑资料-图标-男性"] forState:UIControlStateSelected];
     [self.typeTwo setTitle:@"独立创作" forState:UIControlStateNormal];
     [self.typeTwo addTarget:self action:@selector(selectType:) forControlEvents:UIControlEventTouchUpInside];
 
@@ -107,6 +107,11 @@
     self.sureBtn.layer.borderColor = [UIColor blackColor].CGColor;
     self.sureBtn.layer.borderWidth = 1.0f;
     self.sureBtn.backgroundColor = [UIColor grayColor];
+    
+    
+}
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    [self.view endEditing:YES];
 }
 
 //设置简介替换字
@@ -139,11 +144,13 @@
         
     }];
 }
+
 //设置标题
 - (void)setViewTitle:(NSString *)viewTitle{
     _viewTitle = viewTitle;
     self.navigationItem.title = viewTitle;
  }
+
 //添加Btn
 -(void)addTagButton{
     for (int i = 0; i < self.btnTitleArray.count; i++) {
@@ -201,6 +208,7 @@
     }
     [self.tagArray removeObject:str];
 }
+
 //type
 - (IBAction)selectType:(TypeButton *)sender {
     if([sender.titleLabel.text isEqualToString:@"多人创作"]){
@@ -208,18 +216,30 @@
         if(sender.selected == NO){
             sender.selected = YES;
             NSLog(@"多人创作被选中了");
-            self.typeTwo.selected = NO;
+//            self.typeTwo.selected = NO;
             self.bookType = 1;
+            [self.typeOne setImage:[UIImage imageNamed:@"编辑资料-图标-男性"] forState:UIControlStateNormal];
+            [self.typeTwo setImage:[UIImage imageNamed:@"编辑资料-图标-未选"] forState:UIControlStateNormal];
+            self.typeTwo.selected = NO;
+        }else{
+            sender.selected = NO;
+            [self.typeOne setImage:[UIImage imageNamed:@"编辑资料-图标-未选"] forState:UIControlStateNormal];
         }
-    }
-    if([sender.titleLabel.text isEqualToString:@"独立创作"]){
+    }else{
         //没有选中多人创作
         if(sender.selected == NO){
             sender.selected = YES;
             //改变样式 获得type
             NSLog(@"独立创作被选中了");
-            self.typeOne.selected = NO;
+//            self.typeOne.selected = NO;
             self.bookType = 2;
+            [self.typeTwo setImage:[UIImage imageNamed:@"编辑资料-图标-男性"] forState:UIControlStateNormal];
+            [self.typeOne setImage:[UIImage imageNamed:@"编辑资料-图标-未选"] forState:UIControlStateNormal];
+            self.typeOne.selected = NO;
+
+        }else{
+            sender.selected = NO;
+            [self.typeTwo setImage:[UIImage imageNamed:@"编辑资料-图标-未选"] forState:UIControlStateNormal];
         }
     }
 }

@@ -14,7 +14,6 @@ typedef void (^restartBtnBlock) (UIButton *sender);
 
 @property (nonatomic,copy) restartBtnBlock buttonAction;
 
-
-+(instancetype)CaiNiXiHuanView;
+@property (nonatomic,strong) NSArray *dataArray;
 
 @end

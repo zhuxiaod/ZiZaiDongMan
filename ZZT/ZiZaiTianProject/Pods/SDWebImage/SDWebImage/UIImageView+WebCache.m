@@ -10,6 +10,7 @@
 #import "objc/runtime.h"
 #import "UIView+WebCacheOperation.h"
 #import "UIView+WebCache.h"
+#import "NSButton+WebCache.h"
 
 @implementation UIImageView (WebCache)
 

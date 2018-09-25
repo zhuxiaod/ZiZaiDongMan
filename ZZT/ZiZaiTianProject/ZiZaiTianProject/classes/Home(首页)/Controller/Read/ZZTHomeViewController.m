@@ -34,6 +34,7 @@
 
 @end
 NSString *SuggestionView = @"SuggestionView";
+
 @implementation ZZTHomeViewController
 
 -(NSMutableArray *)searchSuggestionArray{
@@ -140,7 +141,7 @@ NSString *SuggestionView = @"SuggestionView";
     creationVC.backgroundColor = [UIColor whiteColor];
     [self.mainView addSubview:creationVC];
     
-    //收藏页
+    //书柜
     //直接在该页面创建一个collectionView
 //    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc]init];
     ZZTCollectView *collectVC = [[ZZTCollectView alloc] init];
@@ -241,7 +242,7 @@ NSString *SuggestionView = @"SuggestionView";
                               @"fuzzy":searchText
                               };
         //添加数据
-        [AFNHttpTool POST:@"http://120.79.178.191:8888/cartoon/queryFuzzy" parameters:dic success:^(id responseObject) {
+        [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"cartoon/queryFuzzy"] parameters:dic success:^(id responseObject) {
             NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
             NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
             weakSelf.searchSuggestionArray = array;
