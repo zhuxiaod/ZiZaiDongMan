@@ -19,6 +19,7 @@
 @property(nonatomic,strong)NSString *chapterCover;
 
 @property(nonatomic,strong)NSString *chapterName;
+
 @property(nonatomic,strong)NSString *userId;
 
 @property(nonatomic,strong)NSString *commentNum;
@@ -29,6 +30,7 @@
 
 @property(nonatomic,assign)NSInteger ifrelease;
 
-@property(nonatomic,strong)NSString *chapterpage;
+@property(nonatomic,strong)NSString *chapterPage;
 
+@property(nonatomic,strong)NSString *type;
 @end

@@ -59,7 +59,7 @@ NSString *bannerID = @"MeCell";
 
 -(UserInfo *)userData{
     if (!_userData) {
-        _userData = [[UserInfo alloc] init];
+        _userData = [Utilities GetNSUserDefaults];
     }
     return _userData;
 }

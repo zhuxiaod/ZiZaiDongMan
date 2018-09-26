@@ -11,11 +11,12 @@
 @class ZZTJiXuYueDuModel;
 
 @interface ZZTCartoonDetailViewController : BaseViewController
-
+//章节
 @property (nonatomic,strong) NSString *cartoonId;
 @property (nonatomic,strong) NSString *viewTitle;
 @property (nonatomic,strong) NSString *type;
 @property (nonatomic,strong) ZZTJiXuYueDuModel *testModel;
-
+//书
+@property (nonatomic,strong) NSString *bookNameId;
 
 @end

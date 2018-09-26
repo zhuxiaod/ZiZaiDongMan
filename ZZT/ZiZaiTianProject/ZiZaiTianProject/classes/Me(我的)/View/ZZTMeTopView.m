@@ -53,7 +53,7 @@
     //样式和事件
     [_headBtn addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
     [_VIPBtn addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
-    [_signInBtn addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
+//    [_signInBtn addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
     _VIPBtn.layer.cornerRadius = 10.0f;
     _signInBtn.layer.cornerRadius = 10.0f;
     _headBtn.tag = 0;

@@ -7,11 +7,11 @@
 //
 
 #import "ZZTVIPTopView.h"
+#import "ZXDButton.h"
 @interface ZZTVIPTopView ()
 
-@property (weak, nonatomic) IBOutlet UIImageView *VIPImage;
+@property (weak, nonatomic) IBOutlet ZXDButton *VIPBtn;
 
-@property (weak, nonatomic) IBOutlet UILabel *VIPTiTle;
 @property (weak, nonatomic) IBOutlet UILabel *VIPDate;
 
 @end
@@ -32,11 +32,11 @@
 }
 -(void)setViewImage:(UIImage *)viewImage{
     _viewImage = viewImage;
-    self.VIPImage.image = viewImage;
+//    self.VIPImage.image = viewImage;
 }
 -(void)setViewTitle:(NSString *)viewTitle{
     _viewTitle = viewTitle;
-    self.VIPTiTle.text = viewTitle;
+//    self.VIPTiTle.text = viewTitle;
 }
 -(void)setViewDetail:(NSString *)viewDetail{
     _viewDetail = viewDetail;

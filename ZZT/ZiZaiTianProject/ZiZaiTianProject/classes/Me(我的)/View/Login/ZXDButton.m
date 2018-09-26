@@ -19,7 +19,7 @@
 
 -(void)layoutSubviews{
     [super layoutSubviews];
-    
+
     //调整图片的位置和尺寸
     self.imageView.y = 0;
     self.imageView.centerX = self.width * 0.5;

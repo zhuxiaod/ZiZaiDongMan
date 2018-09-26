@@ -84,7 +84,7 @@
                                                 <action selector="btnClick:" destination="iN0-l3-epB" eventType="touchUpInside" id="qrK-5d-27Y"/>
                                             </connections>
                                         </button>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="首月30元，续费9元/月" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8lK-Re-y8o">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="首月30元，续费9元/月" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8lK-Re-y8o">
                                             <rect key="frame" x="0.0" y="36" width="125" height="14"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="14" id="b8Z-RU-2lE"/>

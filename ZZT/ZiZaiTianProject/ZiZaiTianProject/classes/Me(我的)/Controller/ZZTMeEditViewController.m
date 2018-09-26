@@ -12,7 +12,6 @@
 #import "TypeButton.h"
 @interface ZZTMeEditViewController ()<UINavigationControllerDelegate,UIImagePickerControllerDelegate>
 
-
 @property (nonatomic,assign) NSInteger btnTag;
 
 @property (nonatomic,strong) UIImage *resultImage;
@@ -26,7 +25,6 @@
 @property(nonatomic, strong) BAKit_PickerView *pickView;
 
 @property(nonatomic, strong) ZZTMeEditTopView *topView;
-
 
 //背景图
 @property (nonatomic,strong) NSString *backImg;
@@ -81,7 +79,7 @@
     [scrollView addSubview:topView];
 
     //添加buttomView
-    __block ZZTMeEditViewController *  blockSelf = self;
+    __block ZZTMeEditViewController *blockSelf = self;
     ZZTMeEditButtomView *meButtomView = [ZZTMeEditButtomView ZZTMeEditButtomView];
     _meButtomView = meButtomView;
     meButtomView.model = self.model;
@@ -90,7 +88,7 @@
     };
     meButtomView.frame = CGRectMake(0, 300, SCREEN_WIDTH, 400);
 
-    _meButtomView.BtnInside = ^(UIButton *btn) {
+    _meButtomView.BtnInside = ^(TypeButton *btn) {
         [blockSelf clickPickBtn:btn];
     };
     [scrollView addSubview:_meButtomView];
@@ -112,6 +110,8 @@
     UIBarButtonItem *rightitem = [[UIBarButtonItem alloc]initWithCustomView:leftbutton];
     self.navigationItem.rightBarButtonItem = rightitem;
     
+    //设置scrollView内容距离
+    scrollView.contentSize = CGSizeMake(SCREEN_WIDTH, 700);
 }
 //保存
 -(void)save{
@@ -181,7 +181,7 @@
     }
 }
 
--(void)clickPickBtn:(UIButton *)btn{
+-(void)clickPickBtn:(TypeButton *)btn{
     //男
     if(btn.tag == 1){
         [self pickView2:btn];
@@ -387,10 +387,14 @@
     
     self.sex = model.sex;
     
-    self.birthday = [NSString timeWithStr:model.birthday];
+    self.birthday = [NSString timeWithStr:[NSString stringWithFormat:@"%@",model.birthday]];
     
     self.headImg = model.headimg;
     
 }
+-(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    [_meButtomView.userNameTF endEditing:YES];
+    [_meButtomView.userDetailTF endEditing:YES];
 
+}
 @end

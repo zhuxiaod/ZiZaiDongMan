@@ -14,6 +14,7 @@
 #import "MLIAPManager.h"
 #import <SVProgressHUD.h>
 #import <MBProgressHUD.h>
+
 @interface ZZTVIPViewController () <MLIAPManagerDelegate>
 
 @end
@@ -31,12 +32,12 @@
     
     //头部
     ZZTVIPTopView *VIPTopView = [ZZTVIPTopView VIPTopView];
-    VIPTopView.frame = CGRectMake(0, 0, SCREEN_WIDTH, 100);
+    VIPTopView.frame = CGRectMake(0, 0, SCREEN_WIDTH, 140);
     [scrollView addSubview:VIPTopView];
 
     //充值服务
     ZZTVIPMidView *midView = [ZZTVIPMidView VIPMidView];
-    midView.frame = CGRectMake(0,VIPTopView.y+VIPTopView.height +15, SCREEN_WIDTH, 280);
+    midView.frame = CGRectMake(0,VIPTopView.y + VIPTopView.height + 15, SCREEN_WIDTH, 280);
     midView.buttonAction = ^(UIButton *sender) {
         NSString *productId = @"";
         if(sender.tag == 0)productId = @"zxd.ZiZaiTianProject1";

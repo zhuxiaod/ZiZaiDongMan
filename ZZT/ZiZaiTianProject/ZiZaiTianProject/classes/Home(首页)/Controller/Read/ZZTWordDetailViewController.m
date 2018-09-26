@@ -98,8 +98,11 @@ NSString *zztWordListCell = @"zztWordListCell";
     cartoonDetailVC.type = _cartoonDetail.type;
     cartoonDetailVC.cartoonId = self.cartoonDetail.id;
     cartoonDetailVC.viewTitle = _cartoonDetail.bookName;
+    cartoonDetailVC.bookNameId = _cartoonDetail.id;
+
     if(self.isHave == YES){
         cartoonDetailVC.testModel = _model;
+        cartoonDetailVC.cartoonId = _model.bookChapter;
     }
     [self.navigationController pushViewController:cartoonDetailVC animated:YES];
 }
@@ -206,6 +209,7 @@ NSString *zztWordListCell = @"zztWordListCell";
     ZZTWordListCell *cell = [tableView dequeueReusableCellWithIdentifier:zztWordListCell];
   
     ZZTChapterlistModel *model = self.wordList[indexPath.row];
+    model.type = _cartoonDetail.type;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.btnBlock = ^(ZZTWordListCell *cell, ZZTChapterlistModel *model) {
 //        NSIndexPath *indexPath = [tableView indexPathForCell:cell];
@@ -224,7 +228,9 @@ NSString *zztWordListCell = @"zztWordListCell";
     cartoonDetailVC.type = _cartoonDetail.type;
     cartoonDetailVC.cartoonId = [NSString stringWithFormat:@"%ld",model.id];
     cartoonDetailVC.viewTitle = _cartoonDetail.bookName;
-    if(self.isHave == YES){
+    cartoonDetailVC.bookNameId = _cartoonDetail.id;
+
+    if(self.isHave == YES &&  cartoonDetailVC.cartoonId == _model.bookChapter){
         cartoonDetailVC.testModel = _model;
     }
     [self.navigationController pushViewController:cartoonDetailVC animated:YES];
@@ -298,19 +304,16 @@ NSString *zztWordListCell = @"zztWordListCell";
 }
 
 -(void)JiXuYueDuTarget{
-    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
-    //本地有没有这一本漫画
-    NSArray *getArray = [NSKeyedUnarchiver unarchiveObjectWithData:[user objectForKey:@"saveModelArray"]];
-    NSMutableArray *getArray1 = [getArray mutableCopy];
-    ZZTJiXuYueDuModel *model = [[ZZTJiXuYueDuModel alloc] init];
-    for (int i = 0; i < getArray1.count; i++) {
-        model = getArray1[i];
-        if([model.bookName isEqualToString:self.cartoonDetail.bookName]){
-            self.model = model;
+    NSArray *models = [Utilities GetArrayWithPathComponent:@"readHistoryArray"];
+    NSMutableArray *arrayDict = [ZZTJiXuYueDuModel mj_objectArrayWithKeyValuesArray:models];
+    
+    for (int i = 0; i < arrayDict.count; i++) {
+        //看这个数组里面的模型是否有这本书
+        ZZTJiXuYueDuModel *model = arrayDict[i];
+        if([model.bookId isEqualToString:self.cartoonDetail.id]){
             self.isHave = YES;
+            self.model = model;
             break;
-        }else{
-            self.isHave = NO;
         }
     }
     //有的话 说明有记录

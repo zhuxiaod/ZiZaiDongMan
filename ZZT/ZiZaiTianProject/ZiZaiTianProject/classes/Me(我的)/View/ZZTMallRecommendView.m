@@ -44,6 +44,7 @@
     UIButton *moreBtn = [[UIButton alloc] init];
     [moreBtn setBackgroundImage:[UIImage imageNamed:@"作品-按钮-更多"] forState:UIControlStateNormal];
     [moreBtn setTitle:@"更多" forState:UIControlStateNormal];
+    [moreBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, -30, 0, 0)];
     _moreBtn = moreBtn;
     [headView addSubview:moreBtn];
     
@@ -89,8 +90,8 @@
     [self.moreBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.headView).offset(-10);
         make.centerY.equalTo(self.headView);
-        make.height.equalTo(self.headView).offset(-2);
-        make.width.offset(100);
+        make.height.equalTo(self.headView).offset(-10);
+        make.width.offset(80);
     }];
 
     [self.contentView mas_makeConstraints:^(MASConstraintMaker *make) {

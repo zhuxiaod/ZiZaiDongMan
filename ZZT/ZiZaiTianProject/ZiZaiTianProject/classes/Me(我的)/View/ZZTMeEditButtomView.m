@@ -52,6 +52,9 @@
     [self.womanBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.womanBtn addTarget:self action:@selector(textFieldDidBegin:) forControlEvents:UIControlEventTouchUpInside];
     self.womanBtn.tag = 4;
+    
+    _userNameTF = _userName;
+    _userDetailTF = _userDetail;
 }
 
 -(void)textFieldDidChange:(UITextField *)theTextField{
@@ -61,14 +64,14 @@
     NSLog(@"text changed: %@", theTextField.text);
 }
 
--(void)textFieldDidBegin:(UIButton *)btn{
+-(void)textFieldDidBegin:(TypeButton *)btn{
     NSLog(@"点击了");
     if(self.BtnInside){
         self.BtnInside(btn);
     }
 }
 
--(void)setModel:(ZZTUserModel *)model{
+-(void)setModel:(UserInfo *)model{
     _model = model;
     self.userName.text = model.nickName;
     if([model.sex isEqualToString:@"0"]){
@@ -80,10 +83,17 @@
         self.womanBtn.selected = YES;
         self.manBtn.selected = NO;
     }
-    NSString *time = [NSString timeWithStr:model.birthday];
+   
+    NSString *time =  [NSString timeWithStr:[NSString stringWithFormat:@"%@",model.birthday]];
     
     [self.userBirthday setTitle:time forState:UIControlStateNormal];
     [self.userBirthday setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     self.userDetail.text = model.intro;
+}
+
+-(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    [self.userName endEditing:YES];
+    [self.userDetail endEditing:YES];
+
 }
 @end

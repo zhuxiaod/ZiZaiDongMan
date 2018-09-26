@@ -16,6 +16,7 @@
     return [self boundingRectWithSize:maxSize
                                    options:NSStringDrawingUsesLineFragmentOrigin| NSStringDrawingUsesFontLeading
                                 attributes:@{NSFontAttributeName:font} context:nil].size.width;
+
 }
 
 - (CGFloat)getTextWidthWithFont:(UIFont *)font {
@@ -188,7 +189,7 @@
     NSTimeInterval interval =[time doubleValue] / 1000.0;
     NSDate *date = [NSDate dateWithTimeIntervalSince1970:interval];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    [formatter setDateFormat:@"yyyy-MM-dd"];
     NSString *dateString = [formatter stringFromDate: date];
     return dateString;
 }

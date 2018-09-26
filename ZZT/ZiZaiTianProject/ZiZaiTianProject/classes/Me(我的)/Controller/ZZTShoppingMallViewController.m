@@ -41,14 +41,18 @@
     SDCycleScrollView *cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 180) delegate:self placeholderImage:[UIImage imageNamed:@"peien"]];
     //数组
     cycleScrollView.imageURLStringsGroup = imagesURLStrings;
-    cycleScrollView.autoScrollTimeInterval = 5.;// 自动滚动时间间隔
+    cycleScrollView.autoScrollTimeInterval = 5.0f;// 自动滚动时间间隔
     [scrollView addSubview:cycleScrollView];
     
     //btnView
-    UIView *btnView = [[UIView alloc] initWithFrame:CGRectMake(0, cycleScrollView.y+cycleScrollView.height, SCREEN_WIDTH, 90)];
-    btnView.backgroundColor = [UIColor whiteColor];
+    UIView *midView = [[UIView alloc] initWithFrame:CGRectMake(0, 180, SCREEN_WIDTH, 90)];
+    midView.backgroundColor = [UIColor whiteColor];
+    [scrollView addSubview:midView];
+    
+    UIView *btnView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2 - 120, 0, 240, 90)];
+//    btnView.backgroundColor = [UIColor yellowColor];
     self.btnView = btnView;
-    [scrollView addSubview:btnView];
+    [midView addSubview:btnView];
     
     self.i = 0;
     [self getBtnWithTitle:@"定制形象" image:@"图标-定制-形象"];
@@ -57,7 +61,7 @@
     [self getBtnWithTitle:@"定制剧本" image:@"图标-定制-剧本"];
 
     //素材推荐
-    ZZTMallRecommendView *mallRecommendView = [[ZZTMallRecommendView alloc] initWithFrame:CGRectMake(0, btnView.y+btnView.height + 15, SCREEN_WIDTH, 200)];
+    ZZTMallRecommendView *mallRecommendView = [[ZZTMallRecommendView alloc] initWithFrame:CGRectMake(0, midView.y+midView.height + 15, SCREEN_WIDTH, 200)];
     mallRecommendView.title = @"素材推荐";
     mallRecommendView.backgroundColor = [UIColor yellowColor];
     [scrollView addSubview:mallRecommendView];
@@ -73,11 +77,11 @@
 
 -(void)getBtnWithTitle:(NSString *)title image:(NSString *)image
 {
-    CGFloat space = 25;
+    CGFloat space = 10;
 
-    CGFloat btnW = SCREEN_WIDTH / 4 - space - (space / 4);
+    CGFloat btnW = self.btnView.width / 4 - space;
     CGFloat btnH = self.btnView.height-10;
-    CGFloat x = space + (btnW + space) * self.i;
+    CGFloat x = (btnW + space) * self.i;
 
     ZXDCartoonFlexoBtn *btn = [[ZXDCartoonFlexoBtn alloc] init];
     btn.frame = CGRectMake(x, 10, btnW, btnH);

@@ -20,9 +20,7 @@
 -(void)layoutSubviews{
     [super layoutSubviews];
     
-    //调整图片的位置和尺寸
-    self.imageView.y = 0;
-    self.imageView.centerX = self.width * 0.5;
+
 //    self.imageView.width = self.width - 2;
     self.imageView.height = self.height * 0.6;
     self.imageView.width = self.height * 0.6;
@@ -34,5 +32,9 @@
     self.titleLabel.height = self.height * 0.3;
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
     self.adjustsImageWhenHighlighted = NO;
+    
+    //调整图片的位置和尺寸
+    self.imageView.y = 0;
+    self.imageView.centerX = self.width * 0.5;
 }
 @end

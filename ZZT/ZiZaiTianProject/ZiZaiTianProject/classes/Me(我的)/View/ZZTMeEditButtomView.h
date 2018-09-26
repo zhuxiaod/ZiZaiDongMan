@@ -8,17 +8,21 @@
 
 #import <UIKit/UIKit.h>
 
+@class TypeButton;
+
 typedef void(^TextChange)(UITextField * texyField);
-typedef void(^BtnInside)(UIButton * btn);
+typedef void(^BtnInside)(TypeButton * btn);
 
 @class ZZTUserModel;
 
 @interface ZZTMeEditButtomView : UIView
 
-@property (nonatomic,strong) ZZTUserModel *model;
+@property (nonatomic,strong) UserInfo *model;
 
 @property (nonatomic,copy) TextChange TextChange;
 @property (nonatomic,copy) BtnInside BtnInside;
+@property (strong, nonatomic)  UITextField *userNameTF;
+@property (strong, nonatomic)  UITextField *userDetailTF;
 
 -(void)addTextBlock:(void(^)(UITextField *tf))block;
 -(void)addBtnBlock:(void(^)(UIButton *tf))block;

@@ -182,6 +182,21 @@ NSString *zztMulWordListCell = @"zztMulWordListCell";
     [contenView  setSeparatorColor:[UIColor blueColor]];
     
     ZZTWordsDetailHeadView *head = [ZZTWordsDetailHeadView wordsDetailHeadViewWithFrame:CGRectMake(0, -20, SCREEN_WIDTH, wordsDetailHeadViewHeight) scorllView:contenView];
+    
+    //收藏业务
+    head.buttonAction = ^(ZZTCarttonDetailModel *detailModel) {
+        UserInfo *userInfo = [Utilities GetNSUserDefaults];
+        NSDictionary *dic = @{
+                              @"cartoonId":detailModel.id,
+                              @"userId":[NSString stringWithFormat:@"%ld",userInfo.id]
+                              };
+        [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"great/collects"] parameters:dic success:^(id responseObject) {
+            
+        } failure:^(NSError *error) {
+            
+        }];
+    };
+    
     self.head = head;
     //设置数据
     self.head.detailModel = self.cartoonDetail;
@@ -216,6 +231,31 @@ NSString *zztMulWordListCell = @"zztMulWordListCell";
         cell.model = model;
     }
     return cell;
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    ZZTChapterlistModel *model = self.wordList[indexPath.row];
+    //跳页
+    ZZTCartoonDetailViewController *cartoonDetailVC = [[ZZTCartoonDetailViewController alloc] init];
+    cartoonDetailVC.hidesBottomBarWhenPushed = YES;
+    cartoonDetailVC.type = _cartoonDetail.type;
+    cartoonDetailVC.cartoonId = [NSString stringWithFormat:@"%ld",model.id];
+    cartoonDetailVC.viewTitle = _cartoonDetail.bookName;
+    cartoonDetailVC.bookNameId = _cartoonDetail.id;
+    
+    if(self.isHave == YES &&  cartoonDetailVC.cartoonId == _model.bookChapter){
+        cartoonDetailVC.testModel = _model;
+    }
+    [self.navigationController pushViewController:cartoonDetailVC animated:YES];
+}
+-(void)loadAttention:(ZZTChapterlistModel *)model{
+    NSDictionary *dic = @{
+                          @"userId":@"1",
+                          @"authorId":model.userId
+                          };
+    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"record/ifUserAtAuthor"] parameters:dic success:^(id responseObject) {
+    } failure:^(NSError *error) {
+    }];
 }
 
 //高度设置
@@ -267,27 +307,24 @@ NSString *zztMulWordListCell = @"zztMulWordListCell";
 }
 //判断是否有这个记录
 -(void)JiXuYueDuTarget{
-    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
-    //本地有没有这一本漫画
-    NSArray *getArray = [NSKeyedUnarchiver unarchiveObjectWithData:[user objectForKey:@"saveModelArray"]];
-    NSMutableArray *getArray1 = [getArray mutableCopy];
-    ZZTJiXuYueDuModel *model = [[ZZTJiXuYueDuModel alloc] init];
-    for (int i = 0; i < getArray1.count; i++) {
-        model = getArray1[i];
-        if([model.bookName isEqualToString:self.cartoonDetail.bookName]){
-            self.model = model;
+    NSArray *models = [Utilities GetArrayWithPathComponent:@"readHistoryArray"];
+    NSMutableArray *arrayDict = [ZZTJiXuYueDuModel mj_objectArrayWithKeyValuesArray:models];
+    
+    for (int i = 0; i < arrayDict.count; i++) {
+        //看这个数组里面的模型是否有这本书
+        ZZTJiXuYueDuModel *model = arrayDict[i];
+        if([model.bookId isEqualToString:self.cartoonDetail.id]){
             self.isHave = YES;
+            self.model = model;
             break;
-        }else{
-            self.isHave = NO;
         }
     }
     //有的话 说明有记录
     if(self.isHave == YES){
-        NSLog(@"数组里面有这个");
+        //        NSLog(@"数组里面有这个");
         [_starRead setTitle:@"继续阅读" forState:UIControlStateNormal];
     }else{
-        NSLog(@"数组里面没有这个");
+        //        NSLog(@"数组里面没有这个");
         //如果没有  保存进去
         [_starRead setTitle:@"开始阅读" forState:UIControlStateNormal];
     }

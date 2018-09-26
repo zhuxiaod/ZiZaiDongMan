@@ -16,5 +16,6 @@
 
 @property (nonatomic,strong) NSString *bookChapter;
 
+@property (nonatomic,strong) NSString *bookId;
 
 @end
