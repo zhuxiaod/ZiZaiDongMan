@@ -15,6 +15,14 @@
 @property (nonatomic,assign)BOOL isSelect;
 
 @property (nonatomic,strong) NSMutableArray *imageArray;
+//背景颜色
+@property (nonatomic,assign) CGRect colorFrame;
+
+@property (nonatomic,assign) CGPoint colorPoint;
+
+@property (nonatomic,assign) CGFloat brightness;
+
+@property (nonatomic,assign) CGFloat alpha;
 
 +(instancetype)initCellWith:(CGFloat )height isSelect:(BOOL)isSelect;
 

@@ -80,6 +80,7 @@ NSString *bannerID = @"MeCell";
     [nab setBackgroundImage:[UIImage createImageWithColor:[UIColor blackColor]] forBarMetrics:UIBarMetricsDefault];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     [UINavigationBar appearance].translucent=NO;
+    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     
     //请求数据
 //    [self getData];
@@ -197,7 +198,7 @@ NSString *bannerID = @"MeCell";
 {
     [super viewWillAppear:animated];
     //隐藏Bar
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
     //加载用户信息
     UserInfo *userInfo = [Utilities GetNSUserDefaults];
     //有id

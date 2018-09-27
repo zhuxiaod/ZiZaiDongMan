@@ -23,7 +23,9 @@
 
 @property (nonatomic,strong) NSArray *btnArray;
 @property (nonatomic,strong) NSArray *caiNiXiHuan;
+
 @end
+
 static NSString *zzTCycleCell = @"zzTCycleCell";
 static NSString *zCartoonBtnCell = @"zCartoonBtnCell";
 static NSString *caiNiXiHuan = @"caiNiXiHuan";

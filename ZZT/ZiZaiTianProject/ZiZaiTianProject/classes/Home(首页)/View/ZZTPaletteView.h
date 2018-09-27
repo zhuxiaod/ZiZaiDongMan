@@ -8,10 +8,10 @@
 
 #import <UIKit/UIKit.h>
 @class ZZTPaletteView;
-
+@class Palette;
 @protocol PaletteViewDelegate<NSObject>
 
--(void)patetteView:(ZZTPaletteView *)patetteView choiceColor:(UIColor *)color colorPoint:(CGPoint)colorPoint colorH:(CGFloat)colorH colorS:(CGFloat)colorS;
+-(void)patetteView:(ZZTPaletteView *)patetteView patette:(Palette *)palette choiceColor:(UIColor *)color colorPoint:(CGPoint)colorPoint brightness:(CGFloat)brightness alpha:(CGFloat)alpha;
 
 
 @optional

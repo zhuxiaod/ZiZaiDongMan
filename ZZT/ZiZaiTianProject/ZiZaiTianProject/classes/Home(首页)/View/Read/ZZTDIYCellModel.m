@@ -15,6 +15,10 @@
     s.height = self.height;
     s.isSelect = self.isSelect;
     s.imageArray = self.imageArray;
+    s.colorFrame = self.colorFrame;
+    s.colorPoint = self.colorPoint;
+    s.brightness = self.brightness;
+    s.alpha = self.alpha;
     return s;
 }
 

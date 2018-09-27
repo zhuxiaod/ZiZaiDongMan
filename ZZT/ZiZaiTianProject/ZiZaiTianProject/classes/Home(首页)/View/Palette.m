@@ -22,11 +22,13 @@
 @end
 
 @implementation Palette
+
 #pragma mark xib关联
 -(void)awakeFromNib{
     [super awakeFromNib];
     [self addSomeUI];
 }
+
 #pragma mark 初始化
 -(instancetype)initWithFrame:(CGRect)frame{
     if (self=[super initWithFrame:frame]) {
@@ -34,14 +36,14 @@
     }
     return self;
 }
+
 -(void)setSliderCenter:(CGPoint)sliderCenter{
     _sliderCenter=sliderCenter;
     self.sliderImageView.center=sliderCenter;
-    
 }
+
 #pragma mark 添加UI
 -(void)addSomeUI{
-    
     self.mainImageView=[[UIImageView alloc]initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
     self.mainImageView.image=[UIImage imageNamed:@"paletteColor"];
     [self addSubview:self.mainImageView];
@@ -98,6 +100,7 @@
     
     return color;
 }
+
 #pragma mark 真正显示颜色的中心点
 -(void)centerPointValue:(HSVType)currentHSV{
     
@@ -116,5 +119,7 @@
     
     self.sliderImageView.center=CGPointMake(x,y);    // 滑动图片的中心点位置
 }
+
+
 @end
 
