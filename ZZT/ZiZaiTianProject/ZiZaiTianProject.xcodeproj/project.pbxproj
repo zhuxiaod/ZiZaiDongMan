@@ -69,6 +69,8 @@
 		0421C02A2119CA600068AD21 /* RectangleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0421C0292119CA600068AD21 /* RectangleView.m */; };
 		0421C033211AC6910068AD21 /* ZZTFangKuangModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0421C032211AC6910068AD21 /* ZZTFangKuangModel.m */; };
 		0422F6A02124120100A8BDBB /* GTMBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 0422F69F2124120000A8BDBB /* GTMBase64.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		0425302F215DC38D00B4DAF9 /* ZZTMulCreationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0425302D215DC38D00B4DAF9 /* ZZTMulCreationCell.m */; };
+		04253030215DC38D00B4DAF9 /* ZZTMulCreationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0425302E215DC38D00B4DAF9 /* ZZTMulCreationCell.xib */; };
 		042769672147F7B400DE238D /* ZZTRemindView.m in Sources */ = {isa = PBXBuildFile; fileRef = 042769662147F7B400DE238D /* ZZTRemindView.m */; };
 		0427696A214B443600DE238D /* ZZTInAPPPurchaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04276969214B443600DE238D /* ZZTInAPPPurchaseViewController.m */; };
 		042769C5214B5CAD00DE238D /* MLIAPManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 042769C3214B5CAD00DE238D /* MLIAPManager.m */; };
@@ -395,6 +397,9 @@
 		0422F69D2124120000A8BDBB /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
 		0422F69E2124120000A8BDBB /* GTMBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMBase64.h; sourceTree = "<group>"; };
 		0422F69F2124120000A8BDBB /* GTMBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTMBase64.m; sourceTree = "<group>"; };
+		0425302C215DC38D00B4DAF9 /* ZZTMulCreationCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTMulCreationCell.h; sourceTree = "<group>"; };
+		0425302D215DC38D00B4DAF9 /* ZZTMulCreationCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTMulCreationCell.m; sourceTree = "<group>"; };
+		0425302E215DC38D00B4DAF9 /* ZZTMulCreationCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ZZTMulCreationCell.xib; sourceTree = "<group>"; };
 		042769652147F7B400DE238D /* ZZTRemindView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTRemindView.h; sourceTree = "<group>"; };
 		042769662147F7B400DE238D /* ZZTRemindView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTRemindView.m; sourceTree = "<group>"; };
 		04276968214B443600DE238D /* ZZTInAPPPurchaseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTInAPPPurchaseViewController.h; sourceTree = "<group>"; };
@@ -1131,6 +1136,9 @@
 				0498B5EC212ED028005BD26D /* ZZTContinueToDrawHeadView.xib */,
 				04D2AFA6212FB3E5008F6CCB /* ZZTCommentHeadView.h */,
 				04D2AFA7212FB3E5008F6CCB /* ZZTCommentHeadView.m */,
+				0425302C215DC38D00B4DAF9 /* ZZTMulCreationCell.h */,
+				0425302D215DC38D00B4DAF9 /* ZZTMulCreationCell.m */,
+				0425302E215DC38D00B4DAF9 /* ZZTMulCreationCell.xib */,
 			);
 			path = Read;
 			sourceTree = "<group>";
@@ -1710,6 +1718,7 @@
 				040D282E2133F044002A3B72 /* ZZTCartoonHistoryCell.xib in Resources */,
 				04E6D4A020EC737500116085 /* ZZTMeEditButtomView.xib in Resources */,
 				04A30FC221378E6C00FAC781 /* ZZTCreatCartoonViewController.xib in Resources */,
+				04253030215DC38D00B4DAF9 /* ZZTMulCreationCell.xib in Resources */,
 				04DE149C20E4881B009DF030 /* ZZTVIPBtView.xib in Resources */,
 				047720EF2106BC6C00FC97B5 /* materialLibrary.json in Resources */,
 				041EE0B520EB8D0C0012FEDF /* ZZTExitCell.xib in Resources */,
@@ -1879,6 +1888,7 @@
 				0471A86520F6E80600ABFF35 /* ZZTWordsOptionsHeadView.m in Sources */,
 				049A99B920E3288400ED27C9 /* ZXDLoginRegisterTextField.m in Sources */,
 				04DE149A20E48804009DF030 /* ZZTVIPBtView.m in Sources */,
+				0425302F215DC38D00B4DAF9 /* ZZTMulCreationCell.m in Sources */,
 				0471A87820F7536000ABFF35 /* ZZTChapterlistModel.m in Sources */,
 				04E9FAC121532CC7005A3986 /* NSString+Extension.m in Sources */,
 				F7C04C1E20DF48FD0055E7A8 /* ZZTFindViewController.m in Sources */,

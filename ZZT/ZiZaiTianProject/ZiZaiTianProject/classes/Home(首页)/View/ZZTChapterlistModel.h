@@ -33,4 +33,12 @@
 @property(nonatomic,strong)NSString *chapterPage;
 
 @property(nonatomic,strong)NSString *type;
+
+@property(nonatomic,strong)NSString *nickName;
+
+@property(nonatomic,strong)NSString *headimg;
+
+@property(nonatomic,strong)NSString *xuhuaNum;
+
+
 @end

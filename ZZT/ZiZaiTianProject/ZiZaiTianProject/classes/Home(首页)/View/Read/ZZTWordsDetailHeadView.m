@@ -53,7 +53,7 @@ static NSString * const offsetKeyPath = @"contentOffset";
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
     //产生的偏移量
     CGFloat offsetY = -[change[NSKeyValueChangeNewKey] CGPointValue].y;
-    NSLog(@"offsetY:%f",offsetY);
+//    NSLog(@"offsetY:%f",offsetY);
     if (offsetY < 1) {
         return;
     }

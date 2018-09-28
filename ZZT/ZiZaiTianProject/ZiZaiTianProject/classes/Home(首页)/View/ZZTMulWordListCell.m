@@ -46,10 +46,7 @@
         [self.headImg2 sd_setImageWithURL:[NSURL URLWithString:model.chapterCover]];
         [self.nameLab2 setText:model.chapterName];
         [self.likeNum2 setText:[NSString stringWithFormat:@"%ld",model.praiseNum]];
-    
     }
-
-
 }
 
 +(instancetype)mulWordListCellWith:(UITableView *)tableView NSString:(NSString *)string{

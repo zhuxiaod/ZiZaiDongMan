@@ -70,8 +70,18 @@ static NSString *caiNiXiHuan = @"caiNiXiHuan";
         [self loadWeiNingTuiJian];
         //bannerData
         [self loadBannerData];
+        
+        [self setupMJRefresh];
     }
     return self;
+}
+
+-(void)setupMJRefresh{
+    self.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        [self loadWeiNingTuiJian];
+        [self loadBannerData];
+    }];
+    
 }
 
 -(void)loadWeiNingTuiJian{
@@ -85,6 +95,7 @@ static NSString *caiNiXiHuan = @"caiNiXiHuan";
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
         self.caiNiXiHuan = array;
         [self reloadData];
+        [self.mj_header endRefreshing];
     } failure:^(NSError *error) {
         
     }];
@@ -97,6 +108,7 @@ static NSString *caiNiXiHuan = @"caiNiXiHuan";
         NSArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
         weakSelf.bannerModelArray = array;
         [self reloadData];
+        [self.mj_header endRefreshing];
     } failure:^(NSError *error) {
         
     }];

@@ -13,6 +13,7 @@
 #import "ZZTChapterlistModel.h"
 #import "ZZTCartoonDetailViewController.h"
 #import "ZZTJiXuYueDuModel.h"
+#import "ZZTCarttonDetailModel.h"
 
 @interface ZZTWordDetailViewController ()<UITableViewDelegate,UITableViewDataSource>
 
@@ -55,7 +56,24 @@ NSString *zztWordListCell = @"zztWordListCell";
     [self setupTopView];
     //设置底部View
     [self setupBottomView];
+    //详情接口
+//    [self loadDetailData];
 }
+
+//-(void)loadDetailData{
+//    UserInfo *user = [Utilities GetNSUserDefaults];
+//    NSDictionary *dic = @{
+//                          @"id":_cartoonDetail.id,
+//                          @"userId":[NSString stringWithFormat:@"%ld",user.id]
+//                          };
+//    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"cartoon/particulars"] parameters:dic success:^(id responseObject) {
+//        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+//        NSArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
+//
+//    } failure:^(NSError *error) {
+//
+//    }];
+//}
 
 //设置底部View
 -(void)setupBottomView{
@@ -95,14 +113,15 @@ NSString *zztWordListCell = @"zztWordListCell";
 -(void)starReadTarget{
     ZZTCartoonDetailViewController *cartoonDetailVC = [[ZZTCartoonDetailViewController alloc] init];
     cartoonDetailVC.hidesBottomBarWhenPushed = YES;
-    cartoonDetailVC.type = _cartoonDetail.type;
-    cartoonDetailVC.cartoonId = self.cartoonDetail.id;
-    cartoonDetailVC.viewTitle = _cartoonDetail.bookName;
-    cartoonDetailVC.bookNameId = _cartoonDetail.id;
+//    cartoonDetailVC.type = _cartoonDetail.type;
+//    cartoonDetailVC.cartoonId = self.cartoonDetail.id;
+//    cartoonDetailVC.viewTitle = _cartoonDetail.bookName;
+//    cartoonDetailVC.bookNameId = _cartoonDetail.id;
+    cartoonDetailVC.cartoonModel = _cartoonDetail;
 
     if(self.isHave == YES){
         cartoonDetailVC.testModel = _model;
-        cartoonDetailVC.cartoonId = _model.bookChapter;
+//        cartoonDetailVC.cartoonId = _model.bookChapter;
     }
     [self.navigationController pushViewController:cartoonDetailVC animated:YES];
 }
@@ -122,22 +141,24 @@ NSString *zztWordListCell = @"zztWordListCell";
 
 //请求该漫画的资料
 -(void)loadtopData:(NSString *)ID{
+        UserInfo *user = [Utilities GetNSUserDefaults];
+
     //加载用户信息
-    weakself(self);
+//    weakself(self);
     NSDictionary *paramDict = @{
-                                @"id":ID
+                                @"id":ID,
+                              @"userId":[NSString stringWithFormat:@"%ld",user.id]
                                 };
     [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"cartoon/particulars"] parameters:paramDict success:^(id responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
         ZZTCarttonDetailModel *mode = [ZZTCarttonDetailModel mj_objectWithKeyValues:dic];
-        weakSelf.ctDetail = mode;
-
+        self.ctDetail = mode;
+        self.head.detailModel = mode;
         [self.contentView reloadData];
     } failure:^(NSError *error) {
         
     }];
-    [self.contentView reloadData];
 }
 
 //目录
@@ -225,12 +246,13 @@ NSString *zztWordListCell = @"zztWordListCell";
     //跳页
     ZZTCartoonDetailViewController *cartoonDetailVC = [[ZZTCartoonDetailViewController alloc] init];
     cartoonDetailVC.hidesBottomBarWhenPushed = YES;
-    cartoonDetailVC.type = _cartoonDetail.type;
-    cartoonDetailVC.cartoonId = [NSString stringWithFormat:@"%ld",model.id];
-    cartoonDetailVC.viewTitle = _cartoonDetail.bookName;
-    cartoonDetailVC.bookNameId = _cartoonDetail.id;
-
-    if(self.isHave == YES &&  cartoonDetailVC.cartoonId == _model.bookChapter){
+//    cartoonDetailVC.bookNameId = _cartoonDetail.id;
+    //书模型
+    cartoonDetailVC.cartoonModel = _cartoonDetail;
+    //章节
+    cartoonDetailVC.dataModel = model;
+    
+    if(self.isHave == YES &&  [NSString stringWithFormat:@"%ld",model.id] == _model.bookChapter){
         cartoonDetailVC.testModel = _model;
     }
     [self.navigationController pushViewController:cartoonDetailVC animated:YES];

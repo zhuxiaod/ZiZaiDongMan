@@ -9,7 +9,11 @@
 #import <UIKit/UIKit.h>
 @class ZZTCartoonModel;
 
+typedef void (^xuHuaBtnBlock) (UIButton *sender);
+
 @interface ZZTContinueToDrawHeadView : UIView
+
+@property (nonatomic,copy) xuHuaBtnBlock buttonAction;
 
 @property (nonatomic,strong) NSArray *array;
 

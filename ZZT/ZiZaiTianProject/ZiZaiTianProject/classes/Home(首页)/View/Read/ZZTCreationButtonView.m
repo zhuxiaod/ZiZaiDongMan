@@ -73,7 +73,7 @@
 
 -(void)didCartoon{
     ZZTCreationCartoonTypeViewController *cartoonVC = [[ZZTCreationCartoonTypeViewController alloc] init];
-    cartoonVC.viewTitle = @"创建漫画";
+//    cartoonVC.viewTitle = @"创建漫画";
     cartoonVC.type = @"1";
     [self myViewController].hidesBottomBarWhenPushed = YES;
     [[self myViewController].navigationController pushViewController:cartoonVC animated:YES];
@@ -82,7 +82,7 @@
 
 -(void)didPlay{
     ZZTCreationCartoonTypeViewController *cartoonVC = [[ZZTCreationCartoonTypeViewController alloc] init];
-    cartoonVC.viewTitle = @"创建剧本";
+//    cartoonVC.viewTitle = @"创建剧本";
     cartoonVC.type = @"2";
     [self myViewController].hidesBottomBarWhenPushed = YES;
     [[self myViewController].navigationController pushViewController:cartoonVC animated:YES];

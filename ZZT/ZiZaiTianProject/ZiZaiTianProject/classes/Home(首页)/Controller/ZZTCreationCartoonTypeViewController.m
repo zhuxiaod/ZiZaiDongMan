@@ -11,6 +11,7 @@
 #import "ZZTCreatCartoonViewController.h"
 #import "TypeButton.h"
 #import "ZZTWritePlayViewController.h"
+
 //宽度（自定义）
 #define PIC_WIDTH 40
 
@@ -77,7 +78,7 @@
     [self getBookType];
     
     self.bookName.text = @"1";
-    
+
     //设置简介
     _introView.delegate = self;
     _introView.textColor = [UIColor blackColor];
@@ -145,11 +146,11 @@
     }];
 }
 
-//设置标题
-- (void)setViewTitle:(NSString *)viewTitle{
-    _viewTitle = viewTitle;
-    self.navigationItem.title = viewTitle;
- }
+////设置标题
+//- (void)setViewTitle:(NSString *)viewTitle{
+//    _viewTitle = viewTitle;
+//    self.navigationItem.title = viewTitle;
+// }
 
 //添加Btn
 -(void)addTagButton{
@@ -256,6 +257,7 @@
                           @"cartoonType":[NSString stringWithFormat:@"%ld",self.bookType],
                           @"type":self.type
                           };
+//    AFNHttpTool *tool = [AFNHttpTool sharedHttpSession];
     [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"cartoon/intCartoon"] parameters:dic success:^(id responseObject) {
         NSLog(@"@@@%@",responseObject);
     } failure:^(NSError *error) {
@@ -294,5 +296,12 @@
         self.sureBtn.backgroundColor = [UIColor grayColor];
     }
 }
-
+-(void)setType:(NSString *)type{
+    _type = type;
+    if([type isEqualToString:@"1"]){
+        self.navigationItem.title = @"创建漫画";
+    }else{
+        self.navigationItem.title = @"创建剧本";
+    }
+}
 @end

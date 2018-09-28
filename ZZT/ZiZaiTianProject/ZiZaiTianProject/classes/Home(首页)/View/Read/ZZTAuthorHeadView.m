@@ -7,6 +7,11 @@
 //
 
 #import "ZZTAuthorHeadView.h"
+@interface ZZTAuthorHeadView ()
+@property (weak, nonatomic) IBOutlet UIImageView *headImg;
+@property (weak, nonatomic) IBOutlet UILabel *authorName;
+
+@end
 
 @implementation ZZTAuthorHeadView
 
@@ -14,4 +19,9 @@
     return [[[NSBundle mainBundle] loadNibNamed:@"ZZTAuthorHeadView" owner:nil options:nil]lastObject];
 }
 
+-(void)setUserModel:(UserInfo *)userModel{
+    _userModel = userModel;
+    [self.headImg sd_setImageWithURL:[NSURL URLWithString:userModel.headimg] placeholderImage:[UIImage imageNamed:@"peien"]];
+    self.authorName.text = userModel.nickName;
+}
 @end

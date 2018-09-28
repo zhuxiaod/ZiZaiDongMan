@@ -9,6 +9,8 @@
 #import "ZZTContinueToDrawHeadView.h"
 #import "ZZTXuHuaBtn.h"
 #import "ZZTCartoonModel.h"
+#import "ZZTChapterlistModel.h"
+
 @interface ZZTContinueToDrawHeadView ()
 
 @property (weak, nonatomic) IBOutlet UIButton *XuHuaBtn;
@@ -38,9 +40,15 @@
     [super awakeFromNib];
     self.XuHuaBtn.layer.borderColor = [UIColor blackColor].CGColor;
     self.XuHuaBtn.layer.borderWidth = 2.0f;
-    self.scrollView.backgroundColor = [UIColor yellowColor];
+    self.scrollView.backgroundColor = [UIColor whiteColor];
+    [self.XuHuaBtn addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
 }
 
+-(void)btnClick:(UIButton *)sender{
+    if(self.buttonAction){
+        self.buttonAction(sender);
+    }
+}
 -(void)setArray:(NSArray *)array{
     _array = array;
 
@@ -50,14 +58,16 @@
     self.scrollView.contentSize = CGSizeMake(600, titleH);
     NSLog(@"scrollView frame:%@",NSStringFromCGRect(self.scrollView.frame));
     for (int i = 0; i < array.count; i++) {
+        ZZTChapterlistModel *model = array[i];
         //数据源
         CGFloat x = space + (titleW + space) * i;
         ZZTXuHuaBtn *btn = [[ZZTXuHuaBtn alloc] initWithFrame:CGRectMake(x, 0, titleW, titleH)];
-//        btn.imageUrl = @"peien";
-//        btn.loveNum = @"400";
-//        btn.frame = ;
+        btn.imageUrl = model.headimg;
+        btn.loveNum = [NSString stringWithFormat:@"%ld",model.praiseNum];
         [self.scrollView addSubview:btn];
     }
+    //算出移动的内容距离
+    self.scrollView.contentSize = CGSizeMake((titleW+space)*array.count, titleH);
 }
 
 @end

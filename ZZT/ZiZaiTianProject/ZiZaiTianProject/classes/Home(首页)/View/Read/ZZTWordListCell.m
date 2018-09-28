@@ -37,9 +37,9 @@
     self.likeNum.textColor = [UIColor grayColor];
     //如果是章节 显示页 漫画 显示画
     if([model.type isEqualToString:@"2"]){
-        self.wordPage.text = [NSString stringWithFormat:@"%@页",model.chapterPage];
+        if(model.chapterPage)self.wordPage.text = [NSString stringWithFormat:@"%@页",model.chapterPage];
     }else{
-        self.wordPage.text = [NSString stringWithFormat:@"%@画",model.chapterPage];
+        if(model.chapterPage)self.wordPage.text = [NSString stringWithFormat:@"%@画",model.chapterPage];
     }
     
     self.commentNum.text = model.commentNum;

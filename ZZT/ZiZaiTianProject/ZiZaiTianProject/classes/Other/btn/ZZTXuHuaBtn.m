@@ -60,7 +60,7 @@
     UILabel *likeNum = [[UILabel alloc] init];
     self.likeNum = likeNum;
     likeNum.text = @"100";
-    likeNum.backgroundColor = [UIColor greenColor];
+    likeNum.backgroundColor = [UIColor whiteColor];
     [self addSubview:likeNum];
 }
 -(void)layoutSubviews{
@@ -76,7 +76,7 @@
     _imageUrl = imageUrl;
 //    [self.headView setImage:[UIImage imageNamed:imageUrl]];
 //    self.headView.backgroundColor = [UIColor redColor];
-//    [self.headView sd_setImageWithURL:[NSURL URLWithString:imageUrl]];
+    [self.headView sd_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage imageNamed:@"peien"]];
 }
 
 -(void)setLoveNum:(NSString *)loveNum{

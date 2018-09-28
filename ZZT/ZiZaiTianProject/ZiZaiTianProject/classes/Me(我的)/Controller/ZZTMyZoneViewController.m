@@ -11,6 +11,7 @@
 #import "ZZTMyZoneCell.h"
 #import "ZZTCreationCartoonTypeViewController.h"
 #import "ZZTMyZoneHeaderView.h"
+
 static const CGFloat MJDuration = 2.0;
 
 @interface ZZTMyZoneViewController ()<UITableViewDataSource,UITableViewDelegate>
@@ -75,6 +76,25 @@ NSString *myZoneCell = @"myZoneCell";
 //                          @"userId":[[NSUserDefaults standardUserDefaults]objectForKey:@"userId"]
                           @"userId":@"3"
                           };
+//    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"circle/selUserRoom"] parameters:dic success:^(id responseObject) {
+//        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+//        id to = [dic objectForKey:@"total"];
+//        NSInteger total = [to integerValue];
+//        self.total = total;
+//        NSArray *list = [dic objectForKey:@"list"];
+//        NSMutableArray *array = [ZZTMyZoneModel mj_objectArrayWithKeyValuesArray:list];
+//        [self.dataArray addObjectsFromArray:array];
+//        [self.tabelView reloadData];
+//        if(self.dataArray.count >= total){
+//            [self.tabelView.mj_footer endRefreshingWithNoMoreData];
+//        }else{
+//            [self.tabelView.mj_footer endRefreshing];
+//        }
+//        //page+size
+//        self.pageNumber = [NSString stringWithFormat:@"%ld",([self.pageNumber integerValue] + 3)];
+//    } failure:^(NSError *error) {
+//
+//    }];
     [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"circle/selUserRoom"] parameters:dic success:^(id responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         id to = [dic objectForKey:@"total"];
@@ -92,8 +112,10 @@ NSString *myZoneCell = @"myZoneCell";
         //page+size
         self.pageNumber = [NSString stringWithFormat:@"%ld",([self.pageNumber integerValue] + 3)];
     } failure:^(NSError *error) {
-        
+    
     }];
+//    AFNHttpTool *aaa = [AFNHttpTool sharedHttpSession];
+//   [aaa POST:<#(NSString *)#> parameters:<#(NSDictionary *)#> success:<#^(id responseObject)success#> failure:<#^(NSError *error)failure#>]
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{

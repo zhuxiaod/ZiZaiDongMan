@@ -580,16 +580,10 @@
 -(void)seveCurrentView{
     ZZTDIYCellModel *cellModel = self.cartoonEditArray[_selectRow];
     ZZTDIYCellModel *model = [cellModel copy];
-//    model.colorFrame = cellModel.colorFrame;
-//    model.colorPoint = cellModel.colorPoint;
-//    model.brightness = cellModel.brightness;
-//    model.alpha = cellModel.alpha;
+
     [self.cartoonArray addObject:model];
     cellModel.imageArray = nil;
-//    cellModel = nil;
     [self removeAllToWhite:cellModel];
-//    model.brightness = 1.0;
-    
     
     for (UIView *view in MainOperationView.subviews) {
         [view removeFromSuperview];
@@ -599,15 +593,13 @@
     MainOperationView.backgroundColor = [UIColor whiteColor];
     CGPoint point = CGPointMake(model.colorFrame.size.width/2, model.colorFrame.size.height/2);
     model.colorPoint = point;
+    self.coloringBtn.imageView.backgroundColor = [UIColor whiteColor];
 }
 #pragma mark 替换当前数据
 -(void)replaceCurrentView{
     ZZTDIYCellModel *cellModel = self.cartoonEditArray[_selectRow];
     ZZTDIYCellModel *model = [cellModel copy];
-//    model.colorPoint = cellModel.colorPoint;
-//    model.colorFrame = cellModel.colorFrame;
-//    model.brightness = cellModel.brightness;
-//    model.alpha = cellModel.alpha;
+
     [self.cartoonArray replaceObjectAtIndex:self.currentIndex withObject:model];
     
     cellModel.imageArray = nil;
@@ -699,6 +691,7 @@
     //数据全部清除
     for(int i = 0;i < self.cartoonEditArray.count;i++){
         ZZTDIYCellModel *cellModel = self.cartoonEditArray[i];
+        [self removeAllToWhite:cellModel];
         [cellModel.imageArray removeAllObjects];
         self.mainView = MainOperationView;
         ZZTCartoonDrawView *currentCell = (ZZTCartoonDrawView *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
@@ -706,6 +699,7 @@
             [view removeFromSuperview];
         }
     }
+    [self.cartoonArray removeAllObjects];
     [self.collectionView reloadData];
     self.isAddM = NO;
 //    self.currentRectangleView.isBig = NO;

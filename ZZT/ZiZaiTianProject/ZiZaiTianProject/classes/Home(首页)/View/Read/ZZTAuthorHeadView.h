@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface ZZTAuthorHeadView : UIView
-
+@property (nonatomic,strong) UserInfo *userModel;
 +(instancetype)AuthorHeadView;
 
 @end

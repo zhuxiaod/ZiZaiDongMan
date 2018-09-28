@@ -9,14 +9,16 @@
 #import <UIKit/UIKit.h>
 
 @class ZZTJiXuYueDuModel;
+@class ZZTChapterlistModel;
+@class ZZTCarttonDetailModel;
 
 @interface ZZTCartoonDetailViewController : BaseViewController
 //章节
-@property (nonatomic,strong) NSString *cartoonId;
-@property (nonatomic,strong) NSString *viewTitle;
-@property (nonatomic,strong) NSString *type;
+//@property (nonatomic,strong) NSString *cartoonId;
+@property (nonatomic,strong) ZZTChapterlistModel *dataModel;
+@property (nonatomic,strong) ZZTCarttonDetailModel *cartoonModel;
 @property (nonatomic,strong) ZZTJiXuYueDuModel *testModel;
 //书
-@property (nonatomic,strong) NSString *bookNameId;
+//@property (nonatomic,strong) NSString *bookNameId;
 
 @end

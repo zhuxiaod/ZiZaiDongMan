@@ -26,7 +26,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [UMCommonLogManager setUpUMCommonLogManager];
-    [UMConfigure setLogEnabled:YES];
+    [UMConfigure setLogEnabled:NO];
     //5ba096a35b5a55a35f0001bb
     [MobClick setCrashReportEnabled:YES];
     [UMConfigure initWithAppkey:@"5ba096a35b5a55a35f0001bb" channel:@"App Store"];

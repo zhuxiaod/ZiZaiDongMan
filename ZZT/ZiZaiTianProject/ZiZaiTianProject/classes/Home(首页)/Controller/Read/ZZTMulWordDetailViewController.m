@@ -15,6 +15,7 @@
 #import "ZZTChapterlistModel.h"
 #import "ZZTStoryDetailView.h"
 #import "ZZTJiXuYueDuModel.h"
+#import "ZZTMulCreationCell.h"
 
 @interface ZZTMulWordDetailViewController ()<UITableViewDelegate,UITableViewDataSource>
 
@@ -25,8 +26,10 @@
 @property (nonatomic,strong) ZZTCarttonDetailModel *ctDetail;
 
 @property (nonatomic,strong) UITableView *contentView;
-
+//普通目录
 @property (nonatomic,strong) NSArray *wordList;
+//众创
+@property (nonatomic,strong) NSArray *mulWordList;
 
 @property (nonatomic,strong) ZZTJiXuYueDuModel *model;
 
@@ -46,6 +49,13 @@ NSString *zztMulWordListCell = @"zztMulWordListCell";
         _model = [[ZZTJiXuYueDuModel alloc] init];
     }
     return _model;
+}
+
+-(NSArray *)mulWordList{
+    if(!_mulWordList){
+        _mulWordList = [NSArray array];
+    }
+    return _mulWordList;
 }
 
 -(NSArray *)wordList{
@@ -115,9 +125,7 @@ NSString *zztMulWordListCell = @"zztMulWordListCell";
 //开始阅读
 -(void)starReadTarget{
     ZZTCartoonDetailViewController *cartoonDetailVC = [[ZZTCartoonDetailViewController alloc] init];
-    cartoonDetailVC.type = _cartoonDetail.type;
-    cartoonDetailVC.cartoonId = _cartoonDetail.id;
-    cartoonDetailVC.viewTitle = _cartoonDetail.bookName;
+    cartoonDetailVC.cartoonModel = _cartoonDetail;
     cartoonDetailVC.hidesBottomBarWhenPushed = YES;
     if(self.isHave == YES){
         cartoonDetailVC.testModel = _model;
@@ -136,6 +144,7 @@ NSString *zztMulWordListCell = @"zztMulWordListCell";
         //        [self loadCommentData:cartoonDetail.id];
     }
 }
+
 //请求该漫画的资料
 -(void)loadtopData:(NSString *)ID{
     //加载用户信息
@@ -209,26 +218,46 @@ NSString *zztMulWordListCell = @"zztMulWordListCell";
 
 #pragma mark - 设置组数
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.wordList.count;
+    if(section == 0){
+        return self.mulWordList.count;
+    }else{
+        return self.wordList.count;
+    }
 }
 
 #pragma mark - 内容设置
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    ZZTChapterlistModel *model = self.wordList[indexPath.row];
-    ZZTMulWordListCell *cell = [[ZZTMulWordListCell  alloc] init];
-    //如果是漫画
-    if([self.ctDetail.type isEqualToString:@"1"]){
-        cell = [ZZTMulWordListCell  mulWordListCellWith:tableView NSString:@"1"];
-        cell.string = self.ctDetail.type;
-        cell.model = model;
+    ZZTMulCreationCell *cell = [[ZZTMulCreationCell alloc] init];
+    if(indexPath.section == 0){
+        //创建众创cell
+        //看什么模型
+//        ZZTChapterlistModel *model = self.wordList[indexPath.row];
+
+        ZZTMulCreationCell *cell = [[ZZTMulCreationCell alloc] init];
+        if([self.ctDetail.type isEqualToString:@"1"]){
+            cell = [ZZTMulCreationCell  mulCreationCellWith:tableView NSString:@"1"];
+//            cell.string = self.ctDetail.type;
+//            cell.model = model
+        }else{
+            cell = [ZZTMulCreationCell  mulCreationCellWith:tableView NSString:@"2"];
+        }
     }else{
-        cell = [ZZTMulWordListCell  mulWordListCellWith:tableView NSString:@"2"];
-        cell.string = self.ctDetail.type;
-        cell.model = model;
+        ZZTChapterlistModel *model = self.wordList[indexPath.row];
+        ZZTMulWordListCell *cell = [[ZZTMulWordListCell  alloc] init];
+        //如果是漫画
+        if([self.ctDetail.type isEqualToString:@"1"]){
+            cell = [ZZTMulWordListCell  mulWordListCellWith:tableView NSString:@"1"];
+            cell.string = self.ctDetail.type;
+            cell.model = model;
+        }else{
+            cell = [ZZTMulWordListCell  mulWordListCellWith:tableView NSString:@"2"];
+            cell.string = self.ctDetail.type;
+            cell.model = model;
+        }
     }
     return cell;
 }
@@ -238,12 +267,13 @@ NSString *zztMulWordListCell = @"zztMulWordListCell";
     //跳页
     ZZTCartoonDetailViewController *cartoonDetailVC = [[ZZTCartoonDetailViewController alloc] init];
     cartoonDetailVC.hidesBottomBarWhenPushed = YES;
-    cartoonDetailVC.type = _cartoonDetail.type;
-    cartoonDetailVC.cartoonId = [NSString stringWithFormat:@"%ld",model.id];
-    cartoonDetailVC.viewTitle = _cartoonDetail.bookName;
-    cartoonDetailVC.bookNameId = _cartoonDetail.id;
+    cartoonDetailVC.dataModel = model;
+    cartoonDetailVC.cartoonModel = _cartoonDetail;
+    //章节内容id
+//    cartoonDetailVC.cartoonId = [NSString stringWithFormat:@"%ld",model.id];//内容
+//    cartoonDetailVC.bookNameId = _cartoonDetail.id;
     
-    if(self.isHave == YES &&  cartoonDetailVC.cartoonId == _model.bookChapter){
+    if(self.isHave == YES &&  [NSString stringWithFormat:@"%ld",model.id] == _model.bookChapter){
         cartoonDetailVC.testModel = _model;
     }
     [self.navigationController pushViewController:cartoonDetailVC animated:YES];
@@ -261,9 +291,12 @@ NSString *zztMulWordListCell = @"zztMulWordListCell";
 //高度设置
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     //字符串
-    self.descHeadView.desc = self.ctDetail.intro;
-    
-    return self.descHeadView.myHeight;
+    if(section == 0){
+        self.descHeadView.desc = self.ctDetail.intro;
+        return self.descHeadView.myHeight;
+    }else{
+        return 0;
+    }
 }
 
 //设置头
@@ -290,7 +323,11 @@ NSString *zztMulWordListCell = @"zztMulWordListCell";
     return _descHeadView;
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 120;
+    if(indexPath.section == 0){
+        return 150;
+    }else{
+        return 120;
+    }
 }
 //详情
 -(ZZTCarttonDetailModel *)ctDetail{
