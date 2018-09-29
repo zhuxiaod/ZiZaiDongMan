@@ -17,11 +17,13 @@
 #import "ZZTWordsDetailViewController.h"
 #import "ZZTCarttonDetailModel.h"
 @interface ZZTReadTableView()<UITableViewDataSource,UITableViewDelegate,DCPicScrollViewDelegate,DCPicScrollViewDataSource>
+
 @property (nonatomic,weak) DCPicScrollView *bannerView;
 
 @property (nonatomic,copy) NSArray *bannerModelArray;
 
 @property (nonatomic,strong) NSArray *btnArray;
+
 @property (nonatomic,strong) NSArray *caiNiXiHuan;
 
 @end
@@ -81,7 +83,6 @@ static NSString *caiNiXiHuan = @"caiNiXiHuan";
         [self loadWeiNingTuiJian];
         [self loadBannerData];
     }];
-    
 }
 
 -(void)loadWeiNingTuiJian{
@@ -90,26 +91,29 @@ static NSString *caiNiXiHuan = @"caiNiXiHuan";
                           @"pageNum":@"0",
                           @"pageSize":@"6"
                           };
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"cartoon/getRecommendCartoon"] parameters:dic success:^(id responseObject) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getRecommendCartoon"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
         self.caiNiXiHuan = array;
         [self reloadData];
         [self.mj_header endRefreshing];
-    } failure:^(NSError *error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
+
 }
 
 -(void)loadBannerData{
     weakself(self);
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"homepage/banner"] parameters:nil success:^(id responseObject) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"homepage/banner"] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         NSArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
         weakSelf.bannerModelArray = array;
         [self reloadData];
         [self.mj_header endRefreshing];
-    } failure:^(NSError *error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
 }

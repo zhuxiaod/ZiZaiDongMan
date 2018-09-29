@@ -7,6 +7,8 @@
 //
 
 #import "ZZTMulCreationCell.h"
+#import "ZZTChapterlistModel.h"
+
 @interface ZZTMulCreationCell ()
 
 @property (weak, nonatomic) IBOutlet UIImageView *headImg;
@@ -18,15 +20,9 @@
 @property (weak, nonatomic) IBOutlet UILabel *wordName2;
 @property (weak, nonatomic) IBOutlet UILabel *wordChapter2;
 @property (weak, nonatomic) IBOutlet UILabel *xuZuoNum2;
-
 @end
 
 @implementation ZZTMulCreationCell
-
-- (void)awakeFromNib {
-    [super awakeFromNib];
-    // Initialization code
-}
 
 +(instancetype)mulCreationCellWith:(UITableView *)tableView NSString:(NSString *)string{
     NSString *identifier = @"";
@@ -46,5 +42,24 @@
     return cell;
 }
 
+-(void)setTypeStr:(NSString *)typeStr{
+    _typeStr = typeStr;
+}
+
+-(void)setXuHuaModel:(ZZTChapterlistModel *)xuHuaModel{
+    _xuHuaModel = xuHuaModel;
+    //1是漫画 2是文章
+    if([_typeStr isEqualToString:@"1"]){
+        [self.headImg sd_setImageWithURL:[NSURL URLWithString:xuHuaModel.chapterCover] placeholderImage:[UIImage imageNamed:@"peien"]];
+        _wordName.text = xuHuaModel.chapterName;
+        _wordChapter.text = [NSString stringWithFormat:@"%@画",xuHuaModel.chapterPage];
+        _xuZuoNum.text = xuHuaModel.xuhuaNum;
+    }else{
+        [self.headImg2 sd_setImageWithURL:[NSURL URLWithString:xuHuaModel.chapterCover] placeholderImage:[UIImage imageNamed:@"peien"]];
+        self.wordName2.text = xuHuaModel.chapterName;
+        [self.wordChapter2 setText:[NSString stringWithFormat:@"%@画",xuHuaModel.chapterPage]];
+        self.xuZuoNum2.text = xuHuaModel.xuhuaNum;
+    }
+}
 
 @end

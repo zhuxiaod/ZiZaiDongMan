@@ -205,13 +205,13 @@ NSString *storyDe = @"storyDe";
 
 //漫画接口
 -(void)loadCartoonDetail{
-//    dispatch_semaphore_t  sema = dispatch_semaphore_create(0);
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
 
     if([self.cartoonModel.type isEqualToString:@"1"]){
         NSDictionary *paramDict = @{
                                     @"id":[NSString stringWithFormat:@"%ld",_dataModel.id]
                                     };
-        [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonImg"] parameters:paramDict success:^(id responseObject) {
+        [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonImg"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             NSString *data = responseObject[@"result"];
             NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:data];
             NSArray *array = [ZZTCartoonModel mj_objectArrayWithKeyValuesArray:dic];
@@ -220,8 +220,7 @@ NSString *storyDe = @"storyDe";
             [self reloadCellWithIndex];
             //
             [self loadCommentData];
-
-        } failure:^(NSError *error) {
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             
         }];
     }else{
@@ -229,7 +228,7 @@ NSString *storyDe = @"storyDe";
         NSDictionary *paramDict = @{
                                     @"cartoonId":[NSString stringWithFormat:@"%ld",_dataModel.id]
                                     };
-        [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"cartoon/selChapterinfo"] parameters:paramDict success:^(id responseObject) {
+        [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/selChapterinfo"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             NSString *data = responseObject[@"result"];
             NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:data];
             NSArray *array = [ZZTStoryModel mj_objectArrayWithKeyValuesArray:dic];
@@ -237,21 +236,19 @@ NSString *storyDe = @"storyDe";
             [self.tableView reloadData];
             //            [self.tableView layoutIfNeeded];
             [self reloadCellWithIndex];
-        } failure:^(NSError *error) {
-            
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+           
         }];
     }
-//    dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
 }
 
 -(void)loadCommentData{
-//    dispatch_semaphore_t  sema = dispatch_semaphore_create(0);
-
     //评论
     NSDictionary *commentDict = @{
                                   @"itemId":[NSString stringWithFormat:@"%ld",_dataModel.id]
                                   };
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonComment"] parameters:commentDict success:^(id responseObject) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonComment"] parameters:commentDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *commenDdic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
         NSArray *array1 = [ZZTCircleModel mj_objectArrayWithKeyValuesArray:commenDdic];
@@ -260,57 +257,51 @@ NSString *storyDe = @"storyDe";
         [self.tableView reloadData];
         
         [self loadLikeData];
-
-    } failure:^(NSError *error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
-//    dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-
 }
 
 -(void)loadLikeData{
-//        dispatch_semaphore_t  sema = dispatch_semaphore_create(0);
 
-        //点赞人
-        NSDictionary *likeDict = @{
-                                   @"cartoonId":_cartoonModel.id,//书
-                                   @"chapterId":[NSString stringWithFormat:@"%ld",_dataModel.id]
-                                   };
-    
-        [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"cartoon/listChapterinfo"] parameters:likeDict success:^(id responseObject) {
-            NSDictionary *likeDic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-            //这里有问题 应该是转成数组 然后把对象取出
-            NSArray *array2 = [ZZTChapterlistModel mj_objectArrayWithKeyValuesArray:likeDic];
-            NSLog(@"likeDic:%@",likeDic);
-            self.userLikeArray = array2;
-            [self.tableView reloadData];
-            
-            [self loadAuthorHead];
-        } failure:^(NSError *error) {
-    
-        }];
-//    dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-
+    //点赞人
+    NSDictionary *likeDict = @{
+                               @"cartoonId":_cartoonModel.id,//书
+                               @"chapterId":[NSString stringWithFormat:@"%ld",_dataModel.id]
+                               };
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/listChapterinfo"] parameters:likeDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *likeDic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        //这里有问题 应该是转成数组 然后把对象取出
+        NSArray *array2 = [ZZTChapterlistModel mj_objectArrayWithKeyValuesArray:likeDic];
+        NSLog(@"likeDic:%@",likeDic);
+        self.userLikeArray = array2;
+        [self.tableView reloadData];
+        
+        [self loadAuthorHead];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
 }
 -(void)loadAuthorHead{
 //        dispatch_semaphore_t  sema = dispatch_semaphore_create(0);
         //头像
-        NSDictionary *headDict = @{
-                                   @"id":[NSString stringWithFormat:@"%ld",_dataModel.id]
-                                   };
-        [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"cartoon/getCartoonCenter"] parameters:headDict success:^(id responseObject) {
-            NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-            NSArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
-            if(array.count != 0){
-                UserInfo *author = array[1];
-                self.author = author;
-            }
-//            NSLog(@"likeDic:%@",dic);
-            [self.tableView reloadData];
-        } failure:^(NSError *error) {
-    
-        }];
-//        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+    NSDictionary *headDict = @{
+                               @"id":[NSString stringWithFormat:@"%ld",_dataModel.id]
+                               };
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getCartoonCenter"] parameters:headDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
+        if(array.count != 0){
+            UserInfo *author = array[1];
+            self.author = author;
+        }
+        //            NSLog(@"likeDic:%@",dic);
+        [self.tableView reloadData];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
 }
 
 //需要传1 或者2
@@ -331,7 +322,7 @@ NSString *storyDe = @"storyDe";
             
             NSIndexPath *dayOne = [NSIndexPath indexPathForRow:[self.model.bookIndex integerValue] inSection:0];
             if([self.model.bookIndex integerValue] > 0){
-//                [self.tableView scrollToRowAtIndexPath:dayOne atScrollPosition:UITableViewScrollPositionTop animated:NO];
+                [self.tableView scrollToRowAtIndexPath:dayOne atScrollPosition:UITableViewScrollPositionTop animated:NO];
             }
         });
     }

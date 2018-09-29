@@ -57,6 +57,13 @@ static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
     
     //banner数据
     self.imagesURLStrings = [NSArray arrayWithObjects: @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1535282045025&di=b648e41d5d5a3535e5518a545459d351&imgtype=0&src=http%3A%2F%2Fimg.mp.itc.cn%2Fupload%2F20161123%2Fbfa082e23cd94089a907a29b021946bf_th.jpeg",@"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1535282045025&di=d2ddcf88c11b57887d64db25c870bd4f&imgtype=0&src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20170919%2F210211af972f4e3c8c5a7fda0fda7493.jpeg", nil];
+    
+    [self setupMJRefresh];
+}
+-(void)setupMJRefresh{
+    self.contentView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        [self loadData];
+    }];
 }
 
 -(void)loadData{
@@ -69,7 +76,8 @@ static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
                           @"userId":@"1",
                           @"type":@"1"
                           };
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"circle/selDiscover"] parameters:dic success:^(id responseObject) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"circle/selDiscover"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         id to = [dic objectForKey:@"total"];
         NSInteger total = [to integerValue];
@@ -84,7 +92,8 @@ static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
         }
         //page+size
         self.pageNumber += 6;
-    } failure:^(NSError *error) {
+        [self.contentView.mj_header endRefreshing];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
 }
@@ -119,11 +128,10 @@ static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
                           @"userId":@"1",
                           @"authorId":model.userId
                           };
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"record/ifUserAtAuthor"] parameters:dic success:^(id responseObject) {
-//        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-//        NSMutableArray *array = [ZZTMyZoneModel mj_objectArrayWithKeyValuesArray:dic];
-
-    } failure:^(NSError *error) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"record/ifUserAtAuthor"]  parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
 }

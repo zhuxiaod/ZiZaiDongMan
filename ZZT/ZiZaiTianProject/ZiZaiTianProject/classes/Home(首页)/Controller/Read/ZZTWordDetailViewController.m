@@ -149,14 +149,15 @@ NSString *zztWordListCell = @"zztWordListCell";
                                 @"id":ID,
                               @"userId":[NSString stringWithFormat:@"%ld",user.id]
                                 };
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"cartoon/particulars"] parameters:paramDict success:^(id responseObject) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/particulars"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
         ZZTCarttonDetailModel *mode = [ZZTCarttonDetailModel mj_objectWithKeyValues:dic];
         self.ctDetail = mode;
         self.head.detailModel = mode;
         [self.contentView reloadData];
-    } failure:^(NSError *error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
 }
@@ -164,15 +165,17 @@ NSString *zztWordListCell = @"zztWordListCell";
 //目录
 -(void)loadListData:(NSString *)ID{
     NSDictionary *paramDict = @{
-                                @"cartoonId":ID
+                                @"cartoonId":ID,//1 独创 2 众创
+                                @"type":@"1"
                                 };
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterlist"] parameters:paramDict success:^(id responseObject) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterlist"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
         NSMutableArray *array = [ZZTChapterlistModel mj_objectArrayWithKeyValuesArray:dic];
         self.wordList = array;
         [self.contentView reloadData];
-    } failure:^(NSError *error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
 }
@@ -198,9 +201,10 @@ NSString *zztWordListCell = @"zztWordListCell";
                               @"cartoonId":detailModel.id,
                               @"userId":[NSString stringWithFormat:@"%ld",userInfo.id]
                               };
-        [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"great/collects"] parameters:dic success:^(id responseObject) {
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        [manager POST:[ZZTAPI stringByAppendingString:@"great/collects"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             
-        } failure:^(NSError *error) {
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             
         }];
     };

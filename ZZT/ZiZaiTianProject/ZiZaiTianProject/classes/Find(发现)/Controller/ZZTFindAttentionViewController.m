@@ -52,16 +52,28 @@ static NSString *CaiNiXiHuanView = @"CaiNiXiHuanView";
     self.pageNumber = 0;
     [self loadData];
     [self loadCaiNiXiHuanData];
+    
+    [self setupMJRefresh];
+
+}
+
+-(void)setupMJRefresh{
+    self.contentView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        [self loadCaiNiXiHuanData];
+        [self loadData];
+    }];
 }
 
 -(void)loadCaiNiXiHuanData{
 
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"circle/guessYouLike"] parameters:nil success:^(id responseObject) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"circle/guessYouLike"] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         NSMutableArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
         self.CNXHArray = array;
         [self.contentView reloadData];
-    } failure:^(NSError *error) {
+        [self.contentView.mj_header endRefreshing];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
 }
@@ -75,7 +87,8 @@ static NSString *CaiNiXiHuanView = @"CaiNiXiHuanView";
                           @"userId":@"1",
                           @"type":@"2"
                           };
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"circle/selDiscover"] parameters:dic success:^(id responseObject) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"circle/selDiscover"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         id to = [dic objectForKey:@"total"];
         NSInteger total = [to integerValue];
@@ -90,10 +103,12 @@ static NSString *CaiNiXiHuanView = @"CaiNiXiHuanView";
         }
         //page+size
         self.pageNumber += 6;
-    } failure:^(NSError *error) {
+        [self.contentView.mj_header endRefreshing];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
 }
+
 #pragma mark - 设置组数
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
@@ -125,7 +140,8 @@ static NSString *CaiNiXiHuanView = @"CaiNiXiHuanView";
                           @"userId":@"1",
                           @"authorId":model.userId
                           };
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"record/ifUserAtAuthor"] parameters:dic success:nil failure:nil];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"record/ifUserAtAuthor"] parameters:dic progress:nil success:nil failure:nil];
 }
 
 #pragma mark 高度设置

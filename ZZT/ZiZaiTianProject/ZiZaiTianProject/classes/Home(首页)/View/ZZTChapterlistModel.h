@@ -40,5 +40,4 @@
 
 @property(nonatomic,strong)NSString *xuhuaNum;
 
-
 @end

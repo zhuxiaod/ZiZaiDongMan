@@ -263,12 +263,24 @@
     } failure:^(NSError *error) {
         
     }];
+    ZZTCarttonDetailModel *creationData = [[ZZTCarttonDetailModel alloc] init];
+    creationData.userId = @"1";
+    creationData.bookType = string;
+    creationData.bookName = self.bookName.text;
+    creationData.intro = self.introView.text;
+    creationData.cover = @"1";
+    creationData.cartoonType = [NSString stringWithFormat:@"%ld",self.bookType];
+    creationData.type = self.type;
+    
     if([self.type isEqualToString:@"1"]){
         ZZTCreatCartoonViewController *cartoonVC = [[ZZTCreatCartoonViewController alloc] init];
+        cartoonVC.creationData = creationData;
         self.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:cartoonVC animated:YES];
     }else{
         ZZTWritePlayViewController *writeVC = [[ZZTWritePlayViewController alloc] init];
+        writeVC.creationData = creationData;
+
         self.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:writeVC animated:YES];
     }

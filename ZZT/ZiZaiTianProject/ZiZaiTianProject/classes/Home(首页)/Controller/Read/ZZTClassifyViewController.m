@@ -167,15 +167,16 @@ NSString *SuggestionView2 = @"SuggestionView2";
                           @"pageNum":@"1",
                           @"pageSize":@"10"
                           };
-    
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonlist"] parameters:dic success:^(id responseObject) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonlist"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTCartonnPlayModel mj_objectArrayWithKeyValuesArray:dic];
         self.dataArray = array;
         [self.collectionView reloadData];
-    } failure:^(NSError *error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
+
 }
 -(void)setupScrollView{
     UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 60)];
@@ -186,13 +187,13 @@ NSString *SuggestionView2 = @"SuggestionView2";
 }
 
 -(void)loadTopViewData{
-
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"cartoon/getBookType"] parameters:nil success:^(id responseObject) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getBookType"] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTBookType mj_objectArrayWithKeyValuesArray:dic];
         self.titles = array;
         [self addBtn];
-    } failure:^(NSError *error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
 }
@@ -234,23 +235,26 @@ NSString *SuggestionView2 = @"SuggestionView2";
         NSDictionary *dic = @{
                               @"fuzzy":searchText
                               };
-        //添加数据
-        [AFNHttpTool POST:@"http://120.79.178.191:8888/cartoon/queryFuzzy" parameters:dic success:^(id responseObject) {
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/queryFuzzy"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
             NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
             weakSelf.searchSuggestionArray = array;
             [searchViewController.searchSuggestionView reloadData];
-        } failure:^(NSError *error) {
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             
         }];
     }
 }
+
 -(NSInteger)numberOfSectionsInSearchSuggestionView:(UITableView *)searchSuggestionView{
     return 1;
 }
+
 -(NSInteger)searchSuggestionView:(UITableView *)searchSuggestionView numberOfRowsInSection:(NSInteger)section{
     return self.searchSuggestionArray.count;
 }
+
 -(UITableViewCell *)searchSuggestionView:(UITableView *)searchSuggestionView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [searchSuggestionView dequeueReusableCellWithIdentifier:SuggestionView2];
     if (cell == nil) {
@@ -262,8 +266,10 @@ NSString *SuggestionView2 = @"SuggestionView2";
     }
     return cell;
 }
+
 - (CGFloat)searchSuggestionView:(UITableView *)searchSuggestionView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 40.f;
 }
+
 @end

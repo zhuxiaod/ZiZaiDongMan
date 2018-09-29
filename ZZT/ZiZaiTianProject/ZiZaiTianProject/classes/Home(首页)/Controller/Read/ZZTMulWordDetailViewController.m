@@ -16,6 +16,7 @@
 #import "ZZTStoryDetailView.h"
 #import "ZZTJiXuYueDuModel.h"
 #import "ZZTMulCreationCell.h"
+#import "ZZTMulPlayCell.h"
 
 @interface ZZTMulWordDetailViewController ()<UITableViewDelegate,UITableViewDataSource>
 
@@ -37,10 +38,14 @@
 
 @property (nonatomic,strong) UIButton *starRead;
 
+//续画model
+@property (nonatomic,strong) ZZTChapterlistModel *xuHuaModel;
 
 @end
 
 NSString *zztMulWordListCell = @"zztMulWordListCell";
+
+NSString *zztMulPlayCell = @"zztMulPlayCell";
 
 @implementation ZZTMulWordDetailViewController
 
@@ -50,7 +55,12 @@ NSString *zztMulWordListCell = @"zztMulWordListCell";
     }
     return _model;
 }
-
+-(ZZTChapterlistModel *)xuHuaModel{
+    if(!_xuHuaModel){
+        _xuHuaModel = [[ZZTChapterlistModel alloc] init];
+    }
+    return _xuHuaModel;
+}
 -(NSArray *)mulWordList{
     if(!_mulWordList){
         _mulWordList = [NSArray array];
@@ -132,50 +142,74 @@ NSString *zztMulWordListCell = @"zztMulWordListCell";
     }
     [self.navigationController pushViewController:cartoonDetailVC animated:YES];
 }
+
 //设置数据
 -(void)setCartoonDetail:(ZZTCarttonDetailModel *)cartoonDetail{
     _cartoonDetail = cartoonDetail;
     if(cartoonDetail.id){
         //上部分View
         [self loadtopData:cartoonDetail.id];
+        //续画
+        [self loadXuHuaListData:cartoonDetail.id];
         //目录
-        [self loadListData:cartoonDetail.id];
+        [self loadCatalogueData:cartoonDetail.id];
         //评论
         //        [self loadCommentData:cartoonDetail.id];
     }
 }
 
-//请求该漫画的资料
--(void)loadtopData:(NSString *)ID{
+-(void)loadCatalogueData:(NSString *)Id{
     //加载用户信息
-    weakself(self);
     NSDictionary *paramDict = @{
-                                @"id":ID
+                                @"cartoonId":Id,//1 独创 2 众创
+                                @"type":@"1"
                                 };
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"cartoon/particulars"] parameters:paramDict success:^(id responseObject) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterlist"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
-        ZZTCarttonDetailModel *mode = [ZZTCarttonDetailModel mj_objectWithKeyValues:dic];
-        weakSelf.ctDetail = mode;
-        [self.contentView reloadData];
-    } failure:^(NSError *error) {
-        
-    }];
-    [self.contentView reloadData];
-}
-//目录
--(void)loadListData:(NSString *)ID{
-    NSDictionary *paramDict = @{
-                                @"cartoonId":ID
-                                };
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterlist"] parameters:paramDict success:^(id responseObject) {
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-        //这里有问题 应该是转成数组 然后把对象取出
-        NSArray *array = [ZZTChapterlistModel mj_objectArrayWithKeyValuesArray:dic];
+        NSMutableArray *array = [ZZTChapterlistModel mj_objectArrayWithKeyValuesArray:dic];
         self.wordList = array;
         [self.contentView reloadData];
-    } failure:^(NSError *error) {
-        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"error:%@",error);
+    }];
+}
+
+//请求该漫画的资料
+-(void)loadtopData:(NSString *)Id{
+    //加载用户信息
+    NSDictionary *paramDict = @{
+                                @"id":Id,
+                                @"userId":@"1"
+                                };
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/particulars"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        ZZTCarttonDetailModel *mode = [ZZTCarttonDetailModel mj_objectWithKeyValues:dic];
+        self.ctDetail = mode;
+        [self.contentView reloadData];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"error:%@",error);
+    }];
+}
+
+//目录 - 众创
+-(void)loadXuHuaListData:(NSString *)ID{
+    //加载用户信息
+    NSDictionary *paramDict = @{
+                                //1 独创 2众创
+                                 @"cartoonId":@"1",
+                                 @"type":@"2"
+                               };
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getXuhualist"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSArray *modelArray = [ZZTChapterlistModel mj_objectArrayWithKeyValuesArray:dic];
+        self.mulWordList = modelArray;
+        [self.contentView reloadData];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"error:%@",error);
     }];
 }
 
@@ -187,7 +221,7 @@ NSString *zztMulWordListCell = @"zztMulWordListCell";
     contenView.dataSource = self;
     contenView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.contentView = contenView;
-    
+    contenView.sectionFooterHeight = 0;
     [contenView  setSeparatorColor:[UIColor blueColor]];
     
     ZZTWordsDetailHeadView *head = [ZZTWordsDetailHeadView wordsDetailHeadViewWithFrame:CGRectMake(0, -20, SCREEN_WIDTH, wordsDetailHeadViewHeight) scorllView:contenView];
@@ -210,8 +244,8 @@ NSString *zztMulWordListCell = @"zztMulWordListCell";
     //设置数据
     self.head.detailModel = self.cartoonDetail;
     //先让数据显示
-    [contenView registerNib:[UINib nibWithNibName:@"ZZTWordListCell" bundle:nil] forCellReuseIdentifier:zztMulWordListCell];
-    
+    [contenView registerClass:[ZZTMulPlayCell class] forCellReuseIdentifier:zztMulPlayCell];
+
     [self.view addSubview:contenView];
     [self.view addSubview:head];
 }
@@ -231,35 +265,23 @@ NSString *zztMulWordListCell = @"zztMulWordListCell";
 
 #pragma mark - 内容设置
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    ZZTMulCreationCell *cell = [[ZZTMulCreationCell alloc] init];
     if(indexPath.section == 0){
-        //创建众创cell
-        //看什么模型
-//        ZZTChapterlistModel *model = self.wordList[indexPath.row];
-
-        ZZTMulCreationCell *cell = [[ZZTMulCreationCell alloc] init];
-        if([self.ctDetail.type isEqualToString:@"1"]){
-            cell = [ZZTMulCreationCell  mulCreationCellWith:tableView NSString:@"1"];
-//            cell.string = self.ctDetail.type;
-//            cell.model = model
-        }else{
-            cell = [ZZTMulCreationCell  mulCreationCellWith:tableView NSString:@"2"];
-        }
+        ZZTMulPlayCell *cell = [tableView dequeueReusableCellWithIdentifier:zztMulPlayCell];
+        cell.str = self.ctDetail.type;
+        cell.isHave = YES;
+        ZZTChapterlistModel *model = self.mulWordList[0];
+        cell.xuHuaModel = model;
+        cell.selectionStyle = UITableViewCellAccessoryNone;
+        return cell;
     }else{
-        ZZTChapterlistModel *model = self.wordList[indexPath.row];
-        ZZTMulWordListCell *cell = [[ZZTMulWordListCell  alloc] init];
-        //如果是漫画
-        if([self.ctDetail.type isEqualToString:@"1"]){
-            cell = [ZZTMulWordListCell  mulWordListCellWith:tableView NSString:@"1"];
-            cell.string = self.ctDetail.type;
-            cell.model = model;
-        }else{
-            cell = [ZZTMulWordListCell  mulWordListCellWith:tableView NSString:@"2"];
-            cell.string = self.ctDetail.type;
-            cell.model = model;
-        }
+        ZZTMulPlayCell *cell = [tableView dequeueReusableCellWithIdentifier:zztMulPlayCell];
+        cell.str = self.ctDetail.type;
+        cell.isHave = NO;
+        ZZTChapterlistModel *model = self.wordList[0];
+        cell.xuHuaModel = model;
+        cell.selectionStyle = UITableViewCellAccessoryNone;
+        return cell;
     }
-    return cell;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -278,13 +300,17 @@ NSString *zztMulWordListCell = @"zztMulWordListCell";
     }
     [self.navigationController pushViewController:cartoonDetailVC animated:YES];
 }
+
 -(void)loadAttention:(ZZTChapterlistModel *)model{
     NSDictionary *dic = @{
                           @"userId":@"1",
                           @"authorId":model.userId
                           };
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"record/ifUserAtAuthor"] parameters:dic success:^(id responseObject) {
-    } failure:^(NSError *error) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"record/ifUserAtAuthor"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
     }];
 }
 
@@ -322,13 +348,23 @@ NSString *zztMulWordListCell = @"zztMulWordListCell";
     }
     return _descHeadView;
 }
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if(indexPath.section == 0){
-        return 150;
+        if([self.ctDetail.type isEqualToString:@"1"]){
+            return 150;
+        }else{
+            return 120;
+        }
     }else{
-        return 120;
+        if([self.ctDetail.type isEqualToString:@"1"]){
+            return 130;
+        }else{
+            return 100;
+        }
     }
 }
+
 //详情
 -(ZZTCarttonDetailModel *)ctDetail{
     if (!_ctDetail) {
@@ -336,12 +372,13 @@ NSString *zztMulWordListCell = @"zztMulWordListCell";
     }
     return _ctDetail;
 }
+
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:YES];
-
     [self JiXuYueDuTarget];
 }
+
 //判断是否有这个记录
 -(void)JiXuYueDuTarget{
     NSArray *models = [Utilities GetArrayWithPathComponent:@"readHistoryArray"];

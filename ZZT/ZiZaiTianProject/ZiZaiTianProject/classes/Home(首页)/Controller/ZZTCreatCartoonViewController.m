@@ -704,10 +704,12 @@
     self.isAddM = NO;
 //    self.currentRectangleView.isBig = NO;
 }
+
 #pragma mark 发布 未完成
 - (IBAction)commit:(id)sender {
     ZZTRemindView *remindView = [[ZZTRemindView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
     remindView.viewTitle = @"确认发布";
+    self.remindView = remindView;
     remindView.btnBlock = ^(UIButton *btn) {
         [self publish];
         [self.remindView removeFromSuperview];
@@ -745,20 +747,32 @@
     }
     //上传图片
     [self upLoadQiNiuLoad:imageArray];
+}
+
+-(void)uploadingCartoon{
     //说明有内容
     if(self.imageUrlArr.count > 0){
         
+        //上传成功后 才能调这个借口
         NSString *string = [self.imageUrlArr componentsJoinedByString:@","];
+        
         NSDictionary *dic = @{
-                              @"userId":@"1",
-                              @"cartoonId":@"1",
-                              @"chapterCover":string,
-                              @"chapterName":@"1",
-                              @"chapterId":@"1"
+                              @"userId":@"1",//作者  登录用户
+                              @"bookType":_creationData.bookType,//标题
+                              @"bookName":_creationData.bookName,//书名
+                              @"intro":_creationData.intro,//简介
+                              @"cartoonType":_creationData.cartoonType,//类型
+                              @"chapterCover":string,//章节内容
+                              @"cover":@"",//封面
+                              @"chapterName":@"1",//章节名 nil
+                              @"chapterId":@"1",//续画时候传 可为nil
+                              @"chapterPage":@"1",//1 - 16 页码
+                              @"cartoonId":@"1",//续画时
                               };
-        [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"cartoon/insertCartoonChapter"] parameters:dic success:^(id responseObject) {
-            NSLog(@"成功了");
-        } failure:^(NSError *error) {
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/intCartoon"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             
         }];
     }else{
@@ -770,7 +784,6 @@
     [self.cartoonArray removeAllObjects];
     self.currentIndex = 0;
 }
-
 #pragma mark 翻转(方框内内容翻转没做)
 - (IBAction)spin:(id)sender {
     //是当前对象才能被翻转
@@ -1670,6 +1683,7 @@
     imgName = [NSString stringWithFormat:@"%@%@.png",imgName,randomString];
     return imgName;
 }
+
 -(void)upLoadQiNiuLoad:(NSArray *)array{
     //上传七牛云
     for (int i = 0; i < array.count; i++) {
@@ -1685,10 +1699,12 @@
             [self.imageUrlArr removeAllObjects];
             AFNHttpTool *tool = [[AFNHttpTool alloc] init];
             NSString *toke = [tool makeToken:ZZTAccessKey secretKey:ZZTSecretKey];
-            
             [AFNHttpTool putImagePath:filePath key:imgName token:toke complete:^(id objc) {
                 NSLog(@"%@",objc); //  上传成功并获取七牛云的图片地址
                 [self.imageUrlArr addObject:objc];
+                if(array.count == self.imageUrlArr.count){
+                    [self uploadingCartoon];
+                }
             }];
             
         }else{
@@ -1699,7 +1715,6 @@
 -(void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"remove" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"removeRectangleView" object:nil];
-
 }
 
 #pragma mark 素材库
@@ -2076,11 +2091,7 @@
     [self.navigationController setNavigationBarHidden:YES animated:YES];
 }
 
-//- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
-//{
-//    if ([touches anyObject].view != _materialLibraryView) {
-//        // 判断点击的区域如果不是菜单按钮_btnMenu, 则关闭菜单
-//        [_materialLibraryView removeFromSuperview];
-//    }
-//}
+-(void)setCreationData:(ZZTCarttonDetailModel *)creationData{
+    _creationData = creationData;
+}
 @end

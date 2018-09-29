@@ -8,7 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+@class ZZTChapterlistModel;
+
 @interface ZZTMulCreationCell : UITableViewCell
+
+@property (nonatomic,strong) ZZTChapterlistModel *xuHuaModel;
+
+@property (nonatomic,strong) NSString *typeStr;
 
 +(instancetype)mulCreationCellWith:(UITableView *)tableView NSString:(NSString *)string;
 

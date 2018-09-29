@@ -10,6 +10,8 @@
 #import "DCPicScrollViewConfiguration.h"
 #import "DCPicScrollView.h"
 #import "ZZTCartoonBtnCell.h"
+#import "ZZTWordDetailViewController.h"
+#import "ZZTMulWordDetailViewController.h"
 
 @interface ZZTCycleCell()<DCPicScrollViewDelegate,DCPicScrollViewDataSource>
 
@@ -59,11 +61,25 @@
 }
 //轮播点击事件
 - (void)picScrollView:(DCPicScrollView *)picScrollView selectItem:(DCPicItem *)item atIndex:(NSInteger)index {
+//    id
     ZZTCarttonDetailModel *md = [self.dataArray objectAtIndex:index];
     ZZTWordsDetailViewController *wdVC = [[ZZTWordsDetailViewController alloc] init];
-    wdVC.cartoonDetail = md;
-    wdVC.hidesBottomBarWhenPushed = YES;
-    [[self myViewController].navigationController pushViewController:wdVC animated:YES];
+//    wdVC.cartoonDetail = md;
+//    wdVC.hidesBottomBarWhenPushed = YES;
+//    [[self myViewController].navigationController pushViewController:wdVC animated:YES];
+    
+//    //独创
+//    if([md.cartoonType isEqualToString:@"1"]){
+        ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
+        detailVC.cartoonDetail = md;
+        detailVC.hidesBottomBarWhenPushed = YES;
+        [[self myViewController].navigationController pushViewController:detailVC animated:YES];
+//    }else{
+//        ZZTMulWordDetailViewController *detailVC = [[ZZTMulWordDetailViewController alloc]init];
+//        detailVC.cartoonDetail = md;
+//        detailVC.hidesBottomBarWhenPushed = YES;
+//        [[self myViewController].navigationController pushViewController:detailVC animated:YES];
+//    }
 }
 //显示多少轮播图
 - (NSUInteger)numberOfItemsInPicScrollView:(DCPicScrollView *)picScrollView {

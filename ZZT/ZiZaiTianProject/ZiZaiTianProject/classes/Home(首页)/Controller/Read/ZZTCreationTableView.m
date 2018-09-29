@@ -61,8 +61,18 @@ static NSString *caiNiXiHuan = @"caiNiXiHuan";
         [self loadWeiNingTuiJian];
         
         [self loadBannerData];
+        
+        [self setupMJRefresh];
+
     }
     return self;
+}
+
+-(void)setupMJRefresh{
+    self.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        [self loadWeiNingTuiJian];
+        [self loadBannerData];
+    }];
 }
 
 -(void)loadWeiNingTuiJian{
@@ -71,15 +81,17 @@ static NSString *caiNiXiHuan = @"caiNiXiHuan";
                           @"pageNum":@"0",
                           @"pageSize":@"6"
                           };
-    NSString *api = [ZZTAPI stringByAppendingString:@"cartoon/getRecommendCartoon"];
-    [AFNHttpTool POST:api parameters:dic success:^(id responseObject) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getRecommendCartoon"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
         self.caiNiXiHuan = array;
         [self reloadData];
-    } failure:^(NSError *error) {
+        [self.mj_header endRefreshing];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
+    
 }
 
 #pragma mark - tableView代理
@@ -148,15 +160,18 @@ static NSString *caiNiXiHuan = @"caiNiXiHuan";
 
 -(void)loadBannerData{
     weakself(self);
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"homepage/banner"] parameters:nil success:^(id responseObject) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"homepage/banner"] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         NSArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
         weakSelf.bannerModelArray = array;
         [self reloadData];
-    } failure:^(NSError *error) {
+        [self.mj_header endRefreshing];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
 }
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     CGFloat sectionHeaderHeight = self.height * 0.05;  // headerView的高度  向上偏移50   达到隐藏的效果
     if(scrollView.contentOffset.y<=sectionHeaderHeight&&scrollView.contentOffset.y>=0) {

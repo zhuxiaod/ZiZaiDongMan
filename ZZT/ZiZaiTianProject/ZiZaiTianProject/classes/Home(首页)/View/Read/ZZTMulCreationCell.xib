@@ -13,7 +13,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" restorationIdentifier="ZZTMulCreationCellOne" selectionStyle="default" indentationWidth="10" rowHeight="153" id="KGk-i7-Jjw" customClass="ZZTMulCreationCell">
+        <tableViewCell contentMode="scaleToFill" restorationIdentifier="ZZTMulCreationCellOne" selectionStyle="default" indentationWidth="10" rowHeight="153" id="KGk-i7-Jjw" userLabel="MulCreationCell" customClass="ZZTMulCreationCell">
             <rect key="frame" x="0.0" y="0.0" width="320" height="140"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
@@ -152,9 +152,9 @@
                 <outlet property="wordName2" destination="hqF-ci-5VZ" id="wyj-6s-yDP"/>
                 <outlet property="xuZuoNum2" destination="kRa-Pz-NnJ" id="3Vy-4B-2wX"/>
             </connections>
-            <point key="canvasLocation" x="-165" y="-21"/>
+            <point key="canvasLocation" x="-149" y="-34"/>
         </tableViewCell>
-        <tableViewCell contentMode="scaleToFill" restorationIdentifier="ZZTMulCreationCellTwo" selectionStyle="default" indentationWidth="10" rowHeight="111" id="3fX-6A-liZ" customClass="ZZTMulCreationCell">
+        <tableViewCell contentMode="scaleToFill" restorationIdentifier="ZZTMulCreationCellTwo" selectionStyle="default" indentationWidth="10" rowHeight="111" id="3fX-6A-liZ" userLabel="zztMulCreationCell" customClass="ZZTMulCreationCell">
             <rect key="frame" x="0.0" y="0.0" width="320" height="120"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="3fX-6A-liZ" id="Bj2-Dj-ejj">
@@ -297,7 +297,7 @@
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="zjI-jZ-bb4"/>
-            <point key="canvasLocation" x="-165" y="157.5"/>
+            <point key="canvasLocation" x="-149" y="141"/>
         </tableViewCell>
     </objects>
     <resources>

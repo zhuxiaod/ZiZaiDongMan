@@ -209,6 +209,7 @@
 		048C335820E24E1600F69CE1 /* ZZTSettingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 048C335720E24E1600F69CE1 /* ZZTSettingCell.m */; };
 		048C335C20E2540F00F69CE1 /* ZZTCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 048C335B20E2540F00F69CE1 /* ZZTCell.m */; };
 		048C33E820E25E6400F69CE1 /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 048C33E720E25E6400F69CE1 /* UIColor+Hex.m */; };
+		0495D663215F5C8200A10E7B /* ZZTMulPlayCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0495D662215F5C8200A10E7B /* ZZTMulPlayCell.m */; };
 		0498B5D0212CFCFA005BD26D /* CellIdentifierModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0498B5CF212CFCFA005BD26D /* CellIdentifierModel.m */; };
 		0498B5D3212D5E47005BD26D /* ZZTWordDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0498B5D2212D5E47005BD26D /* ZZTWordDetailViewController.m */; };
 		0498B5D7212D8058005BD26D /* ZZTWordListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0498B5D5212D8058005BD26D /* ZZTWordListCell.m */; };
@@ -648,6 +649,8 @@
 		048C33E520E25DB500F69CE1 /* ZiZaiTianProject.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZiZaiTianProject.pch; sourceTree = "<group>"; };
 		048C33E620E25E6400F69CE1 /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
 		048C33E720E25E6400F69CE1 /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
+		0495D661215F5C8200A10E7B /* ZZTMulPlayCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTMulPlayCell.h; sourceTree = "<group>"; };
+		0495D662215F5C8200A10E7B /* ZZTMulPlayCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTMulPlayCell.m; sourceTree = "<group>"; };
 		0498B5CE212CFCFA005BD26D /* CellIdentifierModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CellIdentifierModel.h; path = "ZiZaiTianProject/classes/Home(首页)/Controller/CellIdentifierModel.h"; sourceTree = SOURCE_ROOT; };
 		0498B5CF212CFCFA005BD26D /* CellIdentifierModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CellIdentifierModel.m; path = "ZiZaiTianProject/classes/Home(首页)/Controller/CellIdentifierModel.m"; sourceTree = SOURCE_ROOT; };
 		0498B5D1212D5E47005BD26D /* ZZTWordDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTWordDetailViewController.h; sourceTree = "<group>"; };
@@ -1001,6 +1004,8 @@
 				0498B5E1212E803E005BD26D /* ZZTMulWordListCell.xib */,
 				042769652147F7B400DE238D /* ZZTRemindView.h */,
 				042769662147F7B400DE238D /* ZZTRemindView.m */,
+				0495D661215F5C8200A10E7B /* ZZTMulPlayCell.h */,
+				0495D662215F5C8200A10E7B /* ZZTMulPlayCell.m */,
 			);
 			name = View;
 			path = "ZiZaiTianProject/classes/Home(首页)/View";
@@ -2013,6 +2018,7 @@
 				040A03BD2100201B000FAE13 /* ZZTMoreViewController.m in Sources */,
 				046FF6592101797B005DED73 /* MainTabbar.m in Sources */,
 				0466837D20F3096A0095C6BC /* userAuthenticationIcon.m in Sources */,
+				0495D663215F5C8200A10E7B /* ZZTMulPlayCell.m in Sources */,
 				04D7D1EB20E64D46008D3969 /* EncryptionTools.m in Sources */,
 				0434BC91212C3E4100AC43E0 /* ZZTClassifyViewController.m in Sources */,
 				F7C04C1120DF3FDD0055E7A8 /* ZZTNavigationViewController.m in Sources */,

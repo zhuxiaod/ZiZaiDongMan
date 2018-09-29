@@ -88,4 +88,8 @@
     } return YES;
 }
 
+-(void)setCreationData:(ZZTCarttonDetailModel *)creationData{
+    _creationData = creationData;
+}
+
 @end

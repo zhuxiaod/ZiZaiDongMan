@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@class ZZTCarttonDetailModel;
+
 @interface ZZTWritePlayViewController : UIViewController
+
+@property (nonatomic,strong) ZZTCarttonDetailModel *creationData;
 
 @end
