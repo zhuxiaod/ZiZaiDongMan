@@ -111,6 +111,7 @@ NSString *bannerID = @"MeCell";
     _topView = top;
     top.buttonAction = ^(UIButton *sender) {
         if(sender.tag == 0){
+            //编辑个人资料
             ZZTMeEditViewController *editVC = [[ZZTMeEditViewController alloc] init];
             editVC.hidesBottomBarWhenPushed = YES;
             editVC.model = self.userData;

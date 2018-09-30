@@ -222,6 +222,8 @@ NSString *SuggestionView2 = @"SuggestionView2";
     [searchVC.cancelButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:searchVC];
+    Utilities *tool = [[Utilities alloc] init];
+    [tool setupNavgationStyle:nav];
     [self presentViewController:nav animated:YES completion:nil];
     _searchVC = searchVC;
 }

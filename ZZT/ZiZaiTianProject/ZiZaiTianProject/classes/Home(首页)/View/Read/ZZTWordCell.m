@@ -7,7 +7,8 @@
 //
 
 #import "ZZTWordCell.h"
-#import "ZZTChapterlistModel.h"
+#import "ZZTCarttonDetailModel.h"
+
 @interface ZZTWordCell()
 @property (weak, nonatomic) IBOutlet UIImageView *ctImage;
 @property (weak, nonatomic) IBOutlet UILabel *ctName;
@@ -24,14 +25,14 @@
     self.backgroundColor = [UIColor clearColor];
 }
 
--(void)setModel:(ZZTChapterlistModel *)model{
-    self.ctName.text = model.chapterName;
-    [self.ctImage sd_setImageWithURL:[NSURL URLWithString:model.chapterCover] placeholderImage:[UIImage imageNamed:@"peien"]];
+-(void)setModel:(ZZTCarttonDetailModel *)model{
+    self.ctName.text = model.bookName;
+    [self.ctImage sd_setImageWithURL:[NSURL URLWithString:model.cover] placeholderImage:[UIImage imageNamed:@"peien"]];
     //时间
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss zzz"];
-    NSString *currentDateString = [dateFormatter stringFromDate:model.createdate];
-    self.ctTime.text = currentDateString;
+//    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+//    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss zzz"];
+//    NSString *currentDateString = [dateFormatter stringFromDate:model.createdate];
+//    self.ctTime.text = currentDateString;
     self.praise.text = [NSString stringWithFormat:@"%ld",model.praiseNum];
 }
 @end

@@ -93,6 +93,8 @@ NSString *SuggestionView3 = @"SuggestionView";
     [searchVC.cancelButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:searchVC];
+    Utilities *tool = [[Utilities alloc] init];
+    [tool setupNavgationStyle:nav];
     [self presentViewController:nav animated:YES completion:nil];
     _searchVC = searchVC;
 }
@@ -107,12 +109,13 @@ NSString *SuggestionView3 = @"SuggestionView";
                               @"fuzzy":searchText
                               };
         //添加数据
-        [AFNHttpTool POST:@"http://120.79.178.191:8888/cartoon/queryFuzzy" parameters:dic success:^(id responseObject) {
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/queryFuzzy"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
             NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
             weakSelf.searchSuggestionArray = array;
             [searchViewController.searchSuggestionView reloadData];
-        } failure:^(NSError *error) {
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             
         }];
     }

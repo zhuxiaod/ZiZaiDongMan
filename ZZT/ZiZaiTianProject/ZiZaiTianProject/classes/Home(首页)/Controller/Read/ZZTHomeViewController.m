@@ -17,7 +17,7 @@
 #import "ZZTCarttonDetailModel.h"
 #import "ZZTUpdateViewController.h"
 #import "ZZTCollectView.h"
-@interface ZZTHomeViewController ()<UIScrollViewDelegate,PYSearchViewControllerDelegate,PYSearchViewControllerDataSource,UITableViewDataSource>
+@interface ZZTHomeViewController ()<UIScrollViewDelegate,PYSearchViewControllerDelegate,PYSearchViewControllerDataSource,UITableViewDataSource,UITabBarControllerDelegate>
 
 @property (nonatomic,weak) UIView *customNavBar;
 @property (nonatomic,weak) ListView *listView;
@@ -45,17 +45,8 @@ NSString *SuggestionView = @"SuggestionView";
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
-    //设置导航条的背景图片
-    UIImage *image = [UIImage imageNamed:@"APP架构-作品-顶部渐变条-IOS"];
-    // 设置左边端盖宽度
-    NSInteger leftCapWidth = image.size.width * 0.5;
-    // 设置上边端盖高度
-    NSInteger topCapHeight = image.size.height * 0.5;
-    UIImage *newImage = [image stretchableImageWithLeftCapWidth:leftCapWidth topCapHeight:topCapHeight];
-    [self.navigationController.navigationBar setBackgroundImage:newImage forBarMetrics:UIBarMetricsDefault];
-    
-    self.view.backgroundColor = [UIColor colorWithHexString:@"#58006E"];
-    
+    //设置nav样式
+    [self setupNavgationStyle:self.navigationController];
     //设置Bar
     [self setupNavBar];
     
@@ -69,6 +60,22 @@ NSString *SuggestionView = @"SuggestionView";
     [self setupChildView];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNotification:) name:@"infoNotification" object:nil];
+    
+    //设置tabbar点击
+    self.tabBarController.delegate = self;
+    
+    self.navigationController.fd_prefersNavigationBarHidden = YES;
+
+}
+
+-(void)setupNavgationStyle:(UINavigationController *)nav{
+    UIImage *image = [UIImage imageNamed:@"APP架构-作品-顶部渐变条-IOS"];
+    // 设置左边端盖宽度
+    NSInteger leftCapWidth = image.size.width * 0.5;
+    // 设置上边端盖高度
+    NSInteger topCapHeight = image.size.height * 0.5;
+    UIImage *newImage = [image stretchableImageWithLeftCapWidth:leftCapWidth topCapHeight:topCapHeight];
+    [nav.navigationBar setBackgroundImage:newImage forBarMetrics:UIBarMetricsDefault];
 }
 
 -(void)receiveNotification:(NSNotification *)infoNotification {
@@ -148,6 +155,7 @@ NSString *SuggestionView = @"SuggestionView";
     collectVC.backgroundColor = [UIColor whiteColor];
     self.collectView = collectVC;
     [self.mainView addSubview:collectVC];
+    self.automaticallyAdjustsScrollViewInsets = NO;
 }
 
 #pragma mark - 设置滚动视图
@@ -227,7 +235,8 @@ NSString *SuggestionView = @"SuggestionView";
     [searchVC.cancelButton setTitle:@"取消" forState:UIControlStateNormal];
     [searchVC.cancelButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:searchVC];
+    ZZTNavigationViewController *nav = [[ZZTNavigationViewController alloc] initWithRootViewController:searchVC];
+    [self setupNavgationStyle:nav];
     [self presentViewController:nav animated:YES completion:nil];
     _searchVC = searchVC;
 }
@@ -242,14 +251,16 @@ NSString *SuggestionView = @"SuggestionView";
                               @"fuzzy":searchText
                               };
         //添加数据
-        [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"cartoon/queryFuzzy"] parameters:dic success:^(id responseObject) {
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/queryFuzzy"]  parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
             NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
             weakSelf.searchSuggestionArray = array;
             [searchViewController.searchSuggestionView reloadData];
-        } failure:^(NSError *error) {
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             
         }];
+
     }
 }
 -(NSInteger)numberOfSectionsInSearchSuggestionView:(UITableView *)searchSuggestionView{
@@ -269,9 +280,15 @@ NSString *SuggestionView = @"SuggestionView";
     }
     return cell;
 }
+
 - (CGFloat)searchSuggestionView:(UITableView *)searchSuggestionView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 40.f;
 }
 
+-(void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController{
+    if(tabBarController.selectedIndex == 0 ){
+//        [self setupNavgationStyle];
+    }
+}
 @end

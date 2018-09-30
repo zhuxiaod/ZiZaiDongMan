@@ -15,4 +15,11 @@
     return [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass(self) owner:nil options:nil] firstObject];
 }
 
+- (IBAction)clickBuyZb:(UIButton *)sender {
+    if(self.buttonAction){
+        self.buttonAction(sender);
+    }
+}
+
+
 @end

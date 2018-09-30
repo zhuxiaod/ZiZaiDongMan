@@ -135,13 +135,14 @@
 //请求数据
 -(void)getBookType{
     weakself(self);
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"cartoon/getBookType"] parameters:nil success:^(id responseObject) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getBookType"] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTBookType mj_objectArrayWithKeyValuesArray:dic];
         weakSelf.btnTitleArray = array;
         //创建九宫格button
         [self addTagButton];
-    } failure:^(NSError *error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
 }
@@ -258,11 +259,13 @@
                           @"type":self.type
                           };
 //    AFNHttpTool *tool = [AFNHttpTool sharedHttpSession];
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"cartoon/intCartoon"] parameters:dic success:^(id responseObject) {
-        NSLog(@"@@@%@",responseObject);
-    } failure:^(NSError *error) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/intCartoon"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
+
     ZZTCarttonDetailModel *creationData = [[ZZTCarttonDetailModel alloc] init];
     creationData.userId = @"1";
     creationData.bookType = string;

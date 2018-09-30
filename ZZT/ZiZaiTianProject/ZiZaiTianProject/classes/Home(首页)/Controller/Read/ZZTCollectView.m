@@ -7,6 +7,9 @@
 //
 
 #import "ZZTCollectView.h"
+#import "ZZTWordDetailViewController.h"
+#import "ZZTMulWordDetailViewController.h"
+#import "ZZTCartonnPlayModel.h"
 @interface ZZTCollectView()<UICollectionViewDelegate,UICollectionViewDataSource>
 
 @property (nonatomic,strong) UICollectionView *collectionView;
@@ -42,13 +45,14 @@
     NSDictionary *dic = @{
                           @"userId":@"1"
                           };
-
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"great/userCollect"] parameters:dic success:^(id responseObject) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"great/userCollect"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTCartonnPlayModel mj_objectArrayWithKeyValuesArray:dic];
+//        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
         self.cartoons = array;
         [self.collectionView reloadData];
-    } failure:^(NSError *error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
 }
@@ -91,4 +95,20 @@
     cell.cartoon = car;
     return cell;
 }
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+//    ZZTCartonnPlayModel *md = self.cartoons[indexPath.row];
+//    if([md.cartoonType isEqualToString:@"1"]){
+//        ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
+//        detailVC.cartoonDetail = md;
+//        detailVC.hidesBottomBarWhenPushed = YES;
+//        [[self myViewController].navigationController pushViewController:detailVC animated:YES];
+//    }else{
+//        ZZTMulWordDetailViewController *detailVC = [[ZZTMulWordDetailViewController alloc]init];
+//        detailVC.cartoonDetail = md;
+//        detailVC.hidesBottomBarWhenPushed = YES;
+//        [[self myViewController].navigationController pushViewController:detailVC animated:YES];
+//    }
+}
+
 @end

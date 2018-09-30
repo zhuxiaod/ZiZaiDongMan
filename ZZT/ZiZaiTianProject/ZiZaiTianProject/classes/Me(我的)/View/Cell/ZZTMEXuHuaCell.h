@@ -1,8 +1,8 @@
 //
-//  ZZTTopUpView.h
+//  ZZTMEXuHuaCell.h
 //  ZiZaiTianProject
 //
-//  Created by mac on 2018/8/27.
+//  Created by mac on 2018/9/30.
 //  Copyright © 2018年 zxd. All rights reserved.
 //
 
@@ -10,10 +10,8 @@
 
 typedef void (^xuHuaBtnBlock) (UIButton *sender);
 
-@interface ZZTTopUpView : UIView
+@interface ZZTMEXuHuaCell : UITableViewCell
 
 @property (nonatomic,copy) xuHuaBtnBlock buttonAction;
-
-+(instancetype)TopUpView;
 
 @end

@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "DCPagerController.h"
 
-@interface ZZTUpdateViewController : DCPagerController
+@interface ZZTUpdateViewController : BaseViewController
 
 @end

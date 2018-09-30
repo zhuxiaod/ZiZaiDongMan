@@ -11,8 +11,9 @@
 #import "ZZTMyZoneCell.h"
 #import "ZZTCreationCartoonTypeViewController.h"
 #import "ZZTMyZoneHeaderView.h"
+#import "ZZTMEXuHuaCell.h"
 
-static const CGFloat MJDuration = 2.0;
+static const CGFloat MJDuration = 1.0;
 
 @interface ZZTMyZoneViewController ()<UITableViewDataSource,UITableViewDelegate>
 
@@ -24,6 +25,8 @@ static const CGFloat MJDuration = 2.0;
 @end
 
 NSString *myZoneCell = @"myZoneCell";
+
+NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
 
 @implementation ZZTMyZoneViewController
 
@@ -45,6 +48,8 @@ NSString *myZoneCell = @"myZoneCell";
     _tabelView.delegate = self;
     _tabelView.dataSource = self;
     [_tabelView registerClass:[UITableViewCell class] forCellReuseIdentifier:myZoneCell];
+    [_tabelView registerClass:[ZZTMEXuHuaCell class] forCellReuseIdentifier:zztMEXuHuaCell];
+
     [self.view addSubview:_tabelView];
     
     //头视图
@@ -70,32 +75,14 @@ NSString *myZoneCell = @"myZoneCell";
 -(void)loadData{
     //请求世界数据
     NSDictionary *dic = @{
-//                          @"pageNum":self.pageNumber,
-                        @"pageNum":@"0",
+                          @"pageNum":self.pageNumber,
+//                        @"pageNum":@"0",
                           @"pageSize":@"3",
 //                          @"userId":[[NSUserDefaults standardUserDefaults]objectForKey:@"userId"]
                           @"userId":@"3"
                           };
-//    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"circle/selUserRoom"] parameters:dic success:^(id responseObject) {
-//        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-//        id to = [dic objectForKey:@"total"];
-//        NSInteger total = [to integerValue];
-//        self.total = total;
-//        NSArray *list = [dic objectForKey:@"list"];
-//        NSMutableArray *array = [ZZTMyZoneModel mj_objectArrayWithKeyValuesArray:list];
-//        [self.dataArray addObjectsFromArray:array];
-//        [self.tabelView reloadData];
-//        if(self.dataArray.count >= total){
-//            [self.tabelView.mj_footer endRefreshingWithNoMoreData];
-//        }else{
-//            [self.tabelView.mj_footer endRefreshing];
-//        }
-//        //page+size
-//        self.pageNumber = [NSString stringWithFormat:@"%ld",([self.pageNumber integerValue] + 3)];
-//    } failure:^(NSError *error) {
-//
-//    }];
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"circle/selUserRoom"] parameters:dic success:^(id responseObject) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"circle/selUserRoom"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         id to = [dic objectForKey:@"total"];
         NSInteger total = [to integerValue];
@@ -111,11 +98,9 @@ NSString *myZoneCell = @"myZoneCell";
         }
         //page+size
         self.pageNumber = [NSString stringWithFormat:@"%ld",([self.pageNumber integerValue] + 3)];
-    } failure:^(NSError *error) {
-    
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
     }];
-//    AFNHttpTool *aaa = [AFNHttpTool sharedHttpSession];
-//   [aaa POST:<#(NSString *)#> parameters:<#(NSDictionary *)#> success:<#^(id responseObject)success#> failure:<#^(NSError *error)failure#>]
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -135,22 +120,10 @@ NSString *myZoneCell = @"myZoneCell";
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:myZoneCell];
         if(indexPath.row == 0){
-            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:myZoneCell];
-            //今天
-            UILabel *dateLab = [GlobalUI createLabelFont:25 titleColor:[UIColor blackColor] bgColor:[UIColor whiteColor]];
-            dateLab.frame = CGRectMake(10, 10, 100, 30);
-            dateLab.text = @"今天";
-            [cell.contentView addSubview:dateLab];
-            //编写button
-            UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(20, CGRectGetMaxY(dateLab.frame) + 10, 80, 80)];
-            button.backgroundColor = [UIColor greenColor];
-            [button setBackgroundImage:[UIImage imageNamed:@"正文-续"] forState:UIControlStateNormal];
-            [button addTarget:self action:@selector(startCreate) forControlEvents:UIControlEventTouchUpInside];
-            [cell.contentView addSubview:button];
-            //底线
-            UIView *bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(button.frame), SCREEN_WIDTH, 1)];
-            bottomView.backgroundColor = [UIColor grayColor];
-            [cell.contentView addSubview:bottomView];
+            ZZTMEXuHuaCell *cell = [tableView dequeueReusableCellWithIdentifier:zztMEXuHuaCell];
+            cell.buttonAction = ^(UIButton *sender) {
+                [self startCreate];
+            };
             return cell;
         }else{
             ZZTMyZoneCell * cell = [ZZTMyZoneCell dynamicCellWithTable:tableView];
@@ -163,6 +136,7 @@ NSString *myZoneCell = @"myZoneCell";
     ZZTCreationCartoonTypeViewController *view = [[ZZTCreationCartoonTypeViewController alloc] init];
     [self.navigationController pushViewController:view animated:YES];
 }
+
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return 280;
 }

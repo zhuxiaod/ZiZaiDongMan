@@ -63,16 +63,16 @@ static NSString *collectionID = @"collectionID";
     NSDictionary *paramDict = @{
                                 @"userId":@"1",
                                 };
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"great/userCollect"] parameters:paramDict success:^(id responseObject) {
-        
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-        NSArray *array = [ZZTCartonnPlayModel mj_objectArrayWithKeyValuesArray:dic];
-        self.cartoons = array;
-        [self.collectionView reloadData];
-        
-    } failure:^(NSError *error) {
-        
-    }];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"great/userCollect"] parameters:paramDict progress:nil
+          success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+              NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+              NSArray *array = [ZZTCartonnPlayModel mj_objectArrayWithKeyValuesArray:dic];
+              self.cartoons = array;
+              [self.collectionView reloadData];
+          } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+              
+          }];
 }
 
 #pragma mark - 创建流水布局

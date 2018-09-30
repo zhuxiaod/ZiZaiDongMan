@@ -43,9 +43,6 @@
     return fileName;
 }
 
-
-
-
 +(UIColor *)calculatePointInView:(CGPoint)point colorFrame:(CGRect)colorFrame brightness:(CGFloat)brightness alpha:(CGFloat)alpha{
     
     CGPoint center=CGPointMake(colorFrame.size.width/2,colorFrame.size.height/2);  // 中心点
@@ -68,5 +65,14 @@
     UIColor *color=[UIColor colorWithHue:currentHSV.h saturation:currentHSV.s brightness:brightness alpha:alpha];
 
     return color;
+}
+-(void)setupNavgationStyle:(UINavigationController *)nav{
+    UIImage *image = [UIImage imageNamed:@"APP架构-作品-顶部渐变条-IOS"];
+    // 设置左边端盖宽度
+    NSInteger leftCapWidth = image.size.width * 0.5;
+    // 设置上边端盖高度
+    NSInteger topCapHeight = image.size.height * 0.5;
+    UIImage *newImage = [image stretchableImageWithLeftCapWidth:leftCapWidth topCapHeight:topCapHeight];
+    [nav.navigationBar setBackgroundImage:newImage forBarMetrics:UIBarMetricsDefault];
 }
 @end

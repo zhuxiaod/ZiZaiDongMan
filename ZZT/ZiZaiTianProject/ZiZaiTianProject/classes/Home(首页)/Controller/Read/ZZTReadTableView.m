@@ -74,6 +74,9 @@ static NSString *caiNiXiHuan = @"caiNiXiHuan";
         [self loadBannerData];
         
         [self setupMJRefresh];
+        
+//        self.automaticallyAdjustsScrollViewInsets = NO;
+
     }
     return self;
 }
@@ -117,6 +120,7 @@ static NSString *caiNiXiHuan = @"caiNiXiHuan";
         
     }];
 }
+
 #pragma mark - tableView代理
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 3;

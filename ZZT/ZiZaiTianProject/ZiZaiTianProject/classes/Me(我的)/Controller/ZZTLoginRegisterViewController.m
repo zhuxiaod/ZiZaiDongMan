@@ -55,9 +55,6 @@
 //获取验证码
 -(void)verificationButtonClick:(UIButton *)button
 {
-    //提醒电话号码 位数不够
-    
-    
     //验证码
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     [manager.requestSerializer setValue:@"text/xml; charset=ut-8" forHTTPHeaderField:@"Content-Type"];
@@ -78,11 +75,11 @@
 //        [defaults setObject: cookiesData forKey:@"Set-Cookie"];
 //        [defaults synchronize];
 //
-        [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"login/sendMsg"] parameters:paramDict success:^(id responseObject) {
-
-        } failure:^(NSError *error) {
-            
-        }];
+    [manager POST:[ZZTAPI stringByAppendingString:@"login/sendMsg"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
 //        //取cookie
 //        NSArray * cookies = [NSKeyedUnarchiver unarchiveObjectWithData: [[NSUserDefaults standardUserDefaults] objectForKey:@"Set-Cookie"]];
 //        NSHTTPCookieStorage * cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage]; for (NSHTTPCookie * cookie in cookies){
@@ -103,7 +100,6 @@
 //
 //
 //    }
-
     NSLog(@"%@",self.loginView.phoneNumber);
 }
 -(void)loginButtonClick:(UIButton *)button{
@@ -112,11 +108,11 @@
                                     @"checkCode":self.loginView.verification.text
                                     };
 
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"login/loginApp"] parameters:paramDict success:^(id responseObject) {
-        
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"login/loginApp"]  parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [self loginAfterLoadUserDataWith:responseObject];
-        
-    } failure:^(NSError *error) {
+
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
 }
@@ -240,10 +236,10 @@
                                       @"sex":userInfo.unionGender,
                                       @"headimg":userInfo.iconurl
                                       };
-                
-                [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"login/thirdPartyLogin"] parameters:dic success:^(id responseObject) {
+                AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+                [manager POST:[ZZTAPI stringByAppendingString:@"login/thirdPartyLogin"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                     [self loginAfterLoadUserDataWith:responseObject];
-                } failure:^(NSError *error) {
+                } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
 
                 }];
             }

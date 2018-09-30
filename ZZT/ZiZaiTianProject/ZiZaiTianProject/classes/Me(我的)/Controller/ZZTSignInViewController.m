@@ -104,10 +104,11 @@
     NSDictionary *paramDict = @{
                                 @"userId":self.userData.userId
                                 };
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"record/userSign"] parameters:paramDict success:^(id responseObject) {
-
-    } failure:^(NSError *error) {
-
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"record/userSign"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
     }];
 }
 
@@ -115,14 +116,15 @@
     NSDictionary *paramDict = @{
                                 @"userId":@"1"
                                 };
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"login/usersInfo"] parameters:paramDict success:^(id responseObject) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"login/usersInfo"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         NSLog(@"%@",dic);
         NSArray *array = [ZZTUserModel mj_objectArrayWithKeyValuesArray:dic];
         ZZTUserModel *model = array[0];
         self.userData = model;
         [self isget:model.signCount isSign:model.ifsign];
-    } failure:^(NSError *error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
 }

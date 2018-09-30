@@ -22,4 +22,6 @@
 + (NSString *)fileWithPathComponent:(NSString *)path;
 
 +(UIColor *)calculatePointInView:(CGPoint)point colorFrame:(CGRect)colorFrame brightness:(CGFloat)brightness alpha:(CGFloat)alpha;
+
+-(void)setupNavgationStyle:(UINavigationController *)nav;
 @end

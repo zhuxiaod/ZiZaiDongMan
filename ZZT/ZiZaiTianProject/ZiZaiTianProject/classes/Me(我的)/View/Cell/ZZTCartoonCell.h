@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 @class ZZTCartonnPlayModel;
+
 @interface ZZTCartoonCell : UICollectionViewCell
 
 @property (nonatomic,strong)ZZTCartonnPlayModel *cartoon;

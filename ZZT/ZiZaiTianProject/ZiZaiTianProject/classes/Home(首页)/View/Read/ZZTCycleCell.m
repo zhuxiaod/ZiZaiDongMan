@@ -12,18 +12,20 @@
 #import "ZZTCartoonBtnCell.h"
 #import "ZZTWordDetailViewController.h"
 #import "ZZTMulWordDetailViewController.h"
+#import "SDCycleScrollView.h"
+@interface ZZTCycleCell()<DCPicScrollViewDelegate,DCPicScrollViewDataSource,SDCycleScrollViewDelegate>
 
-@interface ZZTCycleCell()<DCPicScrollViewDelegate,DCPicScrollViewDataSource>
+@property (nonatomic,strong)NSMutableArray *imageArray;
 
 @end
 
 @implementation ZZTCycleCell
 
--(void)setIsTime:(BOOL)isTime{
-    _isTime = isTime;
-    if(isTime == YES){
-        [self.ps.timer begin];
+-(NSMutableArray *)imageArray{
+    if(!_imageArray){
+        _imageArray = [NSMutableArray array];
     }
+    return _imageArray;
 }
 
 -(void)setDataArray:(NSArray *)dataArray{
@@ -33,61 +35,34 @@
 
 #pragma mark 设置无线轮播器
 - (void)setupPicScrollView {
+    if(self.dataArray.count != 0){
+        [self.imageArray removeAllObjects];
+        for (int i = 0; i < self.dataArray.count; i++) {
+            ZZTCarttonDetailModel *md = [self.dataArray objectAtIndex:i];
+            [self.imageArray addObject:md.cover];
+        }
+    }
     //轮播器模型
-    DCPicScrollViewConfiguration *pcv = [DCPicScrollViewConfiguration defaultConfiguration];
-    //居中
-    pcv.pageAlignment = PageContolAlignmentCenter;
-    pcv.itemConfiguration.contentMode =  UIViewContentModeScaleToFill;
-    //创建轮播器
-    _ps = [DCPicScrollView picScrollViewWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, (SCREEN_HEIGHT - navHeight +20)*0.4) withConfiguration:pcv withDataSource:self];
+    SDCycleScrollView *cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, (SCREEN_HEIGHT - navHeight +20)*0.4) delegate:self placeholderImage:[UIImage imageNamed:@"peien"]];
+        //数组
+    cycleScrollView.imageURLStringsGroup = self.imageArray;
+    cycleScrollView.autoScrollTimeInterval = 5.0f;// 自动滚动时间间隔
     
-    _ps.delegate = self;
-    _ps.dataSource = self;
-    [self addSubview:_ps];
-    //暂停
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pause:)name:@"tongzhi" object:nil];
+    [self addSubview:cycleScrollView];
 }
-
--(void)pause:(NSNotification *)dic{
-    [self.ps.timer pause];
-}
-
-#pragma mark 无线轮播器代理方法
-- (void)picScrollView:(DCPicScrollView *)picScrollView needUpdateItem:(DCPicItem *)item atIndex:(NSInteger)index {
-    //数据
+- (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index{
     ZZTCarttonDetailModel *md = [self.dataArray objectAtIndex:index];
-    
-    [item.imageView sd_setImageWithURL:[NSURL URLWithString:md.cover] placeholderImage:[UIImage imageNamed:@"peien"]];
-}
-//轮播点击事件
-- (void)picScrollView:(DCPicScrollView *)picScrollView selectItem:(DCPicItem *)item atIndex:(NSInteger)index {
-//    id
-    ZZTCarttonDetailModel *md = [self.dataArray objectAtIndex:index];
-    ZZTWordsDetailViewController *wdVC = [[ZZTWordsDetailViewController alloc] init];
-//    wdVC.cartoonDetail = md;
-//    wdVC.hidesBottomBarWhenPushed = YES;
-//    [[self myViewController].navigationController pushViewController:wdVC animated:YES];
-    
-//    //独创
-//    if([md.cartoonType isEqualToString:@"1"]){
+    if([md.cartoonType isEqualToString:@"1"]){
         ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
         detailVC.cartoonDetail = md;
         detailVC.hidesBottomBarWhenPushed = YES;
         [[self myViewController].navigationController pushViewController:detailVC animated:YES];
-//    }else{
-//        ZZTMulWordDetailViewController *detailVC = [[ZZTMulWordDetailViewController alloc]init];
-//        detailVC.cartoonDetail = md;
-//        detailVC.hidesBottomBarWhenPushed = YES;
-//        [[self myViewController].navigationController pushViewController:detailVC animated:YES];
-//    }
-}
-//显示多少轮播图
-- (NSUInteger)numberOfItemsInPicScrollView:(DCPicScrollView *)picScrollView {
-    return self.dataArray.count;
-}
-
--(void)dealloc{
-    NSLog(@"gun");
+    }else{
+        ZZTMulWordDetailViewController *detailVC = [[ZZTMulWordDetailViewController alloc]init];
+        detailVC.cartoonDetail = md;
+        detailVC.hidesBottomBarWhenPushed = YES;
+        [[self myViewController].navigationController pushViewController:detailVC animated:YES];
+    }
 }
 
 @end

@@ -163,10 +163,10 @@
                           @"birthday":self.birthday,
                           @"headimg":self.headImg
                           };
-    
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"login/upUser"] parameters:dic success:^(id responseObject) {
-        NSLog(@"ok");
-    } failure:^(NSError *error) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"login/upUser"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
 }

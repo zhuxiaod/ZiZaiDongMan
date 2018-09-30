@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-@class ZZTChapterlistModel;
+@class ZZTCarttonDetailModel;
 @interface ZZTWordCell : UITableViewCell
-@property(nonatomic,strong) ZZTChapterlistModel *model;
+@property(nonatomic,strong) ZZTCarttonDetailModel *model;
 @end

@@ -57,6 +57,7 @@
 #import "NSDate+Extension.h"
 #import "ToolBtn.h"
 #define imageHost @"p872ue3rt.bkt.clouddn.com"
+#import <JGProgressHUD.h>
 
 #define detailViewHeaderHeight 60
 #define ZZTAccessKey @"otsMMnYSaZw9UgT-OUFSc46m3UOVaqr-ysR07Dwq"

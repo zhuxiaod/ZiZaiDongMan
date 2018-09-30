@@ -127,14 +127,15 @@
     NSDictionary *paramDict = @{
                                 @"id":@"1"
                                 };
-    [AFNHttpTool POST:@"http://192.168.0.165:8888/cartoon/cartoonImg" parameters:paramDict success:^(id responseObject) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonImg"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSString *data = responseObject[@"result"];
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:data];
         NSArray *array = [ZZTCartoonModel mj_objectArrayWithKeyValuesArray:dic];
         weakSelf.cartoonDetail = array;
         weakSelf.secondCartoonDetail.cartoonDetail = array;
         [weakSelf.secondCartoonDetail reloadData];
-    } failure:^(NSError *error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
 }

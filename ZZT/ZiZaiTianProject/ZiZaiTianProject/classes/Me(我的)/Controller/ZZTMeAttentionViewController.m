@@ -74,12 +74,13 @@ static NSString *AttentionCell = @"AttentionCell";
     NSDictionary *paramDict = @{
                                 @"userId":self.user.userId,
                                 };
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"record/selUserAttention"] parameters:paramDict success:^(id responseObject) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"record/selUserAttention"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         NSArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
         self.cartoons = array;
         [self.collectionView reloadData];
-    } failure:^(NSError *error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
 }
@@ -139,13 +140,12 @@ static NSString *AttentionCell = @"AttentionCell";
                           @"userId":self.user.userId,
                           @"authorId":[NSString stringWithFormat:@"%ld",(long)user.id]
                           };
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"record/delUserAttention"] parameters:dic success:^(id responseObject) {
-      //调查询
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"record/delUserAttention"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [self loadData];
-    } failure:^(NSError *error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
-
 }
 //加载数据
 -(void)viewWillAppear:(BOOL)animated{

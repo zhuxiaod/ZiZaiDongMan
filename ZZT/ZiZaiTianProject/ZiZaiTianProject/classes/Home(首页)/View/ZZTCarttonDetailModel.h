@@ -36,6 +36,8 @@
 @property (nonatomic,assign) NSInteger commentNum;
 
 @property (nonatomic,assign) BOOL isHave;
+//补充
+@property (nonatomic,strong) NSString *chapterCover;
 
 
 

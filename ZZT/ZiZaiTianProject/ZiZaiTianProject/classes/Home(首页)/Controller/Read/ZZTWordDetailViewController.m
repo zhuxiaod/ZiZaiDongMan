@@ -49,6 +49,8 @@ NSString *zztWordListCell = @"zztWordListCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.navigationController.fd_prefersNavigationBarHidden = YES;
+    
     self.isHave = NO;
 
     self.view.backgroundColor = [UIColor whiteColor];
@@ -211,7 +213,7 @@ NSString *zztWordListCell = @"zztWordListCell";
     
     self.head = head;
     //设置数据
-    self.head.detailModel = self.cartoonDetail;
+//    self.head.detailModel = self.cartoonDetail;
     
     //先让数据显示
     [contenView registerNib:[UINib nibWithNibName:@"ZZTWordListCell" bundle:nil] forCellReuseIdentifier:zztWordListCell];
@@ -268,8 +270,11 @@ NSString *zztWordListCell = @"zztWordListCell";
                           @"userId":@"1",
                           @"authorId":model.userId
                           };
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"record/ifUserAtAuthor"] parameters:dic success:^(id responseObject) {
-    } failure:^(NSError *error) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"record/ifUserAtAuthor"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
     }];
 }
 

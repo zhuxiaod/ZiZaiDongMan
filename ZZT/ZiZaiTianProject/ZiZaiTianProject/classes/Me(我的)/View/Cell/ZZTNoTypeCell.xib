@@ -30,10 +30,10 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KiB-F6-djr">
-                        <rect key="frame" x="262" y="11" width="42" height="21"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KiB-F6-djr">
+                        <rect key="frame" x="234" y="11" width="60" height="21"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="21" id="Scq-YB-d15"/>
+                            <constraint firstAttribute="width" constant="60" id="gfR-pR-htD"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" red="0.7843137255" green="0.80784313730000001" blue="0.89019607840000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -41,13 +41,13 @@
                     </label>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="KiB-F6-djr" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="0P6-TS-wEC"/>
-                    <constraint firstItem="KiB-F6-djr" firstAttribute="leading" secondItem="nxG-y2-px2" secondAttribute="trailing" constant="39" id="857-Xy-yhE"/>
-                    <constraint firstItem="KiB-F6-djr" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="DHg-JP-Q4L"/>
+                    <constraint firstItem="KiB-F6-djr" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="OgX-m0-SPD"/>
                     <constraint firstItem="nxG-y2-px2" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="1" id="RqM-0m-abf"/>
                     <constraint firstItem="nxG-y2-px2" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="Wqt-nW-hEO"/>
+                    <constraint firstItem="KiB-F6-djr" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" constant="-10" id="f1i-fx-vaB"/>
                     <constraint firstItem="nxG-y2-px2" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="ik3-fU-XCN"/>
                     <constraint firstItem="nxG-y2-px2" firstAttribute="bottom" secondItem="H2p-sc-9uM" secondAttribute="bottomMargin" id="n5n-n2-GC8"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="KiB-F6-djr" secondAttribute="bottom" constant="1" id="x5U-jk-rR6"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="aW0-zy-SZf"/>

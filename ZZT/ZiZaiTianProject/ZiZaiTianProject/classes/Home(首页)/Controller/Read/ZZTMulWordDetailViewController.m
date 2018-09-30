@@ -91,6 +91,8 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
 
 //    self.rr_navHidden = YES;
     
+    self.fd_prefersNavigationBarHidden = YES;
+//    self.fd_interactivePopDisabled = no;
     self.view.backgroundColor = [UIColor colorWithHexString:@"#823BE0"];
 
     //设置顶部页面
@@ -188,6 +190,7 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         ZZTCarttonDetailModel *mode = [ZZTCarttonDetailModel mj_objectWithKeyValues:dic];
         self.ctDetail = mode;
+        self.head.detailModel = mode;
         [self.contentView reloadData];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"error:%@",error);
@@ -233,16 +236,17 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
                               @"cartoonId":detailModel.id,
                               @"userId":[NSString stringWithFormat:@"%ld",userInfo.id]
                               };
-        [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"great/collects"] parameters:dic success:^(id responseObject) {
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        [manager POST:[ZZTAPI stringByAppendingString:@"great/collects"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             
-        } failure:^(NSError *error) {
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             
         }];
     };
     
     self.head = head;
     //设置数据
-    self.head.detailModel = self.cartoonDetail;
+//    self.head.detailModel = self.cartoonDetail;
     //先让数据显示
     [contenView registerClass:[ZZTMulPlayCell class] forCellReuseIdentifier:zztMulPlayCell];
 
@@ -375,7 +379,7 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
     [self JiXuYueDuTarget];
 }
 

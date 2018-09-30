@@ -11,10 +11,12 @@
 #import "ZZTNoTypeCell.h"
 #import "ZZTExitCell.h"
 #import "ZZTSettingModel.h"
+#import "ProgressHUD.h"
+#import <SDImageCache.h>
 
 @interface ZZTSettingViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (strong, nonatomic)  UITableView *tableView;
-
+@property (strong,nonatomic) ZZTNoTypeCell *cell;
 //@property (weak, nonatomic) IBOutlet UIButton *backBtn;
 
 @property (nonatomic,strong)NSMutableArray *array1;
@@ -22,6 +24,8 @@
 @property (nonatomic,strong)NSArray *array2;
 
 @property (nonatomic,strong)NSArray *array3;
+
+@property (nonatomic,strong) NSString *cacheSize;
 
 @end
 
@@ -60,12 +64,15 @@ NSString *ExitCell = @"ExitCell";
     [super viewDidLoad];
     self.navigationItem.title = @"设置";
     
+    [self reloadCacheSize];
+
     //创建tableView
     [self setupTableView];
     //注册Cell
     [self registerCell];
     //title数据
     [self titleData];
+
 }
 #pragma mark - tableView
 -(void)setupTableView{
@@ -164,7 +171,8 @@ NSString *ExitCell = @"ExitCell";
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             cell.cellLab.text = self.array3[indexPath.row];
-            cell.cache.text = @"39.6";
+            cell.cache.text = self.cacheSize;
+            _cell = cell;
             return cell;
         }else if (indexPath.row == 4) {
             ZZTExitCell *cell = [tableView dequeueReusableCellWithIdentifier:ExitCell];
@@ -180,15 +188,39 @@ NSString *ExitCell = @"ExitCell";
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if(indexPath.section == 3){
-        if(indexPath.row == 4){
+        if(indexPath.row == 0){
+            weakself(self);
+            
+            dissmissCallBack dissmiss = [ProgressHUD showProgressWithStatus:@"清理中" inView:self.view];
+            [[SDImageCache sharedImageCache] clearDiskOnCompletion:^{
+                dissmiss();
+                [weakSelf reloadCacheSize];
+                [ProgressHUD showSuccessWithStatus:@"清理完毕" inView:weakSelf.view];
+                
+            }];
+        }else if(indexPath.row == 4){
             //退出账号
-            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-            [defaults setObject:@"" forKey:@"userId"];
-            [defaults synchronize];
+            UserInfo *user = [[UserInfo alloc] init];
+            user.userId = @"";
+            [Utilities SetNSUserDefaults:user];
+            NSLog(@"user:%@",user);
+//            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//            [defaults setObject:@"" forKey:@"userId"];
+//            [defaults synchronize];
             //退出页面
             [self.navigationController popViewControllerAnimated:YES];
         }
     }
+}
+
+- (void)reloadCacheSize {
+    
+    [[SDImageCache sharedImageCache] calculateSizeWithCompletionBlock:^(NSUInteger fileCount, NSUInteger totalSize) {
+        NSInteger mb = totalSize / 1024 / 1024;
+        self.cacheSize = [NSString stringWithFormat:@"%zdMB",mb];
+        [self.tableView reloadData];
+    }];
+    
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {

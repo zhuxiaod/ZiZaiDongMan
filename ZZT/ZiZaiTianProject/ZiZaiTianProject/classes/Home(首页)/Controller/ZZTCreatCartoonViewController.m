@@ -1275,9 +1275,10 @@
                           @"fodderImg":image,
                           @"fodderType":type
                           };
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"fodder/insertUserFodderCollect"] parameters:dic success:^(id responseObject) {
-        NSLog(@"收藏成功");
-    } failure:^(NSError *error) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"fodder/insertUserFodderCollect"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
 }
@@ -1576,12 +1577,13 @@
                                 @"modelType":modelType,
                                 @"modelSubtype":modelSubtype
                                 };
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"fodder/fodderList"] parameters:parameter success:^(id responseObject) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"fodder/fodderList"] parameters:parameter progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTFodderListModel mj_objectArrayWithKeyValuesArray:dic];
         self.dataSource = array;
         self.materialLibraryView.dataSource = array;
-    } failure:^(NSError *error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
 }
@@ -2077,12 +2079,13 @@
                                 @"userId":@"1",
                                 @"fodderType":type
                                 };
-    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"fodder/getFodderCollectInfo"] parameters:parameter success:^(id responseObject) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"fodder/getFodderCollectInfo"] parameters:manager progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTFodderListModel mj_objectArrayWithKeyValuesArray:dic];
         self.dataSource = array;
         self.materialLibraryView.dataSource = array;
-    } failure:^(NSError *error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
 }
