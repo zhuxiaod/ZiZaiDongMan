@@ -9,6 +9,25 @@
 #import "RectangleView.h"
 #import "UIView+Extension.h"
 #import "Masonry.h"
+
+CG_INLINE CGPoint CGRectGetCenter(CGRect rect)
+{
+    return CGPointMake(CGRectGetMidX(rect), CGRectGetMidY(rect));
+}
+CG_INLINE CGFloat CGPointGetDistance(CGPoint point1, CGPoint point2)
+{
+    //Saving Variables.
+    CGFloat fx = (point2.x - point1.x);
+    CGFloat fy = (point2.y - point1.y);
+    
+    return sqrt((fx*fx + fy*fy));
+}
+
+CG_INLINE CGFloat CGAffineTransformGetAngle(CGAffineTransform t)
+{
+    return atan2(t.b, t.a);
+}
+
 @interface RectangleView (){
     //当前的比例
     CGFloat currentProportion;
@@ -28,6 +47,11 @@
     CGPoint _startTouchPoint;
     CGPoint _startTouchCenter;
     CGAffineTransform lastTransform;
+    
+    CGFloat deltaAngle;
+    CGRect initialBounds;
+    CGFloat initialDistance;
+    CGPoint prevPoint;
 }
 
 @property (nonatomic,weak) UIView *topBorder;
@@ -38,6 +62,10 @@
 @property (nonatomic,strong) UIPanGestureRecognizer *click2;
 @property (nonatomic,strong) UIPanGestureRecognizer *click3;
 @property (nonatomic,strong) UIPanGestureRecognizer *click4;
+@property (nonatomic,strong) UIPanGestureRecognizer *angle1;
+@property (nonatomic,strong) UIPanGestureRecognizer *angle2;
+@property (nonatomic,strong) UIPanGestureRecognizer *angle3;
+@property (nonatomic,strong) UIPanGestureRecognizer *angle4;
 @property (nonatomic,strong) UIButton *centerBtn;
 @property (nonatomic,strong) UIPinchGestureRecognizer *PinchGestureRecognizer;
 @property (nonatomic,assign) CGFloat scale;
@@ -233,6 +261,27 @@ int i = 0;
     bottomBorder.backgroundColor = [UIColor clearColor];
     [self addSubview:bottomBorder];
     
+    //四个角落按钮
+    UIView *leftOne = [[UIView alloc] init];
+    leftOne.tag = 1;
+//    leftOne.backgroundColor = [UIColor yellowColor];
+    [self addSubview:leftOne];
+    
+    UIView *leftTwo = [[UIView alloc] init];
+    leftTwo.tag = 2;
+//    leftTwo.backgroundColor = [UIColor yellowColor];
+    [self addSubview:leftTwo];
+    
+    UIView *rightOne = [[UIView alloc] init];
+    rightOne.tag = 3;
+//    rightOne.backgroundColor = [UIColor yellowColor];
+    [self addSubview:rightOne];
+    
+    UIView *rightTwo = [[UIView alloc] init];
+    rightOne.tag = 4;
+//    rightTwo.backgroundColor = [UIColor yellowColor];
+    [self addSubview:rightTwo];
+    
     //编辑按钮
     UIButton *centerBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [centerBtn setTitle:@"编辑" forState:UIControlStateNormal];
@@ -256,33 +305,61 @@ int i = 0;
         make.right.mas_equalTo(self.mas_right);
         make.bottom.mas_equalTo(self.mas_bottom);
     }];
+    //先定四个角  再定四条线
+    [leftOne mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.mas_top);
+        make.left.mas_equalTo(self.mas_left);
+        make.height.mas_equalTo(30);
+        make.width.mas_equalTo(30);
+    }];
+    
+    [leftTwo mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.mas_equalTo(self.mas_bottom);
+        make.left.mas_equalTo(self.mas_left);
+        make.height.mas_equalTo(30);
+        make.width.mas_equalTo(30);
+    }];
+    
+    [rightOne mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.mas_top);
+        make.right.mas_equalTo(self.mas_right);
+        make.height.mas_equalTo(30);
+        make.width.mas_equalTo(30);
+    }];
+    
+    [rightTwo mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.mas_equalTo(self.mas_bottom);
+        make.right.mas_equalTo(self.mas_right);
+        make.height.mas_equalTo(30);
+        make.width.mas_equalTo(30);
+    }];
     
     [topBorder mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.mas_top);
-        make.height.mas_equalTo(15);
-        make.left.mas_equalTo(self.mas_left);
-        make.right.mas_equalTo(self.mas_right);
+        make.height.mas_equalTo(30);
+        make.left.mas_equalTo(leftOne.mas_right);
+        make.right.mas_equalTo(rightOne.mas_left);
     }];
     
     [leftBorder mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.mas_top);
-        make.bottom.mas_equalTo(self.mas_bottom);
+        make.top.mas_equalTo(leftOne.mas_bottom);
+        make.bottom.mas_equalTo(leftTwo.mas_top);
         make.left.mas_equalTo(self.mas_left);
-        make.width.mas_equalTo(15);
+        make.width.mas_equalTo(30);
     }];
     
     [rightBorder mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.mas_top);
-        make.bottom.mas_equalTo(self.mas_bottom);
+        make.top.mas_equalTo(rightOne.mas_bottom);
+        make.bottom.mas_equalTo(rightTwo.mas_top);
         make.right.mas_equalTo(self.mas_right);
-        make.width.mas_equalTo(15);
+        make.width.mas_equalTo(30);
     }];
     
     [bottomBorder mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.mas_equalTo(self.mas_bottom);
-        make.left.mas_equalTo(self.mas_left);
-        make.right.mas_equalTo(self.mas_right);
-        make.height.mas_equalTo(15);
+        make.left.mas_equalTo(leftTwo.mas_right);
+        make.right.mas_equalTo(rightTwo.mas_left);
+        make.height.mas_equalTo(30);
     }];
     
     [centerBtn mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -293,6 +370,19 @@ int i = 0;
 
     }];
     
+    //角手势
+    UIPanGestureRecognizer *angle1 = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(angleTarget:)];
+    UIPanGestureRecognizer *angle2 = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(angleTarget:)];
+
+    UIPanGestureRecognizer *angle3 = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(angleTarget:)];
+    UIPanGestureRecognizer *angle4 = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(angleTarget:)];
+
+    [rightOne addGestureRecognizer:angle1];
+    [rightTwo addGestureRecognizer:angle2];
+    [leftOne addGestureRecognizer:angle3];
+    [leftTwo addGestureRecognizer:angle4];
+
+    //边手势
     UIPanGestureRecognizer *click1 = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(tapTarget:)];
     UIPanGestureRecognizer *click2 = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(tapTarget:)];
     UIPanGestureRecognizer *click3 = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(tapTarget:)];
@@ -326,6 +416,94 @@ int i = 0;
     [self addGestureRecognizer:tapGestureRecognizer];
     
     [self.centerBtn addTarget:self action:@selector(tapGestureTarget) forControlEvents:UIControlEventTouchUpInside];
+}
+
+-(void)angleTarget:(UIPanGestureRecognizer *)gesture{
+    
+    //当前的点
+    CGPoint point = [gesture locationInView:self];
+    float wChange = 0.0 , hChange = 0.0;
+
+    //原来的点
+    //现在的点
+    if([gesture state] == UIGestureRecognizerStateBegan){
+        
+        prevPoint = [gesture locationInView:self];
+        
+    }else if([gesture state] == UIGestureRecognizerStateChanged){
+        
+        if(self.bounds.size.width < 100){
+            self.bounds = CGRectMake(self.bounds.origin.x,
+                                     self.bounds.origin.y, 100, self.bounds.size.height);
+            prevPoint = [gesture locationInView:self];
+        }else if(self.bounds.size.height < 100){
+            self.bounds = CGRectMake(self.bounds.origin.x,
+                                     self.bounds.origin.y, self.bounds.size.width, 100);
+            prevPoint = [gesture locationInView:self];
+        }else if(gesture.view.tag == 4){
+            //距离
+            wChange = (point.x - prevPoint.x);
+            hChange = (point.y - prevPoint.y);
+            
+            //更新点
+            if(ABS(wChange) > 20.0f || ABS(hChange) > 20.0f){
+                prevPoint = [gesture locationInView:self];
+            }
+            self.bounds = CGRectMake(self.bounds.origin.x, self.bounds.origin.y,
+                                     self.bounds.size.width + (wChange),
+                                     self.bounds.size.height + (hChange));
+            //等比放大
+//
+//            if (YES) {
+//                //如果W小于
+//                if (wChange < 0.0f && hChange < 0.0f) {
+//                    //取最小值
+//                    float change = MIN(wChange, hChange);
+//                    wChange = change;
+//                    hChange = change;
+//                }
+//                //取最小数
+//                if (wChange < 0.0f) {
+//                    hChange = wChange;
+//                } else if (hChange < 0.0f) {
+//                    wChange = hChange;
+//                } else {
+//                    //最大值
+//                    float change = MAX(wChange, hChange);
+//                    wChange = change;
+//                    hChange = change;
+//                }
+//            }
+          
+            //更新坐标
+            prevPoint = [gesture locationInView:self];
+        }else if (gesture.view.tag == 1){
+            CGFloat width;
+            //宽 为正数的时候  宽变小
+            wChange = (point.x - prevPoint.x);
+            NSLog(@"wChange:%f",wChange);
+            hChange = (point.y - prevPoint.y);
+            if(wChange > 0){
+                self.bounds = CGRectMake(self.bounds.origin.x, self.bounds.origin.y,
+                                         self.bounds.size.width - (wChange),
+                                         self.bounds.size.height + (hChange));
+            }
+            //高 为正是的时候  高变小
+        }
+    }
+     
+}
+
+-(void)viewScaleWithPre:(CGPoint)previousPoint andCurrentPoint:(CGPoint)currentPoint{
+    UIView *view = self;
+    CGPoint center = CGPointMake(CGRectGetMidX(view.bounds), CGRectGetMidY(view.bounds));
+    
+    //三角函数计算缩放的大小
+    double previousSize = sqrt((previousPoint.x - center.x)*(previousPoint.x - center.x)+(previousPoint.y - center.y)*(previousPoint.y - center.y));
+    double currentSize = sqrt((currentPoint.x - center.x)*(currentPoint.x - center.x)+(currentPoint.y - center.y)*(currentPoint.y - center.y));
+    
+    double scaleSize = previousSize/currentSize;
+    self.scale = scaleSize;
 }
 
 -(void)checkView:(UITapGestureRecognizer *)gesture{
@@ -421,7 +599,6 @@ CGPoint legend_point;
             //方型
             proportion = self.superView.height / selfHeight;
             self.transform = CGAffineTransformScale(self.transform, proportion, proportion);
-
         }
         self.x = 0;
         self.y = 0;

@@ -71,6 +71,7 @@
     
     return layout;
 }
+
 #pragma mark - 创建CollectionView
 -(void)setupCollectionView:(UICollectionViewFlowLayout *)layout
 {

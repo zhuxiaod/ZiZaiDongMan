@@ -1161,7 +1161,7 @@
 //创建调色板
 -(IBAction)colourModulation:(id)sender {
     [self.paletteView removeFromSuperview];
-    CGFloat viewHeight = (SCREEN_HEIGHT - 88)/3;
+    CGFloat viewHeight = (SCREEN_HEIGHT - 88) / 3;
     CGFloat y = (SCREEN_HEIGHT - 30) - viewHeight;
     ZZTPaletteView *paletteView = [[ZZTPaletteView alloc] initWithFrame:CGRectMake(0, y, SCREEN_WIDTH, viewHeight)];
     paletteView.backgroundColor = [UIColor whiteColor];
@@ -1179,12 +1179,8 @@
 
 #pragma mark 取色板代理方法
 -(void)patetteView:(ZZTPaletteView *)patetteView patette:(Palette *)palette choiceColor:(UIColor *)color colorPoint:(CGPoint)colorPoint brightness:(CGFloat)brightness alpha:(CGFloat)alpha{
-    
-    //透明度存储
-    self.choiceColor = color;
-    //上色
-    self.mainView.backgroundColor = self.choiceColor;
-    self.coloringBtn.imageView.backgroundColor = self.choiceColor;
+    BOOL isColour = NO;
+   
     NSLog(@"%@",NSStringFromClass([self.mainView class]));
     if([NSStringFromClass([self.mainView class]) isEqualToString:@"ZZTImageEditView"]){
         //说明是主页
@@ -1194,13 +1190,25 @@
         //明度存储
         cellModel.brightness = brightness;
         cellModel.alpha = alpha;
-    }else{
+        isColour = YES;
+    }else if([NSStringFromClass([self.mainView class]) isEqualToString:@"RectangleView"] || self.isAddM == YES){//如果是图形 并且是 变大的状态
         ZZTFangKuangModel *FKModel = [self rectangleModelFromView:self.currentRectangleView];
         FKModel.colorPoint = colorPoint;
         FKModel.colorFrame = palette.frame;
+        NSLog(@" FKModel.colorFrame:%@",NSStringFromCGRect(palette.frame));
         //明度存储
         FKModel.brightness = brightness;
         FKModel.alpha = alpha;
+        NSLog(@" FKModel.colorFrame:%@",NSStringFromCGRect(palette.frame));
+
+        isColour = YES;
+    }
+    if(isColour == YES){
+        //透明度存储
+        self.choiceColor = color;
+        //上色
+        self.mainView.backgroundColor = self.choiceColor;
+        self.coloringBtn.imageView.backgroundColor = self.choiceColor;
     }
 }
 
@@ -1284,16 +1292,25 @@
 }
 #pragma mark - 单页清空
 - (IBAction)emptyView:(id)sender {
-    //当前cell的数据
-    ZZTDIYCellModel *cellModel = self.cartoonEditArray[_selectRow];
-    //清空cell中的数据
-    [cellModel.imageArray removeAllObjects];
-    
-    ZZTCartoonDrawView *currentCell = (ZZTCartoonDrawView *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:_selectRow inSection:0]];
-    for (UIView *view in currentCell.operationView.subviews) {
-        view.hidden = YES;
-    }
-    [self.collectionView reloadData];
+    //先出是否单页清空
+    ZZTRemindView *reView = [[ZZTRemindView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    _remindView = reView;
+    reView.viewTitle = @"单页清空？";
+    [self.view addSubview:reView];
+    reView.btnBlock = ^(UIButton *btn) {
+        //当前cell的数据
+        ZZTDIYCellModel *cellModel = self.cartoonEditArray[0];
+        //清空cell中的数据
+        [cellModel.imageArray removeAllObjects];
+        
+        ZZTCartoonDrawView *currentCell = (ZZTCartoonDrawView *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:self.selectRow inSection:0]];
+        for (UIView *view in currentCell.operationView.subviews) {
+            view.hidden = YES;
+            [view removeFromSuperview];
+        }
+        [self.collectionView reloadData];
+        [self.remindView removeFromSuperview];
+    };
 }
 
 #pragma mark ZZTMaterialLibraryViewDelegate 按索引获取数据
@@ -1672,6 +1689,7 @@
 //    }
 //
 //}
+
 //生成文件名
 -(NSString *)getImgName{
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
@@ -2015,13 +2033,18 @@
     }
 }
 -(void)speedInitFangKuangViewWith:(BOOL)isBlack colorF:(CGFloat)colorF isCircle:(BOOL)isCircle{
+    //创建一个方形
     RectangleView *rectangleView = [self createFuangKuangViewWithModel:nil];
     rectangleView.isCircle = isCircle;
+
+    //添加方框模型
+    ZZTFangKuangModel *model = [self addFangKuangModelWithView:rectangleView];
     
+    //是否是圆的
     if(rectangleView.isCircle == YES){
         rectangleView.layer.cornerRadius = rectangleView.width/2;
     }
-    
+    //是否是黑的
     if (isBlack == YES) {
         rectangleView.mainView.backgroundColor = [UIColor blackColor];
         rectangleView.layer.borderColor = [UIColor whiteColor].CGColor;
@@ -2029,17 +2052,18 @@
         rectangleView.mainView.backgroundColor = [UIColor whiteColor];
         rectangleView.layer.borderColor = [UIColor blackColor].CGColor;
     }
-    //添加方框模型
-    ZZTFangKuangModel *model = [self addFangKuangModelWithView:rectangleView];
-    model.modelColor = rectangleView.mainView.backgroundColor;
+    
+    //这里怎么改？？？
+    //这样 给一个黑色的配色
+    //第一条 0 第二条满 就可以配出黑色
+    model.colorPoint = CGPointMake(rectangleView.width/2, rectangleView.height/2);
+    model.colorFrame = CGRectMake(0, 0, 96, 96);
+    //明度存储
+    model.brightness = 0;
+    model.alpha = 1;
+    //形态记录
     model.type = rectangleView.type;
     model.isCircle = isCircle;
-    
-    //记录边的颜色
-//    model.isBlack = isBlack;
-//    model.colorF = colorF;
-//    model.colorH = 0;
-//    model.colorS = 0;
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -2063,6 +2087,7 @@
 }
 
 -(void)obtainMyDataSourse{
+    
     NSString *type = [[NSString alloc] init];
     if([self.curType isEqualToString:@"布局"]){
         type = @"1";
@@ -2075,12 +2100,13 @@
     }else if([self.curType isEqualToString:@"文字"]){
         type = @"5";
     }
+    
     NSDictionary *parameter = @{
                                 @"userId":@"1",
                                 @"fodderType":type
                                 };
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    [manager POST:[ZZTAPI stringByAppendingString:@"fodder/getFodderCollectInfo"] parameters:manager progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:[ZZTAPI stringByAppendingString:@"fodder/getFodderCollectInfo"] parameters:parameter progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTFodderListModel mj_objectArrayWithKeyValuesArray:dic];
         self.dataSource = array;

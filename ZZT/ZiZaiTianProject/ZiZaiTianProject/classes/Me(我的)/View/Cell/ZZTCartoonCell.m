@@ -21,7 +21,7 @@
 -(void)setCartoon:(ZZTCartonnPlayModel *)cartoon{
     _cartoon = cartoon;
     
-    [self.image sd_setImageWithURL:[NSURL URLWithString:cartoon.chapterCover]];
+    [self.image sd_setImageWithURL:[NSURL URLWithString:cartoon.cover]];
     
     NSString *title = [cartoon.bookType stringByReplacingOccurrencesOfString:@"," withString:@" "];
 
