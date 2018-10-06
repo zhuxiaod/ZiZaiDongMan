@@ -15,7 +15,6 @@
 #import "ZZTCartoonDrawView.h"
 #import "ZZTDIYCellModel.h"
 #import "ZZTAddLengthFooterView.h"
-#import "ZZTPaletteView.h"
 #import "RectangleView.h"
 #import "ZZTFangKuangModel.h"
 #import "ZZTBubbleImageView.h"
@@ -23,11 +22,11 @@
 #import "ColorInButton.h"
 #import "ToolBtn.h"
 #import "ZZTRemindView.h"
-#import "Palette.h"
+#import "ZZTColorPickerView.h"
 
 #define MainOperationView self.currentCell.operationView
 
-@interface ZZTCreatCartoonViewController ()<MaterialLibraryViewDelegate,EditImageViewDelegate,UICollectionViewDelegate,UICollectionViewDataSource,PaletteViewDelegate,RectangleViewDelegate,UIGestureRecognizerDelegate,ZZTBubbleImageViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate>
+@interface ZZTCreatCartoonViewController ()<MaterialLibraryViewDelegate,EditImageViewDelegate,UICollectionViewDelegate,UICollectionViewDataSource,RectangleViewDelegate,UIGestureRecognizerDelegate,ZZTBubbleImageViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,ZZTColorPickerViewDelegate>
 
 //工具栏
 @property (weak, nonatomic) IBOutlet ToolBtn *upBtn;
@@ -75,7 +74,6 @@
 //取色板所选取的颜色
 @property (nonatomic,strong) UIColor *choiceColor;
 
-@property (nonatomic,strong) ZZTPaletteView *paletteView;
 //当前被选中的Cell
 @property (nonatomic,weak) ZZTCartoonDrawView *currentCell;
 //执行一次
@@ -130,6 +128,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *xiaoGuoBtn;
 @property (weak, nonatomic) IBOutlet UIButton *wenZiBtn;
 @property (nonatomic,strong) ZZTRemindView *remindView;
+//ZZTColorPickerView
+@property (nonatomic,strong) ZZTColorPickerView *colorPickerView;
 
 @end
 
@@ -369,7 +369,6 @@
     //材料选择栏关闭
     [_materialLibraryView removeFromSuperview];
     //调色板关闭
-    [_paletteView removeFromSuperview];
     //当有方框变大时
     if(self.isAddM == YES){
         //找到这个方框
@@ -377,7 +376,7 @@
         //缩小操作
         [rectangleView tapGestureTarget];
     }
-    
+    [_colorPickerView removeFromSuperview];
     //判断view 移动后会触发一次 那一次是不会响应这一条的
     if(self.isMoveAfter == NO){
     }{
@@ -448,12 +447,9 @@
     //获取上一页的内容
     ZZTDIYCellModel *indexModel = self.cartoonArray[self.currentIndex];
     self.mainView = MainOperationView;
-    if(indexModel.brightness != 0){
-        self.mainView.backgroundColor = [Utilities calculatePointInView:indexModel.colorPoint colorFrame:indexModel.colorFrame brightness:indexModel.brightness alpha:indexModel.alpha];
-        cellModel.colorPoint = indexModel.colorPoint;
-        cellModel.colorFrame = indexModel.colorFrame;
-        cellModel.brightness = indexModel.brightness;
-        cellModel.alpha = indexModel.alpha;
+    if(indexModel.viewColor){
+        self.mainView.backgroundColor = indexModel.viewColor;
+        cellModel.viewColor = indexModel.viewColor;
     }
     
     //遍历这一页 第一层数据
@@ -501,13 +497,10 @@
             //恢复方框
             RectangleView *rectangView = [self createFuangKuangViewWithModel:mode];
             //根据记录的点位来返回颜色
-            rectangView.mainView.backgroundColor = [Utilities calculatePointInView:mode.colorPoint colorFrame:mode.colorFrame brightness:mode.brightness alpha:mode.alpha];
+            rectangView.mainView.backgroundColor = mode.viewColor;
             ZZTFangKuangModel *fangKuangModel = [self addFangKuangModelWithView:rectangView];
             fangKuangModel.type = mode.type;
-            fangKuangModel.colorFrame = mode.colorFrame;
-            fangKuangModel.colorPoint = mode.colorPoint;
-            fangKuangModel.brightness = mode.brightness;
-            fangKuangModel.alpha = mode.alpha;
+            fangKuangModel.viewColor = mode.viewColor;
             if(mode.isCircle == YES){
                 rectangView.isCircle = YES;
                 rectangView.layer.cornerRadius = rectangView.width/2;
@@ -523,14 +516,11 @@
 
             if(mode.colorF == 1){
                 //黑色
-                rectangView.mainView.backgroundColor = [Utilities calculatePointInView:mode.colorPoint colorFrame:mode.colorFrame brightness:mode.brightness alpha:mode.alpha];
+                rectangView.mainView.backgroundColor = mode.viewColor;
             }else if (mode.colorF == 2){
-                rectangView.mainView.backgroundColor = [Utilities calculatePointInView:mode.colorPoint colorFrame:mode.colorFrame brightness:mode.brightness alpha:mode.alpha];
+                rectangView.mainView.backgroundColor = mode.viewColor;
             }
-            fangKuangModel.colorFrame = mode.colorFrame;
-            fangKuangModel.colorPoint = mode.colorPoint;
-            fangKuangModel.brightness = mode.brightness;
-            fangKuangModel.alpha = mode.alpha;
+            fangKuangModel.viewColor = mode.viewColor;
 
             //添加方框model
             //如果这个方框里面是有内容的
@@ -572,6 +562,11 @@
                     }
                 }
             }
+            //transform操作判断
+            if(mode.viewTransform.a != 0){
+                rectangView.transform = mode.viewTransform;
+                fangKuangModel.viewTransform = mode.viewTransform;
+            }
         }
     }
 }
@@ -580,29 +575,31 @@
 -(void)seveCurrentView{
     ZZTDIYCellModel *cellModel = self.cartoonEditArray[_selectRow];
     ZZTDIYCellModel *model = [cellModel copy];
-
+    NSLog(@"111%@",model.viewColor);
     [self.cartoonArray addObject:model];
     cellModel.imageArray = nil;
+    cellModel.viewColor = [UIColor whiteColor];
     [self removeAllToWhite:cellModel];
     
     for (UIView *view in MainOperationView.subviews) {
         [view removeFromSuperview];
     }
 }
+
 -(void)removeAllToWhite:(ZZTDIYCellModel *)model{
     MainOperationView.backgroundColor = [UIColor whiteColor];
-    CGPoint point = CGPointMake(model.colorFrame.size.width/2, model.colorFrame.size.height/2);
-    model.colorPoint = point;
     self.coloringBtn.imageView.backgroundColor = [UIColor whiteColor];
 }
+
 #pragma mark 替换当前数据
 -(void)replaceCurrentView{
     ZZTDIYCellModel *cellModel = self.cartoonEditArray[_selectRow];
     ZZTDIYCellModel *model = [cellModel copy];
-
+    NSLog(@"222%@",model.viewColor);
     [self.cartoonArray replaceObjectAtIndex:self.currentIndex withObject:model];
     
     cellModel.imageArray = nil;
+    cellModel.viewColor = [UIColor whiteColor];
     for (UIView *view in MainOperationView.subviews) {
         [view removeFromSuperview];
     }
@@ -1030,11 +1027,11 @@
         viewFrame = CGRectMake(self.midView.center.x/2 - 100, 20, 200, 200);
     }
     RectangleView *rectangView = [[RectangleView alloc] initWithFrame:viewFrame];
+    //小
     //方框永远在cell之上
     rectangView.superView = MainOperationView;
     rectangView.delegate = self;
 
-    
     rectangView.tagNum = self.tagNum;
     self.tagNum = self.tagNum + 1;
     rectangView.type = @"布局";
@@ -1153,6 +1150,17 @@
     model.viewFrame = view.frame;
 }
 
+-(void)updatePinchRectangleView:(RectangleView *)view{
+    
+    ZZTFangKuangModel *model = [self rectangleModelFromView:view];
+    CGAffineTransform lastTransform = view.transform;
+    view.transform = CGAffineTransformIdentity;
+    model.viewFrame = view.frame;
+    view.transform = lastTransform;
+    model.viewTransform = view.transform;
+
+}
+
 - (IBAction)retreat:(id)sender {
     
 }
@@ -1160,46 +1168,26 @@
 #pragma mark 调色板
 //创建调色板
 -(IBAction)colourModulation:(id)sender {
-    [self.paletteView removeFromSuperview];
-    CGFloat viewHeight = (SCREEN_HEIGHT - 88) / 3;
+    CGFloat viewHeight = 250;
     CGFloat y = (SCREEN_HEIGHT - 30) - viewHeight;
-    ZZTPaletteView *paletteView = [[ZZTPaletteView alloc] initWithFrame:CGRectMake(0, y, SCREEN_WIDTH, viewHeight)];
-    paletteView.backgroundColor = [UIColor whiteColor];
-    paletteView.delegate = self;
-
-    self.paletteView = paletteView;
-    [paletteView.btn addTarget:self action:@selector(changeColor) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:paletteView];
+    ZZTColorPickerView *colorPickerView = [[ZZTColorPickerView alloc] initWithFrame:CGRectMake(0, y , SCREEN_WIDTH, viewHeight)];
+    colorPickerView.delegate = self;
+    _colorPickerView = colorPickerView;
+    [self.view addSubview:colorPickerView];
 }
 
-//改变cell的颜色
--(void)changeColor{
-    [_paletteView removeFromSuperview];
-}
-
-#pragma mark 取色板代理方法
--(void)patetteView:(ZZTPaletteView *)patetteView patette:(Palette *)palette choiceColor:(UIColor *)color colorPoint:(CGPoint)colorPoint brightness:(CGFloat)brightness alpha:(CGFloat)alpha{
+-(void)colorPickerViewWithColor:(ZZTColorPickerView *)view color:(UIColor *)color{
     BOOL isColour = NO;
-   
+
     NSLog(@"%@",NSStringFromClass([self.mainView class]));
     if([NSStringFromClass([self.mainView class]) isEqualToString:@"ZZTImageEditView"]){
         //说明是主页
         ZZTDIYCellModel *cellModel = self.cartoonEditArray[_selectRow];
-        cellModel.colorPoint = colorPoint;
-        cellModel.colorFrame = palette.frame;
-        //明度存储
-        cellModel.brightness = brightness;
-        cellModel.alpha = alpha;
+        cellModel.viewColor = color;
         isColour = YES;
     }else if([NSStringFromClass([self.mainView class]) isEqualToString:@"RectangleView"] || self.isAddM == YES){//如果是图形 并且是 变大的状态
         ZZTFangKuangModel *FKModel = [self rectangleModelFromView:self.currentRectangleView];
-        FKModel.colorPoint = colorPoint;
-        FKModel.colorFrame = palette.frame;
-        NSLog(@" FKModel.colorFrame:%@",NSStringFromCGRect(palette.frame));
-        //明度存储
-        FKModel.brightness = brightness;
-        FKModel.alpha = alpha;
-        NSLog(@" FKModel.colorFrame:%@",NSStringFromCGRect(palette.frame));
+        FKModel.viewColor = color;
 
         isColour = YES;
     }
@@ -1211,6 +1199,46 @@
         self.coloringBtn.imageView.backgroundColor = self.choiceColor;
     }
 }
+
+//改变cell的颜色
+-(void)changeColor{
+    
+}
+
+//#pragma mark 取色板代理方法
+//-(void)patetteView:(ZZTPaletteView *)patetteView patette:(Palette *)palette choiceColor:(UIColor *)color colorPoint:(CGPoint)colorPoint brightness:(CGFloat)brightness alpha:(CGFloat)alpha{
+//    BOOL isColour = NO;
+//
+//    NSLog(@"%@",NSStringFromClass([self.mainView class]));
+//    if([NSStringFromClass([self.mainView class]) isEqualToString:@"ZZTImageEditView"]){
+//        //说明是主页
+//        ZZTDIYCellModel *cellModel = self.cartoonEditArray[_selectRow];
+//        cellModel.colorPoint = colorPoint;
+////        cellModel.colorFrame = palette.frame;
+//        //明度存储
+//        cellModel.brightness = brightness;
+//        cellModel.alpha = alpha;
+//        isColour = YES;
+//    }else if([NSStringFromClass([self.mainView class]) isEqualToString:@"RectangleView"] || self.isAddM == YES){//如果是图形 并且是 变大的状态
+//        ZZTFangKuangModel *FKModel = [self rectangleModelFromView:self.currentRectangleView];
+//        FKModel.colorPoint = colorPoint;
+////        FKModel.colorFrame = palette.frame;
+////        NSLog(@" FKModel.colorFrame:%@",NSStringFromCGRect(palette.frame));
+//        //明度存储
+//        FKModel.brightness = brightness;
+//        FKModel.alpha = alpha;
+////        NSLog(@" FKModel.colorFrame:%@",NSStringFromCGRect(palette.frame));
+//
+//        isColour = YES;
+//    }
+//    if(isColour == YES){
+//        //透明度存储
+//        self.choiceColor = color;
+//        //上色
+//        self.mainView.backgroundColor = self.choiceColor;
+//        self.coloringBtn.imageView.backgroundColor = self.choiceColor;
+//    }
+//}
 
 //收藏夹
 - (IBAction)favorite:(id)sender {
@@ -1531,8 +1559,10 @@
     view.transform = CGAffineTransformIdentity;
     //变化前的位置
     model.imageViewFrame = view.frame;
+    NSLog(@"view.frame：%@",NSStringFromCGRect(view.frame));
     //回到变化后
     view.transform = lastTransform;
+    NSLog(@"lastTransform：%@",NSStringFromCGAffineTransform(lastTransform));
     model.viewTransform = view.transform;
 }
 

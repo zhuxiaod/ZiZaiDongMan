@@ -18,11 +18,7 @@
 //背景颜色
 @property (nonatomic,assign) CGRect colorFrame;
 
-@property (nonatomic,assign) CGPoint colorPoint;
-
-@property (nonatomic,assign) CGFloat brightness;
-
-@property (nonatomic,assign) CGFloat alpha;
+@property (nonatomic,strong) UIColor *viewColor;
 
 +(instancetype)initCellWith:(CGFloat )height isSelect:(BOOL)isSelect;
 

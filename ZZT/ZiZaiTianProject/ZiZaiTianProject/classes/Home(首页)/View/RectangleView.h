@@ -21,6 +21,8 @@
 
 -(void)updateRectangleViewFrame:(RectangleView *)view;
 
+-(void)updatePinchRectangleView:(RectangleView *)view;
+
 @end
 
 @interface RectangleView : UIView

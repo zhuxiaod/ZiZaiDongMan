@@ -18,6 +18,7 @@ PODS:
   - CDDPagerController (1.1.5)
   - FDFullscreenPopGesture (1.1)
   - HappyDNS (0.3.14)
+  - IQKeyboardManager (6.1.1)
   - JGProgressHUD (2.0.3)
   - Masonry (1.1.0)
   - MBProgressHUD (1.1.0)
@@ -43,6 +44,7 @@ DEPENDENCIES:
   - BAPickView
   - CDDPagerController
   - FDFullscreenPopGesture
+  - IQKeyboardManager
   - JGProgressHUD
   - Masonry
   - MBProgressHUD (~> 1.1.0)
@@ -64,6 +66,7 @@ SPEC REPOS:
     - CDDPagerController
     - FDFullscreenPopGesture
     - HappyDNS
+    - IQKeyboardManager
     - JGProgressHUD
     - Masonry
     - MBProgressHUD
@@ -84,6 +87,7 @@ SPEC CHECKSUMS:
   CDDPagerController: ed05951429a860c56cfdffbeba1a8af5132a28ae
   FDFullscreenPopGesture: a8a620179e3d9c40e8e00256dcee1c1a27c6d0f0
   HappyDNS: dc6a164ee81979093123c241c6353bcf0218add6
+  IQKeyboardManager: 79c57795f5c2408d259d37b9da2ed07efcbb5225
   JGProgressHUD: 12b20a8f4ffe05258f8635c1ab92816e451f904d
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
@@ -98,6 +102,6 @@ SPEC CHECKSUMS:
   "UITableView+FDTemplateLayoutCell": 5c949b4a5059c404b442926c0e80f81d10a2d66f
   XHImageViewer: 7b275d2aa829e56761c30303b9d51cae086a90b9
 
-PODFILE CHECKSUM: f47392990ebc50fc4ce6fb69ca1d9c3d355e3fec
+PODFILE CHECKSUM: 8ea456cf87b3870e44ba8b6a0db70fe09085dab2
 
 COCOAPODS: 1.5.3

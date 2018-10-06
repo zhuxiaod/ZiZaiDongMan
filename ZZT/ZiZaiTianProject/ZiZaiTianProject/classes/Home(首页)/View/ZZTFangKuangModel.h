@@ -36,6 +36,10 @@
 
 @property (nonatomic,assign) BOOL isCircle;
 
+@property (nonatomic,strong) UIColor *viewColor;
+
+@property(nonatomic,assign) CGAffineTransform viewTransform;
+
 +(instancetype)initWithViewFrame:(CGRect)viewFrame tagNum:(NSInteger)tagNum;
 
 @end

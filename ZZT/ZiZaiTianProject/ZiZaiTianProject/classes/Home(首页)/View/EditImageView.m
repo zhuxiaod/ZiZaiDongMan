@@ -55,11 +55,13 @@
     [self addGestureRecognizer:panGestureRecognizer];
 }
 
+#pragma mark 缩放
 -(void)handlePich:(UIPinchGestureRecognizer *)recognizer
 {
     if (self.delegate && [self.delegate respondsToSelector:@selector(EditImageViewWithViewInRectangleView:)]) {
         [self.delegate EditImageViewWithViewInRectangleView:self];
     }
+    //能否缩放
     if([self.curType isEqualToString:self.type]){
         recognizer.view.transform = CGAffineTransformScale(recognizer.view.transform, recognizer.scale, recognizer.scale);
         self.scale = recognizer.scale;
@@ -72,6 +74,7 @@
     }
 }
 
+#pragma mark 旋转
 -(void)handleRotate:(UIRotationGestureRecognizer *)recognizer
 {
     if (self.delegate && [self.delegate respondsToSelector:@selector(EditImageViewWithViewInRectangleView:)]) {

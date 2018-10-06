@@ -7,7 +7,6 @@
 //
 
 #import "Utilities.h"
-#import "HSVWithNew.h"
 @implementation Utilities
 //存储单例models到NSUserDefaults
 +(void)SetNSUserDefaults:(UserInfo *)userInfo{
@@ -43,29 +42,6 @@
     return fileName;
 }
 
-+(UIColor *)calculatePointInView:(CGPoint)point colorFrame:(CGRect)colorFrame brightness:(CGFloat)brightness alpha:(CGFloat)alpha{
-    
-    CGPoint center=CGPointMake(colorFrame.size.width/2,colorFrame.size.height/2);  // 中心点
-    double radius=colorFrame.size.width/2;          // 半径
-    double dx=ABS(point.x-center.x);    //  ABS函数: int类型 取绝对值
-    double dy=ABS(point.y-center.y);   //   atan pow sqrt也是对应的数学函数
-    double angle=atan(dy/dx);
-    if (isnan(angle)) angle=0.0;
-    double dist=sqrt(pow(dx,2)+pow(dy,2));
-    double saturation=MIN(dist/radius,1.0);
-    
-    if (dist<10) saturation=0;
-    if (point.x<center.x) angle=M_PI-angle;
-    if (point.y>center.y) angle=2.0*M_PI-angle;
-    
-    HSVType currentHSV=HSVTypeMake(angle/(2.0*M_PI), saturation, 1.0);
-    
-    //    [self centerPointValue:currentHSV];    // 计算中心点位置
-    
-    UIColor *color=[UIColor colorWithHue:currentHSV.h saturation:currentHSV.s brightness:brightness alpha:alpha];
-
-    return color;
-}
 -(void)setupNavgationStyle:(UINavigationController *)nav{
     UIImage *image = [UIImage imageNamed:@"APP架构-作品-顶部渐变条-IOS"];
     // 设置左边端盖宽度

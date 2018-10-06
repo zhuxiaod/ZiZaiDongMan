@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import "UserInfo.h"
-#import "HSVWithNew.h"
 
 @interface Utilities : NSObject
 +(void)SetNSUserDefaults:(UserInfo *)userInfo;
@@ -20,8 +19,6 @@
 + (NSArray *)GetArrayWithPathComponent:(NSString *)path;
 //通过path 得到file
 + (NSString *)fileWithPathComponent:(NSString *)path;
-
-+(UIColor *)calculatePointInView:(CGPoint)point colorFrame:(CGRect)colorFrame brightness:(CGFloat)brightness alpha:(CGFloat)alpha;
 
 -(void)setupNavgationStyle:(UINavigationController *)nav;
 @end

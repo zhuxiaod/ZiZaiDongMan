@@ -17,5 +17,6 @@ pod 'Qiniu'
 pod 'SDCycleScrollView','~> 1.75'
 pod 'SVProgressHUD'
 pod 'XHImageViewer'
+pod 'IQKeyboardManager'
 end
 
