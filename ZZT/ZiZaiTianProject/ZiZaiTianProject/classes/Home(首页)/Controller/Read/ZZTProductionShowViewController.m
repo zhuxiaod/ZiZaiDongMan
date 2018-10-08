@@ -93,10 +93,28 @@ NSString *SuggestionView1 = @"SuggestionView1";
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     ZZTCartoonCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cellId" forIndexPath:indexPath];
-    ZZTCartonnPlayModel *car = self.array[indexPath.row];
+    ZZTCarttonDetailModel *car = self.array[indexPath.row];
     cell.cartoon = car;
     return cell;
 }
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    ZZTCarttonDetailModel *md = self.array[indexPath.row];
+    if([md.cartoonType isEqualToString:@"1"]){
+        ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
+        detailVC.isId = YES;
+        detailVC.cartoonDetail = md;
+        detailVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:detailVC animated:YES];
+    }else{
+        ZZTMulWordDetailViewController *detailVC = [[ZZTMulWordDetailViewController alloc]init];
+        detailVC.isId = YES;
+        detailVC.cartoonDetail = md;
+        detailVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:detailVC animated:YES];
+    }
+}
+
 #pragma mark - 设置导航条
 -(void)setupNavBar
 {

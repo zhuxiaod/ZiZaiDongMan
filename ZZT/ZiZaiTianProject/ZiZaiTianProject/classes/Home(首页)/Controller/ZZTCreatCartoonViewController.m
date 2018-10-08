@@ -447,6 +447,7 @@
     //获取上一页的内容
     ZZTDIYCellModel *indexModel = self.cartoonArray[self.currentIndex];
     self.mainView = MainOperationView;
+    //如果设置默认为白色 就行了 不用添加判断了
     if(indexModel.viewColor){
         self.mainView.backgroundColor = indexModel.viewColor;
         cellModel.viewColor = indexModel.viewColor;
@@ -463,31 +464,35 @@
             //如果是普通的素材
             if(model.viewType == 1){
                 //根据属性快速创建
-                ZZTEditImageViewModel *imageModel = [[ZZTEditImageViewModel alloc] init];
+//                ZZTEditImageViewModel *imageModel = [[ZZTEditImageViewModel alloc] init];
                 if(!model.imageUrl){
-                    EditImageView *imageView = [self speedInitImageView:model];
+//                    EditImageView *imageView =
+                  EditImageView *view = [self speedInitImageView:model];
+                    model.viewTransform = view.transform;
                     //重新记录数据
-                    imageModel = [ZZTEditImageViewModel initImgaeViewModel:model.imageViewFrame imageUrl:nil tagNum:imageView.tagNum viewType:1 localResource:model.localResource viewTransform:imageView.transform];
+//                    imageModel = [ZZTEditImageViewModel initImgaeViewModel:model.imageViewFrame imageUrl:nil tagNum:imageView.tagNum viewType:1 localResource:model.localResource viewTransform:imageView.transform];
                 }else{
-                    EditImageView *imageView = [self speedInitImageView:model];
+                    EditImageView *view = [self speedInitImageView:model];
+                    model.viewTransform = view.transform;
                     //重新记录数据
-                    imageModel = [ZZTEditImageViewModel initImgaeViewModel:model.imageViewFrame imageUrl:model.imageUrl tagNum:imageView.tagNum viewType:1 localResource:nil viewTransform:imageView.transform];
+//                    imageModel = [ZZTEditImageViewModel initImgaeViewModel:model.imageViewFrame imageUrl:model.imageUrl tagNum:imageView.tagNum viewType:1 localResource:nil viewTransform:imageView.transform];
                 }
-                imageModel.type = model.type;
+//                imageModel.type = model.type;
 
                 //不是方框可直接添加素材到cell之中
-                [cellModel.imageArray addObject:imageModel];
+//                [cellModel.imageArray addObject:imageModel];
+                [cellModel.imageArray addObject:model];
             }else{
                 //文字框
                 ZZTBubbleImageView *bubbleImageView = [self createBubbleImageViewWithModel:model];
+                model.viewTransform = bubbleImageView.transform;
                 //素材Model
-                ZZTEditImageViewModel *imageModel = [ZZTEditImageViewModel initImgaeViewModel:model.imageViewFrame imageUrl:model.imageUrl tagNum:bubbleImageView.tagNum viewType:2 localResource:nil viewTransform:bubbleImageView.transform];
-                imageModel.viewContent = model.viewContent;
-                imageModel.type = model.type;
-                bubbleImageView.type = model.type;
+//                ZZTEditImageViewModel *imageModel = [ZZTEditImageViewModel initImgaeViewModel:model.imageViewFrame imageUrl:model.imageUrl tagNum:bubbleImageView.tagNum viewType:2 localResource:nil viewTransform:bubbleImageView.transform];
+//                imageModel.viewContent = model.viewContent;
+//                imageModel.type = model.type;
 
                 //不是方框可直接添加素材到cell之中
-                [cellModel.imageArray addObject:imageModel];
+                [cellModel.imageArray addObject:model];
             }
         }else if([NSStringFromClass([indexModel.imageArray[i] class])isEqualToString:@"ZZTFangKuangModel"]){
             //方框
@@ -514,14 +519,11 @@
             rectangView.isHide = YES;
             fangKuangModel.isBlack = mode.isBlack;
 
-            if(mode.colorF == 1){
                 //黑色
-                rectangView.mainView.backgroundColor = mode.viewColor;
-            }else if (mode.colorF == 2){
-                rectangView.mainView.backgroundColor = mode.viewColor;
-            }
-            fangKuangModel.viewColor = mode.viewColor;
+            rectangView.mainView.backgroundColor = mode.viewColor;
 
+            fangKuangModel.viewColor = mode.viewColor;
+//            [cellModel.imageArray addObject:fangKuangModel];
             //添加方框model
             //如果这个方框里面是有内容的
             //位置的更新没有被传进去
@@ -534,30 +536,32 @@
                         if(model.viewType == 1){
                             self.mainView = rectangView.mainView;
 
-                            ZZTEditImageViewModel *imageModel = [[ZZTEditImageViewModel alloc] init];
+//                            ZZTEditImageViewModel *imageModel = [[ZZTEditImageViewModel alloc] init];
                             if(!model.imageUrl){
                                 EditImageView *imageView = [self speedInitImageView:model];
                                 //重新记录数据
-                                imageModel = [ZZTEditImageViewModel initImgaeViewModel:model.imageViewFrame imageUrl:nil tagNum:imageView.tagNum viewType:1 localResource:model.localResource viewTransform:imageView.transform];
+//                                imageModel = [ZZTEditImageViewModel initImgaeViewModel:model.imageViewFrame imageUrl:nil tagNum:imageView.tagNum viewType:1 localResource:model.localResource viewTransform:imageView.transform];
 
                             }else{
                                 EditImageView *imageView = [self speedInitImageView:model];
                                 //重新记录数据
-                                imageModel = [ZZTEditImageViewModel initImgaeViewModel:model.imageViewFrame imageUrl:model.imageUrl tagNum:imageView.tagNum viewType:1 localResource:nil viewTransform:imageView.transform];
+//                                imageModel = [ZZTEditImageViewModel initImgaeViewModel:model.imageViewFrame imageUrl:model.imageUrl tagNum:imageView.tagNum viewType:1 localResource:nil viewTransform:imageView.transform];
                             }
-                            imageModel.type = model.type;
+//                            imageModel.type = model.type;
 
                             //不是方框可直接添加素材到cell之中
-                            [fangKuangModel.viewArray addObject:imageModel];
+//                            [fangKuangModel.viewArray addObject:imageModel];
+                            [fangKuangModel.viewArray addObject:model];
                         }else{
                             self.mainView = rectangView.mainView;
                             ZZTBubbleImageView *bubbleImageView = [self createBubbleImageViewWithModel:model];
                             //素材Model
-                            ZZTEditImageViewModel *imageModel = [ZZTEditImageViewModel initImgaeViewModel:model.imageViewFrame imageUrl:model.imageUrl tagNum:bubbleImageView.tagNum viewType:2 localResource:nil viewTransform:bubbleImageView.transform];
-                            imageModel.viewContent = model.viewContent;
-                            imageModel.type = model.type;
+//                            ZZTEditImageViewModel *imageModel = [ZZTEditImageViewModel initImgaeViewModel:model.imageViewFrame imageUrl:model.imageUrl tagNum:bubbleImageView.tagNum viewType:2 localResource:nil viewTransform:bubbleImageView.transform];
+//                            imageModel.viewContent = model.viewContent;
+//                            imageModel.type = model.type;
                             //不是方框可直接添加素材到cell之中
-                            [fangKuangModel.viewArray addObject:imageModel];
+//                            [fangKuangModel.viewArray addObject:imageModel];
+                            [fangKuangModel.viewArray addObject:model];
                         }
                     }
                 }
@@ -657,6 +661,7 @@
     //恢复数据
     ZZTBubbleImageView *imageView = [[ZZTBubbleImageView alloc] initWithFrame:model.imageViewFrame text:model.viewContent superView:self.mainView];
     imageView.bubbleDelegate = self;
+    imageView.type = model.type;
     imageView.superViewName = NSStringFromClass([self.mainView class]);
     [imageView sd_setImageWithURL:[NSURL URLWithString:model.imageUrl]];
     //设置tag值
@@ -2083,14 +2088,7 @@
         rectangleView.layer.borderColor = [UIColor blackColor].CGColor;
     }
     
-    //这里怎么改？？？
-    //这样 给一个黑色的配色
-    //第一条 0 第二条满 就可以配出黑色
-    model.colorPoint = CGPointMake(rectangleView.width/2, rectangleView.height/2);
-    model.colorFrame = CGRectMake(0, 0, 96, 96);
-    //明度存储
-    model.brightness = 0;
-    model.alpha = 1;
+    model.viewColor = rectangleView.mainView.backgroundColor;
     //形态记录
     model.type = rectangleView.type;
     model.isCircle = isCircle;
@@ -2125,7 +2123,7 @@
         type = @"2";
     }else if([self.curType isEqualToString:@"角色"]){
         type = @"3";
-    }else if([self.curType isEqualToString:@"效果"]){
+    }else if([self.curType isEqualToString:@"特效"]){
         type = @"4";
     }else if([self.curType isEqualToString:@"文字"]){
         type = @"5";

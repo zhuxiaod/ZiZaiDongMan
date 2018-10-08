@@ -49,7 +49,7 @@
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     [manager POST:[ZZTAPI stringByAppendingString:@"great/userCollect"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-        NSMutableArray *array = [ZZTCartonnPlayModel mj_objectArrayWithKeyValuesArray:dic];
+        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
         //        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
         self.cartoons = array;
         [self.collectionView reloadData];
@@ -92,11 +92,27 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     ZZTCartoonCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cellId" forIndexPath:indexPath];
-    ZZTCartonnPlayModel *car = self.cartoons[indexPath.row];
+    ZZTCarttonDetailModel *car = self.cartoons[indexPath.row];
     cell.cartoon = car;
     return cell;
 }
 
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    ZZTCarttonDetailModel *md = self.cartoons[indexPath.row];
+    if([md.cartoonType isEqualToString:@"1"]){
+        ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
+        detailVC.isId = NO;
+        detailVC.cartoonDetail = md;
+        detailVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:detailVC animated:YES];
+    }else{
+        ZZTMulWordDetailViewController *detailVC = [[ZZTMulWordDetailViewController alloc]init];
+        detailVC.isId = NO;
+        detailVC.cartoonDetail = md;
+        detailVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:detailVC animated:YES];
+    }
+}
 -(void)setupTitle{
     self.navigationItem.title = @"历史";
 }

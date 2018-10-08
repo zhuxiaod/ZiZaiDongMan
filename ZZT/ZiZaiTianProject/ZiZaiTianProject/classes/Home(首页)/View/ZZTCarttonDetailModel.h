@@ -34,6 +34,7 @@
 @property (nonatomic,strong) NSString *ifrelease;
 @property (nonatomic,strong) NSString *ifCollect;
 @property (nonatomic,assign) NSInteger commentNum;
+@property (nonatomic,strong) NSString *cartoonId;
 
 @property (nonatomic,assign) BOOL isHave;
 //补充

@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-@class ZZTCartonnPlayModel;
+@class ZZTCarttonDetailModel;
 
 @interface ZZTCartoonCell : UICollectionViewCell
 
-@property (nonatomic,strong)ZZTCartonnPlayModel *cartoon;
+@property (nonatomic,strong)ZZTCarttonDetailModel *cartoon;
 
 @end

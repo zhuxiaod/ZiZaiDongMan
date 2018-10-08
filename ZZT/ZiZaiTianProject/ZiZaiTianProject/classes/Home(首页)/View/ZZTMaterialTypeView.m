@@ -34,6 +34,7 @@
 -(instancetype)init:(NSArray *)array Width:(CGFloat)width{
     if(self = [self init]){
         self.buttonData = array;
+        self.showsHorizontalScrollIndicator = NO;
         _btnWidth = 60;
         [self initButtons];
         if(self.buttons.count > 0){
@@ -45,29 +46,41 @@
 }
 
 -(void)initButtons{
-    CGFloat W = _btnWidth;
     CGFloat H = 20;
     //每行列数
     NSInteger rank = _buttonData.count;
     //每列间距
-    CGFloat rankMargin = 5;
     //每行间距
     CGFloat rowMargin = 5;
     //Item索引 ->根据需求改变索引
     NSUInteger index = _buttonData.count;
-    
+    NSDictionary *attrs = @{NSFontAttributeName : [UIFont boldSystemFontOfSize:17]};
+   
+
+    CGFloat X = 5;
     for (int i = 0 ; i< index; i++) {
-        //Item X轴
-        CGFloat X = (i % rank) * (W + rankMargin)+5;
+        ZZTDetailModel *model = self.buttonData[i];
+        CGSize size = [model.detail sizeWithAttributes:attrs];
+        size.width = size.width + 20;
+        
+        if(i == 0){
+            X = 5;
+        }else{
+            UIButton *btn = self.buttons[i - 1];
+            X = CGRectGetMaxX(btn.frame) + 5;
+        }
+        
+        NSLog(@"X:%f",X);
         //Item Y轴
         NSUInteger Y = (i / rank) * (H +rowMargin);
         //Item top
-        ZZTDetailModel *model = self.buttonData[i];
         UIButton *btn = [[UIButton alloc] init];
+        
         [btn setTitle:model.detail forState:UIControlStateNormal];
+        //判断title字的数量 处理宽度
         [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [btn setBackgroundColor:[UIColor grayColor]];
-        btn.frame = CGRectMake(X, Y, W, H);
+        btn.frame = CGRectMake(X, Y, size.width, H);
         btn.selected = NO;
         btn.tag = index;
         [btn addTarget:self action:@selector(buttonSelected:)
@@ -75,6 +88,7 @@
         [self.buttons addObject:btn];
         [self addSubview:btn];
     }
+    self.contentSize = CGSizeMake(5 + _buttonData.count * (_btnWidth + 5), 20);
 }
 
 //ok

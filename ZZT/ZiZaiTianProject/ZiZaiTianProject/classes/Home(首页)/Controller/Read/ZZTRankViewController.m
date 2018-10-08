@@ -72,6 +72,7 @@ NSString *zztRankCell = @"zztRankCell";
         
     }];
 }
+
 -(NSArray *)addIsHave:(NSArray *)array{
     for (int i = 0; i < array.count; i++) {
         ZZTCarttonDetailModel *model = array[i];
@@ -79,6 +80,7 @@ NSString *zztRankCell = @"zztRankCell";
     }
     return array;
 }
+
 -(void)setupTopView{
     //上view
     UIView *topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 50)];
@@ -177,6 +179,23 @@ NSString *zztRankCell = @"zztRankCell";
     cell.cellIndex = indexPath.row;
     cell.dataModel = model;
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    ZZTCarttonDetailModel *md = self.dataArray[indexPath.row];
+    if([md.cartoonType isEqualToString:@"1"]){
+        ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
+        detailVC.isId = YES;
+        detailVC.cartoonDetail = md;
+        detailVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:detailVC animated:YES];
+    }else{
+        ZZTMulWordDetailViewController *detailVC = [[ZZTMulWordDetailViewController alloc]init];
+        detailVC.isId = YES;
+        detailVC.cartoonDetail = md;
+        detailVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:detailVC animated:YES];
+    }
 }
 
 #pragma mark 高度设置

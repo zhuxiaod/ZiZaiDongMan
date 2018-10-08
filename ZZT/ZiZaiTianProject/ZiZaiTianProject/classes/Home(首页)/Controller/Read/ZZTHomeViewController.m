@@ -81,7 +81,6 @@ NSString *SuggestionView = @"SuggestionView";
 -(void)receiveNotification:(NSNotification *)infoNotification {
     NSDictionary *dic = [infoNotification userInfo];
     _str = [dic objectForKey:@"info"];
-    
 }
 
 #pragma mark - 设置主视图
@@ -109,7 +108,8 @@ NSString *SuggestionView = @"SuggestionView";
     //设置自动调整滚动视图
     [self setAutomaticallyAdjustsScrollViewInsets:NO];
 
-    NSArray *textArray = @[@"创作",@"阅读",@"书柜"];
+//    NSArray *textArray = @[@"创作",@"阅读",@"书柜"];
+    NSArray *textArray = @[@"阅读",@"书柜"];
     
     //0.66 默认
     CGFloat listViewWidth    = self.view.width * 0.5;
@@ -141,16 +141,16 @@ NSString *SuggestionView = @"SuggestionView";
     self.ReadView = readVC;
     [self.mainView addSubview:readVC];
     
-    //创作页
-    ZZTCreationTableView *creationVC = [[ZZTCreationTableView alloc] init];
-//    ZZTCreationTableView *creationVC = [[ZZTCreationTableView alloc]initWithFrame:CGRectZero style:UITableViewStyleGrouped];
-    self.CreationView = creationVC;
-    creationVC.backgroundColor = [UIColor whiteColor];
-    [self.mainView addSubview:creationVC];
+//    //创作页
+//    ZZTCreationTableView *creationVC = [[ZZTCreationTableView alloc] init];
+////    ZZTCreationTableView *creationVC = [[ZZTCreationTableView alloc]initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+//    self.CreationView = creationVC;
+//    creationVC.backgroundColor = [UIColor whiteColor];
+//    [self.mainView addSubview:creationVC];
     
     //书柜
     //直接在该页面创建一个collectionView
-//    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc]init];
+////    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc]init];
     ZZTCollectView *collectVC = [[ZZTCollectView alloc] init];
     collectVC.backgroundColor = [UIColor whiteColor];
     self.collectView = collectVC;
@@ -167,18 +167,26 @@ NSString *SuggestionView = @"SuggestionView";
     
     //主页的位置
     [self.mainView setFrame:CGRectMake(0,0,width,height)];
-    self.mainView.contentSize  = CGSizeMake(width * 3, 0);
+//    self.mainView.contentSize  = CGSizeMake(width * 3, 0);
+//    [self.mainView setFrame:CGRectMake(width,0,width,height)];
+    self.mainView.contentSize  = CGSizeMake(width * 2, 0);
     
     //提前加载
-    [_CreationView setFrame:CGRectMake(0, 0, width, height)];
-    [_ReadView setFrame:CGRectMake(width, 0, width, height)];
-    [_collectView setFrame:CGRectMake(width * 2, 0, width, height)];
+//    [_CreationView setFrame:CGRectMake(0, 0, width, height)];
+//    [_ReadView setFrame:CGRectMake(width, 0, width, height)];
+//    [_collectView setFrame:CGRectMake(width * 2, 0, width, height)];
+    
+    [_collectView setFrame:CGRectMake(width, 0, width, height)];
+    [_ReadView setFrame:CGRectMake(0, 0, width, height)];
+
     //添加视图的时候会刷新一次
     if([_str isEqualToString:@"YES"]){
         [self.mainView setContentOffset:CGPointMake(0, 0)];
 
     }else{
-        [self.mainView setContentOffset:CGPointMake(width, 0)];
+        //确定进去的时候在哪里
+//        [self.mainView setContentOffset:CGPointMake(width, 0)];
+         [self.mainView setContentOffset:CGPointMake(0, 0)];
     }
 }
 
@@ -190,13 +198,13 @@ NSString *SuggestionView = @"SuggestionView";
     //cell 还没有创建故不能在这里搞
     [_ReadView reloadData];
 //    [_collectView reloadData];
-    [_CreationView reloadData];
+//    [_CreationView reloadData];
 }
 //计时器结束
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     //可以控制定时关闭
-    NSNotification *notification =[NSNotification notificationWithName:@"tongzhi" object:nil userInfo:nil];
+    NSNotification *notification = [NSNotification notificationWithName:@"tongzhi" object:nil userInfo:nil];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 

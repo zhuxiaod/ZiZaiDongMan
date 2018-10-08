@@ -33,6 +33,7 @@ static NSString *zCartoonBtnCell = @"zCartoonBtnCell";
 static NSString *caiNiXiHuan = @"caiNiXiHuan";
 
 @implementation ZZTReadTableView
+
 //靠传的数字来确定是什么数据源？
 //猜你喜欢数据源
 -(NSArray *)caiNiXiHuan{
@@ -76,7 +77,6 @@ static NSString *caiNiXiHuan = @"caiNiXiHuan";
         [self setupMJRefresh];
         
 //        self.automaticallyAdjustsScrollViewInsets = NO;
-
     }
     return self;
 }
@@ -94,9 +94,10 @@ static NSString *caiNiXiHuan = @"caiNiXiHuan";
                           @"pageNum":@"0",
                           @"pageSize":@"6"
                           };
+    EncryptionTools *tool = [[EncryptionTools alloc]init];
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getRecommendCartoon"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [tool decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
         self.caiNiXiHuan = array;
         [self reloadData];
@@ -104,14 +105,14 @@ static NSString *caiNiXiHuan = @"caiNiXiHuan";
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
-
 }
 
 -(void)loadBannerData{
     weakself(self);
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    EncryptionTools *tool = [[EncryptionTools alloc]init];
     [manager POST:[ZZTAPI stringByAppendingString:@"homepage/banner"] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [tool decry:responseObject[@"result"]];
         NSArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
         weakSelf.bannerModelArray = array;
         [self reloadData];
@@ -163,7 +164,6 @@ static NSString *caiNiXiHuan = @"caiNiXiHuan";
     }
 }
 
-
 //返回每一行cell的高度
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -175,6 +175,7 @@ static NSString *caiNiXiHuan = @"caiNiXiHuan";
         return 400;
     }
 }
+
 //添加headerView
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     NSString *title = @"为您推荐";
@@ -195,6 +196,7 @@ static NSString *caiNiXiHuan = @"caiNiXiHuan";
         return 0;
     }
 }
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     CGFloat sectionHeaderHeight = self.height * 0.05;  // headerView的高度  向上偏移50   达到隐藏的效果
     if(scrollView.contentOffset.y<=sectionHeaderHeight&&scrollView.contentOffset.y>=0) {

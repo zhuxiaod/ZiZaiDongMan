@@ -58,6 +58,9 @@
 #import "ToolBtn.h"
 #define imageHost @"p872ue3rt.bkt.clouddn.com"
 #import <JGProgressHUD.h>
+#import "ZZTWordDetailViewController.h"
+#import "ZZTMulWordDetailViewController.h"
+
 
 #define detailViewHeaderHeight 60
 #define ZZTAccessKey @"otsMMnYSaZw9UgT-OUFSc46m3UOVaqr-ysR07Dwq"
@@ -77,10 +80,10 @@
 
 
 //本地
-//#define ZZTAPI @"http://192.168.0.165:8888/"
+#define ZZTAPI @"http://192.168.0.165:8888/"
 
 //测试
-#define ZZTAPI @"http://192.168.0.142:8888/"
+//#define ZZTAPI @"http://192.168.0.142:8888/"
 //#define BaseUrl(url)  [NSString stringWithFormat:@"http://192.168.0.142:8888/%@",(url)]
 
 //#define ZZTAPI @"http://120.79.178.191:8888/"

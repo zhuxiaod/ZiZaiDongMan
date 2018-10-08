@@ -14,184 +14,118 @@
                             },
                             {
                             "detailCode": "3",
-                            "detail": "梯形"
-                            }
-                            ]
+                            "detail": "梯形框"
+                            }]
                },
                {
                "typeCode": "2",
                "type": "我的",
                "typeList":[]
-               }
-               ]
+               }]
   },
   {
   "code": "2",
   "kind": "场景",
   "kindList": [{
                "typeCode": "1",
-               "type": "背景",
+               "type": "推荐",
                "typeList": [{
                             "detailCode": "1",
-                            "detail": "宫殿"
+                            "detail": "渐变色"
+                            },
+                            {
+                            "detailCode": "2",
+                            "detail": "场景"
+                            },
+                            {
+                            "detailCode": "3",
+                            "detail": "雪地"
+                            },
+                            {
+                            "detailCode": "4",
+                            "detail": "草原"
+                            },
+                            {
+                            "detailCode": "5",
+                            "detail": "学校"
+                            },
+                            {
+                            "detailCode": "6",
+                            "detail": "街道"
                             }]
                },
                {
                "typeCode": "2",
-               "type": "环境",
-               "typeList": [{
-                            "detailCode": "1",
-                            "detail": "2格"
-                            }]
-               },
-               {
-               "typeCode": "3",
-               "type": "建筑",
-               "typeList": [{
-                            "detailCode": "1",
-                            "detail": "3格"
-                            }]
-               },
-               {
-               "typeCode": "4",
-               "type": "物件",
-               "typeList": [{
-                            "detailCode": "1",
-                            "detail": "4格"
-                            }]
-               },
-               {
-               "typeCode": "5",
                "type": "我的",
                "typeList": []
-               }
-               ]
+               }]
   },
   {
   "code": "3",
   "kind": "角色",
   "kindList": [{
                "typeCode": "1",
-               "type": "男性",
+               "type": "推荐",
                "typeList": [{
                             "detailCode": "1",
-                            "detail": "人类"
+                            "detail": "男性"
+                            },{
+                            "detailCode": "2",
+                            "detail": "女性"
+                            },{
+                            "detailCode": "3",
+                            "detail": "动物"
+                            },{
+                            "detailCode": "4",
+                            "detail": "其他"
                             }]
                },
                {
                "typeCode": "2",
-               "type": "女性",
-               "typeList": [{
-                            "detailCode": "1",
-                            "detail": "人类"
-                            }]
-               },
-               {
-               "typeCode": "3",
-               "type": "动物",
-               "typeList": [{
-                            "detailCode": "1",
-                            "detail": "2格"
-                            }]
-               },
-               {
-               "typeCode": "4",
-               "type": "物件",
-               "typeList": [{
-                            "detailCode": "1",
-                            "detail": "2格"
-                            }]
-               },
-               {
-               "typeCode": "5",
                "type": "我的",
-               "typeList": []
-               }
-               ]
+               "typeList":  []
+               }]
   },
   {
   "code": "4",
   "kind": "效果",
   "kindList": [{
                "typeCode": "1",
-               "type": "背景图",
+               "type": "推荐",
                "typeList": [{
                             "detailCode": "1",
-                            "detail": "模糊"
+                            "detail": "叠加特效"
                             }]
                },
                {
                "typeCode": "2",
-               "type": "场景",
-               "typeList": [{
-                            "detailCode": "1",
-                            "detail": "人类"
-                            }]
-               },
-               {
-               "typeCode": "3",
-               "type": "角色",
-               "typeList": [{
-                            "detailCode": "1",
-                            "detail": "2格"
-                            }]
-               },
-               {
-               "typeCode": "4",
-               "type": "当前框",
-               "typeList": [{
-                            "detailCode": "1",
-                            "detail": "2格"
-                            }]
-               },
-               {
-               "typeCode": "5",
                "type": "我的",
                "typeList": []
-               }
-               ]
+               }]
   },
   {
   "code": "5",
   "kind": "文字",
   "kindList": [{
                "typeCode": "1",
-               "type": "圆框",
+               "type": "推荐",
                "typeList": [{
                             "detailCode": "1",
-                            "detail": "黑边"
+                            "detail": "文字框"
                             },
                             {
                             "detailCode": "2",
-                            "detail": "白边"
+                            "detail": "隐形文字框"
                             },
                             {
                             "detailCode": "3",
-                            "detail": "无边"
-                            }
-                            ]
+                            "detail": "特殊字"
+                            }]
                },
                {
                "typeCode": "2",
-               "type": "方框",
-               "typeList": [{
-                            "detailCode": "1",
-                            "detail": "人类"
-                            }]
-               },
-               {
-               "typeCode": "3",
-               "type": "隐形框",
-               "typeList": [{
-                            "detailCode": "1",
-                            "detail": "2格"
-                            }]
-               },
-               {
-               "typeCode": "4",
                "type": "我的",
                "typeList": []
-               }
-               ]
+               }]
     }
 ]

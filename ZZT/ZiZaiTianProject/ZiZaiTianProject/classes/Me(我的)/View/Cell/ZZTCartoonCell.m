@@ -18,7 +18,7 @@
 
 @implementation ZZTCartoonCell
 
--(void)setCartoon:(ZZTCartonnPlayModel *)cartoon{
+-(void)setCartoon:(ZZTCarttonDetailModel *)cartoon{
     _cartoon = cartoon;
     
     [self.image sd_setImageWithURL:[NSURL URLWithString:cartoon.cover]];

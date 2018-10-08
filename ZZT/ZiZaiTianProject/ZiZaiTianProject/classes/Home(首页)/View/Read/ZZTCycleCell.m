@@ -54,11 +54,13 @@
     ZZTCarttonDetailModel *md = [self.dataArray objectAtIndex:index];
     if([md.cartoonType isEqualToString:@"1"]){
         ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
+        detailVC.isId = YES;
         detailVC.cartoonDetail = md;
         detailVC.hidesBottomBarWhenPushed = YES;
         [[self myViewController].navigationController pushViewController:detailVC animated:YES];
     }else{
         ZZTMulWordDetailViewController *detailVC = [[ZZTMulWordDetailViewController alloc]init];
+        detailVC.isId = YES;
         detailVC.cartoonDetail = md;
         detailVC.hidesBottomBarWhenPushed = YES;
         [[self myViewController].navigationController pushViewController:detailVC animated:YES];

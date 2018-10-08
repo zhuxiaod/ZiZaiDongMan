@@ -95,7 +95,6 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btnIndex:)name:@"btnIndex" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(obtionMyData)name:@"obtionMyDataSource" object:nil];
 
-        
         self.modelType = @"1";
         self.modelSubtype = @"1";
     }
@@ -146,6 +145,7 @@
         }
     }
 }
+
 //布局 创建 。。。。传进来
 -(void)setStr:(NSString *)str{
     //选中的地步按钮的title
@@ -166,8 +166,8 @@
             break;
         }
     }
-    //创建2级视图
 }
+
 -(void)setIsMe:(BOOL)isMe{
     _isMe = isMe;
     if(isMe == YES){
@@ -177,6 +177,7 @@
         [self creatView:_kinds isMe:NO];
     }
 }
+
 //2级创建方法
 -(void)creatView:(NSMutableArray *)kinds isMe:(BOOL)isMe{
     //2次

@@ -128,16 +128,24 @@ NSString *zztWordListCell = @"zztWordListCell";
     [self.navigationController pushViewController:cartoonDetailVC animated:YES];
 }
 
+-(void)setIsId:(BOOL)isId{
+    _isId = isId;
+}
+
 //设置数据
 -(void)setCartoonDetail:(ZZTCarttonDetailModel *)cartoonDetail{
     _cartoonDetail = cartoonDetail;
-    if(cartoonDetail.id){
+    if(self.isId == YES){
         //上部分View
         [self loadtopData:cartoonDetail.id];
        //目录
         [self loadListData:cartoonDetail.id];
        //评论
 //        [self loadCommentData:cartoonDetail.id];
+    }else{
+        [self loadtopData:cartoonDetail.cartoonId];
+        //目录
+        [self loadListData:cartoonDetail.cartoonId];
     }
 }
 
@@ -149,13 +157,14 @@ NSString *zztWordListCell = @"zztWordListCell";
 //    weakself(self);
     NSDictionary *paramDict = @{
                                 @"id":ID,
-                              @"userId":[NSString stringWithFormat:@"%ld",user.id]
+                                @"userId":[NSString stringWithFormat:@"%ld",user.id]
                                 };
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    EncryptionTools *tool = [[EncryptionTools alloc]init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/particulars"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic1 = [tool decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
-        ZZTCarttonDetailModel *mode = [ZZTCarttonDetailModel mj_objectWithKeyValues:dic];
+        ZZTCarttonDetailModel *mode = [ZZTCarttonDetailModel mj_objectWithKeyValues:dic1];
         self.ctDetail = mode;
         self.head.detailModel = mode;
         [self.contentView reloadData];
@@ -168,13 +177,15 @@ NSString *zztWordListCell = @"zztWordListCell";
 -(void)loadListData:(NSString *)ID{
     NSDictionary *paramDict = @{
                                 @"cartoonId":ID,//1 独创 2 众创
-                                @"type":@"1"
+                                @"type":@"1",
+                                @"cartoonType":self.cartoonDetail.cartoonType
                                 };
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    EncryptionTools *tool = [[EncryptionTools alloc]init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterlist"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic2 = [tool decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
-        NSMutableArray *array = [ZZTChapterlistModel mj_objectArrayWithKeyValuesArray:dic];
+        NSMutableArray *array = [ZZTChapterlistModel mj_objectArrayWithKeyValuesArray:dic2];
         self.wordList = array;
         [self.contentView reloadData];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

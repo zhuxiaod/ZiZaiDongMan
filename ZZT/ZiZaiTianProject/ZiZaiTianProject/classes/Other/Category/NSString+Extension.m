@@ -201,6 +201,7 @@
     size = [self boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin attributes:dict context:nil].size;
     return size.height;
 }
+
 +(NSString *)compareCurrentTime:(NSString *)str
 {
     //把字符串转为NSdate
@@ -209,8 +210,10 @@
     NSDate *timeDate = [dateFormatter dateFromString:str];
     
     //得到与当前时间差
-    NSTimeInterval  timeInterval = [timeDate timeIntervalSinceNow];
+    NSTimeInterval timeInterval = [timeDate timeIntervalSinceNow];
     timeInterval = -timeInterval;
+    //标准时间和北京时间差8个小时
+    // timeInterval = timeInterval - 86060;
     long temp = 0;
     NSString *result;
     if (timeInterval < 60) {
@@ -219,12 +222,15 @@
     else if((temp = timeInterval/60) <60){
         result = [NSString stringWithFormat:@"%ld分钟前",temp];
     }
+    
     else if((temp = temp/60) <24){
         result = [NSString stringWithFormat:@"%ld小时前",temp];
     }
+    
     else if((temp = temp/24) <30){
         result = [NSString stringWithFormat:@"%ld天前",temp];
     }
+    
     else if((temp = temp/30) <12){
         result = [NSString stringWithFormat:@"%ld月前",temp];
     }
@@ -232,6 +238,7 @@
         temp = temp/12;
         result = [NSString stringWithFormat:@"%ld年前",temp];
     }
+    
     return  result;
 }
 @end

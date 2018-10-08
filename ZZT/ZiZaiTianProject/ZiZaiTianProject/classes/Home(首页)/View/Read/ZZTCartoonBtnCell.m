@@ -156,7 +156,7 @@ static NSString *const zxdCartoonBtnCell = @"zxdCartoonBtnCell";
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonlist"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-        NSMutableArray *array = [ZZTCartonnPlayModel mj_objectArrayWithKeyValuesArray:dic];
+        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
         VC.array = array;
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         

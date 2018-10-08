@@ -19,18 +19,6 @@
 @property (nonatomic,strong) UIColor *modelColor;
 
 @property (nonatomic,assign) BOOL isBlack;
-//颜色
-@property (nonatomic,assign) CGFloat colorF;
-
-@property (nonatomic,assign) CGPoint colorPoint;
-
-@property (nonatomic,assign) CGRect colorFrame;
-
-@property (nonatomic,assign) CGFloat colorB;
-//明度
-@property (nonatomic,assign) CGFloat brightness;
-//透明度
-@property (nonatomic,assign) CGFloat alpha;
 
 @property (nonatomic,strong) NSString *type;
 

@@ -150,9 +150,17 @@
     _contentLab.text = model.content;
 
     //时间戳显示
-    NSString *time = [NSString timeWithStr:[NSString stringWithFormat:@"%f",model.publishtime]];
-    _dataLab.text = [NSString compareCurrentTime:time];
+//    NSString *time = [NSString timeWithStr:[NSString stringWithFormat:@"%@",model.publishtime]];
+//      NSDate *date=[NSDate dateWithTimeIntervalSince1970:model.publishtime];
+//    _dataLab.text = [self compareCurrentTime:[NSString stringWithFormat:@"%@",date]];
+    NSLog(@"_dataLab.text:%f",model.publishtime);
+//    NSString *timeString = @"1532754000"; // 时间戳字符串
+    NSTimeInterval time=[[NSString stringWithFormat:@"%f",model.publishtime] doubleValue]/1000;
+    //传入的时间戳str如果是精确到毫秒的记得要/1000 (注意： 这句话不要全盘复制，如果传入的时间戳没有精确到毫秒不要除1000)
+    NSDate *creat =[NSDate dateWithTimeIntervalSince1970:time];
+    _dataLab.text = [self compareCurrentTime:creat];
 
+    
     [self setNeedsLayout];
     [self layoutIfNeeded];
     
@@ -188,6 +196,51 @@
     _isAttention = [model.ifConcern integerValue];
 }
 
+
+-(NSString *)compareCurrentTime:(NSDate *)str
+{
+//    //把字符串转为NSdate
+//    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+//    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"]; // 加上下边这两行代码就行了(初始化参数代表的是国家)
+//    NSDate *timeDate = [dateFormatter dateFromString:str];
+    //八小时时区
+    NSTimeZone *zone = [NSTimeZone systemTimeZone];
+    NSInteger interval = [zone secondsFromGMTForDate: str];
+    NSDate *mydate = [str dateByAddingTimeInterval: interval];
+    NSDate *nowDate =[NSDate date];
+    // 两个时间间隔
+    NSTimeInterval timeInterval= [mydate timeIntervalSinceDate:nowDate];
+    timeInterval = -timeInterval;
+    
+    NSLog(@"时间是%f",timeInterval);
+    
+    long temp = 0;
+    NSString *result;
+    if (timeInterval < 60) {
+        result = [NSString stringWithFormat:@"刚刚"];
+    }
+    else if((temp = timeInterval/60) <60){
+        result = [NSString stringWithFormat:@"%ld分钟前",temp];
+    }
+    
+    else if((temp = timeInterval/(60*60)) <24){
+        result = [NSString stringWithFormat:@"%ld小时前",temp];
+    }
+    
+    else if((temp = timeInterval/(246060)) <30){
+        result = [NSString stringWithFormat:@"%ld天前",temp];
+    }
+    
+    else if((temp = timeInterval/(24606030)) <12){
+        result = [NSString stringWithFormat:@"%ld月前",temp];
+    }
+    else{
+        temp = timeInterval/(24606030*12);
+        result = [NSString stringWithFormat:@"%ld年前",temp];
+    }
+    
+    return result;
+}
 - (void)setupImageGroupView{
     CGFloat w = imgHeight;
     CGFloat h = imgHeight;

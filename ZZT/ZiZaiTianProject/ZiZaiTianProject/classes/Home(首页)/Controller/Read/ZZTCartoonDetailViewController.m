@@ -357,25 +357,26 @@ NSString *storyDe = @"storyDe";
 
 //续画
 -(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
-    if (section == 0) {
-        ZZTContinueToDrawHeadView *view = [ZZTContinueToDrawHeadView ContinueToDrawHeadView];
-        view.buttonAction = ^(UIButton *sender) {
-          //跳转续画
-            ZZTCreationCartoonTypeViewController *xuHuaVC = [[ZZTCreationCartoonTypeViewController alloc] init];
-            xuHuaVC.type = self.cartoonModel.type;
-            self.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:xuHuaVC animated:YES];
-            self.hidesBottomBarWhenPushed = NO;
-        };
-        view.array = self.userLikeArray;
-        return view;
-    }else{
+//    if (section == 0) {
+//        ZZTContinueToDrawHeadView *view = [ZZTContinueToDrawHeadView ContinueToDrawHeadView];
+//        view.buttonAction = ^(UIButton *sender) {
+//          //跳转续画
+//            ZZTCreationCartoonTypeViewController *xuHuaVC = [[ZZTCreationCartoonTypeViewController alloc] init];
+//            xuHuaVC.type = self.cartoonModel.type;
+//            self.hidesBottomBarWhenPushed = YES;
+//            [self.navigationController pushViewController:xuHuaVC animated:YES];
+//            self.hidesBottomBarWhenPushed = NO;
+//        };
+//        view.array = self.userLikeArray;
+//        return view;
+//    }else{
         return nil;
-    }
+//    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
-    return 150;
+//    return 150;
+    return 0;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

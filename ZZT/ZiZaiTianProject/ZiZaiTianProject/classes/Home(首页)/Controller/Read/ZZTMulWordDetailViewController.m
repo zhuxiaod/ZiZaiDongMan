@@ -145,10 +145,14 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
     [self.navigationController pushViewController:cartoonDetailVC animated:YES];
 }
 
+-(void)setIsId:(BOOL)isId{
+    _isId = isId;
+}
+
 //设置数据
 -(void)setCartoonDetail:(ZZTCarttonDetailModel *)cartoonDetail{
     _cartoonDetail = cartoonDetail;
-    if(cartoonDetail.id){
+    if(self.isId == YES){
         //上部分View
         [self loadtopData:cartoonDetail.id];
         //续画
@@ -157,6 +161,12 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
         [self loadCatalogueData:cartoonDetail.id];
         //评论
         //        [self loadCommentData:cartoonDetail.id];
+    }else{
+        [self loadtopData:cartoonDetail.cartoonId];
+        //续画
+        [self loadXuHuaListData:cartoonDetail.cartoonId];
+        //目录
+        [self loadCatalogueData:cartoonDetail.cartoonId];
     }
 }
 
@@ -164,11 +174,13 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
     //加载用户信息
     NSDictionary *paramDict = @{
                                 @"cartoonId":Id,//1 独创 2 众创
-                                @"type":@"1"
+                                @"type":@"1",
+                                @"cartoonType":self.cartoonDetail.cartoonType
                                 };
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    EncryptionTools *tool = [[EncryptionTools alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterlist"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [tool decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
         NSMutableArray *array = [ZZTChapterlistModel mj_objectArrayWithKeyValuesArray:dic];
         self.wordList = array;
@@ -180,14 +192,16 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
 
 //请求该漫画的资料
 -(void)loadtopData:(NSString *)Id{
+    UserInfo *userInfo = [Utilities GetNSUserDefaults];
     //加载用户信息
     NSDictionary *paramDict = @{
                                 @"id":Id,
-                                @"userId":@"1"
+                                @"userId":[NSString stringWithFormat:@"%ld",userInfo.id]
                                 };
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    EncryptionTools *tool = [[EncryptionTools alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/particulars"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [tool decry:responseObject[@"result"]];
         ZZTCarttonDetailModel *mode = [ZZTCarttonDetailModel mj_objectWithKeyValues:dic];
         self.ctDetail = mode;
         self.head.detailModel = mode;
@@ -205,9 +219,11 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
                                  @"cartoonId":@"1",
                                  @"type":@"2"
                                };
+    EncryptionTools *tool = [[EncryptionTools alloc] init];
+
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getXuhualist"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [tool decry:responseObject[@"result"]];
         NSArray *modelArray = [ZZTChapterlistModel mj_objectArrayWithKeyValuesArray:dic];
         self.mulWordList = modelArray;
         [self.contentView reloadData];
@@ -217,6 +233,7 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
 }
 
 -(void)setupTopView{
+    
     UITableView *contenView = [[UITableView alloc] initWithFrame:CGRectMake(0, -20, self.view.width, self.view.height) style:UITableViewStyleGrouped];
     contenView.backgroundColor = [UIColor whiteColor];
     contenView.contentInset = UIEdgeInsetsMake(wordsDetailHeadViewHeight,0,0,0);

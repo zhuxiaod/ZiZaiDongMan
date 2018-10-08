@@ -129,6 +129,8 @@ static NSString * const offsetKeyPath = @"contentOffset";
     
     self.topTitle.text = detailModel.bookName;
     
+    self.heatNum.text = [NSString stringWithFormat:@"热度：%ld",detailModel.clickNum];
+    
     if([detailModel.ifCollect isEqualToString:@"0"]){
         //未
         [self.collectBtn setImage:[UIImage imageNamed:@"作品-作品信息-收藏-未收藏"] forState:UIControlStateNormal];

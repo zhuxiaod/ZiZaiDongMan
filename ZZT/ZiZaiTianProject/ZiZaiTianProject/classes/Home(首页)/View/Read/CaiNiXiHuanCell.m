@@ -77,11 +77,14 @@ static NSUInteger itemCount = 6;
     //独创
     if([model.cartoonType isEqualToString:@"1"]){
         ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
+        //yes 就是有Id
+        detailVC.isId = YES;
         detailVC.cartoonDetail = self.topics[index];
         detailVC.hidesBottomBarWhenPushed = YES;
         [[self findResponderWithClass:[UINavigationController class]] pushViewController:detailVC animated:YES];
     }else{
         ZZTMulWordDetailViewController *detailVC = [[ZZTMulWordDetailViewController alloc]init];
+        detailVC.isId = YES;
         detailVC.cartoonDetail = model;
 //        detailVC.cartoonDetail = self.topics[index];
         detailVC.hidesBottomBarWhenPushed = YES;

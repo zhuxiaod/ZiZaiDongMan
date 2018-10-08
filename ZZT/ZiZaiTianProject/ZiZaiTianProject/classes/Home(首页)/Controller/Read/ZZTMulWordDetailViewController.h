@@ -14,4 +14,6 @@
 
 @property (nonatomic,strong) ZZTCarttonDetailModel *cartoonDetail;
 
+@property (nonatomic,assign) BOOL isId;
+
 @end

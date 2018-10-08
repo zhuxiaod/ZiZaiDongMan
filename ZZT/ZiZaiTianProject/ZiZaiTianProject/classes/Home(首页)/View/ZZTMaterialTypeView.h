@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ZZTMaterialTypeView : UIView
+@interface ZZTMaterialTypeView : UIScrollView
 
 
 -(instancetype)init:(NSArray *)array Width:(CGFloat)width;
