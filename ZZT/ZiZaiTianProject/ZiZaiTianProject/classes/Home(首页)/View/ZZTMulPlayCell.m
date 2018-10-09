@@ -57,7 +57,6 @@
     UILabel *pageLab = [[UILabel alloc] init];
 //    pageLab.backgroundColor = [UIColor yellowColor];
     _pageLab = pageLab;
-
     [self.contentView addSubview:pageLab];
     
     //点赞图片
@@ -213,6 +212,7 @@
 -(void)setIsHave:(BOOL)isHave{
     _isHave = isHave;
 }
+
 -(void)setXuHuaModel:(ZZTChapterlistModel *)xuHuaModel{
     [_headBounds setImage:[UIImage imageNamed:@"我的-头像框"]];
 

@@ -10,11 +10,11 @@
 @class ZZTChapterlistModel;
 @class ZZTWordListCell;
 
-typedef void (^ReturnValueBlock) (ZZTWordListCell *cell,ZZTChapterlistModel *model);
+typedef void (^RtValueBlock) (ZZTWordListCell *cell,ZZTChapterlistModel *model);
 
 @interface ZZTWordListCell : UITableViewCell
 
-@property (nonatomic,copy) ReturnValueBlock btnBlock;
+@property (nonatomic,copy) RtValueBlock btnBlock;
 
 @property (nonatomic,strong) ZZTChapterlistModel *model;
 

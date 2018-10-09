@@ -90,8 +90,6 @@ NSString *bannerID = @"MeCell";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tongzhi)name:@"loadMeView" object:nil];
 }
 
-
-
 #pragma mark - 设置tableView
 -(void)setupTab
 {
@@ -292,7 +290,7 @@ NSString *bannerID = @"MeCell";
             bookVC.hidesBottomBarWhenPushed = YES;
             bookVC.viewTitle = @"参与作品";
             bookVC.viewType = @"1";
-            bookVC.user = self.userData;
+//            bookVC.user = self.userData;
             [self.navigationController pushViewController:bookVC animated:YES];
         }else if(indexPath.row == 1){
             //书柜
@@ -300,13 +298,13 @@ NSString *bannerID = @"MeCell";
             bookVC.hidesBottomBarWhenPushed = YES;
             bookVC.viewTitle = @"书柜";
             bookVC.viewType = @"2";
-            bookVC.user = self.userData;
+//            bookVC.user = self.userData;
             [self.navigationController pushViewController:bookVC animated:YES];
         }else if(indexPath.row == 2){
             //关注
             ZZTMeAttentionViewController *meAttentionVC = [[ZZTMeAttentionViewController alloc] init];
             meAttentionVC.hidesBottomBarWhenPushed = YES;
-            meAttentionVC.user = self.userData;
+//            meAttentionVC.user = self.userData;
             [self.navigationController pushViewController:meAttentionVC animated:YES];
         }else if(indexPath.row == 3){
             //浏览历史

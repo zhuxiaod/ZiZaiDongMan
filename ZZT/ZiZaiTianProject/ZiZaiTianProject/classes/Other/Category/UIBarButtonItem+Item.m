@@ -30,8 +30,8 @@
     [btn sizeToFit];
     [btn addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
     UIView *containView = [[UIView alloc] initWithFrame:btn.bounds];
-    btn.titleLabel.tintColor = [UIColor redColor];
-    [btn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+    btn.titleLabel.tintColor = [UIColor whiteColor];
+    [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
     [containView addSubview:btn];
     

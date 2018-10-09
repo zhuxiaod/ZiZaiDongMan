@@ -124,9 +124,11 @@ static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
+
 -(void)loadAttention:(ZZTMyZoneModel *)model{
+    UserInfo *user = [Utilities GetNSUserDefaults];
     NSDictionary *dic = @{
-                          @"userId":@"1",
+                          @"userId":[NSString stringWithFormat:@"%ld",user.id],
                           @"authorId":model.userId
                           };
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];

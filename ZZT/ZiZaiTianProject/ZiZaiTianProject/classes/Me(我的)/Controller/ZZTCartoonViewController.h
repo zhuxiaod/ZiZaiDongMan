@@ -12,8 +12,6 @@
 
 @interface ZZTCartoonViewController : BaseViewController
 
-@property(nonatomic,strong)UserInfo *user;
-
 @property(nonatomic,strong)NSString *viewTitle;
 
 @property(nonatomic,strong)NSString *viewType;

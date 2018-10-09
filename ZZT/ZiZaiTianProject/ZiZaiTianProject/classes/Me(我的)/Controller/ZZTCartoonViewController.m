@@ -23,12 +23,31 @@
 
 @property (nonatomic,strong) NSArray *books;
 
+@property (nonatomic,strong) UserInfo *user;
+
+@property (nonatomic,strong) ZZTRemindView *remindView;
+
+@property (nonatomic,strong) NSMutableArray *cartoonArray;
 @end
 
 
 @implementation ZZTCartoonViewController
 
 #pragma mark - 懒加载
+
+-(NSMutableArray *)cartoonArray{
+    if(!_cartoonArray){
+        _cartoonArray = [NSMutableArray array];
+    }
+    return _cartoonArray;
+}
+
+-(UserInfo *)user{
+    if(!_user){
+        _user = [Utilities GetNSUserDefaults];
+    }
+    return _user;
+}
 
 - (NSArray *)cartoons{
     if (!_cartoons) {
@@ -69,15 +88,35 @@ static NSString *circleCell = @"circleCell";
     
     self.navigationItem.title = self.viewTitle;
     
-    UIButton *leftbutton = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 40, 20)];
-    
-    //[leftbutton setBackgroundColor:[UIColor blackColor]];
-    
-    [leftbutton setTitle:@"清空" forState:UIControlStateNormal];
-    
-    UIBarButtonItem *rightitem = [[UIBarButtonItem alloc]initWithCustomView:leftbutton];
-    
-    self.navigationItem.rightBarButtonItem = rightitem;
+    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithTitle:@"清空" target:self action:@selector(removeAllBook)];
+}
+
+-(void)removeAllBook{
+    [self.remindView removeFromSuperview];
+    ZZTRemindView *remindView = [[ZZTRemindView alloc] initWithFrame:CGRectMake(0, -64, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    remindView.viewTitle = @"是否清空?";
+    self.remindView = remindView;
+    remindView.btnBlock = ^(UIButton *btn) {
+        NSString *string = [self.cartoonArray componentsJoinedByString:@","];
+        if(self.cartoonArray.count){
+            [self loadRemoveBook:string];
+        }
+    };
+    [self.view addSubview:remindView];
+}
+
+-(void)loadRemoveBook:(NSString *)string{
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    UserInfo *user = [Utilities GetNSUserDefaults];
+    NSDictionary *dic = @{
+                          @"userId":[NSString stringWithFormat:@"%ld",user.id],
+                          @"cartoonId":string
+                          };
+    [manager POST:[ZZTAPI stringByAppendingString:@"great/delCollect"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [self loadData];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
 }
 
 #pragma mark 注册Cell(控制)
@@ -95,8 +134,9 @@ static NSString *circleCell = @"circleCell";
         [self.manager POST:[ZZTAPI stringByAppendingString:@"great/userCollect"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             
             NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-            NSArray *array = [ZZTCartonnPlayModel mj_objectArrayWithKeyValuesArray:dic];
+            NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
             self.cartoons = array;
+            [self addCartoonId:array];
             [self.collectionView reloadData];
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             NSLog(@"请求失败 -- %@",error);
@@ -110,14 +150,23 @@ static NSString *circleCell = @"circleCell";
         [self.manager POST:[ZZTAPI stringByAppendingString:@"great/userCollect"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             
             NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-            NSArray *array = [ZZTCartonnPlayModel mj_objectArrayWithKeyValuesArray:dic];
+            NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
             self.cartoons = array;
+            [self addCartoonId:array];
             [self.collectionView reloadData];
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             NSLog(@"请求失败 -- %@",error);
         }];
     }
-   
+}
+
+-(void)addCartoonId:(NSMutableArray *)array{
+    NSMutableArray *cartoonArray = [NSMutableArray array];
+    for (int i = 0; i < array.count; i++) {
+        ZZTCarttonDetailModel *model = array[i];
+        [cartoonArray addObject:model.cartoonId];
+    }
+    self.cartoonArray = cartoonArray;
 }
 
 #pragma mark - 创建流水布局
@@ -125,8 +174,8 @@ static NSString *circleCell = @"circleCell";
     
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc]init];
     //修改尺寸(控制)
-    layout.itemSize = CGSizeMake(120,200);
-
+    layout.itemSize = CGSizeMake(SCREEN_WIDTH/3 - 10,200);
+    
     layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     //行距
     layout.minimumLineSpacing = 0;
@@ -153,14 +202,31 @@ static NSString *circleCell = @"circleCell";
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-
     ZZTCartoonCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:collectionID forIndexPath:indexPath];
-    ZZTCartonnPlayModel *car = self.cartoons[indexPath.row];
+    ZZTCarttonDetailModel *car = self.cartoons[indexPath.row];
     if (car) {
         cell.cartoon = car;
     }
     return cell;
 }
+
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    ZZTCarttonDetailModel *md = self.cartoons[indexPath.row];
+    if([md.cartoonType isEqualToString:@"1"]){
+        ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
+        detailVC.isId = NO;
+        detailVC.cartoonDetail = md;
+        detailVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:detailVC animated:YES];
+    }else{
+        ZZTMulWordDetailViewController *detailVC = [[ZZTMulWordDetailViewController alloc]init];
+        detailVC.isId = NO;
+        detailVC.cartoonDetail = md;
+        detailVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:detailVC animated:YES];
+    }
+}
+
 //加载数据
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];

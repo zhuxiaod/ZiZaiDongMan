@@ -40,6 +40,18 @@
 //补充
 @property (nonatomic,strong) NSString *chapterCover;
 
+@property (nonatomic,strong) NSString *headimg;
+
+@property (nonatomic,strong) NSString *browseType;
+
+@property (nonatomic,strong) NSString *qiniu;
+
+@property (nonatomic,strong) NSString *content;
+
+@property (nonatomic,strong) NSString *contentImg;
+
+@property (nonatomic,strong) NSString *nickName;
+
 
 
 @end

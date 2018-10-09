@@ -8,17 +8,18 @@
 
 #import "ZZTHistoryViewController.h"
 #import "ZZTCartoonHistoryCell.h"
+#import "ZZTCarttonDetailModel.h"
 
-@interface ZZTHistoryViewController ()<UICollectionViewDataSource,UICollectionViewDelegate>
+@interface ZZTHistoryViewController ()<UITableViewDelegate,UITableViewDataSource>
 
 @property (nonatomic,strong) NSArray *cartoons;
 
-@property (nonatomic,strong) UICollectionView *collectionView;
+@property (nonatomic,strong) UITableView *contentView;
 
 
 @end
 
-static NSString *collectionID = @"collectionID";
+static NSString *zztCartoonHistoryCell = @"zztCartoonHistoryCell";
 
 @implementation ZZTHistoryViewController
 
@@ -48,76 +49,63 @@ static NSString *collectionID = @"collectionID";
     self.automaticallyAdjustsScrollViewInsets = NO;
 
     self.view.backgroundColor = [UIColor whiteColor];
-
-    //流水布局
-    UICollectionViewFlowLayout *layout = [self setupCollectionViewFlowLayout];
     
-    //创建UICollectionView：黑色
-    [self setupCollectionView:layout];
+    [self setupTableView];
     
     [self loadData];
+}
+
+-(void)setupTableView{
+    UITableView *contentView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 64) style:UITableViewStylePlain];
+    contentView.backgroundColor = [UIColor whiteColor];
+    contentView.delegate = self;
+    contentView.dataSource = self;
+    contentView.separatorStyle = UITableViewCellSeparatorStyleNone;
+
+//    self.automaticallyAdjustsScrollViewInsets = YES;
+    self.contentView = contentView;
+    //注册cell
+    [contentView registerClass:[ZZTCartoonHistoryCell class] forCellReuseIdentifier:zztCartoonHistoryCell];
+    [self.view addSubview:contentView];
 }
 
 -(void)loadData{
     //请求参数
     NSDictionary *paramDict = @{
-                                @"userId":@"1",
+                                @"userId":@"32",
                                 };
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    [manager POST:[ZZTAPI stringByAppendingString:@"great/userCollect"] parameters:paramDict progress:nil
+    [manager POST:[ZZTAPI stringByAppendingString:@"record/selBrowsehistory"] parameters:paramDict progress:nil
           success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
               NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-              NSArray *array = [ZZTCartonnPlayModel mj_objectArrayWithKeyValuesArray:dic];
+              NSArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
               self.cartoons = array;
-              [self.collectionView reloadData];
+              [self.contentView reloadData];
           } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
               
-          }];
+    }];
 }
 
-#pragma mark - 创建流水布局
--(UICollectionViewFlowLayout *)setupCollectionViewFlowLayout{
-    
-    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc]init];
-    //修改尺寸(控制)
-    layout.itemSize = CGSizeMake(ScreenW,100);
-    
-    layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    //行距
-    layout.minimumLineSpacing = 0;
-    layout.minimumInteritemSpacing = 5;
-    
-    return layout;
-}
-
-#pragma mark - 创建CollectionView
--(void)setupCollectionView:(UICollectionViewFlowLayout *)layout
-{
-    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, Screen_Width, Screen_Height) collectionViewLayout:layout];
-    collectionView.backgroundColor = [UIColor whiteColor];
-    self.collectionView = collectionView;
-    [self.view addSubview:self.collectionView];
-    collectionView.dataSource = self;
-    collectionView.delegate = self;
-    [collectionView registerNib:[UINib nibWithNibName:@"ZZTCartoonHistoryCell" bundle:nil] forCellWithReuseIdentifier:collectionID];
-}
-
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
-{
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.cartoons.count;
 }
 
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    
-    ZZTCartoonHistoryCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:collectionID forIndexPath:indexPath];
-    ZZTCartonnPlayModel *car = self.cartoons[indexPath.row];
-    if (car) {
-        cell.model = car;
-    }
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    ZZTCartoonHistoryCell *cell = [tableView dequeueReusableCellWithIdentifier:zztCartoonHistoryCell];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    ZZTCarttonDetailModel *car = self.cartoons[indexPath.row];
+    cell.model = car;
     return cell;
 }
-
-
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    ZZTCarttonDetailModel *model = self.cartoons[indexPath.row];
+    if(model.cover){
+        return 150;
+    }else{
+        ZZTCarttonDetailModel *model = _cartoons[indexPath.row];
+        NSArray *imgs = [model.contentImg componentsSeparatedByString:@","];
+        return  [ZZTCartoonHistoryCell cellHeightWithStr:model.content imgs:imgs];
+    }
+}
 
 @end

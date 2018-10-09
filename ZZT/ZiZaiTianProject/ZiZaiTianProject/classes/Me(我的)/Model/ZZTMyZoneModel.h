@@ -26,7 +26,7 @@
 
 @property (nonatomic,strong) NSString *qiniu;
 
-@property (nonatomic,assign) NSTimeInterval publishtime;
+@property (nonatomic,strong) NSString *publishtime;
 
 @property (nonatomic,assign) NSInteger replycount;
 

@@ -33,7 +33,20 @@
         if([userModel.userType isEqualToString:@"1"]){
             self.VIPBtn.hidden = YES;
         }
-        [self.jiFenLab setText:[NSString stringWithFormat:@"%ld积分",(long)userModel.integralNum]];
+        
+        // 订阅数
+        if (userModel.integralNum >= 10000) {
+            self.jiFenLab.text = [NSString stringWithFormat:@"%.1f积分", userModel.integralNum / 10000.0];
+        } else {
+            self.jiFenLab.text = [NSString stringWithFormat:@"%zd积分", userModel.integralNum];
+        }
+        if (userModel.zzbNum >= 10000) {
+            self.ZBLab.text = [NSString stringWithFormat:@"%.1fZ币", userModel.zzbNum / 10000.0];
+        } else {
+            self.ZBLab.text = [NSString stringWithFormat:@"%zdZ币", userModel.zzbNum];
+        }
+        
+        
     }else{
         //设置空白数据
         [self.headImage setImage:[UIImage createImageWithColor:[UIColor clearColor]]];

@@ -70,6 +70,7 @@
         // 调用block传入参数
         self.btnBlock(button);
     }
+    [self removeFromSuperview];
 }
 -(void)setViewTitle:(NSString *)viewTitle{
     [_titleView setText:viewTitle];

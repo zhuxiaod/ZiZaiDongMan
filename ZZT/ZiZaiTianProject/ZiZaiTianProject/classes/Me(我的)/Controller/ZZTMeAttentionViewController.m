@@ -17,9 +17,18 @@
 
 @property (nonatomic,strong) NSArray *books;
 
+@property (nonatomic,strong) UserInfo *user;
+
 @end
 
 @implementation ZZTMeAttentionViewController
+
+-(UserInfo *)user{
+    if(!_user){
+        _user = [Utilities GetNSUserDefaults];
+    }
+    return _user;
+}
 
 - (NSArray *)cartoons{
     if (!_cartoons) {
@@ -52,16 +61,24 @@ static NSString *AttentionCell = @"AttentionCell";
     
     self.navigationItem.title = @"关注";
     
-    UIButton *leftbutton = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 40, 20)];
+//    UIButton *leftbutton = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 40, 20)];
     
     //[leftbutton setBackgroundColor:[UIColor blackColor]];
     
-    [leftbutton setTitle:@"清空" forState:UIControlStateNormal];
+//    [leftbutton setTitle:@"清空" forState:UIControlStateNormal];
     
-    UIBarButtonItem *rightitem = [[UIBarButtonItem alloc]initWithCustomView:leftbutton];
+//    UIBarButtonItem *rightitem = [[UIBarButtonItem alloc]initWithCustomView:leftbutton];
     
-    self.navigationItem.rightBarButtonItem = rightitem;
+//    self.navigationItem.rightBarButtonItem = rightitem;
+    [self setupMJRefresh];
+    
+    [self.collectionView.mj_header beginRefreshing];
+}
 
+-(void)setupMJRefresh{
+    self.collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        [self loadData];
+    }];
 }
 #pragma mark 注册Cell(控制)
 -(void)registerCell{
@@ -72,7 +89,7 @@ static NSString *AttentionCell = @"AttentionCell";
 -(void)loadData{
     //请求参数
     NSDictionary *paramDict = @{
-                                @"userId":self.user.userId,
+                                @"userId":[NSString stringWithFormat:@"%ld",self.user.id],
                                 };
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     [manager POST:[ZZTAPI stringByAppendingString:@"record/selUserAttention"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -80,8 +97,9 @@ static NSString *AttentionCell = @"AttentionCell";
         NSArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
         self.cartoons = array;
         [self.collectionView reloadData];
+        [self.collectionView.mj_header endRefreshing];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
+        [self.collectionView.mj_header endRefreshing];
     }];
 }
 
@@ -119,7 +137,6 @@ static NSString *AttentionCell = @"AttentionCell";
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    
     ZZTAttentionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:AttentionCell forIndexPath:indexPath];
     __weak typeof(self) weakSelf = self;
     cell.attentionCancelBlock = ^(ZZTAttentionCell *cell) {
@@ -137,19 +154,21 @@ static NSString *AttentionCell = @"AttentionCell";
     NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
     UserInfo *user = self.cartoons[indexPath.row];
     NSDictionary *dic = @{
-                          @"userId":self.user.userId,
+                          @"userId":[NSString stringWithFormat:@"%ld",self.user.id],
                           @"authorId":[NSString stringWithFormat:@"%ld",(long)user.id]
                           };
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    [manager POST:[ZZTAPI stringByAppendingString:@"record/delUserAttention"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        [self loadData];
+    [manager POST:[ZZTAPI stringByAppendingString:@"record/ifUserAtAuthor"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+//        [self loadData];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
 }
+
 //加载数据
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self loadData];
 }
+
 @end

@@ -31,11 +31,27 @@
 @property (nonatomic,weak) UITableView *suggestionView;
 @property (nonatomic,weak) PYSearchViewController *searchVC;
 @property (nonatomic,strong) NSString *str;
-
+@property (nonatomic,strong) NSMutableArray *bookShelfArray;
+@property (nonatomic,strong) NSMutableArray *cartoonArray;
+@property (nonatomic,strong) ZZTRemindView *remindView;
 @end
 NSString *SuggestionView = @"SuggestionView";
 
 @implementation ZZTHomeViewController
+
+-(NSMutableArray *)bookShelfArray{
+    if(!_bookShelfArray){
+        _bookShelfArray = [NSMutableArray array];
+    }
+    return _bookShelfArray;
+}
+
+-(NSMutableArray *)cartoonArray{
+    if(!_cartoonArray){
+        _cartoonArray = [NSMutableArray array];
+    }
+    return _cartoonArray;
+}
 
 -(NSMutableArray *)searchSuggestionArray{
     if(!_searchSuggestionArray){
@@ -43,8 +59,10 @@ NSString *SuggestionView = @"SuggestionView";
     }
     return _searchSuggestionArray;
 }
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self loadBookShelfData];
     //设置nav样式
     [self setupNavgationStyle:self.navigationController];
     //设置Bar
@@ -66,6 +84,35 @@ NSString *SuggestionView = @"SuggestionView";
     
     self.navigationController.fd_prefersNavigationBarHidden = YES;
 
+}
+
+-(void)loadBookShelfData{
+    UserInfo *user = [Utilities GetNSUserDefaults];
+    NSDictionary *dic = @{
+                          @"userId":[NSString stringWithFormat:@"%ld",user.id]
+                          };
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    EncryptionTools *tool = [[EncryptionTools alloc]init];
+    [manager POST:[ZZTAPI stringByAppendingString:@"great/userCollect"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dic = [tool decry:responseObject[@"result"]];
+        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
+        //        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
+        self.bookShelfArray = array;
+        [self addCartoonId:array];
+        self.collectView.dataArray = array;
+//        [self.collectionView reloadData];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
+}
+
+-(void)addCartoonId:(NSMutableArray *)array{
+    NSMutableArray *cartoonArray = [NSMutableArray array];
+    for (int i = 0; i < array.count; i++) {
+        ZZTCarttonDetailModel *model = array[i];
+        [cartoonArray addObject:model.cartoonId];
+    }
+    self.cartoonArray = cartoonArray;
 }
 
 -(void)setupNavgationStyle:(UINavigationController *)nav{
@@ -197,6 +244,8 @@ NSString *SuggestionView = @"SuggestionView";
     //反正是一个页面一起跑页没什么不好吧
     //cell 还没有创建故不能在这里搞
     [_ReadView reloadData];
+    [self loadBookShelfData];
+
 //    [_collectView reloadData];
 //    [_CreationView reloadData];
 }
@@ -221,6 +270,50 @@ NSString *SuggestionView = @"SuggestionView";
     ZZTUpdateViewController *updateVC = [[ZZTUpdateViewController alloc] init];
     updateVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:updateVC animated:YES];
+}
+
+//滑动展示清空按钮
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+//    NSLog(@"%@:",NSStringFromCGPoint(scrollView.contentOffset));
+    if(CGPointEqualToPoint(scrollView.contentOffset, CGPointMake(ScreenW, 0))){
+        //书柜
+        self.navigationItem.leftBarButtonItem.customView.hidden = YES;
+        //左边导航条
+        self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithTitle:@"清空" target:self action:@selector(removeAllBook)];
+        
+    }else{
+        //阅读
+        self.navigationItem.leftBarButtonItem.customView.hidden = NO;
+        self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithImage:[UIImage imageNamed:@"search"] highImage:[UIImage imageNamed:@"search"] target:self action:@selector(search)];
+    }
+}
+                                                 
+-(void)removeAllBook{
+    [self.remindView removeFromSuperview];
+    ZZTRemindView *remindView = [[ZZTRemindView alloc] initWithFrame:CGRectMake(ScreenW, 0, ScreenW, ScreenH)];
+    self.remindView = remindView;
+    remindView.viewTitle = @"是否清空?";
+    remindView.btnBlock = ^(UIButton *btn) {
+        NSString *string = [self.cartoonArray componentsJoinedByString:@","];
+        if(self.cartoonArray.count){
+            [self loadRemoveBook:string];
+        }
+    };
+    [self.mainView addSubview:remindView];
+}
+
+-(void)loadRemoveBook:(NSString *)string{
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    UserInfo *user = [Utilities GetNSUserDefaults];
+    NSDictionary *dic = @{
+                          @"userId":[NSString stringWithFormat:@"%ld",user.id],
+                          @"cartoonId":string
+                          };
+    [manager POST:[ZZTAPI stringByAppendingString:@"great/delCollect"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [self loadBookShelfData];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
 }
 
 -(void)dealloc{
@@ -299,4 +392,6 @@ NSString *SuggestionView = @"SuggestionView";
 //        [self setupNavgationStyle];
     }
 }
+
+
 @end

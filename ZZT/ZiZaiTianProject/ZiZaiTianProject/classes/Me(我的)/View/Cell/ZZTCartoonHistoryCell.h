@@ -8,8 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ZZTCartoonHistoryCell : UICollectionViewCell
+@interface ZZTCartoonHistoryCell : UITableViewCell
 
-@property (nonatomic,strong) ZZTCartonnPlayModel *model;
+@property (nonatomic,strong) ZZTCarttonDetailModel *model;
+@property (nonatomic,strong) NSString *str;
+
+-(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier;
++ (CGFloat)cellHeightWithStr:(NSString *)str imgs:(NSArray *)imgs;
 
 @end

@@ -40,8 +40,15 @@
 }
 
 - (void)addToShoppingCart:(UIButton *)sender {
+    NSLog(@"%@",sender.titleLabel.text);
+    if([sender.titleLabel.text isEqualToString:@"已关注"]){
+        [sender setTitle:@"关注" forState:UIControlStateNormal];
+    }else{
+        [sender setTitle:@"已关注" forState:UIControlStateNormal];
+    }
     if (self.attentionCancelBlock) {
         self.attentionCancelBlock(self);
     }
+    
 }
 @end

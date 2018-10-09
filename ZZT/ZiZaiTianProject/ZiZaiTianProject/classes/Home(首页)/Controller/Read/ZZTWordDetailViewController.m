@@ -151,10 +151,8 @@ NSString *zztWordListCell = @"zztWordListCell";
 
 //请求该漫画的资料
 -(void)loadtopData:(NSString *)ID{
-        UserInfo *user = [Utilities GetNSUserDefaults];
+    UserInfo *user = [Utilities GetNSUserDefaults];
 
-    //加载用户信息
-//    weakself(self);
     NSDictionary *paramDict = @{
                                 @"id":ID,
                                 @"userId":[NSString stringWithFormat:@"%ld",user.id]

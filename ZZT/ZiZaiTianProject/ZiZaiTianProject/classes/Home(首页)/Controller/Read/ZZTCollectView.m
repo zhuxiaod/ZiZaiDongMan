@@ -36,28 +36,32 @@
         //创建UICollectionView：黑色
         [self setupCollectionView:layout];
         //请求书柜
-        [self loadBookShelf];
+//        [self loadBookShelf];
     }
     return self;
 }
 
--(void)loadBookShelf{
-    
-    NSDictionary *dic = @{
-                          @"userId":@"1"
-                          };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    EncryptionTools *tool = [[EncryptionTools alloc]init];
-    [manager POST:[ZZTAPI stringByAppendingString:@"great/userCollect"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [tool decry:responseObject[@"result"]];
-        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
-//        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
-        self.cartoons = array;
-        [self.collectionView reloadData];
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
-    }];
+-(void)setDataArray:(NSArray *)dataArray{
+    _dataArray = dataArray;
+    [self.collectionView reloadData];
 }
+//-(void)loadBookShelf{
+//
+//    NSDictionary *dic = @{
+//                          @"userId":@"1"
+//                          };
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    EncryptionTools *tool = [[EncryptionTools alloc]init];
+//    [manager POST:[ZZTAPI stringByAppendingString:@"great/userCollect"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+//        NSDictionary *dic = [tool decry:responseObject[@"result"]];
+//        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
+////        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
+//        self.cartoons = array;
+//        [self.collectionView reloadData];
+//    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+//
+//    }];
+//}
 
 #pragma mark - 创建流水布局
 -(UICollectionViewFlowLayout *)setupCollectionViewFlowLayout{
@@ -89,19 +93,19 @@
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return self.cartoons.count;
+    return self.dataArray.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     ZZTCartoonCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cellId" forIndexPath:indexPath];
-    ZZTCarttonDetailModel *car = self.cartoons[indexPath.row];
+    ZZTCarttonDetailModel *car = self.dataArray[indexPath.row];
     cell.cartoon = car;
     return cell;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    ZZTCarttonDetailModel *md = self.cartoons[indexPath.row];
+    ZZTCarttonDetailModel *md = self.dataArray[indexPath.row];
     if([md.cartoonType isEqualToString:@"1"]){
         ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
         detailVC.isId = NO;

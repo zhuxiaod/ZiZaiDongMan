@@ -12,6 +12,5 @@
 
 @interface ZZTMeAttentionViewController : BaseViewController
 
-@property (nonatomic,strong) UserInfo *user;
 
 @end

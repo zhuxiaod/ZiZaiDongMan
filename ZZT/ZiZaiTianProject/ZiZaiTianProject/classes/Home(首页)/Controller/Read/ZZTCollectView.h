@@ -10,4 +10,6 @@
 
 @interface ZZTCollectView : UIView
 
+@property (nonatomic,strong) NSArray *dataArray;
+
 @end

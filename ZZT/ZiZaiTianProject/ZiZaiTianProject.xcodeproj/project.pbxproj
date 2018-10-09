@@ -45,7 +45,6 @@
 		040D28282133D0CF002A3B72 /* ZZTSignInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 040D28262133D0CF002A3B72 /* ZZTSignInViewController.m */; };
 		040D28292133D0CF002A3B72 /* ZZTSignInViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 040D28272133D0CF002A3B72 /* ZZTSignInViewController.xib */; };
 		040D282D2133F044002A3B72 /* ZZTCartoonHistoryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 040D282B2133F044002A3B72 /* ZZTCartoonHistoryCell.m */; };
-		040D282E2133F044002A3B72 /* ZZTCartoonHistoryCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 040D282C2133F044002A3B72 /* ZZTCartoonHistoryCell.xib */; };
 		040FD50220EF031900004C71 /* ZZTShoppingHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 040FD50120EF031900004C71 /* ZZTShoppingHeader.m */; };
 		040FD50420EF032900004C71 /* ZZTShoppingHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 040FD50320EF032900004C71 /* ZZTShoppingHeader.xib */; };
 		040FD50720EF160E00004C71 /* ZZTShoppingMidCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 040FD50620EF160E00004C71 /* ZZTShoppingMidCell.m */; };
@@ -354,7 +353,6 @@
 		040D28272133D0CF002A3B72 /* ZZTSignInViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ZZTSignInViewController.xib; sourceTree = "<group>"; };
 		040D282A2133F044002A3B72 /* ZZTCartoonHistoryCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTCartoonHistoryCell.h; sourceTree = "<group>"; };
 		040D282B2133F044002A3B72 /* ZZTCartoonHistoryCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTCartoonHistoryCell.m; sourceTree = "<group>"; };
-		040D282C2133F044002A3B72 /* ZZTCartoonHistoryCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ZZTCartoonHistoryCell.xib; sourceTree = "<group>"; };
 		040FD50020EF031900004C71 /* ZZTShoppingHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTShoppingHeader.h; sourceTree = "<group>"; };
 		040FD50120EF031900004C71 /* ZZTShoppingHeader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTShoppingHeader.m; sourceTree = "<group>"; };
 		040FD50320EF032900004C71 /* ZZTShoppingHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ZZTShoppingHeader.xib; sourceTree = "<group>"; };
@@ -892,7 +890,6 @@
 				040FD51820EF4B1000004C71 /* ZZTShoppingHeaderView.m */,
 				040D282A2133F044002A3B72 /* ZZTCartoonHistoryCell.h */,
 				040D282B2133F044002A3B72 /* ZZTCartoonHistoryCell.m */,
-				040D282C2133F044002A3B72 /* ZZTCartoonHistoryCell.xib */,
 				04E49F94213EB2D8007EE617 /* ZZTShoppingHeaderView.xib */,
 				04E9FAC521537661005A3986 /* ZZTMyZoneCell.h */,
 				04E9FAC621537661005A3986 /* ZZTMyZoneCell.m */,
@@ -1712,7 +1709,6 @@
 				046683A420F359F00095C6BC /* u=346672913,3176690417&fm=27&gp=0.jpg in Resources */,
 				0471A84820F59BE600ABFF35 /* ZZTSecondCell.xib in Resources */,
 				0471A89420F89C8E00ABFF35 /* ZZTReaderViewController.xib in Resources */,
-				040D282E2133F044002A3B72 /* ZZTCartoonHistoryCell.xib in Resources */,
 				04E6D4A020EC737500116085 /* ZZTMeEditButtomView.xib in Resources */,
 				04A30FC221378E6C00FAC781 /* ZZTCreatCartoonViewController.xib in Resources */,
 				04253030215DC38D00B4DAF9 /* ZZTMulCreationCell.xib in Resources */,
