@@ -246,6 +246,8 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
     
     ZZTWordsDetailHeadView *head = [ZZTWordsDetailHeadView wordsDetailHeadViewWithFrame:CGRectMake(0, -20, SCREEN_WIDTH, wordsDetailHeadViewHeight) scorllView:contenView];
     
+    [head.shareBtn addTarget:self action:@selector(shareWithSharePanel) forControlEvents:UIControlEventTouchUpInside];
+
     //收藏业务
     head.buttonAction = ^(ZZTCarttonDetailModel *detailModel) {
         UserInfo *userInfo = [Utilities GetNSUserDefaults];
@@ -270,6 +272,34 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
     [self.view addSubview:contenView];
     [self.view addSubview:head];
 }
+
+-(void)shareWithSharePanel{
+    __weak typeof(self) ws = self;
+    [UMSocialUIManager showShareMenuViewInWindowWithPlatformSelectionBlock:^(UMSocialPlatformType platformType, NSDictionary *userInfo) {
+        [ws shareTextToPlatform:platformType];
+    }];
+}
+
+//分享
+-(void)shareTextToPlatform:(UMSocialPlatformType)plaform{
+    UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
+    
+    messageObject.text = @"友盟+";
+    
+    UMShareWebpageObject *shareObject = [UMShareWebpageObject shareObjectWithTitle:@"分享到标题" descr:@"分享的描述" thumImage:[UIImage imageNamed:@"3.png"]];
+    shareObject.webpageUrl = @"https://www.baidu.com/"; //分享消息对象设置分享内容对象
+    messageObject.shareObject = shareObject;
+    
+    
+    [[UMSocialManager defaultManager] shareToPlatform:plaform messageObject:messageObject currentViewController:nil completion:^(id result, NSError *error) {
+        if(error){
+            //failed
+        }else{
+            //success
+        }
+    }];
+}
+
 
 #pragma mark - 设置组数
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {

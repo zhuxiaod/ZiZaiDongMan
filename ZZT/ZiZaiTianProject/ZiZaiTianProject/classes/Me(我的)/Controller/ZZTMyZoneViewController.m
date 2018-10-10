@@ -37,6 +37,10 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     return _dataArray;
 }
 
+-(void)setUser:(UserInfo *)user{
+    _user = user;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationItem.title = @"我的空间";
@@ -50,11 +54,15 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     [_tabelView registerClass:[UITableViewCell class] forCellReuseIdentifier:myZoneCell];
     [_tabelView registerClass:[ZZTMEXuHuaCell class] forCellReuseIdentifier:zztMEXuHuaCell];
 
+    
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    
+    self.edgesForExtendedLayout = UIRectEdgeNone;
     [self.view addSubview:_tabelView];
     
     //头视图
     ZZTMyZoneHeaderView *headView = [[ZZTMyZoneHeaderView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 280)];
-    headView.user = [Utilities GetNSUserDefaults];
+    headView.user = self.user;
     _tabelView.tableHeaderView = headView;
     
     //数据源

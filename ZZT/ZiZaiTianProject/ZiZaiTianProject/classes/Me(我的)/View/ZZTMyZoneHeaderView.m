@@ -12,6 +12,8 @@
 @property (nonatomic,strong)UIImageView *bgImgV;
 @property (nonatomic,strong)UIImageView *headImgV;
 @property (nonatomic,strong)UILabel *label;
+@property (nonatomic,strong)UIView *headBgView;
+@property (nonatomic,strong)UIView *bottomView;
 @end
 
 @implementation ZZTMyZoneHeaderView
@@ -41,6 +43,7 @@
     
     UIView *headBgView = [UIView new];
     headBgView.backgroundColor = [UIColor whiteColor];
+    _headBgView = headBgView;
     headBgView.layer.borderWidth = 0.5;
     headBgView.layer.borderColor = [UIColor lightGrayColor].CGColor;
     
@@ -57,29 +60,49 @@
     label.font = [UIFont systemFontOfSize:19];
 //    label.text = @"雏田";
     
+    UIView *bottomView = [[UIView alloc] init];
+    _bottomView = bottomView;
+    [bottomView setBackgroundColor:[UIColor blackColor]];
+    [self addSubview:bottomView];
+    
     [self addSubview:bgImgV];
-    [bgImgV mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self addSubview:headBgView];
+    [headBgView addSubview:headImgV];
+    [self addSubview:label];
+    
+  
+}
+
+-(void)layoutSubviews{
+    [super layoutSubviews];
+    [self.bgImgV mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self);
         make.bottom.equalTo(self).offset(-40);
         make.top.equalTo(self).offset(-TOPBAR_HEIGHT);
+//        make.top.equalTo(self).offset(-64);
+        make.height.equalTo(@250);
     }];
-    [self addSubview:headBgView];
-    [headBgView mas_makeConstraints:^(MASConstraintMaker *make) {
+    
+    [self.headBgView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(self).offset(-20);
         make.right.equalTo(self).offset(-10);
         make.width.height.equalTo(@75);
     }];
-    [headBgView addSubview:headImgV];
-    [headImgV mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.top.equalTo(headBgView).offset(3);
-        make.right.bottom.equalTo(headBgView).offset(-3);
+    [self.headImgV mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.top.equalTo(self.headBgView).offset(3);
+        make.right.bottom.equalTo(self.headBgView).offset(-3);
     }];
-    [self addSubview:label];
-    [label mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(headBgView.mas_left).offset(-20);
+    [self.label mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.headBgView.mas_left).offset(-20);
         make.left.equalTo(self).offset(10);
-        make.bottom.equalTo(bgImgV).offset(-7);
+        make.bottom.equalTo(self.bgImgV).offset(-7);
         make.height.equalTo(@25);
+    }];
+    [self.bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self).offset(0);
+        make.left.equalTo(self).offset(0);
+        make.top.equalTo(self.bgImgV.mas_bottom).offset(0);
+        make.height.equalTo(@1);
     }];
 }
 @end

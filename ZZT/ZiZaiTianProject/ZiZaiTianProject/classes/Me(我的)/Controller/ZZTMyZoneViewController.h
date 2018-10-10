@@ -10,4 +10,6 @@
 
 @interface ZZTMyZoneViewController : UIViewController
 
+@property (nonatomic,strong) UserInfo *user;
+
 @end

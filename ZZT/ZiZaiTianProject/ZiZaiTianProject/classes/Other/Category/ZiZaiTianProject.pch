@@ -61,6 +61,11 @@
 #import "ZZTWordDetailViewController.h"
 #import "ZZTMulWordDetailViewController.h"
 #import "ZZTRemindView.h"
+#import <UMShare/UMShare.h>
+#import <UShareUI/UShareUI.h>
+#import <UShareUI/UMSocialUIUtility.h>
+#import "ZZTUserModel.h"
+
 
 #define detailViewHeaderHeight 60
 #define ZZTAccessKey @"otsMMnYSaZw9UgT-OUFSc46m3UOVaqr-ysR07Dwq"

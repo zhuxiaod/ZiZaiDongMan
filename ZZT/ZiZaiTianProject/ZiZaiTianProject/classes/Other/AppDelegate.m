@@ -56,10 +56,10 @@
     [self.window makeKeyAndVisible];
 
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
-    
-    [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_WechatSession appKey:@"wx2fbe30919aa330fb" appSecret:@"b99a31c9ef09687175f5f1c13e768853" redirectURL:nil];
+//    b99a31c9ef09687175f5f1c13e768853
+    [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_WechatSession appKey:@"wxa56b49de57d6742f" appSecret:@"c8da78ac9af06e9ec08bfbef1f1d037e" redirectURL:nil];
 //     1107782397
-    [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_QQ appKey:@"1107782397" appSecret:nil redirectURL:@"http://mobile.umeng.com/social"];
+    [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_QQ appKey:@"1106832885" appSecret:nil redirectURL:@"http://mobile.umeng.com/social"];
     
     [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_Sina appKey:@"2702055855" appSecret:@"3c88b3d25a1cdbcc0d5807a010c9b908" redirectURL:@"https://sns.whalecloud.com/sina2/callback"];
     //取

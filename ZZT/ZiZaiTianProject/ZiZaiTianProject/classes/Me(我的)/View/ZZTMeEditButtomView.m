@@ -74,7 +74,7 @@
 -(void)setModel:(UserInfo *)model{
     _model = model;
     self.userName.text = model.nickName;
-    if([model.sex isEqualToString:@"0"]){
+    if([model.sex isEqualToString:@"1"]){
         //男
         self.manBtn.selected = YES;
         self.womanBtn.selected = NO;
@@ -84,9 +84,9 @@
         self.manBtn.selected = NO;
     }
    
-    NSString *time =  [NSString timeWithStr:[NSString stringWithFormat:@"%@",model.birthday]];
+//    NSString *time =  [NSString timeWithStr:[NSString stringWithFormat:@"%@",model.birthday]];
     
-    [self.userBirthday setTitle:time forState:UIControlStateNormal];
+    [self.userBirthday setTitle:model.birthday forState:UIControlStateNormal];
     [self.userBirthday setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     self.userDetail.text = model.intro;
 }

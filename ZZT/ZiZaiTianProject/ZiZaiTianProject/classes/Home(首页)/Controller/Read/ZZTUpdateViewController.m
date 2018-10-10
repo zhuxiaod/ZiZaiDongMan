@@ -84,6 +84,7 @@
     
     [collectionView registerNib:[UINib nibWithNibName:@"ZZTCartoonCell" bundle:nil] forCellWithReuseIdentifier:@"cellId"];
 }
+
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     return self.cartoons.count;
@@ -113,6 +114,7 @@
         [self.navigationController pushViewController:detailVC animated:YES];
     }
 }
+
 -(void)setupTitle{
     self.navigationItem.title = @"历史";
 }

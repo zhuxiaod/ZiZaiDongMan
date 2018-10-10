@@ -11,6 +11,29 @@
 
 @implementation UserInfo
 
+-(NSString *)cover{
+    if(!cover){
+        cover = @"";
+    }
+    return cover;
+}
+
+-(NSString *)intro{
+    if(!intro){
+        intro = @"";
+    }
+    return intro;
+}
+
+-(NSString *)birthday{
+    NSTimeInterval time = [_birthday floatValue];
+    NSDate *d = [[NSDate alloc]initWithTimeIntervalSince1970:time/1000.0];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
+    [formatter setDateFormat:@"yyyy-MM-dd"];
+    NSString *timeString=[formatter stringFromDate:d];
+    return timeString;
+}
+
 @synthesize isLogin;
 @synthesize phoneNumber;
 @synthesize cookie;
@@ -57,6 +80,5 @@
         
     } return self;
 }
-
 
 @end

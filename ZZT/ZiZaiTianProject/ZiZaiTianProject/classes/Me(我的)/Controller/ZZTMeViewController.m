@@ -230,6 +230,7 @@ NSString *bannerID = @"MeCell";
                 model.isLogin = YES;
                 self.userData = model;
                 [self setupTopView];
+                //存一下数据
             }
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             
@@ -253,6 +254,7 @@ NSString *bannerID = @"MeCell";
     if (indexPath.section == 0) {
         //我的空间
         ZZTMyZoneViewController *myZoneView = [[ZZTMyZoneViewController alloc] init];
+        myZoneView.user = self.userData;
         myZoneView.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:myZoneView animated:YES];
     }

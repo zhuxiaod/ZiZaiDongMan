@@ -145,6 +145,7 @@ static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
     NSArray *imgs = [model.contentImg componentsSeparatedByString:@","];
     return  [ZZTFindCommentCell cellHeightWithStr:model.content imgs:imgs];
 }
+
 #pragma mark - headView
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     

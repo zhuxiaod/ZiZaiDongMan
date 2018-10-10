@@ -190,6 +190,7 @@
         [ws shareTextToPlatform:platformType];
     }];
 }
+
 //分享
 -(void)shareTextToPlatform:(UMSocialPlatformType)plaform{
     UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];

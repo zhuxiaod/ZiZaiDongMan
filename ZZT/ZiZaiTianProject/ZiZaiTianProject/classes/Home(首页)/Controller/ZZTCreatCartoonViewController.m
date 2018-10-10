@@ -820,6 +820,7 @@
     }
     return rectangleView;
 }
+
 #pragma 上一层
 - (IBAction)upLevel:(id)sender {
     //如果选中的是方框
@@ -857,6 +858,7 @@
     
     [self exchangeViewAtIndexInFangKuang:index exchangeIndex:(index + 1) limit:array.count-1];
 }
+
 //方框中的交换接口
 -(void)exchangeViewAtIndexInFangKuang:(NSInteger)index exchangeIndex:(NSInteger)exchangeIndex limit:(NSInteger)limit{
     
@@ -872,6 +874,7 @@
         [model.viewArray exchangeObjectAtIndex:index withObjectAtIndex:exchangeIndex];
     }
 }
+
 #pragma mark 交换
 -(void)exchangeViewUpIndex:(NSInteger)integer{
     //得到cell上的所有View
@@ -881,6 +884,7 @@
     
     [self exchangeViewAtIndexInView:index exchangeIndex:index + 1 limit:array.count - 1];
 }
+
 //获取不同类型的索引
 -(NSInteger)viewIndexFromArray:(NSArray *)array integer:(NSInteger)integer{
     NSInteger index = 0;
@@ -893,6 +897,7 @@
     }
     return index;
 }
+
 #pragma 下一层
 - (IBAction)downLevel:(id)sender {
     //如果我当前选择的这个东西是一个方框
@@ -928,6 +933,7 @@
     [self exchangeViewAtIndexInFangKuang:index exchangeIndex:(index - 1) limit:0];
 
 }
+
 //View中下一层   没有判断啊
 -(void)exchangeViewDownIndex:(NSInteger)integer{
     NSArray *array = MainOperationView.subviews;
@@ -937,6 +943,7 @@
     //3 2
     [self exchangeViewAtIndexInView:index exchangeIndex:index - 1 limit:0];
 }
+
 //在View之中的层级交换接口
 -(void)exchangeViewAtIndexInView:(NSInteger)index exchangeIndex:(NSInteger)exchangeIndex limit:(NSInteger)limit{
     

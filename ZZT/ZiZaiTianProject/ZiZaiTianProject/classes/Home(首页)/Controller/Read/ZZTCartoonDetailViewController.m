@@ -43,6 +43,8 @@
 @property (nonatomic,strong) ZZTJiXuYueDuModel *model;
 
 @property (nonatomic,strong) UserInfo *author;
+//剧本
+@property (nonatomic,strong) ZZTStoryModel *stroyModel;
 
 @end
 
@@ -55,6 +57,13 @@ NSString *story = @"story";
 NSString *storyDe = @"storyDe";
 
 @implementation ZZTCartoonDetailViewController
+
+-(ZZTStoryModel *)stroyModel{
+    if(!_stroyModel){
+        _stroyModel = [[ZZTStoryModel alloc] init];
+    }
+    return _stroyModel;
+}
 
 -(UserInfo *)author{
     if(!_author){
@@ -226,20 +235,96 @@ NSString *storyDe = @"storyDe";
     }else{
         //章节
         NSDictionary *paramDict = @{
-                                    @"cartoonId":[NSString stringWithFormat:@"%ld",_dataModel.id]
+//                                    @"chapterinfoId":[NSString stringWithFormat:@"%ld",_dataModel.id]
+                                    @"chapterinfoId":@"1"
                                     };
-        [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/selChapterinfo"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterInfo"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             NSString *data = responseObject[@"result"];
             NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:data];
             NSArray *array = [ZZTStoryModel mj_objectArrayWithKeyValuesArray:dic];
             self.cartoonDetailArray = array;
+            if(array.count > 0) {
+                ZZTStoryModel *model = array[0];
+                self.stroyModel = model;
+                //下载txt
+                [self downLoadTxt:model.content];
+            }
             [self.tableView reloadData];
             //            [self.tableView layoutIfNeeded];
-            [self reloadCellWithIndex];
+//            [self reloadCellWithIndex];
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
            
         }];
     }
+}
+
+-(void)downLoadTxt:(NSString *)txtUrl{
+    //构造资源链接
+//    NSString *urlString = @"http://img1.sc115.com/uploads/sc/jpg/HD/1/204.jpg";
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    //创建AFN的manager对象
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:configuration];
+    //构造URL对象
+    NSURL *url = [NSURL URLWithString:txtUrl];
+    //构造request对象
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    //使用系统类创建downLoad Task对象
+    NSURLSessionDownloadTask *task = [manager downloadTaskWithRequest:request progress:^(NSProgress * _Nonnull downloadProgress) {
+        NSLog(@"%@", downloadProgress);
+        //下载进度
+        
+    } destination:^NSURL * _Nonnull(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
+        //返回下载到哪里(返回值是一个路径)
+        //拼接存放路径
+//
+        NSString *caches = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
+        //拼接文件全路径
+        NSString *fullpath = [caches stringByAppendingPathComponent:response.suggestedFilename];
+        NSURL *filePathUrl = [NSURL URLWithString:fullpath];
+        NSLog(@"filePathUrl:%@",[NSString stringWithFormat:@"%@",filePathUrl])
+        return filePathUrl;
+//        NSURL *pathURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:nil];
+//
+//        [pathURL URLByAppendingPathComponent:[response suggestedFilename]];
+////
+////        NSURL *filePathUrl = [NSURL fileURLWithPath:pathURL];
+////
+//        NSLog(@"pathURL%@",pathURL);
+//        return pathURL;
+        
+    } completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
+        //下载完成走这个block
+        if (!error) {
+            NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"ssdf.txt" ofType:nil];
+            NSData *data = [NSData dataWithContentsOfFile:filePath.path options:NSUTF8StringEncoding error:&error];
+            NSString *str  = [NSString stringWithUTF8String:[data bytes]];
+//            NSString *dataStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            NSLog(@"%@", str);
+            NSLog(@"error:%@",error);
+//            NSString *path = [[NSBundle mainBundle] pathForResource:@"ssdf" ofType:@"txt"];
+//            NSError *error;
+//            NSString *content = [[NSString alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@",filePath] encoding:NSUTF8StringEncoding error:&error];
+//            NSLog(@"error:%@",error);
+//            NSArray *array = [self jsonStringToKeyValues:content];
+//            for (NSDictionary *dict in array) {
+//                NSLog(@"name=%@ sex=%@ phone=%@",[dict objectForKey:@"name"],[dict objectForKey:@"sex"],[dict objectForKey:@"phone"]);
+//            }
+        }else{
+            NSLog(@"%@",error);
+
+        }
+    }];
+    //开始请求
+    [task resume];
+}
+//json字符串转化成OC键值对
+- (id)jsonStringToKeyValues:(NSString *)JSONString {
+    NSData *JSONData = [JSONString dataUsingEncoding:NSUTF8StringEncoding];
+    NSDictionary *responseJSON = nil;
+    if (JSONData) {
+        responseJSON = [NSJSONSerialization JSONObjectWithData:JSONData options:NSJSONReadingMutableContainers error:nil];
+    }
+    return responseJSON;
 }
 
 -(void)loadCommentData{
@@ -263,7 +348,6 @@ NSString *storyDe = @"storyDe";
 }
 
 -(void)loadLikeData{
-
     //点赞人
     NSDictionary *likeDict = @{
                                @"cartoonId":_cartoonModel.id,//书

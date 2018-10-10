@@ -13,11 +13,11 @@
 
 static const CGFloat MJDuration = 1.0;
 
-@interface ZZTMoreViewController ()<UITableViewDelegate,UITableViewDataSource>
+@interface ZZTMoreViewController ()<UICollectionViewDataSource,UICollectionViewDelegate>
 
 @property (nonatomic,strong) NSMutableArray *dataArray;
 
-@property (nonatomic,strong) UITableView *tableView;
+@property (nonatomic,strong) UICollectionView *collectionView;
 
 @property (nonatomic,strong)NSString *pageNumber;
 
@@ -43,20 +43,53 @@ NSString *WordCell = @"WordCell";
     
     self.navigationController.navigationBar.barTintColor = [UIColor blackColor];
     
-    [self setupTableView];
+    //流水布局
+    UICollectionViewFlowLayout *layout = [self setupCollectionViewFlowLayout];
+    //创建UICollectionView：黑色
+    [self setupCollectionView:layout];
     
     [self loadMoreData];
     
     [self setupMJRefresh];
     
     NSString *pageNumber = [NSString stringWithFormat:@"0"];
+    [self.collectionView.mj_header beginRefreshing];
 
 }
+
+#pragma mark - 创建流水布局
+-(UICollectionViewFlowLayout *)setupCollectionViewFlowLayout{
+    
+    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+    //修改尺寸(控制)
+    layout.itemSize = CGSizeMake(SCREEN_WIDTH/3 - 10,200);
+    
+    layout.scrollDirection = UICollectionViewScrollDirectionVertical;
+    //行距
+    layout.minimumLineSpacing = 0;
+    layout.minimumInteritemSpacing = 5;
+    
+    return layout;
+}
+
+#pragma mark - 创建CollectionView
+-(void)setupCollectionView:(UICollectionViewFlowLayout *)layout
+{
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, Screen_Width, Screen_Height) collectionViewLayout:layout];
+    collectionView.backgroundColor = [UIColor whiteColor];
+    self.collectionView = collectionView;
+    collectionView.dataSource = self;
+    collectionView.delegate = self;
+    [self.view addSubview:self.collectionView];
+    
+    [collectionView registerNib:[UINib nibWithNibName:@"ZZTCartoonCell" bundle:nil] forCellWithReuseIdentifier:@"cellId"];
+}
+
 -(void)setupMJRefresh{
-    self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+    self.collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         [self loadMoreData];
     }];
-    self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+    self.collectionView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
        
         [self loadMoreData];
     }];
@@ -70,16 +103,14 @@ NSString *WordCell = @"WordCell";
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getRecommendCartoon"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
-//        self.dataArray = array;
-        [self.dataArray addObjectsFromArray:array];
+        self.dataArray = array;
+//        [self.dataArray addObjectsFromArray:array];
         // 模拟延迟加载数据，因此2秒后才调用（真实开发中，可以移除这段gcd代码）
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(MJDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
-            // 结束刷新
-            [self.tableView.mj_footer endRefreshing];
-        });
+        [self.collectionView reloadData];
+        // 结束刷新
+        [self.collectionView.mj_footer endRefreshing];
 
-        [self.tableView.mj_header endRefreshing];
+        [self.collectionView.mj_header endRefreshing];
 
         self.pageNumber = [NSString stringWithFormat:@"%ld",([self.pageNumber integerValue] + 10)];
 
@@ -88,40 +119,31 @@ NSString *WordCell = @"WordCell";
     }];
 }
 
--(void)setupTableView{
-    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT) style:UITableViewStylePlain];
-    tableView.backgroundColor = [UIColor whiteColor];
-    _tableView = tableView;
-    tableView.delegate = self;
-    tableView.dataSource = self;
-    //注册
-    [tableView registerNib:[UINib nibWithNibName:@"ZZTWordCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:WordCell];
-    [self.view addSubview:tableView];
-}
-
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    self.tableView.mj_footer.hidden = (_dataArray.count == 0);
+-(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
     return self.dataArray.count;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    ZZTCarttonDetailModel *model = self.dataArray[indexPath.row];
-    ZZTWordCell *cell = [tableView dequeueReusableCellWithIdentifier:WordCell];
-    cell.model = model;
-    cell.textLabel.text = @"朱晓俊";
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    ZZTCartoonCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cellId" forIndexPath:indexPath];
+    ZZTCarttonDetailModel *car = self.dataArray[indexPath.row];
+    cell.cartoon = car;
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    ZZTCarttonDetailModel *model = self.dataArray[indexPath.row];
-    if([model.cartoonType isEqualToString:@"1"]){
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    ZZTCarttonDetailModel *md = self.dataArray[indexPath.row];
+    if([md.cartoonType isEqualToString:@"1"]){
         ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
-        detailVC.cartoonDetail = model;
+        detailVC.isId = YES;
+        detailVC.cartoonDetail = md;
         detailVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:detailVC animated:YES];
     }else{
         ZZTMulWordDetailViewController *detailVC = [[ZZTMulWordDetailViewController alloc]init];
-        detailVC.cartoonDetail = model;
+        detailVC.isId = YES;
+        detailVC.cartoonDetail = md;
         detailVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:detailVC animated:YES];
     }

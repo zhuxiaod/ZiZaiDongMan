@@ -197,8 +197,8 @@
                 <outlet property="heatNum" destination="rxf-Sm-2PC" id="VRO-8u-UBV"/>
                 <outlet property="like" destination="wzo-B5-yhc" id="Opk-ow-hjP"/>
                 <outlet property="likeNum" destination="ylZ-X1-EWp" id="Zdy-ep-bxd"/>
-                <outlet property="moreBtn" destination="r0f-TO-0u5" id="Jnc-Zy-pYJ"/>
                 <outlet property="participationNum" destination="pEk-wa-22X" id="Yqf-aP-e5x"/>
+                <outlet property="shareBtn" destination="r0f-TO-0u5" id="N8X-Xe-O1k"/>
                 <outlet property="topTitle" destination="t8t-c1-Wnv" id="TYa-nG-VeW"/>
             </connections>
             <point key="canvasLocation" x="10.5" y="65"/>

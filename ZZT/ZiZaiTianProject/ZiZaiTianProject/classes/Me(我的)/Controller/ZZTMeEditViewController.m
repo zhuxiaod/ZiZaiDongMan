@@ -24,6 +24,8 @@
 
 @property(nonatomic, strong) BAKit_PickerView *pickView;
 
+@property(nonatomic, strong)BAKit_DatePicker *tempView;
+
 @property(nonatomic, strong) ZZTMeEditTopView *topView;
 
 //背景图
@@ -32,6 +34,7 @@
 @property (nonatomic,strong) UIImage *backImage;
 //头像图
 @property (nonatomic,strong) NSString *headImg;
+
 @property (nonatomic,strong) UIImage *headImage;
 //昵称
 @property (nonatomic,strong) NSString *userName;
@@ -45,17 +48,22 @@
 //签名
 @property (nonatomic,strong) NSString *signature;
 
+@property (nonatomic,strong) NSMutableDictionary *imgeDict;
+
 @end
 
 @implementation ZZTMeEditViewController
 
+-(NSMutableDictionary *)imgeDict{
+    if(!_imgeDict){
+        _imgeDict = [NSMutableDictionary dictionary];
+    }
+    return _imgeDict;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    //进来的时候要有资料  有资料的话  赋值一波
-    //头像
-    //昵称
-    
+
     self.view.backgroundColor = [UIColor whiteColor];
     
     self.navigationItem.title = @"编辑资料";
@@ -63,7 +71,6 @@
     UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
     
     [self.view addSubview:scrollView];
-    
     
     //添加topView
     ZZTMeEditTopView *topView = [ZZTMeEditTopView ZZTMeEditTopView];
@@ -113,10 +120,11 @@
     //设置scrollView内容距离
     scrollView.contentSize = CGSizeMake(SCREEN_WIDTH, 700);
 }
+
 //保存
 -(void)save{
-    //将七牛云上传头像
-    if(self.headImage){
+    NSArray *imgDict = [self.imgeDict allKeys];
+    for (int i = 0; i < imgDict.count; i++) {
         //文件名
         NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
         formatter.dateFormat = [formatter stringFromDate:[NSDate date]];
@@ -130,7 +138,14 @@
         //写入本地
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
         NSString *filePath = [[paths objectAtIndex:0] stringByAppendingPathComponent:imgName];
-        BOOL result = [UIImagePNGRepresentation(self.headImage) writeToFile:filePath atomically:YES];
+        
+        NSString *imgType = imgDict[i];
+        BOOL result = NO;
+        if([imgType isEqualToString:@"headImg"]){
+            result = [UIImagePNGRepresentation(self.headImage) writeToFile:filePath atomically:YES];
+        }else{
+            result = [UIImagePNGRepresentation(self.backImage) writeToFile:filePath atomically:YES];
+        }
         
         if (result == YES) {
             NSLog(@"保存成功");
@@ -140,28 +155,80 @@
             
             [AFNHttpTool putImagePath:filePath key:imgName token:toke complete:^(id objc) {
                 NSLog(@"%@",objc); //  上传成功并获取七牛云的图片地址
-                self.headImg = objc;
+//                self.headImg = objc;
+                [self.imgeDict setObject:objc forKey:imgType];
                 [self successUp];
             }];
             
         }else{
             NSLog(@"保存失败");
         }
-    }else{
-        self.headImg = @"";
+    }
+    if(imgDict.count == 0){
         [self successUp];
     }
-    //判断不为空
-   
+//    //将七牛云上传头像
+//    if(self.headImage || self.backImage){
+//        //文件名
+//        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+//        formatter.dateFormat = [formatter stringFromDate:[NSDate date]];
+//        NSString *imgName = [formatter stringFromDate:[NSDate date]];
+//        NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+//        NSMutableString *randomString = [NSMutableString stringWithCapacity:32];
+//        for (NSInteger i = 0; i < 32; i++) {
+//            [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random_uniform((uint32_t)letters.length)]];
+//        }
+//        imgName = [NSString stringWithFormat:@"%@%@.png",imgName,randomString];
+//        //写入本地
+//        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+//        NSString *filePath = [[paths objectAtIndex:0] stringByAppendingPathComponent:imgName];
+//
+//        BOOL result = NO;
+//        if(self.headImg)    result = [UIImagePNGRepresentation(self.headImage) writeToFile:filePath atomically:YES];
+//        if(self.backImage)  result = [UIImagePNGRepresentation(self.backImage) writeToFile:filePath atomically:YES];
+//
+//        if (result == YES) {
+//            NSLog(@"保存成功");
+//
+//            AFNHttpTool *tool = [[AFNHttpTool alloc] init];
+//            NSString *toke = [tool makeToken:ZZTAccessKey secretKey:ZZTSecretKey];
+//
+//            [AFNHttpTool putImagePath:filePath key:imgName token:toke complete:^(id objc) {
+//                NSLog(@"%@",objc); //  上传成功并获取七牛云的图片地址
+//                self.headImg = objc;
+//                [self successUp];
+//            }];
+//
+//        }else{
+//            NSLog(@"保存失败");
+//        }
+//    }else{
+////        self.headImg = @"";
+//        [self successUp];
+//    }
+//    //判断不为空
 }
+
 -(void)successUp{
+    //遍历字典
+    NSArray *imgDict = [self.imgeDict allKeys];
+    for (int i = 0; i < imgDict.count; i++) {
+        NSString *key = imgDict[i];
+        if ([key isEqualToString:@"headImg"]) {
+            self.headImg = [self.imgeDict objectForKey:@"headImg"];
+        }else{
+            self.backImg = [self.imgeDict objectForKey:@"backImg"];
+        }
+    }
+    
     NSDictionary *dic = @{
                           @"userId":self.model.userId,
                           @"nickName":self.userName,
-                          @"intro":self.signature,
+                          @"intro":self.signature,//空
                           @"sex":self.sex,
-                          @"birthday":self.birthday,
-                          @"headimg":self.headImg
+                          @"birthday":self.birthday,//空
+                          @"headimg":self.headImg,//空
+                          @"cover":self.backImg
                           };
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     [manager POST:[ZZTAPI stringByAppendingString:@"login/upUser"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -170,6 +237,7 @@
         
     }];
 }
+
 //走了
 -(void)textChange:(UITextField *)tf{
     if(tf.tag == 0){
@@ -209,11 +277,13 @@
     NSLog(@"%@",info);
     UIButton *button = (UIButton *)[self.view viewWithTag:_btnTag];
     UIImage *resultImage = [info objectForKey:@"UIImagePickerControllerEditedImage"];
-    //改变后的图片
+    //改变后的图片 记录 加了什么
     if(_btnTag == 1){
         _backImage = resultImage;
+        [self.imgeDict setObject:resultImage forKey:@"backImg"];
     }else{
         _headImage = resultImage;
+        [self.imgeDict setObject:resultImage forKey:@"headImg"];
     }
     [button setImage:[resultImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
@@ -231,9 +301,7 @@
     _picker.sourceType =  UIImagePickerControllerSourceTypeSavedPhotosAlbum;
     //选择完成图片或者点击取消按钮都是通过代理来操作我们所需要的逻辑过程
 //    _picker.delegate = self;
-    [self.navigationController presentViewController:_picker animated:YES completion:^{
-
-    }];
+    [self.navigationController presentViewController:_picker animated:YES completion:nil];
 }
 
 //调用相机
@@ -337,7 +405,9 @@
         NSDateFormatter *format = [NSDateFormatter ba_setupDateFormatterWithYMD];
         NSDate *today = [[NSDate alloc]init];
         [format setDateFormat:@"yyyy-MM-dd"];
-
+        
+        self.tempView = tempView;
+        
         // 最小时间，当前时间
         mindDate = [format dateFromString:[format stringFromDate:today]];
 
@@ -370,6 +440,7 @@
         [tf setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [tf setTitle:[NSString stringWithFormat:@"%@",resultString] forState:UIControlStateNormal];
         self.birthday = resultString;
+        
     }];
 }
 
@@ -385,16 +456,14 @@
     
     self.signature = model.intro;
     
-    self.sex = model.sex;
+    self.sex = model.sex;   //1.男 2.女
     
-    self.birthday = [NSString timeWithStr:[NSString stringWithFormat:@"%@",model.birthday]];
-    
-    self.headImg = model.headimg;
-    
+    self.birthday = model.birthday;
 }
+
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     [_meButtomView.userNameTF endEditing:YES];
     [_meButtomView.userDetailTF endEditing:YES];
-
 }
+
 @end
