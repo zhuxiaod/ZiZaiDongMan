@@ -18,6 +18,7 @@
 @property (nonatomic,strong) ZZTChapterlistModel *dataModel;
 @property (nonatomic,strong) ZZTCarttonDetailModel *cartoonModel;
 @property (nonatomic,strong) ZZTJiXuYueDuModel *testModel;
+@property (nonatomic,assign) NSInteger indexRow;
 //书
 //@property (nonatomic,strong) NSString *bookNameId;
 

@@ -21,6 +21,7 @@
 #import "ZZTCreationCartoonTypeViewController.h"
 #import "ZZTChapterlistModel.h"
 #import "ZZTCarttonDetailModel.h"
+#include <sys/time.h>
 
 @interface ZZTCartoonDetailViewController ()<UITableViewDelegate,UITableViewDataSource>
 
@@ -45,6 +46,8 @@
 @property (nonatomic,strong) UserInfo *author;
 //剧本
 @property (nonatomic,strong) ZZTStoryModel *stroyModel;
+
+@property (nonatomic,assign) CGPoint readPoint;
 
 @end
 
@@ -108,8 +111,10 @@ NSString *storyDe = @"storyDe";
     _tableView = tableView;
     [self.view addSubview:tableView];
     [tableView registerNib:[UINib nibWithNibName:@"ZZTCommentCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:Comment];
-     [tableView registerNib:[UINib nibWithNibName:@"ZZTStoryDetailCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:story];
+    [tableView registerNib:[UINib nibWithNibName:@"ZZTStoryDetailCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:story];
 
+    tableView.pagingEnabled = NO;
+    
     self.navigationController.navigationBar.translucent = NO;
     self.automaticallyAdjustsScrollViewInsets=NO;
     
@@ -132,7 +137,7 @@ NSString *storyDe = @"storyDe";
     [self loadCartoonDetail];
 }
 
-//中间内容
+#pragma mark - navigationItem
 - (void)setupTitleView{
     UIView *textView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH * 0.8, 40)];
     
@@ -150,6 +155,7 @@ NSString *storyDe = @"storyDe";
     self.navigationItem.titleView = textView;
 }
 
+#pragma mark - tableViewDelegate
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 2;
 }
@@ -169,12 +175,14 @@ NSString *storyDe = @"storyDe";
             ZZTCartoonContentCell *cell = [tableView dequeueReusableCellWithIdentifier:CartoonContentCellIdentifier];
             ZZTCartoonModel *model = self.cartoonDetailArray[indexPath.row];
             cell.model = model;
+            //如果是在最后一行的话 传一个东西进去 
             return cell;
         }else{
             ZZTStoryDetailCell *cell = [tableView dequeueReusableCellWithIdentifier:story];
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             ZZTStoryModel *model = self.cartoonDetailArray[indexPath.row];
             cell.str = model.content;
+            NSLog(@"model.content:%@",model.content)
             return cell;
         }
     }else if (indexPath.section == 1){
@@ -212,7 +220,7 @@ NSString *storyDe = @"storyDe";
     }
 }
 
-//漫画接口
+#pragma mark - detailContentApi
 -(void)loadCartoonDetail{
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
 
@@ -226,7 +234,7 @@ NSString *storyDe = @"storyDe";
             NSArray *array = [ZZTCartoonModel mj_objectArrayWithKeyValuesArray:dic];
             self.cartoonDetailArray = array;
             [self.tableView reloadData];
-            [self reloadCellWithIndex];
+//            [self.tableView layoutIfNeeded];
             //
             [self loadCommentData];
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -235,7 +243,6 @@ NSString *storyDe = @"storyDe";
     }else{
         //章节
         NSDictionary *paramDict = @{
-//                                    @"chapterinfoId":[NSString stringWithFormat:@"%ld",_dataModel.id]
                                     @"chapterinfoId":@"1"
                                     };
         [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterInfo"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -250,14 +257,15 @@ NSString *storyDe = @"storyDe";
                 [self downLoadTxt:model.content];
             }
             [self.tableView reloadData];
-            //            [self.tableView layoutIfNeeded];
-//            [self reloadCellWithIndex];
+            NSLog(@"妹子你在哪");
+            [self loadCommentData];
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
            
         }];
     }
 }
 
+//下载txt
 -(void)downLoadTxt:(NSString *)txtUrl{
     //构造资源链接
 //    NSString *urlString = @"http://img1.sc115.com/uploads/sc/jpg/HD/1/204.jpg";
@@ -276,47 +284,29 @@ NSString *storyDe = @"storyDe";
     } destination:^NSURL * _Nonnull(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
         //返回下载到哪里(返回值是一个路径)
         //拼接存放路径
-//
         NSString *caches = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
         //拼接文件全路径
         NSString *fullpath = [caches stringByAppendingPathComponent:response.suggestedFilename];
         NSURL *filePathUrl = [NSURL URLWithString:fullpath];
-        NSLog(@"filePathUrl:%@",[NSString stringWithFormat:@"%@",filePathUrl])
         return filePathUrl;
-//        NSURL *pathURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:nil];
-//
-//        [pathURL URLByAppendingPathComponent:[response suggestedFilename]];
-////
-////        NSURL *filePathUrl = [NSURL fileURLWithPath:pathURL];
-////
-//        NSLog(@"pathURL%@",pathURL);
-//        return pathURL;
         
     } completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
         //下载完成走这个block
         if (!error) {
-            NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"ssdf.txt" ofType:nil];
-            NSData *data = [NSData dataWithContentsOfFile:filePath.path options:NSUTF8StringEncoding error:&error];
-            NSString *str  = [NSString stringWithUTF8String:[data bytes]];
-//            NSString *dataStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-            NSLog(@"%@", str);
-            NSLog(@"error:%@",error);
-//            NSString *path = [[NSBundle mainBundle] pathForResource:@"ssdf" ofType:@"txt"];
-//            NSError *error;
-//            NSString *content = [[NSString alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@",filePath] encoding:NSUTF8StringEncoding error:&error];
-//            NSLog(@"error:%@",error);
-//            NSArray *array = [self jsonStringToKeyValues:content];
-//            for (NSDictionary *dict in array) {
-//                NSLog(@"name=%@ sex=%@ phone=%@",[dict objectForKey:@"name"],[dict objectForKey:@"sex"],[dict objectForKey:@"phone"]);
-//            }
+            NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+            NSString *filenData = [NSString stringWithContentsOfFile:filePath.path encoding:enc error:&error];
+            self.stroyModel.content = filenData;
+            [self.tableView reloadData];
+            [self.tableView layoutIfNeeded];
+            [self reloadCellWithIndex];
         }else{
             NSLog(@"%@",error);
-
         }
     }];
     //开始请求
     [task resume];
 }
+
 //json字符串转化成OC键值对
 - (id)jsonStringToKeyValues:(NSString *)JSONString {
     NSData *JSONData = [JSONString dataUsingEncoding:NSUTF8StringEncoding];
@@ -330,7 +320,10 @@ NSString *storyDe = @"storyDe";
 -(void)loadCommentData{
     //评论
     NSDictionary *commentDict = @{
-                                  @"itemId":[NSString stringWithFormat:@"%ld",_dataModel.id]
+                                  @"itemId":[NSString stringWithFormat:@"%ld",_dataModel.id],
+                                  @"type":self.cartoonModel.type,
+                                  @"pageNum":@"0",
+                                  @"pageSize":@"10"
                                   };
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonComment"] parameters:commentDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -361,13 +354,25 @@ NSString *storyDe = @"storyDe";
         NSLog(@"likeDic:%@",likeDic);
         self.userLikeArray = array2;
         [self.tableView reloadData];
-        
         [self loadAuthorHead];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
 }
+
 -(void)loadAuthorHead{
+    
+    if(![self.cartoonModel.type isEqualToString:@"1"]){
+        UserInfo *user = [[UserInfo alloc] init];
+        user.headimg = self.stroyModel.headimg;
+        user.nickName = self.stroyModel.nickName;
+        user.id = self.stroyModel.id;
+        user.userId = self.stroyModel.userId;
+        self.author = user;
+        [self.tableView reloadData];
+        [self reloadCellWithIndex];
+        return;
+    }
 //        dispatch_semaphore_t  sema = dispatch_semaphore_create(0);
         //头像
     NSDictionary *headDict = @{
@@ -383,6 +388,7 @@ NSString *storyDe = @"storyDe";
         }
         //            NSLog(@"likeDic:%@",dic);
         [self.tableView reloadData];
+        [self reloadCellWithIndex];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
@@ -392,7 +398,6 @@ NSString *storyDe = @"storyDe";
 -(void)setDataModel:(ZZTChapterlistModel *)dataModel{
     _dataModel = dataModel; // 你的问题在哪里  是没有数据还是数据错乱
 //    weakself(self);
-    
 }
 
 -(void)setCartoonModel:(ZZTCarttonDetailModel *)cartoonModel{
@@ -402,13 +407,14 @@ NSString *storyDe = @"storyDe";
 //请求数据后显示那一行
 -(void)reloadCellWithIndex{
     if(self.isJXYD){
+
         dispatch_async(dispatch_get_main_queue(), ^{
-            
-            NSIndexPath *dayOne = [NSIndexPath indexPathForRow:[self.model.bookIndex integerValue] inSection:0];
-            if([self.model.bookIndex integerValue] > 0){
-                [self.tableView scrollToRowAtIndexPath:dayOne atScrollPosition:UITableViewScrollPositionTop animated:NO];
-            }
+            // 刷新完成
+            [self.tableView layoutIfNeeded];
+
+            [self.tableView setContentOffset:self.model.readPoint];
         });
+        NSLog(@"model.conte");
     }
 }
 
@@ -434,7 +440,6 @@ NSString *storyDe = @"storyDe";
     }else{
         ZZTCommentHeadView *commentHeadView = [[ZZTCommentHeadView alloc] init];
         commentHeadView.backgroundColor = [UIColor whiteColor];
-       
         return commentHeadView;
     }
 }
@@ -459,7 +464,6 @@ NSString *storyDe = @"storyDe";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
-//    return 150;
     return 0;
 }
 
@@ -492,15 +496,16 @@ NSString *storyDe = @"storyDe";
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     //字典转模型
-    NSArray *models = [Utilities GetArrayWithPathComponent:@"readHistoryArray"];
-    NSMutableArray *arrayDict = [ZZTJiXuYueDuModel mj_objectArrayWithKeyValuesArray:models];
-    
+    NSMutableArray *arrayDict = [NSKeyedUnarchiver unarchiveObjectWithFile:JiXuYueDuAPI];
+    if (arrayDict == nil) {
+        arrayDict = [NSMutableArray array];
+    }
     NSLog(@"arrayDict:%@",arrayDict);
     
-    //得到了模型数组 arrayDict
     //先看有没有这篇文章
     BOOL isHave = NO;
     int arrayIndex = 0;
+    //因为有很多本书 所以会有很多对象
     for (int i = 0; i < arrayDict.count; i++) {
         ZZTJiXuYueDuModel *model = arrayDict[i];
         if([model.bookId isEqualToString:_cartoonModel.id]){
@@ -517,28 +522,42 @@ NSString *storyDe = @"storyDe";
     //如果有 就修改
     if(isHave == YES){
         ZZTJiXuYueDuModel *model = arrayDict[arrayIndex];
-        //修改章节 和 页面
-        model.bookIndex = [NSString stringWithFormat:@"%ld",(long)index.row];
-        model.bookChapter = [NSString stringWithFormat:@"%ld",_dataModel.id];;
-        model.bookId = _cartoonModel.id;
+        model.bookName = _cartoonModel.bookName;
+        model.bookChapter = _dataModel.chapterPage;//第几画
+        model.bookId = _cartoonModel.id;    //判断那本书
+        model.bookContentId = [NSString stringWithFormat:@"%ld",_dataModel.id];//内容ID
+        model.readPoint = self.readPoint;//到那个位置
+//        model.chapterIndex = self.indexRow;
+        model.chapterIndex = [NSString stringWithFormat:@"%ld",self.indexRow];
         [arrayDict replaceObjectAtIndex:arrayIndex withObject:model];
     }else{
+        
+        /*
+         记录书ID。知道是哪一本书          ok
+         记录章节ID 得到显示12-23画  直接获得    ok
+         记录内容ID 方便能够获取数据
+         记录 type。如果是剧本的话 不要找转cell 如果是cartoon的话 需要
+         记录 cartoonType 众创还是独创 如果是 总床
+         */
+        
         //没有看过 添加
         ZZTJiXuYueDuModel *model = [[ZZTJiXuYueDuModel alloc] init];
         model.bookName = _cartoonModel.bookName;
-        model.bookChapter = [NSString stringWithFormat:@"%ld",_dataModel.id];
-        model.bookId = _cartoonModel.id;
-        model.bookIndex = [NSString stringWithFormat:@"%ld",index.row];
+        model.bookChapter = _dataModel.chapterPage;//第几画
+        model.bookId = _cartoonModel.id;    //判断那本书
+        model.bookContentId = [NSString stringWithFormat:@"%ld",_dataModel.id];//内容ID
+        model.readPoint = self.readPoint;//到那个位置
+        model.chapterIndex = [NSString stringWithFormat:@"%ld",(long)self.indexRow];
         [arrayDict addObject:model];
     }
-    
-    //存数据   注意清楚
-    NSArray *arrayl = [ZZTJiXuYueDuModel mj_keyValuesArrayWithObjectArray:arrayDict];
-    NSLog(@"arrayl:%@",arrayl);
-    
-    [arrayl writeToFile:[Utilities fileWithPathComponent:@"readHistoryArray"] atomically:YES];
+    //存
+    NSString *path = JiXuYueDuAPI;
+    [NSKeyedArchiver archiveRootObject:arrayDict toFile:path];
+    NSLog(@"readPoint111111:%@",NSStringFromCGPoint(_readPoint));
 }
 
+//点击继续阅读的时候 才会传这个
+//
 //-(void)setModel:(ZZTJiXuYueDuModel *)model{
 //    _model = model;
 //    if(model){
@@ -564,6 +583,15 @@ NSString *storyDe = @"storyDe";
         _model = [[ZZTJiXuYueDuModel alloc] init];
     }
     return _model;
+}
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    CGPoint readPoint = CGPointMake(scrollView.contentOffset.x, scrollView.contentOffset.y);
+    _readPoint = readPoint;
+    NSLog(@"readPoint:%@",NSStringFromCGPoint(readPoint));
+}
+
+-(void)setIndexRow:(NSInteger)indexRow{
+    _indexRow = indexRow;
 }
 
 @end

@@ -22,6 +22,20 @@
     return [NSKeyedUnarchiver unarchiveObjectWithData:data];
 }
 
+//存储单例models到NSUserDefaults
++(void)SetJiXuYueDuDefaults:(ZZTJiXuYueDuModel *)userInfo{
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:userInfo];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:data forKey:@"JiXuYueDu"];
+    [defaults synchronize];
+}
+
++(ZZTJiXuYueDuModel *)GetJiXuYueDuDefaults{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSData *data = [defaults objectForKey:@"JiXuYueDu"];
+    return [NSKeyedUnarchiver unarchiveObjectWithData:data];
+}
+
 - (NSDateComponents *)deltaFrom:(NSDate *)date{
     NSCalendar *calendar = [NSCalendar currentCalendar];
     NSCalendarUnit unit = NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond;

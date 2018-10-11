@@ -33,6 +33,8 @@
 
 @property (nonatomic,strong) UIButton *starRead;
 
+@property (nonatomic,strong) UIButton *pageBtn;
+
 @end
 
 NSString *zztWordListCell = @"zztWordListCell";
@@ -88,13 +90,14 @@ NSString *zztWordListCell = @"zztWordListCell";
     pageBtn.frame = CGRectMake(0, 0, SCREEN_WIDTH/3*2, 50);
     pageBtn.backgroundColor = [UIColor colorWithHexString:@"#DBDCDD"];
     [pageBtn setTitle:@"1 - 12页" forState:UIControlStateNormal];
+    _pageBtn = pageBtn;
     [pageBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [bottom addSubview:pageBtn];
     //开始阅读 继续阅读
     UIButton *starRead = [[UIButton alloc] init];
     starRead.frame = CGRectMake(SCREEN_WIDTH/3*2, 0, SCREEN_WIDTH/3, 50);
     starRead.backgroundColor = [UIColor colorWithHexString:@"#7778B2"];
-    [starRead addTarget:self action:@selector(starReadTarget) forControlEvents:UIControlEventTouchUpInside];
+    [starRead addTarget:self action:@selector(starReadTarget:) forControlEvents:UIControlEventTouchUpInside];
     [starRead setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     _starRead = starRead;
     [starRead setTitle:@"开始阅读" forState:UIControlStateNormal];
@@ -112,19 +115,21 @@ NSString *zztWordListCell = @"zztWordListCell";
 }
 
 //开始阅读
--(void)starReadTarget{
+-(void)starReadTarget:(UIButton *)startBtn{
+    ZZTChapterlistModel *model = [[ZZTChapterlistModel alloc] init];
     ZZTCartoonDetailViewController *cartoonDetailVC = [[ZZTCartoonDetailViewController alloc] init];
-    cartoonDetailVC.hidesBottomBarWhenPushed = YES;
-//    cartoonDetailVC.type = _cartoonDetail.type;
-//    cartoonDetailVC.cartoonId = self.cartoonDetail.id;
-//    cartoonDetailVC.viewTitle = _cartoonDetail.bookName;
-//    cartoonDetailVC.bookNameId = _cartoonDetail.id;
-    cartoonDetailVC.cartoonModel = _cartoonDetail;
-
-    if(self.isHave == YES){
-        cartoonDetailVC.testModel = _model;
-//        cartoonDetailVC.cartoonId = _model.bookChapter;
+    if([startBtn.titleLabel.text isEqualToString:@"开始阅读"] && self.wordList.count > 0){
+        model = self.wordList[0];
+        cartoonDetailVC.indexRow = 0;
+    }else if([startBtn.titleLabel.text isEqualToString:@"继续阅读"] && self.wordList.count > 0){
+        //取出来的
+        model = self.wordList[[self.model.chapterIndex integerValue]];
+        cartoonDetailVC.indexRow = [self.model.chapterIndex integerValue];
+        cartoonDetailVC.testModel = self.model;
     }
+    cartoonDetailVC.hidesBottomBarWhenPushed = YES;
+    cartoonDetailVC.dataModel = model;
+    cartoonDetailVC.cartoonModel = _cartoonDetail;
     [self.navigationController pushViewController:cartoonDetailVC animated:YES];
 }
 
@@ -185,6 +190,16 @@ NSString *zztWordListCell = @"zztWordListCell";
         //这里有问题 应该是转成数组 然后把对象取出
         NSMutableArray *array = [ZZTChapterlistModel mj_objectArrayWithKeyValuesArray:dic2];
         self.wordList = array;
+        if(array.count > 0){
+            ZZTChapterlistModel *model = array[0];
+            if(self.isHave == NO){
+                if([self.cartoonDetail.type isEqualToString:@"1"]){
+                    [self.pageBtn setTitle:[NSString stringWithFormat:@"%@画",model.chapterPage] forState:UIControlStateNormal];
+                }else{
+                    [self.pageBtn setTitle:[NSString stringWithFormat:@"%@页",model.chapterPage] forState:UIControlStateNormal];
+                }
+            }
+        }
         [self.contentView reloadData];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
@@ -273,7 +288,6 @@ NSString *zztWordListCell = @"zztWordListCell";
 #pragma mark - 内容设置
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     ZZTWordListCell *cell = [tableView dequeueReusableCellWithIdentifier:zztWordListCell];
-  
     ZZTChapterlistModel *model = self.wordList[indexPath.row];
     model.type = _cartoonDetail.type;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -292,14 +306,15 @@ NSString *zztWordListCell = @"zztWordListCell";
     ZZTCartoonDetailViewController *cartoonDetailVC = [[ZZTCartoonDetailViewController alloc] init];
     cartoonDetailVC.hidesBottomBarWhenPushed = YES;
 //    cartoonDetailVC.bookNameId = _cartoonDetail.id;
-    //书模型
+    cartoonDetailVC.indexRow = indexPath.row;
+    //书模型 cartoonDetail.id
     cartoonDetailVC.cartoonModel = _cartoonDetail;
     //章节
     cartoonDetailVC.dataModel = model;
     
-    if(self.isHave == YES &&  [NSString stringWithFormat:@"%ld",model.id] == _model.bookChapter){
-        cartoonDetailVC.testModel = _model;
-    }
+//    if(self.isHave == YES &&  [NSString stringWithFormat:@"%ld",model.id] == _model.bookChapter){
+//        cartoonDetailVC.testModel = _model;
+//    }
     [self.navigationController pushViewController:cartoonDetailVC animated:YES];
 }
 
@@ -374,8 +389,10 @@ NSString *zztWordListCell = @"zztWordListCell";
 }
 
 -(void)JiXuYueDuTarget{
-    NSArray *models = [Utilities GetArrayWithPathComponent:@"readHistoryArray"];
-    NSMutableArray *arrayDict = [ZZTJiXuYueDuModel mj_objectArrayWithKeyValuesArray:models];
+    NSMutableArray *arrayDict = [NSKeyedUnarchiver unarchiveObjectWithFile:JiXuYueDuAPI];
+    if (arrayDict == nil) {
+        arrayDict = [NSMutableArray array];
+    }
     
     for (int i = 0; i < arrayDict.count; i++) {
         //看这个数组里面的模型是否有这本书
@@ -386,14 +403,24 @@ NSString *zztWordListCell = @"zztWordListCell";
             break;
         }
     }
+    [self setupBottomViewContent];
+}
+
+-(void)setupBottomViewContent{
     //有的话 说明有记录
     if(self.isHave == YES){
-//        NSLog(@"数组里面有这个");
         [_starRead setTitle:@"继续阅读" forState:UIControlStateNormal];
+        //第几画
+        if([self.cartoonDetail.type isEqualToString:@"1"]){
+            [_pageBtn setTitle:[NSString stringWithFormat:@"%@画",self.model.bookChapter] forState:UIControlStateNormal];
+        }else{
+            [_pageBtn setTitle:[NSString stringWithFormat:@"%@页",self.model.bookChapter] forState:UIControlStateNormal];
+        }
     }else{
-//        NSLog(@"数组里面没有这个");
         //如果没有  保存进去
         [_starRead setTitle:@"开始阅读" forState:UIControlStateNormal];
     }
 }
+
+
 @end
