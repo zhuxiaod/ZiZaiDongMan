@@ -18,5 +18,7 @@ pod 'SDCycleScrollView','~> 1.75'
 pod 'SVProgressHUD'
 pod 'XHImageViewer'
 pod 'IQKeyboardManager'
+pod 'TTTAttributedLabel'
+pod 'UIColor+SKYExtension'
 end
 

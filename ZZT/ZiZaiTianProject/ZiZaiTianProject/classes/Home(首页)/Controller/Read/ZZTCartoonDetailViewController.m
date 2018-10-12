@@ -22,8 +22,11 @@
 #import "ZZTChapterlistModel.h"
 #import "ZZTCarttonDetailModel.h"
 #include <sys/time.h>
+#import "CircleCell.h"
+#import "ZZTUserReplyModel.h"
+#import "FriendCircleViewModel.h"
 
-@interface ZZTCartoonDetailViewController ()<UITableViewDelegate,UITableViewDataSource>
+@interface ZZTCartoonDetailViewController ()<UITableViewDelegate,UITableViewDataSource,CircleCellDelegate>
 
 @property (nonatomic,strong) NSArray *cartoonDetailArray;
 
@@ -58,6 +61,8 @@ NSString *Comment = @"Comment";
 NSString *story = @"story";
 
 NSString *storyDe = @"storyDe";
+
+static NSString *const kCellId = @"CircleCell";
 
 @implementation ZZTCartoonDetailViewController
 
@@ -131,6 +136,12 @@ NSString *storyDe = @"storyDe";
     }
     
     [self loadData];
+    
+    //评论
+    //注册cell
+    [self.tableView registerClass:[CircleCell class] forCellReuseIdentifier:kCellId];
+    self.tableView.tableFooterView = [UIView new];
+    self.tableView.estimatedRowHeight = 100;
 }
 
 -(void)loadData{
@@ -157,14 +168,25 @@ NSString *storyDe = @"storyDe";
 
 #pragma mark - tableViewDelegate
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    if(self.commentArray.count > 0){
+        return self.commentArray.count + 1;
+    }else{
+        return 1;
+    }
+//    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if(section == 0){
         return self.cartoonDetailArray.count;
     }else{
-        return self.commentArray.count;
+        if(self.commentArray.count > 0){
+            ZZTCircleModel *model = self.commentArray[section - 1];
+            return model.replyComment.count;
+
+        }else{
+            return 0;
+        }
     }
 }
 
@@ -175,7 +197,6 @@ NSString *storyDe = @"storyDe";
             ZZTCartoonContentCell *cell = [tableView dequeueReusableCellWithIdentifier:CartoonContentCellIdentifier];
             ZZTCartoonModel *model = self.cartoonDetailArray[indexPath.row];
             cell.model = model;
-            //如果是在最后一行的话 传一个东西进去 
             return cell;
         }else{
             ZZTStoryDetailCell *cell = [tableView dequeueReusableCellWithIdentifier:story];
@@ -185,15 +206,12 @@ NSString *storyDe = @"storyDe";
             NSLog(@"model.content:%@",model.content)
             return cell;
         }
-    }else if (indexPath.section == 1){
-        ZZTCommentCell *cell = [tableView dequeueReusableCellWithIdentifier:Comment];
-        if (self.commentArray.count > 0) {
-            ZZTCircleModel *model = self.commentArray[indexPath.row];
-            cell.model = model;
-        }
-        return cell;
     }else{
-        ZZTCartoonContentCell *cell = [tableView dequeueReusableCellWithIdentifier:CartoonContentCellIdentifier];
+        ZZTCircleModel *model = self.commentArray[indexPath.section - 1];
+//        ZZTUserReplyModel *item = model.replyComment[indexPath.row];
+        CircleCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellId forIndexPath:indexPath];
+        [cell setContentData:model index:indexPath.row];
+        cell.delegate = self;
         return cell;
     }
 }
@@ -209,13 +227,15 @@ NSString *storyDe = @"storyDe";
                 storyCell.str = model.content;
             }];
         }
-    }else if(indexPath.section == 1){
-        return [self.tableView fd_heightForCellWithIdentifier:Comment cacheByIndexPath:indexPath configuration:^(id cell) {
-            ZZTCommentCell *CommentCell = (ZZTCommentCell *)cell;
-            CommentCell.model = self.commentArray[indexPath.row];
-            
-        }];
     }else{
+        if(self.commentArray.count > 0){
+            ZZTCircleModel *model = self.commentArray[indexPath.row];
+            if(model.replyComment.count > 0){
+                NSNumber *height = model.commentHeightArr[indexPath.row];
+                NSLog(@"asdsds%f",[height floatValue]);
+                return 44;
+            }
+        }
         return 0;
     }
 }
@@ -257,7 +277,6 @@ NSString *storyDe = @"storyDe";
                 [self downLoadTxt:model.content];
             }
             [self.tableView reloadData];
-            NSLog(@"妹子你在哪");
             [self loadCommentData];
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
            
@@ -329,8 +348,13 @@ NSString *storyDe = @"storyDe";
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonComment"] parameters:commentDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *commenDdic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
-        NSArray *array1 = [ZZTCircleModel mj_objectArrayWithKeyValuesArray:commenDdic];
-        
+        NSMutableArray *array1 = [ZZTCircleModel mj_objectArrayWithKeyValuesArray:commenDdic];
+        //外面的数据
+        FriendCircleViewModel *circleViewModel = [[FriendCircleViewModel alloc] init];
+        circleViewModel.circleModelArray = array1;
+        self.commentArray = [circleViewModel loadDatas];
+
+        //加工一下评论的数据
         self.commentArray = array1;
         [self.tableView reloadData];
         
@@ -422,11 +446,12 @@ NSString *storyDe = @"storyDe";
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if(section == 0){
         return 100;
-    }{
-        if(self.commentArray.count == 0){
-            return 0;
+    }else{
+        if(self.commentArray.count > 0){
+            ZZTCircleModel *item = self.commentArray[section - 1];
+            return item.cellHeight;
         }
-        return 40;
+        return 0;
     }
 }
 

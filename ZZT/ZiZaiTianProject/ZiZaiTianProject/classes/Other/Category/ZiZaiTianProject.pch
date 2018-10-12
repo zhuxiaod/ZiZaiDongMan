@@ -65,6 +65,7 @@
 #import <UShareUI/UShareUI.h>
 #import <UShareUI/UMSocialUIUtility.h>
 #import "ZZTUserModel.h"
+#import "NSString+SKYExtension.h"
 
 
 #define detailViewHeaderHeight 60
@@ -84,6 +85,7 @@
 #define IV @"A-16-Byte-String"
 
 #define JiXuYueDuAPI [[NSSearchPathForDirectoriesInDomains (NSCachesDirectory , NSUserDomainMask , YES) firstObject] stringByAppendingPathComponent:@"JiXuYueDu.plist"]
+#define   SCREEN_MIN_LENGTH   (MIN(SCREEN_WIDTH, SCREEN_HEIGHT))
 
 //本地
 //#define ZZTAPI @"http://192.168.0.165:8888/"

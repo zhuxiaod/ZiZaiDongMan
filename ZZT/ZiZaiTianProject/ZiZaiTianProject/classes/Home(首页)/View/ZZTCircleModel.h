@@ -9,11 +9,12 @@
 #import <Foundation/Foundation.h>
 @class customer;
 @interface ZZTCircleModel : NSObject
-
-@property(nonatomic,strong) NSString *customerId;
-@property(nonatomic,strong) NSString *parentCommentId;
 @property(nonatomic,strong) NSString *contentId;
 @property(nonatomic,strong) NSString *content;
+@property(nonatomic,strong) NSString *id;
+@property(nonatomic,strong) NSString *parentCommentId;
+@property(nonatomic,strong) NSString *customerId;
+
 @property(nonatomic,assign) NSInteger state;
 @property(nonatomic,assign) NSInteger type;
 
@@ -21,4 +22,21 @@
 @property(nonatomic,strong) NSDate *commentTime;
 
 @property(nonatomic,strong) customer *customer;
+@property(nonatomic,strong) NSArray *replyComment;
+
+//图片数组
+@property(nonatomic,strong) NSArray *imageArray;
+
+//高度
+@property (nonatomic, strong) NSMutableArray *commentHeightArr;
+@property (nonatomic, assign) CGFloat cellHeight;
+@property (nonatomic, assign) CGFloat headerHeight;
+@property (nonatomic, assign) CGFloat nameLabelHeight;
+@property (nonatomic, assign) CGFloat contentLabelHeight;
+@property (nonatomic, assign) CGFloat imgBgViewHeight;
+@property (nonatomic, assign) CGFloat footerHeight;
+@property (nonatomic, assign) CGFloat likerHeight;
+@property (nonatomic, assign) BOOL isSpread; //全文是否展开
+
+
 @end
