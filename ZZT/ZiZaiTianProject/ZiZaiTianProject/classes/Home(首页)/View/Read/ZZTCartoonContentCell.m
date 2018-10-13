@@ -35,24 +35,26 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    self.content.frame = self.bounds;
+//    self.content.frame = self.bounds;
     [self.content mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self).with.offset(0);
         make.left.equalTo(self).with.offset(0);
         make.right.equalTo(self).with.offset(0);
         make.bottom.equalTo(self).with.offset(0);
+//        make.height.mas_equalTo(@400);
     }];
-    [self.likeView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(self).with.offset(-10);
-        make.right.equalTo(self).with.offset(-10);
-        make.height.mas_equalTo(@50);
-        make.width.mas_equalTo(@50);
-    }];
+//    [self.likeView mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.bottom.equalTo(self).with.offset(-10);
+//        make.right.equalTo(self).with.offset(-10);
+//        make.height.mas_equalTo(@50);
+//        make.width.mas_equalTo(@50);
+//    }];
 }
 
 -(void)setModel:(ZZTCartoonModel *)model{
     _model = model;
+    __block float height;
     [_content sd_setImageWithURL:[NSURL URLWithString:model.cartoonUrl] placeholderImage:[UIImage imageNamed:@"peien"]];
-    
 }
+
 @end

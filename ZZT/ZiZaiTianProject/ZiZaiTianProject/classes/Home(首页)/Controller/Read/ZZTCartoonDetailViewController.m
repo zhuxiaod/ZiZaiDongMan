@@ -115,8 +115,8 @@ static NSString *const kCellId = @"CircleCell";
     tableView.showsVerticalScrollIndicator = YES;
     _tableView = tableView;
     [self.view addSubview:tableView];
-    [tableView registerNib:[UINib nibWithNibName:@"ZZTCommentCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:Comment];
-    [tableView registerNib:[UINib nibWithNibName:@"ZZTStoryDetailCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:story];
+//    [tableView registerNib:[UINib nibWithNibName:@"ZZTCommentCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:Comment];
+//    [tableView registerNib:[UINib nibWithNibName:@"ZZTStoryDetailCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:story];
 
     tableView.pagingEnabled = NO;
     
@@ -140,8 +140,12 @@ static NSString *const kCellId = @"CircleCell";
     //评论
     //注册cell
     [self.tableView registerClass:[CircleCell class] forCellReuseIdentifier:kCellId];
+    [self.tableView registerClass:[ZZTStoryDetailCell class] forCellReuseIdentifier:story];
+
+    
     self.tableView.tableFooterView = [UIView new];
     self.tableView.estimatedRowHeight = 100;
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
 }
 
 -(void)loadData{
@@ -216,7 +220,7 @@ static NSString *const kCellId = @"CircleCell";
     }
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if(indexPath.section == 0){
         if([self.cartoonModel.type isEqualToString:@"1"]){
             return self.view.height;
@@ -228,15 +232,8 @@ static NSString *const kCellId = @"CircleCell";
             }];
         }
     }else{
-        if(self.commentArray.count > 0){
-            ZZTCircleModel *model = self.commentArray[indexPath.row];
-            if(model.replyComment.count > 0){
-                NSNumber *height = model.commentHeightArr[indexPath.row];
-                NSLog(@"asdsds%f",[height floatValue]);
-                return 44;
-            }
-        }
-        return 0;
+        return UITableViewAutomaticDimension;
+
     }
 }
 
@@ -462,10 +459,20 @@ static NSString *const kCellId = @"CircleCell";
         ZZTAuthorHeadView *authorHead = [ZZTAuthorHeadView AuthorHeadView];
         authorHead.userModel = self.author;
         return authorHead;
-    }else{
+    }else if(section == 1){
         ZZTCommentHeadView *commentHeadView = [[ZZTCommentHeadView alloc] init];
         commentHeadView.backgroundColor = [UIColor whiteColor];
         return commentHeadView;
+    }else{
+        static NSString *viewIdentfier = @"headView";
+        ZZTCommentHeaderView *headerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:viewIdentfier];
+        //如果没有头视图
+        if(!headerView){
+            headerView = [[ZZTCommentHeaderView alloc] initWithReuseIdentifier:viewIdentfier];
+        }
+        ZZTCircleModel *model = self.commentArray[section - 1];
+        [headerView setContentData:model section:section];
+        return headerView;
     }
 }
 
@@ -612,11 +619,16 @@ static NSString *const kCellId = @"CircleCell";
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     CGPoint readPoint = CGPointMake(scrollView.contentOffset.x, scrollView.contentOffset.y);
     _readPoint = readPoint;
-    NSLog(@"readPoint:%@",NSStringFromCGPoint(readPoint));
+//    NSLog(@"readPoint:%@",NSStringFromCGPoint(readPoint));
 }
 
 -(void)setIndexRow:(NSInteger)indexRow{
     _indexRow = indexRow;
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    NSLog(@"width:%f",[UIScreen mainScreen].bounds.size.width);
 }
 
 @end

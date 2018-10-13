@@ -66,7 +66,9 @@
 #import <UShareUI/UMSocialUIUtility.h>
 #import "ZZTUserModel.h"
 #import "NSString+SKYExtension.h"
-
+#import <SDAutoLayout.h>
+#import "ZZTCommentHeaderView.h"
+#import <TTTAttributedLabel.h>
 
 #define detailViewHeaderHeight 60
 #define ZZTAccessKey @"otsMMnYSaZw9UgT-OUFSc46m3UOVaqr-ysR07Dwq"
@@ -85,7 +87,13 @@
 #define IV @"A-16-Byte-String"
 
 #define JiXuYueDuAPI [[NSSearchPathForDirectoriesInDomains (NSCachesDirectory , NSUserDomainMask , YES) firstObject] stringByAppendingPathComponent:@"JiXuYueDu.plist"]
-#define   SCREEN_MIN_LENGTH   (MIN(SCREEN_WIDTH, SCREEN_HEIGHT))
+
+#define   SCREEN_MIN_LENGTH   (MIN([UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height))
+#define iPhone4 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ?            CGSizeEqualToSize(CGSizeMake(640,960), [[UIScreen mainScreen] currentMode].size) : NO)
+#define iPhone5 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640,1136), [[UIScreen mainScreen] currentMode].size) : NO)
+#define iPhone6 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? (CGSizeEqualToSize(CGSizeMake(750,1334), [[UIScreen mainScreen] currentMode].size) || CGSizeEqualToSize(CGSizeMake(640,1136), [[UIScreen mainScreen] currentMode].size)) : NO)
+#define iPhone6plus ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? (CGSizeEqualToSize(CGSizeMake(1125,2001), [[UIScreen mainScreen] currentMode].size) || CGSizeEqualToSize(CGSizeMake(1242,2208), [[UIScreen mainScreen] currentMode].size)) : NO)
+
 
 //本地
 //#define ZZTAPI @"http://192.168.0.165:8888/"

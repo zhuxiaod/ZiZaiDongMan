@@ -19,7 +19,7 @@
 
 @interface CircleCell () <TTTAttributedLabelDelegate>
 
-@property (nonatomic, strong) TTTAttributedLabel *commentLabel;
+//@property (nonatomic, strong) TTTAttributedLabel *commentLabel;
 
 @end
 
@@ -46,13 +46,15 @@
         make.left.equalTo(@(36 + SectionHeaderHorizontalSpace * 2));
     }];
     //评论
-    self.commentLabel = [TTTAttributedLabel new];
-    self.commentLabel.numberOfLines = 0;
-    self.commentLabel.lineSpacing = SectionHeaderLineSpace;
-    self.commentLabel.font = [UIFont systemFontOfSize:15];
-    self.commentLabel.delegate = self;
-    [self.contentView addSubview:self.commentLabel];
-    [self.commentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    TTTAttributedLabel *commentLabel = [TTTAttributedLabel new];
+    commentLabel.numberOfLines = 0;
+    commentLabel.lineSpacing = SectionHeaderLineSpace;
+//    commentLabel.lineBreakMode = UILineBreakModeCharacterWrap;
+    commentLabel.font = [UIFont systemFontOfSize:15];
+    commentLabel.delegate = self;
+    self.commentLabel = commentLabel;
+    [self.contentView addSubview:commentLabel];
+    [commentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.contentView).offset(3);
         make.bottom.equalTo(self.contentView).offset(-3);
         make.right.equalTo(self.contentView).offset(-SectionHeaderHorizontalSpace);

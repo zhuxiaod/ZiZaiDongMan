@@ -22,6 +22,7 @@
 @property(nonatomic,strong) NSDate *commentTime;
 
 @property(nonatomic,strong) customer *customer;
+
 @property(nonatomic,strong) NSArray *replyComment;
 
 //图片数组

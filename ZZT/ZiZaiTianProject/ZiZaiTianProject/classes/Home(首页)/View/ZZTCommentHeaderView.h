@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+@class ZZTCircleModel;
+
 extern const CGFloat SectionHeaderHorizontalSpace; //水平方向控件之间的间隙距离
 extern const CGFloat SectionHeaderVerticalSpace; //竖直方向控件之间的间隙距离
 extern const CGFloat SectionHeaderTopSpace; //顶部的空白距离
@@ -24,5 +26,7 @@ extern const CGFloat SectionHeaderOnePictureHeight; //只有一张图片时的�
 extern const CGFloat SectionHeaderSomePicturesHeight; //有多张图片时的单张图片高度
 
 @interface ZZTCommentHeaderView : UITableViewHeaderFooterView
+
+- (void)setContentData:(ZZTCircleModel *)circleItem section:(NSInteger)section;
 
 @end

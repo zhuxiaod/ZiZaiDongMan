@@ -29,7 +29,6 @@
 		0404A11921521EF3003BC1CC /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0404A11821521EF3003BC1CC /* Photos.framework */; };
 		040A03AD20FD8406000FAE13 /* ZZTStoryDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 040A03AC20FD8406000FAE13 /* ZZTStoryDetailView.m */; };
 		040A03B120FD8706000FAE13 /* ZZTStoryDetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 040A03AF20FD8706000FAE13 /* ZZTStoryDetailCell.m */; };
-		040A03B220FD8706000FAE13 /* ZZTStoryDetailCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 040A03B020FD8706000FAE13 /* ZZTStoryDetailCell.xib */; };
 		040A03B620FDDAEA000FAE13 /* ZZTWritePlayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 040A03B420FDDAEA000FAE13 /* ZZTWritePlayViewController.m */; };
 		040A03BA20FDECC0000FAE13 /* ZZTSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 040A03B920FDECC0000FAE13 /* ZZTSearchViewController.m */; };
 		040A03BD2100201B000FAE13 /* ZZTMoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 040A03BC2100201B000FAE13 /* ZZTMoreViewController.m */; };
@@ -332,7 +331,6 @@
 		040A03AC20FD8406000FAE13 /* ZZTStoryDetailView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTStoryDetailView.m; sourceTree = "<group>"; };
 		040A03AE20FD8706000FAE13 /* ZZTStoryDetailCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTStoryDetailCell.h; sourceTree = "<group>"; };
 		040A03AF20FD8706000FAE13 /* ZZTStoryDetailCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTStoryDetailCell.m; sourceTree = "<group>"; };
-		040A03B020FD8706000FAE13 /* ZZTStoryDetailCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ZZTStoryDetailCell.xib; sourceTree = "<group>"; };
 		040A03B320FDDAEA000FAE13 /* ZZTWritePlayViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTWritePlayViewController.h; sourceTree = "<group>"; };
 		040A03B420FDDAEA000FAE13 /* ZZTWritePlayViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTWritePlayViewController.m; sourceTree = "<group>"; };
 		040A03B820FDECC0000FAE13 /* ZZTSearchViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTSearchViewController.h; sourceTree = "<group>"; };
@@ -1135,7 +1133,6 @@
 				0471A8A220FC8F5A00ABFF35 /* ZZTCartoonDetailFoot.m */,
 				040A03AE20FD8706000FAE13 /* ZZTStoryDetailCell.h */,
 				040A03AF20FD8706000FAE13 /* ZZTStoryDetailCell.m */,
-				040A03B020FD8706000FAE13 /* ZZTStoryDetailCell.xib */,
 				047ECF02212A583B008D1E82 /* ZZTCreationButtonView.h */,
 				047ECF03212A583B008D1E82 /* ZZTCreationButtonView.m */,
 				0434BC8A212C10D800AC43E0 /* ZZTRankCell.h */,
@@ -1756,7 +1753,6 @@
 				043B074720EDEDBE00ED3F5B /* ZZTWalletCell.xib in Resources */,
 				043B075220EDFC6900ED3F5B /* ZZTShoppingButtomCell.xib in Resources */,
 				049A99D420E32F2F00ED27C9 /* ZZTLoginRegisterViewController.xib in Resources */,
-				040A03B220FD8706000FAE13 /* ZZTStoryDetailCell.xib in Resources */,
 				0498B5F4212ED35E005BD26D /* ZZTXuHuaBtn.xib in Resources */,
 				0471A86C20F72FB700ABFF35 /* ZZTWordCell.xib in Resources */,
 				046683A320F359F00095C6BC /* u=2092279950,3036263238&fm=27&gp=0.jpg in Resources */,
@@ -2132,7 +2128,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -2184,7 +2180,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;

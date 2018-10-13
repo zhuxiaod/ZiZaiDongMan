@@ -196,8 +196,9 @@ NSString *bannerID = @"MeCell";
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    //隐藏Bar
     [self.navigationController setNavigationBarHidden:YES animated:NO];
+
+    //隐藏Bar
     //加载用户信息
     UserInfo *userInfo = [Utilities GetNSUserDefaults];
     //有id
@@ -207,6 +208,9 @@ NSString *bannerID = @"MeCell";
         //userId已经有了
         [self loadUserData:userInfo.id];
     }
+}
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
 }
 
 -(void)loadUserData:(NSInteger)Id{
@@ -320,5 +324,8 @@ NSString *bannerID = @"MeCell";
         settingVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:settingVC animated:YES];
     }
+}
+-(void)viewWillDisappear:(BOOL)animated{
+    [self.navigationController setNavigationBarHidden:NO animated:NO];
 }
 @end

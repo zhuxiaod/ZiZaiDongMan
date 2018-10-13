@@ -104,14 +104,21 @@
         customer *plyer = model.customer;
         //发布者
         customer *customer = item.customer;
+        
         if(replyer.nickName == nil || [replyer.nickName length] <= 0 || [replyer.ID isEqualToString:customer.ID]){
             text = [NSString stringWithFormat:@"%@: %@",plyer.nickName,model.content];
         }else{
             text = [NSString stringWithFormat:@"%@回复%@: %@",plyer.nickName,replyer.nickName,model.content];
+            NSLog(@"text:%@ length:%lu",text,text.length);
         }
+//        [[UIScreen mainScreen].bounds];
+        // 8   8  2
+        CGFloat height = ceil([text contentSizeWithWidth:326 font:[UIFont systemFontOfSize:15] lineSpacing:SectionHeaderLineSpace].height) + 6;
         
-        CGFloat height = ceil([text contentSizeWithWidth:SCREEN_MIN_LENGTH - (36 + SectionHeaderHorizontalSpace * 2 + 5) - SectionHeaderHorizontalSpace font:[UIFont systemFontOfSize:15] lineSpacing:SectionHeaderLineSpace].height) + 6;
-        NSLog(@"height:%f",height);
+        NSLog(@"height:%f",SCREEN_MIN_LENGTH - (36 + SectionHeaderHorizontalSpace * 2 + 5) - SectionHeaderHorizontalSpace);
+        NSLog(@"MIN(SCREEN_WIDTH, SCREEN_HEIGHT):%f",(MIN([UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)));
+        NSLog(@"width :%f",[UIScreen mainScreen].scale);
+        NSLog(@"height :%f",[UIScreen mainScreen].bounds.size.height);
         [muArr addObject:@(height)];
     }
     return muArr;

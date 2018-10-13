@@ -245,6 +245,7 @@ NSString *SuggestionView = @"SuggestionView";
     //cell 还没有创建故不能在这里搞
     [_ReadView reloadData];
     [self loadBookShelfData];
+    NSLog(@"width:%f",self.view.frame.size.width);
 
 //    [_collectView reloadData];
 //    [_CreationView reloadData];
@@ -255,6 +256,7 @@ NSString *SuggestionView = @"SuggestionView";
     //可以控制定时关闭
     NSNotification *notification = [NSNotification notificationWithName:@"tongzhi" object:nil userInfo:nil];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
+    
 }
 
 #pragma mark - 设置导航条
@@ -392,6 +394,7 @@ NSString *SuggestionView = @"SuggestionView";
 //        [self setupNavgationStyle];
     }
 }
+
 
 
 @end

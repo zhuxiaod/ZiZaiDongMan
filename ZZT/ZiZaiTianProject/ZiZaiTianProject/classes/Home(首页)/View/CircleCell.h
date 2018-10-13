@@ -6,6 +6,8 @@
 //  Copyright © 2018年 Topsky. All rights reserved.
 //
 
+#import <TTTAttributedLabel.h>
+
 
 @protocol CircleCellDelegate <NSObject>
 
@@ -18,6 +20,8 @@
 @class ZZTCircleModel;
 
 @interface CircleCell : UITableViewCell
+
+@property (nonatomic, strong) TTTAttributedLabel *commentLabel;
 
 @property (nonatomic, weak) id <CircleCellDelegate> delegate;
 
