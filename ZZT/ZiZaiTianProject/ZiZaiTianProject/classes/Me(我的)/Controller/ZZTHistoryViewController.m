@@ -74,7 +74,8 @@ static NSString *zztCartoonHistoryCell = @"zztCartoonHistoryCell";
     NSDictionary *paramDict = @{
                                 @"userId":@"32",
                                 };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"record/selBrowsehistory"] parameters:paramDict progress:nil
           success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
               NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];

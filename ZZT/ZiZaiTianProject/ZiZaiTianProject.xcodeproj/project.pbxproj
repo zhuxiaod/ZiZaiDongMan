@@ -73,6 +73,10 @@
 		042769672147F7B400DE238D /* ZZTRemindView.m in Sources */ = {isa = PBXBuildFile; fileRef = 042769662147F7B400DE238D /* ZZTRemindView.m */; };
 		0427696A214B443600DE238D /* ZZTInAPPPurchaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04276969214B443600DE238D /* ZZTInAPPPurchaseViewController.m */; };
 		042769C5214B5CAD00DE238D /* MLIAPManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 042769C3214B5CAD00DE238D /* MLIAPManager.m */; };
+		0428E8AD21760CEF00702225 /* ZXDNavBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 0428E8AC21760CEF00702225 /* ZXDNavBar.m */; };
+		042A0CB62174347200FC013B /* MCButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 042A0CB52174347200FC013B /* MCButton.m */; };
+		042A0CB9217437B700FC013B /* UIButton+LXMImagePosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 042A0CB7217437B600FC013B /* UIButton+LXMImagePosition.m */; };
+		042A0CBC21743F4900FC013B /* ImageLeftBtn.m in Sources */ = {isa = PBXBuildFile; fileRef = 042A0CBB21743F4900FC013B /* ImageLeftBtn.m */; };
 		042A5BE120E7623700F5BA89 /* ZZTCartonnPlayModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 042A5BE020E7623700F5BA89 /* ZZTCartonnPlayModel.m */; };
 		042BA0B720E9BF2F003E279A /* ZZTAttentionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 042BA0B520E9BF2F003E279A /* ZZTAttentionCell.m */; };
 		042BA0B820E9BF2F003E279A /* ZZTAttentionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 042BA0B620E9BF2F003E279A /* ZZTAttentionCell.xib */; };
@@ -410,6 +414,14 @@
 		04276969214B443600DE238D /* ZZTInAPPPurchaseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTInAPPPurchaseViewController.m; sourceTree = "<group>"; };
 		042769C3214B5CAD00DE238D /* MLIAPManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLIAPManager.m; sourceTree = "<group>"; };
 		042769C4214B5CAD00DE238D /* MLIAPManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLIAPManager.h; sourceTree = "<group>"; };
+		0428E8AB21760CEF00702225 /* ZXDNavBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZXDNavBar.h; sourceTree = "<group>"; };
+		0428E8AC21760CEF00702225 /* ZXDNavBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZXDNavBar.m; sourceTree = "<group>"; };
+		042A0CB42174347100FC013B /* MCButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MCButton.h; sourceTree = "<group>"; };
+		042A0CB52174347200FC013B /* MCButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MCButton.m; sourceTree = "<group>"; };
+		042A0CB7217437B600FC013B /* UIButton+LXMImagePosition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+LXMImagePosition.m"; sourceTree = "<group>"; };
+		042A0CB8217437B700FC013B /* UIButton+LXMImagePosition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+LXMImagePosition.h"; sourceTree = "<group>"; };
+		042A0CBA21743F4900FC013B /* ImageLeftBtn.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageLeftBtn.h; sourceTree = "<group>"; };
+		042A0CBB21743F4900FC013B /* ImageLeftBtn.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImageLeftBtn.m; sourceTree = "<group>"; };
 		042A5BDF20E7623700F5BA89 /* ZZTCartonnPlayModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTCartonnPlayModel.h; sourceTree = "<group>"; };
 		042A5BE020E7623700F5BA89 /* ZZTCartonnPlayModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTCartonnPlayModel.m; sourceTree = "<group>"; };
 		042BA0B420E9BF2F003E279A /* ZZTAttentionCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTAttentionCell.h; sourceTree = "<group>"; };
@@ -1035,6 +1047,8 @@
 			children = (
 				046FF6582101797B005DED73 /* MainTabbar.h */,
 				046FF6572101797B005DED73 /* MainTabbar.m */,
+				0428E8AB21760CEF00702225 /* ZXDNavBar.h */,
+				0428E8AC21760CEF00702225 /* ZXDNavBar.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1173,6 +1187,10 @@
 		047ECEB72128148D008D1E82 /* btn */ = {
 			isa = PBXGroup;
 			children = (
+				042A0CB8217437B700FC013B /* UIButton+LXMImagePosition.h */,
+				042A0CB7217437B600FC013B /* UIButton+LXMImagePosition.m */,
+				042A0CB42174347100FC013B /* MCButton.h */,
+				042A0CB52174347200FC013B /* MCButton.m */,
 				047ECEB8212814D3008D1E82 /* ColorInButton.h */,
 				047ECEB9212814D3008D1E82 /* ColorInButton.m */,
 				047ECEBB212814E3008D1E82 /* ColorInButton.xib */,
@@ -1185,6 +1203,8 @@
 				04D2AFAD213037AD008F6CCB /* TypeButton.m */,
 				04A30FC321379C0200FAC781 /* ToolBtn.h */,
 				04A30FC421379C0200FAC781 /* ToolBtn.m */,
+				042A0CBA21743F4900FC013B /* ImageLeftBtn.h */,
+				042A0CBB21743F4900FC013B /* ImageLeftBtn.m */,
 			);
 			path = btn;
 			sourceTree = "<group>";
@@ -1896,6 +1916,7 @@
 				F7C04C2A20DF4A1F0055E7A8 /* UIImage+ZZTimage.m in Sources */,
 				0466837420F3096A0095C6BC /* DCPicItem.m in Sources */,
 				0498B5E2212E803E005BD26D /* ZZTMulWordListCell.m in Sources */,
+				0428E8AD21760CEF00702225 /* ZXDNavBar.m in Sources */,
 				047720F22106C52200FC97B5 /* ZZTKindModel.m in Sources */,
 				04E6D49920EC71A500116085 /* ZZTMeEditTopView.m in Sources */,
 				049A99C920E32AF600ED27C9 /* UITextField+ZXDTextField.m in Sources */,
@@ -1906,11 +1927,13 @@
 				0471A89320F89C8E00ABFF35 /* ZZTReaderViewController.m in Sources */,
 				0434BC86212BF74300AC43E0 /* ZZTRankViewController.m in Sources */,
 				0466839020F314860095C6BC /* DateManager.m in Sources */,
+				042A0CB9217437B700FC013B /* UIButton+LXMImagePosition.m in Sources */,
 				0471A86520F6E80600ABFF35 /* ZZTWordsOptionsHeadView.m in Sources */,
 				049A99B920E3288400ED27C9 /* ZXDLoginRegisterTextField.m in Sources */,
 				04DE149A20E48804009DF030 /* ZZTVIPBtView.m in Sources */,
 				0425302F215DC38D00B4DAF9 /* ZZTMulCreationCell.m in Sources */,
 				0471A87820F7536000ABFF35 /* ZZTChapterlistModel.m in Sources */,
+				042A0CB62174347200FC013B /* MCButton.m in Sources */,
 				04E9FAC121532CC7005A3986 /* NSString+Extension.m in Sources */,
 				F7C04C1E20DF48FD0055E7A8 /* ZZTFindViewController.m in Sources */,
 				04CF25972105B0AB0026EC8F /* ZZTMaterialKindView.m in Sources */,
@@ -1921,6 +1944,7 @@
 				0471A85120F5E33300ABFF35 /* ZZTWordsDetailHeadView.m in Sources */,
 				F7C04C1B20DF476F0055E7A8 /* ZZTTabBarViewController.m in Sources */,
 				041EE0B420EB8D0C0012FEDF /* ZZTExitCell.m in Sources */,
+				042A0CBC21743F4900FC013B /* ImageLeftBtn.m in Sources */,
 				040FD50B20EF17C100004C71 /* DCNewWelfareLayout.m in Sources */,
 				048C335C20E2540F00F69CE1 /* ZZTCell.m in Sources */,
 				0471A89A20FC312300ABFF35 /* ZZTCartoonContentCell.m in Sources */,

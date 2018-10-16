@@ -9,7 +9,7 @@
 #import "ZZTCommentHeaderView.h"
 #import "ZZTCircleModel.h"
 #import "customer.h"
-
+#import "ImageLeftBtn.h"
 //距离
 const CGFloat SectionHeaderHorizontalSpace = 8; //水平方向控件之间的间隙距离
 const CGFloat SectionHeaderVerticalSpace = 8; //竖直方向控件之间的间隙距离
@@ -37,7 +37,10 @@ const CGFloat SectionHeaderSomePicturesHeight = 70; //有多张图片时的单�
 @property (nonatomic, strong) UIView *imgBgView;
 @property (nonatomic, strong) UILabel *timeLabel;
 @property (nonatomic, strong) UIButton *commentBtn;
+@property (nonatomic, strong) ImageLeftBtn *likeBtn;
+@property (nonatomic, strong) NSString *isPraise;
 @property (nonatomic, strong) UIView *corner;
+@property (nonatomic, strong) UIView *bottomView;
 
 @end
 
@@ -52,6 +55,151 @@ const CGFloat SectionHeaderSomePicturesHeight = 70; //有多张图片时的单�
 }
 
 -(void)setup{
+    //背景色
+    self.contentView.backgroundColor = [UIColor whiteColor];
+    //头像图
+    self.headImgV = [UIImageView new];
+    //一种形式
+    self.headImgV.contentMode = UIViewContentModeScaleAspectFill;
+    //只显示中间的部分
+    self.headImgV.clipsToBounds = YES;
+    
+    //名字
+    self.nameLabel = [UILabel new];
+    //16号字体
+    self.nameLabel.font = [UIFont boldSystemFontOfSize:SectionHeaderBigFontSize];
+    //颜色
+    self.nameLabel.textColor = [UIColor colorWithRGB:@"54,71,121"];
+    //  可以点击
+    self.nameLabel.userInteractionEnabled = YES;
+    //点击名字的事件
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapName:)];
+    [self.nameLabel addGestureRecognizer:tap];
+    
+    //内容lab
+    self.contentLabel = [TTTAttributedLabel new];
+    //16号字体
+    self.contentLabel.font = [UIFont systemFontOfSize:SectionHeaderBigFontSize];
+    //不限制行数
+    self.contentLabel.numberOfLines = 0;
+    //行距2
+    self.contentLabel.lineSpacing = SectionHeaderLineSpace;
+    //省略号的样式
+    self.contentLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+    //宽度
+    self.contentLabel.preferredMaxLayoutWidth = SCREEN_MIN_LENGTH - 3 * SectionHeaderHorizontalSpace - 36;
+    
+    //更多按钮
+    self.moreBtn = [UIButton new];
+    //字体颜色
+    [self.moreBtn setTitleColor:[UIColor colorWithRGB:@"92,140,193"] forState:UIControlStateNormal];
+    [self.moreBtn setTitle:@"全文" forState:UIControlStateNormal];
+    self.moreBtn.titleLabel.font = [UIFont systemFontOfSize:SectionHeaderBigFontSize];
+    //点击事件
+    [self.moreBtn addTarget:self action:@selector(clickMoreBtn:) forControlEvents:UIControlEventTouchUpInside];
+    //图片
+    self.imgBgView = [UIView new];
+    
+    //时间
+    self.timeLabel = [UILabel new];
+    self.timeLabel.font = [UIFont systemFontOfSize:SectionHeaderSmallFontSize];
+    self.timeLabel.textColor = [UIColor colorWithHexString:@"#999999"];
+    
+    //评论按钮
+    self.commentBtn = [UIButton new];
+    [self.commentBtn setImage:[UIImage imageNamed:@"AlbumOperateMore"] forState:UIControlStateNormal];
+    [self.commentBtn addTarget:self action:@selector(clickCommentBtn:) forControlEvents:UIControlEventTouchUpInside];
+    
+    //评论按钮
+    self.likeBtn = [[ImageLeftBtn alloc] init];
+    [self.likeBtn setImage:[UIImage imageNamed:@"正文-点赞-已点赞"] forState:UIControlStateNormal];
+    [self.likeBtn setTitle:@"100" forState:UIControlStateNormal];
+    [self.likeBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+    self.likeBtn.titleLabel.font = [UIFont systemFontOfSize:14];
+    [self.likeBtn addTarget:self action:@selector(didClickLikeBtn:) forControlEvents:UIControlEventTouchUpInside];
+    // 左图右字
+   
+//    [self.likeBtn setImagePosition:LXMImagePositionLeft spacing:0];
+
+    // 左图右字
+//    self.likeBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 30);
+//    self.likeBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 20, 0 , 0);
+//    self.likeBtn.contentEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
+
+    self.corner = [UIView new];
+    self.corner.backgroundColor = [UIColor colorWithHexString:@"#eeeeee"];
+    //x改成你要的角度 順時針90就用90 逆時針90就用-90 无论是M_PI还是-M_PI都是逆时针旋转
+    CGAffineTransform transform = CGAffineTransformMakeRotation(45 * M_PI/180.0);
+    [self.corner setTransform:transform];
+    
+//    self.menuView = [CommentMenuView new];
+//    __weak typeof(self) weakSelf = self;
+//    //菜单 赞的事件。评论的事件
+//    [self.menuView setLikeButtonClickedBlock:^{
+//        if ([weakSelf.delegate respondsToSelector:@selector(didClickLikeButton:)]) {
+//            [weakSelf.delegate didClickLikeButton:weakSelf.section];
+//        }
+//    }];
+//    [self.menuView setCommentButtonClickedBlock:^{
+//        if ([weakSelf.delegate respondsToSelector:@selector(didClickCommentButton:)]) {
+//            [weakSelf.delegate didClickCommentButton:weakSelf.section];
+//        }
+//    }];
+    
+    UIView *bottomView = [[UIView alloc] init];
+    bottomView.backgroundColor = [UIColor grayColor];
+    
+    [self.contentView addSubview:bottomView];
+    [self.contentView addSubview:self.headImgV];
+    [self.contentView addSubview:self.nameLabel];
+    [self.contentView addSubview:self.contentLabel];
+    [self.contentView addSubview:self.moreBtn];
+    [self.contentView addSubview:self.imgBgView];
+    [self.contentView addSubview:self.timeLabel];
+    [self.contentView addSubview:self.commentBtn];
+    [self.contentView addSubview:self.corner];
+    [self.contentView addSubview:self.likeBtn];
+
+//    [self.contentView addSubview:self.menuView];
+    
+}
+
+-(void)didClickLikeBtn:(ImageLeftBtn *)btn{
+    if ([self.delegate respondsToSelector:@selector(didClickLikeButton:)]) {
+        [self.delegate didClickLikeButton:self.section];
+    }
+    NSInteger num = [self.likeBtn.titleLabel.text integerValue];
+
+    if([self.isPraise isEqualToString:@"0"]){
+        self.isPraise = @"1";
+        num++;
+        [self.likeBtn setImage:[UIImage imageNamed:@"正文-点赞-已点赞"] forState:UIControlStateNormal];
+    }else{
+        self.isPraise = @"0";
+        num--;
+        [self.likeBtn setImage:[UIImage imageNamed:@"正文-点赞-未点赞(灰色）"] forState:UIControlStateNormal];
+    }
+    [self.likeBtn setTitle:[NSString stringWithFormat:@"%ld",num] forState:UIControlStateNormal];
+}
+
+-(void)tapName:(UITapGestureRecognizer *)gesture{
+    
+}
+
+-(void)clickMoreBtn:(UIButton *)button{
+    NSLog(@"self.item.isSpread:%d",self.item.isSpread);
+    if (self.item.isSpread) {
+        [button setTitle:@"收起" forState:UIControlStateNormal];
+    } else {
+        [button setTitle:@"全文" forState:UIControlStateNormal];
+    }
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(spreadContent:section:)]) {
+        [self.delegate spreadContent:!self.item.isSpread section:self.section];
+    }
+}
+
+-(void)clickCommentBtn:(UITapGestureRecognizer *)gesture{
     
 }
 
@@ -63,8 +211,9 @@ const CGFloat SectionHeaderSomePicturesHeight = 70; //有多张图片时的单�
     [self.headImgV mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(@(SectionHeaderHorizontalSpace));
         make.top.equalTo(@(SectionHeaderTopSpace));
-        make.width.height.equalTo(@36);
+        make.width.height.equalTo(@50);
     }];
+    
     customer *user = circleItem.customer;
     
     [self.headImgV sd_setImageWithURL:[NSURL URLWithString:user.headimg]];
@@ -74,17 +223,61 @@ const CGFloat SectionHeaderSomePicturesHeight = 70; //有多张图片时的单�
         //8
         make.left.equalTo(self.headImgV.mas_right).offset(SectionHeaderHorizontalSpace);
         //-8
-        make.right.equalTo(@(-SectionHeaderHorizontalSpace));
+        make.right.equalTo(@(-80));
         make.top.equalTo(self.headImgV);
         make.height.equalTo(@(SectionHeaderNameLabelHeight));
     }];
     self.nameLabel.text = user.nickName;
     
+    //    名字的约束
+    [self.likeBtn mas_remakeConstraints:^(MASConstraintMaker *make) {
+        //8
+//        make.left.equalTo(self.nameLabel.mas_right).offset(SectionHeaderHorizontalSpace);
+        make.width.equalTo(@(50));
+
+        //-8
+        make.right.equalTo(@(-SectionHeaderHorizontalSpace));
+        make.top.equalTo(self.headImgV);
+        make.height.equalTo(@(SectionHeaderNameLabelHeight));
+    }];
+    
+    //点赞
+    if([circleItem.ifPraise isEqualToString:@"0"]){
+        [self.likeBtn setImage:[UIImage imageNamed:@"正文-点赞-未点赞(灰色）"] forState:UIControlStateNormal];
+    }else{
+        [self.likeBtn setImage:[UIImage imageNamed:@"正文-点赞-已点赞"] forState:UIControlStateNormal];
+    }
+    [self.likeBtn setTitle:[NSString stringWithFormat:@"%ld",circleItem.praiseNum] forState:UIControlStateNormal];
+    self.isPraise = circleItem.ifPraise;
+
+    //    名字的约束
+    [self.timeLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        //8
+        make.left.equalTo(self.headImgV.mas_right).offset(SectionHeaderHorizontalSpace);
+        //-8
+        make.right.equalTo(@(-SectionHeaderHorizontalSpace));
+        make.top.equalTo(self.nameLabel.mas_bottom).offset(SectionHeaderHorizontalSpace);
+        make.height.equalTo(@(SectionHeaderNameLabelHeight));
+    }];
+    
+    self.timeLabel.text = circleItem.commentDate;
+
+    //点赞
     //内容高度
     [self setContentLabelConstraint];
     
     [self setImgBgViewContent];
-
+    
+    if(circleItem.replyComment.count == 0){
+        [self.bottomView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            //8
+            make.left.equalTo(self.contentView).offset(0);
+            //-8
+            make.right.equalTo(self.contentView).offset(0);
+            make.bottom.equalTo(self.contentView).offset(0);
+            make.height.equalTo(@(1));
+        }];
+    }
 }
 
 - (void)setContentLabelConstraint {
@@ -110,8 +303,8 @@ const CGFloat SectionHeaderSomePicturesHeight = 70; //有多张图片时的单�
         //更多
         [self.contentLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.height.equalTo(@(self.item.contentLabelHeight));
-            make.top.equalTo(self.nameLabel.mas_bottom).offset(SectionHeaderVerticalSpace);
-            make.left.right.equalTo(self.nameLabel);
+            make.top.equalTo(self.timeLabel.mas_bottom).offset(SectionHeaderVerticalSpace);
+            make.left.right.equalTo(self.timeLabel);
         }];
         self.moreBtn.hidden = YES;
         self.contentLabel.text = self.item.content;
@@ -122,21 +315,21 @@ const CGFloat SectionHeaderSomePicturesHeight = 70; //有多张图片时的单�
             [self.moreBtn setTitle:@"收起" forState:UIControlStateNormal];
             [self.contentLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.height.equalTo(@(self.item.contentLabelHeight));
-                make.top.equalTo(self.nameLabel.mas_bottom).offset(SectionHeaderVerticalSpace);
-                make.left.right.equalTo(self.nameLabel);
+                make.top.equalTo(self.timeLabel.mas_bottom).offset(SectionHeaderVerticalSpace);
+                make.left.right.equalTo(self.timeLabel);
             }];
         } else {
             [self.moreBtn setTitle:@"全文" forState:UIControlStateNormal];
             [self.contentLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.height.equalTo(@(SectionHeaderMaxContentHeight));
-                make.top.equalTo(self.nameLabel.mas_bottom).offset(SectionHeaderVerticalSpace);
-                make.left.right.equalTo(self.nameLabel);
+                make.top.equalTo(self.timeLabel.mas_bottom).offset(SectionHeaderVerticalSpace);
+                make.left.right.equalTo(self.timeLabel);
             }];
         }
         self.contentLabel.text = self.item.content;
         [self.moreBtn mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.contentLabel.mas_bottom).offset(SectionHeaderVerticalSpace);
-            make.left.equalTo(self.nameLabel).offset(-3);
+            make.left.equalTo(self.timeLabel).offset(-3);
             make.width.equalTo(@40);
             make.height.equalTo(@(SectionHeaderMoreBtnHeight));
         }];

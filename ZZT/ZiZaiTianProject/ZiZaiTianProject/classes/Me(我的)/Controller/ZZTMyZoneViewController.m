@@ -89,7 +89,8 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
 //                          @"userId":[[NSUserDefaults standardUserDefaults]objectForKey:@"userId"]
                           @"userId":@"3"
                           };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/selUserRoom"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         id to = [dic objectForKey:@"total"];

@@ -33,7 +33,7 @@
     NSInteger topCapHeight = image.size.height * 0.5;
     UIImage *newImage = [image stretchableImageWithLeftCapWidth:leftCapWidth topCapHeight:topCapHeight];
     [nab setBackgroundImage:newImage forBarMetrics:UIBarMetricsDefault];
-//    [nab setShadowImage:[UIImage new]];
+    [nab setShadowImage:[UIImage new]];
 }
  
 - (void)viewDidLoad {

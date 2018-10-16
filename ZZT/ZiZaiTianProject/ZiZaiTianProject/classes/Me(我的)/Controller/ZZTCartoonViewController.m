@@ -65,7 +65,9 @@
 
 -(AFHTTPSessionManager *)manager{
     if(!_manager){
-        _manager = [AFHTTPSessionManager manager];
+//        _manager = [AFHTTPSessionManager manager];
+        _manager = [[AFHTTPSessionManager alloc] init];
+
     }
     return _manager;
 }
@@ -106,7 +108,8 @@ static NSString *circleCell = @"circleCell";
 }
 
 -(void)loadRemoveBook:(NSString *)string{
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     UserInfo *user = [Utilities GetNSUserDefaults];
     NSDictionary *dic = @{
                           @"userId":[NSString stringWithFormat:@"%ld",user.id],

@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@class ZZTStoryModel;
 @interface ZZTStoryDetailCell : UITableViewCell
 
 @property(nonatomic,strong) NSString *str;
-
+@property(nonatomic,strong) ZZTStoryModel *model;
 @end

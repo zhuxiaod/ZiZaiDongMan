@@ -26,7 +26,7 @@
 #import "ZZTUserReplyModel.h"
 #import "FriendCircleViewModel.h"
 
-@interface ZZTCartoonDetailViewController ()<UITableViewDelegate,UITableViewDataSource,CircleCellDelegate>
+@interface ZZTCartoonDetailViewController ()<UITableViewDelegate,UITableViewDataSource,CircleCellDelegate,ZZTCommentHeaderViewDelegate,UITextViewDelegate,NSURLSessionDataDelegate>
 
 @property (nonatomic,strong) NSArray *cartoonDetailArray;
 
@@ -52,6 +52,17 @@
 
 @property (nonatomic,assign) CGPoint readPoint;
 
+@property (nonatomic, assign) CGFloat kInputHeight;
+
+@property (nonatomic, strong) UIView *kInputView;
+
+@property (nonatomic, strong) UITextView *kTextView;
+
+@property (nonatomic, assign) NSInteger selectedSection;
+
+@property (nonatomic, strong) NSDictionary *toPeople;
+
+@property (nonatomic, strong) IQKeyboardManager *keyboardManager;
 @end
 
 NSString *CartoonContentCellIdentifier = @"CartoonContentCellIdentifier";
@@ -104,12 +115,18 @@ static NSString *const kCellId = @"CircleCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+//
+//    //键盘改变
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
+    
+    
     self.view.backgroundColor = [UIColor whiteColor];
     //先把漫画显示出来
     UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, Screen_Height) style:UITableViewStyleGrouped];
     tableView.delegate = self;
     tableView.dataSource = self;
     tableView.estimatedRowHeight = 400;
+    tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     [tableView registerClass:[ZZTCartoonContentCell class] forCellReuseIdentifier:CartoonContentCellIdentifier];
     tableView.showsVerticalScrollIndicator = YES;
@@ -142,10 +159,60 @@ static NSString *const kCellId = @"CircleCell";
     [self.tableView registerClass:[CircleCell class] forCellReuseIdentifier:kCellId];
     [self.tableView registerClass:[ZZTStoryDetailCell class] forCellReuseIdentifier:story];
 
-    
     self.tableView.tableFooterView = [UIView new];
-    self.tableView.estimatedRowHeight = 100;
-    self.tableView.rowHeight = UITableViewAutomaticDimension;
+//    self.tableView.estimatedRowHeight = 100;
+//    self.tableView.rowHeight = UITableViewAutomaticDimension;
+//
+    //键盘输入框
+//    [self addInputView];
+    
+    self.kInputHeight = 50;
+    NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+
+//    NSString *htmlString = [NSString stringWithContentsOfURL:[NSURL URLWithString:@"http://p872ue3rt.bkt.clouddn.com/tn014.txt"] encoding:enc error:nil];
+//    htmlString = [self getZZwithString:htmlString];
+//    NSLog(@"htmlString:%@",htmlString);
+}
+
+- (NSString *)getZZwithString:(NSString *)string{
+    
+    NSRegularExpression *regularExpretion = [NSRegularExpression regularExpressionWithPattern:@"<[^>]*>|\n" options:0 error:nil];
+    
+    string = [regularExpretion stringByReplacingMatchesInString:string options:NSMatchingReportProgress range:NSMakeRange(0, string.length) withTemplate:@""];
+    
+    return string;
+    
+}
+
+- (void)addInputView {
+    self.kInputView = [UIView new];
+    _kInputView.backgroundColor = [UIColor colorWithHexString:@"#eeeeee"];
+    [IQKeyboardManager sharedManager];
+    [[UIApplication sharedApplication].keyWindow addSubview:_kInputView];
+    [_kInputView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.height.equalTo(@50);
+        make.left.right.equalTo([UIApplication sharedApplication].keyWindow);
+        make.bottom.equalTo(@(self.kInputHeight));
+    }];
+
+    self.kTextView = [UITextView new];
+    _kTextView.backgroundColor = [UIColor whiteColor];
+    _kTextView.layer.cornerRadius = 5;
+    NSMutableParagraphStyle *paragraphStyle = [NSMutableParagraphStyle new];
+    paragraphStyle.lineSpacing = 5;// 字体的行间距
+    NSDictionary *attributes = @{
+                                 NSFontAttributeName:[UIFont systemFontOfSize:16], NSParagraphStyleAttributeName:paragraphStyle
+                                 };
+    _kTextView.typingAttributes = attributes;
+    _kTextView.returnKeyType = UIReturnKeySend;
+    _kTextView.delegate = self;
+    [_kInputView addSubview:_kTextView];
+    [_kTextView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(@7);
+        make.bottom.equalTo(@(-7));
+        make.left.equalTo(@14);
+        make.right.equalTo(@(-50));
+    }];
 }
 
 -(void)loadData{
@@ -173,7 +240,7 @@ static NSString *const kCellId = @"CircleCell";
 #pragma mark - tableViewDelegate
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if(self.commentArray.count > 0){
-        return self.commentArray.count + 1;
+        return self.commentArray.count + 2;
     }else{
         return 1;
     }
@@ -183,11 +250,12 @@ static NSString *const kCellId = @"CircleCell";
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if(section == 0){
         return self.cartoonDetailArray.count;
+    }else if (section == 1){
+        return 0;
     }else{
         if(self.commentArray.count > 0){
-            ZZTCircleModel *model = self.commentArray[section - 1];
+            ZZTCircleModel *model = self.commentArray[section - 2];
             return model.replyComment.count;
-
         }else{
             return 0;
         }
@@ -211,10 +279,11 @@ static NSString *const kCellId = @"CircleCell";
             return cell;
         }
     }else{
-        ZZTCircleModel *model = self.commentArray[indexPath.section - 1];
+        ZZTCircleModel *model = self.commentArray[indexPath.section - 2];
 //        ZZTUserReplyModel *item = model.replyComment[indexPath.row];
         CircleCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellId forIndexPath:indexPath];
         [cell setContentData:model index:indexPath.row];
+        cell.selectionStyle =UITableViewCellSelectionStyleNone;
         cell.delegate = self;
         return cell;
     }
@@ -225,21 +294,26 @@ static NSString *const kCellId = @"CircleCell";
         if([self.cartoonModel.type isEqualToString:@"1"]){
             return self.view.height;
         }else{
-            return [self.tableView fd_heightForCellWithIdentifier:story configuration:^(id cell) {
-                ZZTStoryDetailCell *storyCell = (ZZTStoryDetailCell *)cell;
-                ZZTStoryModel *model = self.cartoonDetailArray[indexPath.row];
-                storyCell.str = model.content;
-            }];
+            ZZTStoryModel *model = self.cartoonDetailArray[indexPath.row];
+            if(model.content.length > 300){
+                return [self calculateStringHeight:model.content];
+            }else{
+                return 0;
+            }
         }
     }else{
         return UITableViewAutomaticDimension;
-
     }
 }
-
+- (CGFloat)calculateStringHeight:(NSString *)text {
+    return ceil([text contentSizeWithWidth:Screen_Width - 20 font:[UIFont systemFontOfSize:SectionHeaderBigFontSize] lineSpacing:0].height);
+}
 #pragma mark - detailContentApi
 -(void)loadCartoonDetail{
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    UserInfo *user = [Utilities GetNSUserDefaults];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+
 
     if([self.cartoonModel.type isEqualToString:@"1"]){
         NSDictionary *paramDict = @{
@@ -260,7 +334,8 @@ static NSString *const kCellId = @"CircleCell";
     }else{
         //章节
         NSDictionary *paramDict = @{
-                                    @"chapterinfoId":@"1"
+                                    @"chapterinfoId":[NSString stringWithFormat:@"%ld",_dataModel.id],
+                                    @"userId":[NSString stringWithFormat:@"%ld",user.id]
                                     };
         [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterInfo"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             NSString *data = responseObject[@"result"];
@@ -281,46 +356,22 @@ static NSString *const kCellId = @"CircleCell";
     }
 }
 
+
 //下载txt
 -(void)downLoadTxt:(NSString *)txtUrl{
-    //构造资源链接
-//    NSString *urlString = @"http://img1.sc115.com/uploads/sc/jpg/HD/1/204.jpg";
-    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    //创建AFN的manager对象
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:configuration];
-    //构造URL对象
-    NSURL *url = [NSURL URLWithString:txtUrl];
-    //构造request对象
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    //使用系统类创建downLoad Task对象
-    NSURLSessionDownloadTask *task = [manager downloadTaskWithRequest:request progress:^(NSProgress * _Nonnull downloadProgress) {
-        NSLog(@"%@", downloadProgress);
-        //下载进度
-        
-    } destination:^NSURL * _Nonnull(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
-        //返回下载到哪里(返回值是一个路径)
-        //拼接存放路径
-        NSString *caches = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
-        //拼接文件全路径
-        NSString *fullpath = [caches stringByAppendingPathComponent:response.suggestedFilename];
-        NSURL *filePathUrl = [NSURL URLWithString:fullpath];
-        return filePathUrl;
-        
-    } completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
-        //下载完成走这个block
-        if (!error) {
-            NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
-            NSString *filenData = [NSString stringWithContentsOfFile:filePath.path encoding:enc error:&error];
-            self.stroyModel.content = filenData;
-            [self.tableView reloadData];
-            [self.tableView layoutIfNeeded];
-            [self reloadCellWithIndex];
-        }else{
-            NSLog(@"%@",error);
-        }
-    }];
-    //开始请求
-    [task resume];
+    NSError *error;
+    NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+
+    NSString *htmlString = [NSString stringWithContentsOfURL:[NSURL URLWithString:txtUrl] encoding:enc error:&error];
+    if(!error){
+        htmlString = [self getZZwithString:htmlString];
+        self.stroyModel.content = htmlString;
+        [self.tableView reloadData];
+        [self.tableView layoutIfNeeded];
+        [self reloadCellWithIndex];
+    }else{
+        NSLog(@"error:%@",error);
+    }
 }
 
 //json字符串转化成OC键值对
@@ -334,14 +385,18 @@ static NSString *const kCellId = @"CircleCell";
 }
 
 -(void)loadCommentData{
+    UserInfo *user = [Utilities GetNSUserDefaults];
+
     //评论
     NSDictionary *commentDict = @{
                                   @"itemId":[NSString stringWithFormat:@"%ld",_dataModel.id],
                                   @"type":self.cartoonModel.type,
                                   @"pageNum":@"0",
-                                  @"pageSize":@"10"
+                                  @"pageSize":@"10",
+                                  @"userId":[NSString stringWithFormat:@"%ld",user.id]
                                   };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonComment"] parameters:commentDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *commenDdic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
@@ -367,7 +422,8 @@ static NSString *const kCellId = @"CircleCell";
                                @"cartoonId":_cartoonModel.id,//书
                                @"chapterId":[NSString stringWithFormat:@"%ld",_dataModel.id]
                                };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/listChapterinfo"] parameters:likeDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *likeDic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
@@ -382,7 +438,7 @@ static NSString *const kCellId = @"CircleCell";
 }
 
 -(void)loadAuthorHead{
-    
+    //
     if(![self.cartoonModel.type isEqualToString:@"1"]){
         UserInfo *user = [[UserInfo alloc] init];
         user.headimg = self.stroyModel.headimg;
@@ -399,7 +455,8 @@ static NSString *const kCellId = @"CircleCell";
     NSDictionary *headDict = @{
                                @"id":[NSString stringWithFormat:@"%ld",_dataModel.id]
                                };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getCartoonCenter"] parameters:headDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         NSArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
@@ -443,10 +500,13 @@ static NSString *const kCellId = @"CircleCell";
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if(section == 0){
         return 100;
+    }else if(section == 1)
+    {
+        return 40;
     }else{
         if(self.commentArray.count > 0){
-            ZZTCircleModel *item = self.commentArray[section - 1];
-            return item.cellHeight;
+            ZZTCircleModel *item = self.commentArray[section - 2];
+            return item.headerHeight;
         }
         return 0;
     }
@@ -454,6 +514,7 @@ static NSString *const kCellId = @"CircleCell";
 
 //添加头 ZZTCartoonDetailFoot
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+    NSLog(@"section%ld",section);
     if(section == 0){
         //作者 上数据
         ZZTAuthorHeadView *authorHead = [ZZTAuthorHeadView AuthorHeadView];
@@ -470,8 +531,9 @@ static NSString *const kCellId = @"CircleCell";
         if(!headerView){
             headerView = [[ZZTCommentHeaderView alloc] initWithReuseIdentifier:viewIdentfier];
         }
-        ZZTCircleModel *model = self.commentArray[section - 1];
-        [headerView setContentData:model section:section];
+        headerView.delegate = self;
+        ZZTCircleModel *model = self.commentArray[section - 2];
+        [headerView setContentData:model section:section - 2];
         return headerView;
     }
 }
@@ -508,6 +570,19 @@ static NSString *const kCellId = @"CircleCell";
         self.isNavHide = NO;
         [self hideOrShowHeadView:self.isNavHide];
     }
+//
+//    //弹出键盘
+//    ZZTCircleModel *item = self.commentArray[indexPath.section - 2];
+//    ZZTUserReplyModel *model = item.replyComment[indexPath.row];
+//    if(model){
+//        customer *toUser = model.replyCustomer;
+//        self.selectedSection = indexPath.section;
+//        self.toPeople = @{
+////                          @"comment_to_user_id": toUser.ID,
+//                          @"comment_to_user_name":toUser.nickName,
+//                          };
+//        [self startComment];
+//    }
 }
 
 -(void)hideOrShowHeadView:(BOOL)needHide{
@@ -527,6 +602,10 @@ static NSString *const kCellId = @"CircleCell";
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
+    _keyboardManager.enableAutoToolbar = YES;
+    [IQKeyboardManager sharedManager].enable = YES;
+
+
     //字典转模型
     NSMutableArray *arrayDict = [NSKeyedUnarchiver unarchiveObjectWithFile:JiXuYueDuAPI];
     if (arrayDict == nil) {
@@ -629,6 +708,140 @@ static NSString *const kCellId = @"CircleCell";
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     NSLog(@"width:%f",[UIScreen mainScreen].bounds.size.width);
+    [IQKeyboardManager sharedManager].enable = NO;
+    [IQKeyboardManager sharedManager];
+    IQKeyboardManager *keyboardManager = [IQKeyboardManager sharedManager];
+    _keyboardManager = keyboardManager;
+    keyboardManager.enableAutoToolbar = NO;
 }
 
+#pragma mark - SectionHeaderViewDelegate
+- (void)spreadContent:(BOOL)isSpread section:(NSUInteger)section{
+    ZZTCircleModel *item = self.commentArray[section - 2];
+    item.isSpread = isSpread;
+    item.headerHeight = [[FriendCircleViewModel new] getHeaderHeight:item];
+    [self.tableView reloadData];
+}
+
+-(void)didClickLikeButton:(NSInteger)section{
+    UserInfo *user = [Utilities GetNSUserDefaults];
+    ZZTCircleModel *item = self.commentArray[section];
+    NSDictionary *dic = @{
+                          @"userId":[NSString stringWithFormat:@"%ld",user.id],
+                          @"type":@"3",
+                          @"typeId":item.id,
+                              @"cartoonId":self.cartoonModel.id
+                          };
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    [manager POST:[ZZTAPI stringByAppendingString:@"great/cartoonPraise"]  parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
+}
+
+//// 开始拖拽
+//- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+//    [self hideKeyBoard];
+//}
+//
+//- (void)hideKeyBoard {
+//    [self.kTextView resignFirstResponder];
+//}
+//- (void)startComment {
+//    [self.kTextView becomeFirstResponder];
+//}
+
+//- (void)dealloc {
+//    [self.kInputView removeFromSuperview];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
+//}
+//
+//
+//- (void)textViewDidChange:(UITextView *)textView {
+//    if (textView.text.length > 5000) { // 限制5000字内
+//        textView.text = [textView.text substringToIndex:5000];
+//    }
+//    static CGFloat maxHeight = 36 + 24 * 2;//初始高度为36，每增加一行，高度增加24
+//    CGRect frame = textView.frame;
+//    CGSize constraintSize = CGSizeMake(frame.size.width, MAXFLOAT);
+//    CGSize size = [textView sizeThatFits:constraintSize];
+//    if (size.height >= maxHeight) {
+//        size.height = maxHeight;
+//        textView.scrollEnabled = YES;   // 允许滚动
+//    } else {
+//        textView.scrollEnabled = NO;    // 不允许滚动
+//    }
+//    if ((ceil(size.height) + 14) != self.kInputHeight) {
+//        CGPoint offset = self.tableView.contentOffset;
+//        CGFloat delta = ceil(size.height) + 14 - self.kInputHeight;
+//        offset.y += delta;
+//        if (offset.y < 0) {
+//            offset.y = 0;
+//        }
+//        [self.tableView setContentOffset:offset animated:NO];
+//        self.kInputHeight = ceil(size.height) + 14;
+//        [self.kInputView mas_updateConstraints:^(MASConstraintMaker *make) {
+//            make.height.equalTo(@(ceil(size.height) + 14));
+//        }];
+//    }
+//}
+//
+//- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
+//    if ([text isEqualToString:@"\n"]){
+//        if (self.kTextView.text.length > 0) {     // send Text
+////            [self sendMessage:self.kTextView.text];
+//        }
+//        [self.kInputView mas_updateConstraints:^(MASConstraintMaker *make) {
+//            make.height.equalTo(@50);
+//        }];
+//        [self.kTextView setText:@""];
+//        self.kInputHeight = 50;
+//        [self hideKeyBoard];
+//        return NO;
+//    }
+//    return YES;
+//}
+//
+//#pragma mark - 通知方法
+//- (void)keyboardWillChangeFrame:(NSNotification *)notification {
+//    NSDictionary *userInfo = notification.userInfo;
+//    // 1,取出键盘动画的时间
+//    CGFloat duration = [userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+//    // 2,取得键盘将要移动到的位置的frame
+//    CGRect keyboardFrame = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+//    // 3,计算kInputView需要平移的距离
+//    CGFloat moveY = self.view.frame.size.height + TOPBAR_HEIGHT - keyboardFrame.origin.y;
+//    // 4,执行动画
+//
+//    UIWindow *window = [UIApplication sharedApplication].keyWindow;
+////    SectionHeaderView *headerView = (SectionHeaderView *)[self.tableView headerViewForSection:self.selectedSection];
+////    CGRect rect = [headerView.superview convertRect:headerView.frame toView:window];
+////    CircleItem *item = self.dataMuArr[self.selectedSection];
+////    CGFloat cellHeight = item.likerHeight;
+////    for (NSNumber *num in item.commentHeightArr) {
+////        cellHeight += [num floatValue];
+////    }
+////    CGFloat footerMaxY = CGRectGetMaxY(rect) + cellHeight + item.footerHeight;
+////    CGFloat delta = footerMaxY - (SCREEN_MAX_LENGTH - (moveY + self.kInputHeight));
+////    CGPoint offset = self.tableView.contentOffset;
+//////    offset.y += delta;
+////    if (offset.y < 0) {
+////        offset.y = 0;
+////    }
+////    [self.tableView setContentOffset:offset animated:NO];
+////    [self.kInputView mas_updateConstraints:^(MASConstraintMaker *make) {
+////        if (moveY == 0) {
+////            make.bottom.equalTo(@(self.kInputHeight));
+////        } else {
+////            make.bottom.equalTo(@(-moveY));
+////        }
+////    }];
+////    [UIView animateWithDuration:duration animations:^{
+////        [[UIApplication sharedApplication].keyWindow layoutIfNeeded];
+////    }];
+//}
+////cell 漫画 3
+//
 @end

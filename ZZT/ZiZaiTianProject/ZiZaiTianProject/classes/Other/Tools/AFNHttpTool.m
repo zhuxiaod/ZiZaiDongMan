@@ -143,7 +143,6 @@ static AFHTTPSessionManager *manager;
     [dic setObject:deadlineNumber forKey:@"deadline"];
     NSString *json = [dic mj_JSONString];
     return json;
-    
 }
 
 @end

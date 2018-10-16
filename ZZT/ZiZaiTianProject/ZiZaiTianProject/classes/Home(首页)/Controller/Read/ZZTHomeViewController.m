@@ -83,7 +83,6 @@ NSString *SuggestionView = @"SuggestionView";
     self.tabBarController.delegate = self;
     
     self.navigationController.fd_prefersNavigationBarHidden = YES;
-
 }
 
 -(void)loadBookShelfData{
@@ -91,7 +90,8 @@ NSString *SuggestionView = @"SuggestionView";
     NSDictionary *dic = @{
                           @"userId":[NSString stringWithFormat:@"%ld",user.id]
                           };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     EncryptionTools *tool = [[EncryptionTools alloc]init];
     [manager POST:[ZZTAPI stringByAppendingString:@"great/userCollect"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [tool decry:responseObject[@"result"]];
@@ -305,7 +305,9 @@ NSString *SuggestionView = @"SuggestionView";
 }
 
 -(void)loadRemoveBook:(NSString *)string{
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+
     UserInfo *user = [Utilities GetNSUserDefaults];
     NSDictionary *dic = @{
                           @"userId":[NSString stringWithFormat:@"%ld",user.id],
@@ -354,7 +356,9 @@ NSString *SuggestionView = @"SuggestionView";
                               @"fuzzy":searchText
                               };
         //添加数据
-        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+
         [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/queryFuzzy"]  parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
             NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];

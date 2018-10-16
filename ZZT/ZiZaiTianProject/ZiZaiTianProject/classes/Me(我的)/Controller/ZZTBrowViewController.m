@@ -30,7 +30,8 @@
 - (AFHTTPSessionManager *)manager
 {
     if (!_manager) {
-        _manager = [AFHTTPSessionManager manager];
+        _manager = [[AFHTTPSessionManager alloc] init];
+
     }
     return _manager;
 }

@@ -18,12 +18,16 @@
 @property(nonatomic,assign) NSInteger state;
 @property(nonatomic,assign) NSInteger type;
 
-@property(nonatomic,strong) NSDate *commentDate;
-@property(nonatomic,strong) NSDate *commentTime;
+@property(nonatomic,strong) NSString *commentDate;
+@property(nonatomic,strong) NSString *commentTime;
 
 @property(nonatomic,strong) customer *customer;
 
 @property(nonatomic,strong) NSArray *replyComment;
+
+@property(nonatomic,assign) NSInteger praiseNum;
+
+@property(nonatomic,strong) NSString *ifPraise;
 
 //图片数组
 @property(nonatomic,strong) NSArray *imageArray;

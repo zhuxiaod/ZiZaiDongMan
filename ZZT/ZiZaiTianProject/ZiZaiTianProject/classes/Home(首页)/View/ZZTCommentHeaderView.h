@@ -24,8 +24,22 @@ extern const CGFloat SectionHeaderTimeLabelHeight; //时间label高度
 extern const CGFloat SectionHeaderMaxContentHeight; //文本最大高度
 extern const CGFloat SectionHeaderOnePictureHeight; //只有一张图片时的图片高度
 extern const CGFloat SectionHeaderSomePicturesHeight; //有多张图片时的单张图片高度
+//代理
+@protocol ZZTCommentHeaderViewDelegate <NSObject>
+
+- (void)spreadContent:(BOOL)isSpread section:(NSUInteger)section;
+
+- (void)didTapPeople:(ZZTCircleModel *)circleItem;
+//点击点赞btn
+- (void)didClickLikeButton:(NSInteger)section;
+//点击评论btn
+- (void)didClickCommentButton:(NSInteger)section;
+
+@end
 
 @interface ZZTCommentHeaderView : UITableViewHeaderFooterView
+
+@property (nonatomic, weak) id <ZZTCommentHeaderViewDelegate> delegate;
 
 - (void)setContentData:(ZZTCircleModel *)circleItem section:(NSInteger)section;
 

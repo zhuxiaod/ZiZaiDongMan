@@ -91,7 +91,8 @@ static NSString *AttentionCell = @"AttentionCell";
     NSDictionary *paramDict = @{
                                 @"userId":[NSString stringWithFormat:@"%ld",self.user.id],
                                 };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"record/selUserAttention"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         NSArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
@@ -157,7 +158,8 @@ static NSString *AttentionCell = @"AttentionCell";
                           @"userId":[NSString stringWithFormat:@"%ld",self.user.id],
                           @"authorId":[NSString stringWithFormat:@"%ld",(long)user.id]
                           };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"record/ifUserAtAuthor"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
 //        [self loadData];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

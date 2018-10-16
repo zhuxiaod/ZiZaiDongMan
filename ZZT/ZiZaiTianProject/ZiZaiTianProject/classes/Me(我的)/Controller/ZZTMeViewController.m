@@ -66,7 +66,8 @@ NSString *bannerID = @"MeCell";
 - (AFHTTPSessionManager *)manager
 {
     if (!_manager) {
-        _manager = [AFHTTPSessionManager manager];
+        _manager = [[AFHTTPSessionManager alloc] init];
+;
     }
     return _manager;
 }
@@ -74,6 +75,8 @@ NSString *bannerID = @"MeCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor colorWithHexString:@"#474764"];
+//    [self.navigationController.navigationBar setBackgroundImage:[UIImage createImageWithColor:[UIColor whiteColor]] forBarMetrics:UIBarMetricsCompact];
+
 //    self.rr_navHidden = YES;
     UINavigationBar *nab = [UINavigationBar appearanceWhenContainedInInstancesOfClasses:@[[UIView class]]];
 
@@ -196,8 +199,11 @@ NSString *bannerID = @"MeCell";
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self.navigationController setNavigationBarHidden:YES animated:NO];
-
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
+//    [self.navigationController.navigationBar setBackgroundImage:[UIImage createImageWithColor:[UIColor clearColor]] forBarMetrics:UIBarMetricsCompact];
+//    [self.navigationController.navigationBar setShadowImage:[UIImage createImageWithColor:[UIColor clearColor]]];
+//    [self.navigationController.navigationBar setTranslucent:YES];
+    
     //隐藏Bar
     //加载用户信息
     UserInfo *userInfo = [Utilities GetNSUserDefaults];
@@ -326,6 +332,8 @@ NSString *bannerID = @"MeCell";
     }
 }
 -(void)viewWillDisappear:(BOOL)animated{
-    [self.navigationController setNavigationBarHidden:NO animated:NO];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+//    [self.navigationController.navigationBar setTranslucent:NO];
+
 }
 @end

@@ -19,11 +19,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *likeNum;
 @property (weak, nonatomic) IBOutlet UILabel *commentNum;
 @property (weak, nonatomic) IBOutlet UIImageView *background;
-@property (weak, nonatomic) IBOutlet UILabel *topTitle;
 @property (weak, nonatomic) IBOutlet UIImageView *like;
 @property (weak, nonatomic) IBOutlet UIImageView *comment;
-@property (weak, nonatomic) IBOutlet UIButton *backBtn;
-@property (weak, nonatomic) IBOutlet UIButton *moreBtn;
 @property (strong, nonatomic) UIScrollView *scrollView;
 @property (nonatomic,weak) ZZTWordsDetailViewController *myVc;
 @property (nonatomic,assign) BOOL  show;
@@ -39,63 +36,11 @@ static NSString * const offsetKeyPath = @"contentOffset";
 +(instancetype)wordsDetailHeadViewWithFrame:(CGRect)frame scorllView:(UIScrollView *)sc{
     //初始化xib
     ZZTWordsDetailHeadView *head = [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass(self.class) owner:nil options:nil] firstObject];
+    
     //赋值位置
     [head setFrame:frame];
-    //kvo
-    [sc addObserver:head forKeyPath:offsetKeyPath options:NSKeyValueObservingOptionNew context:nil];
-    
-    head.scrollView = sc;
     
     return head;
-}
-
-////拉动特效
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
-    //产生的偏移量
-    CGFloat offsetY = -[change[NSKeyValueChangeNewKey] CGPointValue].y;
-//    NSLog(@"offsetY:%f",offsetY);
-    if (offsetY < 1) {
-        return;
-    }
-    
-    [self setHeight:offsetY > navHeight+20 ? offsetY : navHeight+20];
-    
-    //正常变隐藏
-    if (offsetY > navHeight + 20 + 20) {
-
-        CGFloat alpha = 0.0f;
-
-        alpha = (wordsDetailHeadViewHeight * 0.5)/offsetY - 0.3;
-        
-        self.cartoonCover.alpha = 1;
-        self.cartoonName.alpha = 1 - alpha;
-        self.cartoonTitle.alpha = 1 - alpha;
-        self.heatNum.alpha = 1 - alpha;
-        self.participationNum.alpha = 1 - alpha;
-        self.likeNum.alpha = 1 - alpha;
-        self.commentNum.alpha = 1 - alpha;
-        self.like.alpha = 1 - alpha;
-        self.comment.alpha = 1 - alpha;
-        self.collectBtn.alpha = 1 - alpha;
-        self.topTitle.alpha = 0;
-        self.backBtn.alpha = 1;
-
-    }else {
-        self.background.alpha = 1;
-        self.cartoonCover.alpha = 0;
-        self.cartoonName.alpha = 0;
-        self.cartoonTitle.alpha = 0;
-        self.heatNum.alpha = 0;
-        self.participationNum.alpha = 0;
-        self.likeNum.alpha = 0;
-        self.commentNum.alpha = 0;
-        self.like.alpha = 0;
-        self.comment.alpha = 0;
-        self.collectBtn.alpha = 0;
-        self.topTitle.alpha = 1;
-        self.backBtn.alpha = 1;
-        self.moreBtn.alpha = 1;
-    }
 }
 
 -(void)setDetailModel:(ZZTCarttonDetailModel *)detailModel
@@ -121,15 +66,24 @@ static NSString * const offsetKeyPath = @"contentOffset";
     //热度
 //    self.heatNum.text = detailModel.praiseNum;
 
+    if (detailModel.collectNum >= 10000) {
+        self.participationNum.text = [NSString stringWithFormat:@"收藏： %zd万",detailModel.collectNum/10000];
+    }else {
+        self.participationNum.text = [NSString stringWithFormat:@"收藏： %zd",detailModel.collectNum];
+    }
+    
     self.participationNum.text = [NSString stringWithFormat:@"收藏： %ld万",detailModel.collectNum];
     
     self.likeNum.text = [NSString stringWithFormat:@"%ld",detailModel.collectNum];
 
     self.commentNum.text = [NSString stringWithFormat:@"%ld",detailModel.commentNum];
     
-    self.topTitle.text = detailModel.bookName;
     
-    self.heatNum.text = [NSString stringWithFormat:@"热度：%ld",detailModel.clickNum];
+    if (detailModel.clickNum >= 10000) {
+        self.heatNum.text = [NSString stringWithFormat:@"热度：%zd",detailModel.clickNum/10000];
+    }else {
+        self.heatNum.text = [NSString stringWithFormat:@"热度：%zd",detailModel.clickNum];
+    }
     
     if([detailModel.ifCollect isEqualToString:@"0"]){
         //未
@@ -142,11 +96,6 @@ static NSString * const offsetKeyPath = @"contentOffset";
 
 - (IBAction)back:(UIButton *)sender {
     [[self findResponderWithClass:[UINavigationController class]] popViewControllerAnimated:YES];
-}
-
-//销毁观察者
-- (void)dealloc {
-    [self.scrollView removeObserver:self forKeyPath:offsetKeyPath context:nil];
 }
 
 //懒加载

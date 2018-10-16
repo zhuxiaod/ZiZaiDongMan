@@ -77,7 +77,8 @@ static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
                           @"userId":@"1",
                           @"type":@"1"
                           };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/selDiscover"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         id to = [dic objectForKey:@"total"];
@@ -95,7 +96,9 @@ static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
         self.pageNumber += 6;
         [self.contentView.mj_header endRefreshing];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
+        [self.contentView.mj_footer endRefreshing];
+        [self.contentView.mj_header endRefreshing];
+
     }];
 }
 
@@ -131,7 +134,8 @@ static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
                           @"userId":[NSString stringWithFormat:@"%ld",user.id],
                           @"authorId":model.userId
                           };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"record/ifUserAtAuthor"]  parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

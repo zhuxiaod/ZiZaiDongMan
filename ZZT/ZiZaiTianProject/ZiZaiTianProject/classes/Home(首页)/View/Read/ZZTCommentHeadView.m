@@ -31,6 +31,17 @@
     [btn setTitle:@"点评" forState:UIControlStateNormal];
     btn.backgroundColor = [UIColor colorWithHexString:@"#C4A9D3"];
     [self addSubview:btn];
+    
+    UIView *bottomView = [[UIView alloc] init];
+    bottomView.backgroundColor = [UIColor grayColor];
+    [self addSubview:bottomView];
+    
+    [bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(self).offset(0);
+        make.right.equalTo(self).offset(0);
+        make.left.equalTo(self).offset(0);
+        make.height.mas_equalTo(@1);
+    }];
 }
 
 @end

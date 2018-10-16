@@ -66,7 +66,8 @@ static NSString *CaiNiXiHuanView = @"CaiNiXiHuanView";
 
 -(void)loadCaiNiXiHuanData{
 
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/guessYouLike"] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         NSMutableArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
@@ -74,7 +75,7 @@ static NSString *CaiNiXiHuanView = @"CaiNiXiHuanView";
         [self.contentView reloadData];
         [self.contentView.mj_header endRefreshing];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
+        [self.contentView.mj_header endRefreshing];
     }];
 }
 -(void)loadData{
@@ -87,7 +88,9 @@ static NSString *CaiNiXiHuanView = @"CaiNiXiHuanView";
                           @"userId":@"1",
                           @"type":@"2"
                           };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/selDiscover"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         id to = [dic objectForKey:@"total"];
@@ -105,7 +108,7 @@ static NSString *CaiNiXiHuanView = @"CaiNiXiHuanView";
         self.pageNumber += 6;
         [self.contentView.mj_header endRefreshing];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
+        [self.contentView.mj_footer endRefreshing];
     }];
 }
 
@@ -140,7 +143,9 @@ static NSString *CaiNiXiHuanView = @"CaiNiXiHuanView";
                           @"userId":@"1",
                           @"authorId":model.userId
                           };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+
     [manager POST:[ZZTAPI stringByAppendingString:@"record/ifUserAtAuthor"] parameters:dic progress:nil success:nil failure:nil];
 }
 

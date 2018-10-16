@@ -7,10 +7,14 @@
 //
 
 #import "ZZTStoryDetailCell.h"
+#import "ZZTStoryModel.h"
+
 @interface ZZTStoryDetailCell()
+
 @property (strong, nonatomic) UILabel *storyContent;
 
 @end
+
 @implementation ZZTStoryDetailCell
 
 
@@ -25,7 +29,13 @@
 -(void)setupUI{
     UILabel *storyContent = [[UILabel alloc] init];
     _storyContent = storyContent;
+    storyContent.lineBreakMode = NSLineBreakByWordWrapping;
+    storyContent.numberOfLines = 0;
+    [storyContent sizeToFit];
     [self.contentView addSubview:storyContent];
+    storyContent.font = [UIFont systemFontOfSize:SectionHeaderBigFontSize];
+//    _storyContent.sd_layout.autoHeightRatio(0);
+//    [self setupAutoHeightWithBottomView:self.storyContent bottomMargin:0];
 }
 
 -(void)layoutSubviews{
@@ -43,4 +53,13 @@
     [self.storyContent setText:str];
 }
 
+-(void)setModel:(ZZTStoryModel *)model{
+    _model = model;
+    if([[NSString stringWithFormat:@"%@",[model.content class]] isEqualToString:@"__NSCFString"]){
+        [self.storyContent setText:model.content];
+    }else{
+        [self.storyContent setText:model.content];
+    }
+    
+}
 @end

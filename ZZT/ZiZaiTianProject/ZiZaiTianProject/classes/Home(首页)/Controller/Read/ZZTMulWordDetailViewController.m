@@ -170,17 +170,17 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
         //上部分View
         [self loadtopData:cartoonDetail.id];
         //续画
-        [self loadXuHuaListData:cartoonDetail.id];
+//        [self loadXuHuaListData:cartoonDetail.id];
         //目录
-        [self loadCatalogueData:cartoonDetail.id];
+//        [self loadCatalogueData:cartoonDetail.id];
         //评论
         //        [self loadCommentData:cartoonDetail.id];
     }else{
         [self loadtopData:cartoonDetail.cartoonId];
         //续画
-        [self loadXuHuaListData:cartoonDetail.cartoonId];
+//        [self loadXuHuaListData:cartoonDetail.cartoonId];
         //目录
-        [self loadCatalogueData:cartoonDetail.cartoonId];
+//        [self loadCatalogueData:cartoonDetail.cartoonId];
     }
 }
 
@@ -191,7 +191,8 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
                                 @"type":@"1",
                                 @"cartoonType":self.cartoonDetail.cartoonType
                                 };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     EncryptionTools *tool = [[EncryptionTools alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterlist"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [tool decry:responseObject[@"result"]];
@@ -212,7 +213,8 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
                                 @"id":Id,
                                 @"userId":[NSString stringWithFormat:@"%ld",userInfo.id]
                                 };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     EncryptionTools *tool = [[EncryptionTools alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/particulars"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [tool decry:responseObject[@"result"]];
@@ -220,6 +222,12 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
         self.ctDetail = mode;
         self.head.detailModel = mode;
         [self.contentView reloadData];
+        if(self.isId == YES){
+            [self loadXuHuaListData:self.cartoonDetail.id];
+        }else{
+            [self loadXuHuaListData:self.cartoonDetail.cartoonId];
+        }
+
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"error:%@",error);
     }];
@@ -235,12 +243,18 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
                                };
     EncryptionTools *tool = [[EncryptionTools alloc] init];
 
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getXuhualist"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [tool decry:responseObject[@"result"]];
         NSArray *modelArray = [ZZTChapterlistModel mj_objectArrayWithKeyValuesArray:dic];
         self.mulWordList = modelArray;
         [self.contentView reloadData];
+        if(self.isId == YES){
+            [self loadCatalogueData:self.cartoonDetail.id];
+        }else{
+            [self loadCatalogueData:self.cartoonDetail.cartoonId];
+        }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"error:%@",error);
     }];
@@ -269,7 +283,8 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
                               @"cartoonId":detailModel.id,
                               @"userId":[NSString stringWithFormat:@"%ld",userInfo.id]
                               };
-        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
         [manager POST:[ZZTAPI stringByAppendingString:@"great/collects"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -372,7 +387,8 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
                           @"userId":@"1",
                           @"authorId":model.userId
                           };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"record/ifUserAtAuthor"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -441,7 +457,7 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self.navigationController setNavigationBarHidden:YES animated:NO];
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
     [self JiXuYueDuTarget];
 }
 

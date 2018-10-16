@@ -56,7 +56,8 @@
 -(void)verificationButtonClick:(UIButton *)button
 {
     //验证码
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager.requestSerializer setValue:@"text/xml; charset=ut-8" forHTTPHeaderField:@"Content-Type"];
   
 //    if (button.tag == 0) {
@@ -108,7 +109,8 @@
                                     @"checkCode":self.loginView.verification.text
                                     };
 
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"login/loginApp"]  parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [self loginAfterLoadUserDataWith:responseObject];
 
@@ -237,7 +239,8 @@
                                       @"sex":userInfo.unionGender,
                                       @"headimg":userInfo.iconurl
                                       };
-                AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//                AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+                AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
                 [manager POST:[ZZTAPI stringByAppendingString:@"login/thirdPartyLogin"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                     [self loginAfterLoadUserDataWith:responseObject];
                 } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

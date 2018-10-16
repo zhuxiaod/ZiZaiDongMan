@@ -35,9 +35,14 @@
 
 @property (nonatomic,strong) UIButton *pageBtn;
 
+@property (nonatomic,assign) CGRect navigationFrame;
+
+@property (nonatomic,assign) ZXDNavBar *navbar;
 @end
 
 NSString *zztWordListCell = @"zztWordListCell";
+
+NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 
 @implementation ZZTWordDetailViewController
 
@@ -55,13 +60,34 @@ NSString *zztWordListCell = @"zztWordListCell";
     
     self.isHave = NO;
 
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = [UIColor colorWithRGB:@"121,105,212"];
+    
     //设置顶部页面
     [self setupTopView];
     //设置底部View
     [self setupBottomView];
     //详情接口
 //    [self loadDetailData];
+    
+    //自定义navigationBar
+    [self setupNavigationBar];
+
+}
+
+-(void)setupNavigationBar{
+    ZXDNavBar *navbar = [[ZXDNavBar alloc] initWithFrame:CGRectMake(0, 0, Screen_Width, TOPBAR_HEIGHT)];
+    self.navbar = navbar;
+    navbar.backgroundColor = [UIColor purpleColor];
+    [self.view addSubview:navbar];
+    //返回
+    [navbar.leftButton setImage:[UIImage imageNamed:@"navigationbarBack"] forState:UIControlStateNormal];
+    navbar.leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 17);
+    //中间
+    [navbar.centerButton setTitle:@" " forState:UIControlStateNormal];
+    [navbar.centerButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [navbar.mainView setBackgroundColor:[UIColor colorWithRGB:@"121,105,212"]];
+    
+    navbar.showBottomLabel = NO;
 }
 
 //-(void)loadDetailData{
@@ -85,6 +111,7 @@ NSString *zztWordListCell = @"zztWordListCell";
     bottom.frame = CGRectMake(0, SCREEN_HEIGHT - 50, SCREEN_WIDTH, 50);
     bottom.backgroundColor = [UIColor redColor];
     [self.view addSubview:bottom];
+    
     //页码
     UIButton *pageBtn = [[UIButton alloc] init];
     pageBtn.frame = CGRectMake(0, 0, SCREEN_WIDTH/3*2, 50);
@@ -93,6 +120,7 @@ NSString *zztWordListCell = @"zztWordListCell";
     _pageBtn = pageBtn;
     [pageBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [bottom addSubview:pageBtn];
+    
     //开始阅读 继续阅读
     UIButton *starRead = [[UIButton alloc] init];
     starRead.frame = CGRectMake(SCREEN_WIDTH/3*2, 0, SCREEN_WIDTH/3, 50);
@@ -144,13 +172,13 @@ NSString *zztWordListCell = @"zztWordListCell";
         //上部分View
         [self loadtopData:cartoonDetail.id];
        //目录
-        [self loadListData:cartoonDetail.id];
+//        [self loadListData:cartoonDetail.id];
        //评论
 //        [self loadCommentData:cartoonDetail.id];
     }else{
         [self loadtopData:cartoonDetail.cartoonId];
         //目录
-        [self loadListData:cartoonDetail.cartoonId];
+//        [self loadListData:cartoonDetail.cartoonId];
     }
 }
 
@@ -162,7 +190,8 @@ NSString *zztWordListCell = @"zztWordListCell";
                                 @"id":ID,
                                 @"userId":[NSString stringWithFormat:@"%ld",user.id]
                                 };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     EncryptionTools *tool = [[EncryptionTools alloc]init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/particulars"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic1 = [tool decry:responseObject[@"result"]];
@@ -170,7 +199,13 @@ NSString *zztWordListCell = @"zztWordListCell";
         ZZTCarttonDetailModel *mode = [ZZTCarttonDetailModel mj_objectWithKeyValues:dic1];
         self.ctDetail = mode;
         self.head.detailModel = mode;
+        [self.navbar.centerButton setTitle:mode.bookName forState:UIControlStateNormal];
         [self.contentView reloadData];
+        if(self.isId == YES){
+            [self loadListData:self.cartoonDetail.id];
+        }else{
+            [self loadListData:self.cartoonDetail.cartoonId];
+        }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
@@ -179,11 +214,12 @@ NSString *zztWordListCell = @"zztWordListCell";
 //目录
 -(void)loadListData:(NSString *)ID{
     NSDictionary *paramDict = @{
-                                @"cartoonId":ID,//1 独创 2 众创
-                                @"type":@"1",
-                                @"cartoonType":self.cartoonDetail.cartoonType
+                                @"cartoonId":ID,
+                                @"type":self.cartoonDetail.type,//1.漫画 剧本
+                                @"cartoonType":self.cartoonDetail.cartoonType, //1 独创 2 众创
                                 };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     EncryptionTools *tool = [[EncryptionTools alloc]init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterlist"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic2 = [tool decry:responseObject[@"result"]];
@@ -208,44 +244,41 @@ NSString *zztWordListCell = @"zztWordListCell";
 
 -(void)setupTopView{
     
-    UITableView *contenView = [[UITableView alloc] initWithFrame:CGRectMake(0, -20, self.view.width, self.view.height) style:UITableViewStyleGrouped];
+    UITableView *contenView = [[UITableView alloc] initWithFrame:CGRectMake(0, -20, self.view.width, self.view.height - 30) style:UITableViewStyleGrouped];
     contenView.backgroundColor = [UIColor whiteColor];
-    contenView.contentInset = UIEdgeInsetsMake(wordsDetailHeadViewHeight,0,0,0);
+    contenView.contentInset = UIEdgeInsetsMake(TOPBAR_HEIGHT,0,0,0);
     contenView.delegate = self;
     contenView.dataSource = self;
     contenView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.contentView = contenView;
-    
+    contenView.sectionFooterHeight  = 1.0;
     [contenView setSeparatorColor:[UIColor blueColor]];
     
-    ZZTWordsDetailHeadView *head = [ZZTWordsDetailHeadView wordsDetailHeadViewWithFrame:CGRectMake(0, -20, SCREEN_WIDTH, wordsDetailHeadViewHeight) scorllView:contenView];
+//    [head.shareBtn addTarget:self action:@selector(shareWithSharePanel) forControlEvents:UIControlEventTouchUpInside];
     
-    [head.shareBtn addTarget:self action:@selector(shareWithSharePanel) forControlEvents:UIControlEventTouchUpInside];
-    
-    //收藏业务
-    head.buttonAction = ^(ZZTCarttonDetailModel *detailModel) {
-        UserInfo *userInfo = [Utilities GetNSUserDefaults];
-        NSDictionary *dic = @{
-                              @"cartoonId":detailModel.id,
-                              @"userId":[NSString stringWithFormat:@"%ld",userInfo.id]
-                              };
-        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-        [manager POST:[ZZTAPI stringByAppendingString:@"great/collects"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            
-        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            
-        }];
-    };
-    
-    self.head = head;
-    //设置数据
-//    self.head.detailModel = self.cartoonDetail;
+//    //收藏业务
+//    head.buttonAction = ^(ZZTCarttonDetailModel *detailModel) {
+//        UserInfo *userInfo = [Utilities GetNSUserDefaults];
+//        NSDictionary *dic = @{
+//                              @"cartoonId":detailModel.id,
+//                              @"userId":[NSString stringWithFormat:@"%ld",userInfo.id]
+//                              };
+////        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//        AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+//        [manager POST:[ZZTAPI stringByAppendingString:@"great/collects"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+//
+//        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+//
+//        }];
+//    };
     
     //先让数据显示
     [contenView registerNib:[UINib nibWithNibName:@"ZZTWordListCell" bundle:nil] forCellReuseIdentifier:zztWordListCell];
     
+    [contenView registerNib:[UINib nibWithNibName:@"ZZTWordsDetailHeadView" bundle:nil] forHeaderFooterViewReuseIdentifier:zztWordsDetailHeadView];
+    
     [self.view addSubview:contenView];
-    [self.view addSubview:head];
+//    [self.view addSubview:head];
 }
 
 -(void)shareWithSharePanel{
@@ -265,7 +298,6 @@ NSString *zztWordListCell = @"zztWordListCell";
     shareObject.webpageUrl = @"https://www.baidu.com/"; //分享消息对象设置分享内容对象
     messageObject.shareObject = shareObject;
     
-    
     [[UMSocialManager defaultManager] shareToPlatform:plaform messageObject:messageObject currentViewController:nil completion:^(id result, NSError *error) {
         if(error){
             //failed
@@ -278,11 +310,19 @@ NSString *zztWordListCell = @"zztWordListCell";
 
 #pragma mark - 设置组数
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    //2节
+    //第一个View单独一节
+    //
+//    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.wordList.count;
+    if(section == 0){
+        return 0;
+    }else{
+        return self.wordList.count;
+    }
 }
 
 #pragma mark - 内容设置
@@ -312,19 +352,16 @@ NSString *zztWordListCell = @"zztWordListCell";
     //章节
     cartoonDetailVC.dataModel = model;
     
-//    if(self.isHave == YES &&  [NSString stringWithFormat:@"%ld",model.id] == _model.bookChapter){
-//        cartoonDetailVC.testModel = _model;
-//    }
     [self.navigationController pushViewController:cartoonDetailVC animated:YES];
 }
-
 
 -(void)loadAttention:(ZZTChapterlistModel *)model{
     NSDictionary *dic = @{
                           @"userId":@"1",
                           @"authorId":model.userId
                           };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"record/ifUserAtAuthor"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -334,16 +371,29 @@ NSString *zztWordListCell = @"zztWordListCell";
 
 //高度设置
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    //字符串
-    self.descHeadView.desc = self.ctDetail.intro;
-    return self.descHeadView.myHeight;
+    if(section == 0){
+        return 190;
+    }else{
+        //字符串
+        self.descHeadView.desc = self.ctDetail.intro;
+        return self.descHeadView.myHeight;
+    }
 }
 
 //设置头
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    //介绍
-    self.descHeadView.desc = self.ctDetail.intro;
-    return self.descHeadView;
+    if(section == 0){
+        ZZTWordsDetailHeadView *head = [ZZTWordsDetailHeadView wordsDetailHeadViewWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, wordsDetailHeadViewHeight) scorllView:nil];
+        self.head = head;
+        //设置数据
+        self.head.detailModel = self.cartoonDetail;
+        
+        return head;
+    }else{
+        //介绍
+        self.descHeadView.desc = self.ctDetail.intro;
+        return self.descHeadView;
+    }
 }
 
 #pragma mark - lazyLoad
@@ -378,7 +428,13 @@ NSString *zztWordListCell = @"zztWordListCell";
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:YES];
+    _navigationFrame = self.navigationController.navigationBar.frame;
     [self JiXuYueDuTarget];
+}
+
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
 -(ZZTJiXuYueDuModel *)model{
@@ -421,6 +477,8 @@ NSString *zztWordListCell = @"zztWordListCell";
         [_starRead setTitle:@"开始阅读" forState:UIControlStateNormal];
     }
 }
-
+//- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+//    return 1;
+//}
 
 @end

@@ -99,7 +99,8 @@ NSString *WordCell = @"WordCell";
                           @"pageNum":self.pageNumber,
                           @"pageSize":@"10"
                           };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getRecommendCartoon"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
@@ -115,7 +116,9 @@ NSString *WordCell = @"WordCell";
         self.pageNumber = [NSString stringWithFormat:@"%ld",([self.pageNumber integerValue] + 10)];
 
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [self.collectionView.mj_footer endRefreshing];
         
+        [self.collectionView.mj_header endRefreshing];
     }];
 }
 

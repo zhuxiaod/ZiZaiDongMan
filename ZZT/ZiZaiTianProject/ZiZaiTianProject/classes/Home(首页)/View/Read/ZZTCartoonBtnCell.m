@@ -122,7 +122,7 @@ static NSString *const zxdCartoonBtnCell = @"zxdCartoonBtnCell";
     [[self myViewController].navigationController pushViewController:productionVC animated:YES];
     [self myViewController].hidesBottomBarWhenPushed = NO;
     productionVC.viewTitle = @"众创作品";
-    [self loadProductionData:@"1" VC:productionVC];
+    [self loadProductionData:@"2" VC:productionVC];
 }
 
 -(void)soloTarget{
@@ -131,7 +131,7 @@ static NSString *const zxdCartoonBtnCell = @"zxdCartoonBtnCell";
     [[self myViewController].navigationController pushViewController:productionVC animated:YES];
     [self myViewController].hidesBottomBarWhenPushed = NO;
     productionVC.viewTitle = @"独创作品";
-    [self loadProductionData:@"2" VC:productionVC];
+    [self loadProductionData:@"1" VC:productionVC];
 }
 -(void)rankTarget{
     ZZTRankViewController *rankVC = [[ZZTRankViewController alloc] init];
@@ -153,7 +153,8 @@ static NSString *const zxdCartoonBtnCell = @"zxdCartoonBtnCell";
                           @"pageNum":@"0",
                           @"pageSize":@"10"
                           };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonlist"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];

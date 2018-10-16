@@ -96,8 +96,6 @@ static CGFloat const tbSpaceing = 12;
         make.height.offset(4);
     }];
     
-    
-    
     self.descLabel = descLabel;
     //底线
     UIView *bottomLine = [UIView new];
@@ -136,6 +134,7 @@ static CGFloat const tbSpaceing = 12;
                                            attributes:@{NSFontAttributeName:self.descLabel.font}
                                               context:nil].size.height;
 }
+
 - (UIButton *)openUpBtn {
     if (!_openUpBtn) {
         

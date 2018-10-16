@@ -12,7 +12,7 @@
 
 #define wordsDetailHeadViewHeight  250
 
-@interface ZZTWordsDetailHeadView : UIView
+@interface ZZTWordsDetailHeadView : UITableViewHeaderFooterView
 
 typedef void(^ButtonClick)(ZZTCarttonDetailModel * detailModel);
 
