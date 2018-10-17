@@ -69,7 +69,6 @@
 		0422218A21709D5C00E67F59 /* NSString+SKYExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 0422218821709D5A00E67F59 /* NSString+SKYExtension.m */; };
 		0422F6A02124120100A8BDBB /* GTMBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 0422F69F2124120000A8BDBB /* GTMBase64.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		0425302F215DC38D00B4DAF9 /* ZZTMulCreationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0425302D215DC38D00B4DAF9 /* ZZTMulCreationCell.m */; };
-		04253030215DC38D00B4DAF9 /* ZZTMulCreationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0425302E215DC38D00B4DAF9 /* ZZTMulCreationCell.xib */; };
 		042769672147F7B400DE238D /* ZZTRemindView.m in Sources */ = {isa = PBXBuildFile; fileRef = 042769662147F7B400DE238D /* ZZTRemindView.m */; };
 		0427696A214B443600DE238D /* ZZTInAPPPurchaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04276969214B443600DE238D /* ZZTInAPPPurchaseViewController.m */; };
 		042769C5214B5CAD00DE238D /* MLIAPManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 042769C3214B5CAD00DE238D /* MLIAPManager.m */; };
@@ -407,7 +406,6 @@
 		0422F69F2124120000A8BDBB /* GTMBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTMBase64.m; sourceTree = "<group>"; };
 		0425302C215DC38D00B4DAF9 /* ZZTMulCreationCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTMulCreationCell.h; sourceTree = "<group>"; };
 		0425302D215DC38D00B4DAF9 /* ZZTMulCreationCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTMulCreationCell.m; sourceTree = "<group>"; };
-		0425302E215DC38D00B4DAF9 /* ZZTMulCreationCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ZZTMulCreationCell.xib; sourceTree = "<group>"; };
 		042769652147F7B400DE238D /* ZZTRemindView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTRemindView.h; sourceTree = "<group>"; };
 		042769662147F7B400DE238D /* ZZTRemindView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTRemindView.m; sourceTree = "<group>"; };
 		04276968214B443600DE238D /* ZZTInAPPPurchaseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTInAPPPurchaseViewController.h; sourceTree = "<group>"; };
@@ -1165,7 +1163,6 @@
 				04D2AFA7212FB3E5008F6CCB /* ZZTCommentHeadView.m */,
 				0425302C215DC38D00B4DAF9 /* ZZTMulCreationCell.h */,
 				0425302D215DC38D00B4DAF9 /* ZZTMulCreationCell.m */,
-				0425302E215DC38D00B4DAF9 /* ZZTMulCreationCell.xib */,
 			);
 			path = Read;
 			sourceTree = "<group>";
@@ -1758,7 +1755,6 @@
 				0471A89420F89C8E00ABFF35 /* ZZTReaderViewController.xib in Resources */,
 				04E6D4A020EC737500116085 /* ZZTMeEditButtomView.xib in Resources */,
 				04A30FC221378E6C00FAC781 /* ZZTCreatCartoonViewController.xib in Resources */,
-				04253030215DC38D00B4DAF9 /* ZZTMulCreationCell.xib in Resources */,
 				04DE149C20E4881B009DF030 /* ZZTVIPBtView.xib in Resources */,
 				047720EF2106BC6C00FC97B5 /* materialLibrary.json in Resources */,
 				041EE0B520EB8D0C0012FEDF /* ZZTExitCell.xib in Resources */,

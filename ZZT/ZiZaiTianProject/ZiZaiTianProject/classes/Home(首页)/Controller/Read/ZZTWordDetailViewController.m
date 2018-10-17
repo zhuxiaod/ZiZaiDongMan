@@ -15,7 +15,7 @@
 #import "ZZTJiXuYueDuModel.h"
 #import "ZZTCarttonDetailModel.h"
 
-@interface ZZTWordDetailViewController ()<UITableViewDelegate,UITableViewDataSource>
+@interface ZZTWordDetailViewController ()<UITableViewDelegate,UITableViewDataSource,UINavigationControllerDelegate>
 
 @property (nonatomic,strong) ZZTWordsDetailHeadView *head;
 
@@ -62,6 +62,8 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 
     self.view.backgroundColor = [UIColor colorWithRGB:@"121,105,212"];
     
+    //设置挡住tableView白色的view
+    [self setupShieldView];
     //设置顶部页面
     [self setupTopView];
     //设置底部View
@@ -71,7 +73,12 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     
     //自定义navigationBar
     [self setupNavigationBar];
+}
 
+-(void)setupShieldView{
+    UIView *shieldView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, Screen_Width, TOPBAR_HEIGHT * 2)];
+    [shieldView setBackgroundColor:[UIColor colorWithRGB:@"121,105,212"]];
+    [self.view addSubview:shieldView];
 }
 
 -(void)setupNavigationBar{
@@ -79,9 +86,11 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     self.navbar = navbar;
     navbar.backgroundColor = [UIColor purpleColor];
     [self.view addSubview:navbar];
+    
     //返回
     [navbar.leftButton setImage:[UIImage imageNamed:@"navigationbarBack"] forState:UIControlStateNormal];
     navbar.leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 17);
+    
     //中间
     [navbar.centerButton setTitle:@" " forState:UIControlStateNormal];
     [navbar.centerButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -245,13 +254,16 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 -(void)setupTopView{
     
     UITableView *contenView = [[UITableView alloc] initWithFrame:CGRectMake(0, -20, self.view.width, self.view.height - 30) style:UITableViewStyleGrouped];
-    contenView.backgroundColor = [UIColor whiteColor];
+    contenView.backgroundColor = [UIColor clearColor];
     contenView.contentInset = UIEdgeInsetsMake(TOPBAR_HEIGHT,0,0,0);
     contenView.delegate = self;
     contenView.dataSource = self;
     contenView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.contentView = contenView;
     contenView.sectionFooterHeight  = 1.0;
+    contenView.estimatedSectionHeaderHeight = 0;
+    contenView.estimatedSectionFooterHeight = 0;
+    contenView.estimatedRowHeight = 0;
     [contenView setSeparatorColor:[UIColor blueColor]];
     
 //    [head.shareBtn addTarget:self action:@selector(shareWithSharePanel) forControlEvents:UIControlEventTouchUpInside];
@@ -273,7 +285,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 //    };
     
     //先让数据显示
-    [contenView registerNib:[UINib nibWithNibName:@"ZZTWordListCell" bundle:nil] forCellReuseIdentifier:zztWordListCell];
+    [contenView registerClass:[ZZTWordListCell class] forCellReuseIdentifier:zztWordListCell];
     
     [contenView registerNib:[UINib nibWithNibName:@"ZZTWordsDetailHeadView" bundle:nil] forHeaderFooterViewReuseIdentifier:zztWordsDetailHeadView];
     
@@ -327,15 +339,10 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 
 #pragma mark - 内容设置
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    ZZTWordListCell *cell = [tableView dequeueReusableCellWithIdentifier:zztWordListCell];
     ZZTChapterlistModel *model = self.wordList[indexPath.row];
-    model.type = _cartoonDetail.type;
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    cell.btnBlock = ^(ZZTWordListCell *cell, ZZTChapterlistModel *model) {
-//        NSIndexPath *indexPath = [tableView indexPathForCell:cell];
-//        [self.wordList replaceObjectAtIndex:indexPath.row withObject:model];
-//        [self loadAttention:model];
-    };
+    model.type = self.cartoonDetail.type;
+    ZZTWordListCell *cell = [tableView dequeueReusableCellWithIdentifier:zztWordListCell];
+    cell.selected = UITableViewCellSelectionStyleNone;
     cell.model = model;
     return cell;
 }
@@ -345,7 +352,6 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     //跳页
     ZZTCartoonDetailViewController *cartoonDetailVC = [[ZZTCartoonDetailViewController alloc] init];
     cartoonDetailVC.hidesBottomBarWhenPushed = YES;
-//    cartoonDetailVC.bookNameId = _cartoonDetail.id;
     cartoonDetailVC.indexRow = indexPath.row;
     //书模型 cartoonDetail.id
     cartoonDetailVC.cartoonModel = _cartoonDetail;
@@ -387,7 +393,6 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
         self.head = head;
         //设置数据
         self.head.detailModel = self.cartoonDetail;
-        
         return head;
     }else{
         //介绍
@@ -414,7 +419,11 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 120;
+    if([self.cartoonDetail.type isEqualToString:@"1"]){
+        return 120;
+    }else{
+        return 94;
+    }
 }
 
 //详情
@@ -427,14 +436,18 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
+    self.navigationController.delegate = self;
+    [self.navigationController setNavigationBarHidden:YES animated:YES ];
     _navigationFrame = self.navigationController.navigationBar.frame;
+
     [self JiXuYueDuTarget];
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    
+    [self.navigationController setNavigationBarHidden:YES animated:YES ];
+    self.navigationController.delegate = nil;
 }
 
 -(ZZTJiXuYueDuModel *)model{

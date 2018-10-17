@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BaseViewController : UIViewController
+@interface BaseViewController : UIViewController<UINavigationControllerDelegate>
 
 @property (nonatomic) BOOL statusBarHidden;
 

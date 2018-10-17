@@ -9,8 +9,11 @@
 #import "ZZTCartoonContentCell.h"
 #import "ZZTCartoonModel.h"
 @interface ZZTCartoonContentCell ()
+
 @property (nonatomic,strong) UIImageView *likeView;
+
 @end
+
 @implementation ZZTCartoonContentCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -53,8 +56,23 @@
 
 -(void)setModel:(ZZTCartoonModel *)model{
     _model = model;
-    __block float height;
-    [_content sd_setImageWithURL:[NSURL URLWithString:model.cartoonUrl] placeholderImage:[UIImage imageNamed:@"peien"]];
+    
+//    [_content sd_setImageWithURL:[NSURL URLWithString:model.cartoonUrl] placeholderImage:[UIImage imageNamed:@"peien"]];
+    
+    [_content sd_setImageWithURL:[NSURL URLWithString:model.cartoonUrl] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+        CGFloat percentage;
+        CGFloat imageHeight;
+        if(image.size.width > Screen_Width){
+            percentage = image.size.width / Screen_Width;
+            imageHeight = image.size.height / percentage;
+        }else{
+            percentage = Screen_Width / image.size.width;
+            imageHeight = image.size.height * percentage;
+        }
+        if ([self.delegate respondsToSelector:@selector(cellHeightUpdataWithIndex:Height:)]) {
+            [self.delegate cellHeightUpdataWithIndex:model.index Height:imageHeight];
+        }
+    }];
 }
 
 @end

@@ -18,4 +18,6 @@ typedef void (^RtValueBlock) (ZZTWordListCell *cell,ZZTChapterlistModel *model);
 
 @property (nonatomic,strong) ZZTChapterlistModel *model;
 
++(instancetype)WordListCelllWith:(UITableView *)tableView NSString:(NSString *)string;
+
 @end

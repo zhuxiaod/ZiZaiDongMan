@@ -26,7 +26,8 @@
 #import "ZZTUserReplyModel.h"
 #import "FriendCircleViewModel.h"
 
-@interface ZZTCartoonDetailViewController ()<UITableViewDelegate,UITableViewDataSource,CircleCellDelegate,ZZTCommentHeaderViewDelegate,UITextViewDelegate,NSURLSessionDataDelegate>
+
+@interface ZZTCartoonDetailViewController ()<UITableViewDelegate,UITableViewDataSource,CircleCellDelegate,ZZTCommentHeaderViewDelegate,UITextViewDelegate,NSURLSessionDataDelegate,ZZTCartoonContentCellDelegate>
 
 @property (nonatomic,strong) NSArray *cartoonDetailArray;
 
@@ -63,6 +64,11 @@
 @property (nonatomic, strong) NSDictionary *toPeople;
 
 @property (nonatomic, strong) IQKeyboardManager *keyboardManager;
+
+@property (nonatomic,strong) NSMutableArray *imageCellHeightCache;
+
+@property (nonatomic,strong) ZXDNavBar *navbar;
+
 @end
 
 NSString *CartoonContentCellIdentifier = @"CartoonContentCellIdentifier";
@@ -75,7 +81,25 @@ NSString *storyDe = @"storyDe";
 
 static NSString *const kCellId = @"CircleCell";
 
+static const CGFloat imageCellHeight = 500.0f;
+
+static bool needHide = false;
+
 @implementation ZZTCartoonDetailViewController
+
+#pragma mark Lazy load
+- (NSMutableArray *)imageCellHeightCache {
+    if (!_imageCellHeightCache && self.cartoonDetailArray) {
+        
+        NSMutableArray *arr = [[NSMutableArray alloc] init];
+        
+        for (NSInteger index = 0; index < self.cartoonDetailArray.count; index++) {
+            [arr addObject:@(imageCellHeight)];
+        }
+        _imageCellHeightCache = arr;
+    }
+    return _imageCellHeightCache;
+}
 
 -(ZZTStoryModel *)stroyModel{
     if(!_stroyModel){
@@ -114,35 +138,23 @@ static NSString *const kCellId = @"CircleCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
 //
 //    //键盘改变
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
     
-    
     self.view.backgroundColor = [UIColor whiteColor];
-    //先把漫画显示出来
-    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, Screen_Height) style:UITableViewStyleGrouped];
-    tableView.delegate = self;
-    tableView.dataSource = self;
-    tableView.estimatedRowHeight = 400;
-    tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
-    [tableView registerClass:[ZZTCartoonContentCell class] forCellReuseIdentifier:CartoonContentCellIdentifier];
-    tableView.showsVerticalScrollIndicator = YES;
-    _tableView = tableView;
-    [self.view addSubview:tableView];
-//    [tableView registerNib:[UINib nibWithNibName:@"ZZTCommentCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:Comment];
-//    [tableView registerNib:[UINib nibWithNibName:@"ZZTStoryDetailCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:story];
+//    [self setupNavigationBar];
 
-    tableView.pagingEnabled = NO;
     
+    [self setupContentView];
+   
     self.navigationController.navigationBar.translucent = NO;
     self.automaticallyAdjustsScrollViewInsets=NO;
     
+    
     //显示
     self.isNavHide = NO;
-    [self hideOrShowHeadView:self.isNavHide];
     
     //title
     [self setupTitleView];
@@ -154,24 +166,75 @@ static NSString *const kCellId = @"CircleCell";
     
     [self loadData];
     
-    //评论
-    //注册cell
-    [self.tableView registerClass:[CircleCell class] forCellReuseIdentifier:kCellId];
-    [self.tableView registerClass:[ZZTStoryDetailCell class] forCellReuseIdentifier:story];
-
-    self.tableView.tableFooterView = [UIView new];
-//    self.tableView.estimatedRowHeight = 100;
-//    self.tableView.rowHeight = UITableViewAutomaticDimension;
-//
     //键盘输入框
 //    [self addInputView];
     
     self.kInputHeight = 50;
-    NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
 
 //    NSString *htmlString = [NSString stringWithContentsOfURL:[NSURL URLWithString:@"http://p872ue3rt.bkt.clouddn.com/tn014.txt"] encoding:enc error:nil];
 //    htmlString = [self getZZwithString:htmlString];
 //    NSLog(@"htmlString:%@",htmlString);
+}
+
+-(void)setupNavigationBar{
+    ZXDNavBar *navbar = [[ZXDNavBar alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, navHeight)];
+    self.navbar = navbar;
+    navbar.backgroundColor = [UIColor purpleColor];
+    [self.view addSubview:navbar];
+    
+//    [self.navbar mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.right.equalTo(self.view);
+//        make.top.equalTo(self.view);
+//        make.height.equalTo(@(navHeight));
+//    }];
+    
+    //返回
+    [navbar.leftButton setImage:[UIImage imageNamed:@"navigationbarBack"] forState:UIControlStateNormal];
+    navbar.leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 17);
+    
+    //中间
+    [navbar.centerButton setTitle:@" " forState:UIControlStateNormal];
+    [navbar.centerButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [navbar.mainView setBackgroundColor:[UIColor colorWithRGB:@"121,105,212"]];
+    
+    navbar.showBottomLabel = NO;
+}
+
+
+-(void)setupContentView{
+    //先把漫画显示出来
+    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT) style:UITableViewStyleGrouped];
+    tableView.delegate = self;
+    tableView.dataSource = self;
+    //    tableView.estimatedRowHeight = 400;
+//    tableView.contentInset = UIEdgeInsetsMake(TOPBAR_HEIGHT - 20,0,0,0);
+    tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    tableView.estimatedRowHeight = 0;
+    tableView.estimatedSectionHeaderHeight = 0;
+    tableView.estimatedSectionFooterHeight = 0;
+    [tableView registerClass:[ZZTCartoonContentCell class] forCellReuseIdentifier:CartoonContentCellIdentifier];
+    tableView.showsVerticalScrollIndicator = YES;
+    _tableView = tableView;
+    [self.view addSubview:tableView];
+    
+    [self loadViewIfNeeded];
+    
+//    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.equalTo(self.view).offset(navHeight);
+//        make.right.left.equalTo(self.view).offset(0);
+//        make.bottom.equalTo(0);
+//    }];
+    
+    tableView.pagingEnabled = NO;
+    //评论
+    //注册cell
+    [self.tableView registerClass:[CircleCell class] forCellReuseIdentifier:kCellId];
+    [self.tableView registerClass:[ZZTStoryDetailCell class] forCellReuseIdentifier:story];
+    
+    self.tableView.tableFooterView = [UIView new];
+    //    self.tableView.estimatedRowHeight = 100;
+    //    self.tableView.rowHeight = UITableViewAutomaticDimension;
+    //
 }
 
 - (NSString *)getZZwithString:(NSString *)string{
@@ -181,7 +244,6 @@ static NSString *const kCellId = @"CircleCell";
     string = [regularExpretion stringByReplacingMatchesInString:string options:NSMatchingReportProgress range:NSMakeRange(0, string.length) withTemplate:@""];
     
     return string;
-    
 }
 
 - (void)addInputView {
@@ -267,7 +329,9 @@ static NSString *const kCellId = @"CircleCell";
         //漫画   是这里的数据
         if([self.cartoonModel.type isEqualToString:@"1"]){
             ZZTCartoonContentCell *cell = [tableView dequeueReusableCellWithIdentifier:CartoonContentCellIdentifier];
+            cell.delegate = self;
             ZZTCartoonModel *model = self.cartoonDetailArray[indexPath.row];
+            model.index = indexPath.row;
             cell.model = model;
             return cell;
         }else{
@@ -292,7 +356,12 @@ static NSString *const kCellId = @"CircleCell";
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if(indexPath.section == 0){
         if([self.cartoonModel.type isEqualToString:@"1"]){
-            return self.view.height;
+            return [self.imageCellHeightCache[indexPath.row] doubleValue];
+//            ZZTCartoonModel *model = self.cartoonDetailArray[indexPath.row];
+
+//            return [self.tableView fd_heightForCellWithIdentifier:CartoonContentCellIdentifier cacheByKey:indexPath configuration:^(ZZTCartoonContentCell *cell) {
+//                cell.model = model;
+//            }];
         }else{
             ZZTStoryModel *model = self.cartoonDetailArray[indexPath.row];
             if(model.content.length > 300){
@@ -320,13 +389,16 @@ static NSString *const kCellId = @"CircleCell";
                                     @"id":[NSString stringWithFormat:@"%ld",_dataModel.id]
                                     };
         [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonImg"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            self.imageCellHeightCache = nil;
             NSString *data = responseObject[@"result"];
             NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:data];
-            NSArray *array = [ZZTCartoonModel mj_objectArrayWithKeyValuesArray:dic];
+            NSMutableArray *array = [ZZTCartoonModel mj_objectArrayWithKeyValuesArray:dic];
+//            ZZTCartoonModel *cartModel = [[ZZTCartoonModel alloc] init];
+//            cartModel.cartoonArray = array;
             self.cartoonDetailArray = array;
+
             [self.tableView reloadData];
 //            [self.tableView layoutIfNeeded];
-            //
             [self loadCommentData];
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             
@@ -395,6 +467,7 @@ static NSString *const kCellId = @"CircleCell";
                                   @"pageSize":@"10",
                                   @"userId":[NSString stringWithFormat:@"%ld",user.id]
                                   };
+    
 //    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonComment"] parameters:commentDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -464,7 +537,6 @@ static NSString *const kCellId = @"CircleCell";
             UserInfo *author = array[1];
             self.author = author;
         }
-        //            NSLog(@"likeDic:%@",dic);
         [self.tableView reloadData];
         [self reloadCellWithIndex];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -565,10 +637,12 @@ static NSString *const kCellId = @"CircleCell";
     //开始进来是显示的
     if(self.isNavHide == NO){
         self.isNavHide = YES;
-        [self hideOrShowHeadView:self.isNavHide];
+        [[UIApplication sharedApplication] setStatusBarHidden:YES];
+        [self hideOrShowHeadBottomView:self.isNavHide];
     }else{
         self.isNavHide = NO;
-        [self hideOrShowHeadView:self.isNavHide];
+        [[UIApplication sharedApplication] setStatusBarHidden:NO];
+        [self hideOrShowHeadBottomView:self.isNavHide];
     }
 //
 //    //弹出键盘
@@ -593,7 +667,32 @@ static NSString *const kCellId = @"CircleCell";
 }
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
-    [self.navigationController setNavigationBarHidden:velocity.y > 0 animated:YES];
+    needHide = targetContentOffset -> y;
+    [self hideOrShowHeadBottomView:needHide];
+    self.isNavHide = needHide;
+}
+
+- (void)hideOrShowHeadBottomView:(BOOL)needhide{
+    
+    NSLog(@"needhide:%d self.navbar.hide:%d",needhide,self.navbar.hide);
+    
+    if (self.navigationController.navigationBar.hidden == needhide) return;
+    //结束编写
+    [self.view endEditing:needhide];
+   
+    [[UIApplication sharedApplication] setStatusBarHidden:needhide];    //隐藏导航栏
+    [self.navigationController setNavigationBarHidden:needhide animated:YES];
+    //44 0
+//    CGFloat offset = needhide ? bottomBarHeight : 0;
+    //底部view隐藏
+//    [self.bottomView mas_updateConstraints:^(MASConstraintMaker *make) {    //隐藏底部视图
+//        make.bottom.equalTo(self.view).offset(offset);
+//    }];
+    
+    //隐藏动画
+    [UIView animateWithDuration:0.25 animations:^{
+//        [self.bottomView layoutIfNeeded];
+    }];
 }
 
 //-(void)setBookNameId:(NSString *)bookNameId{
@@ -604,13 +703,16 @@ static NSString *const kCellId = @"CircleCell";
     [super viewWillDisappear:animated];
     _keyboardManager.enableAutoToolbar = YES;
     [IQKeyboardManager sharedManager].enable = YES;
-
-
+    
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    
+//    [self.navigationController setNavigationBarHidden:NO animated:NO];
     //字典转模型
     NSMutableArray *arrayDict = [NSKeyedUnarchiver unarchiveObjectWithFile:JiXuYueDuAPI];
     if (arrayDict == nil) {
         arrayDict = [NSMutableArray array];
     }
+    
     NSLog(@"arrayDict:%@",arrayDict);
     
     //先看有没有这篇文章
@@ -707,12 +809,17 @@ static NSString *const kCellId = @"CircleCell";
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    
+//    self.navigationController.delegate = self;
+    
     NSLog(@"width:%f",[UIScreen mainScreen].bounds.size.width);
     [IQKeyboardManager sharedManager].enable = NO;
     [IQKeyboardManager sharedManager];
     IQKeyboardManager *keyboardManager = [IQKeyboardManager sharedManager];
     _keyboardManager = keyboardManager;
     keyboardManager.enableAutoToolbar = NO;
+    
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
 #pragma mark - SectionHeaderViewDelegate
@@ -844,4 +951,12 @@ static NSString *const kCellId = @"CircleCell";
 //}
 ////cell 漫画 3
 //
+
+-(void)cellHeightUpdataWithIndex:(NSUInteger)index Height:(CGFloat)height{
+
+    NSNumber *newHeight = [NSNumber numberWithDouble:height];
+    [self.imageCellHeightCache replaceObjectAtIndex:index withObject:newHeight];
+    NSIndexPath *indexPath=[NSIndexPath indexPathForRow:index inSection:0];
+    [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
+}
 @end

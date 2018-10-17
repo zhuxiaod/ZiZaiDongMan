@@ -94,7 +94,7 @@
     _bottomView = bottomView;
     [self.contentView addSubview:bottomView];
     
-    //评论数量
+    //续画人数
     UILabel *xuHuaLab = [[UILabel alloc] init];
 //    xuHuaLab.backgroundColor = [UIColor redColor];
     _xuHuaLab = xuHuaLab;

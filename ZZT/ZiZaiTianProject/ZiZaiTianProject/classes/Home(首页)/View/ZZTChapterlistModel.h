@@ -40,4 +40,6 @@
 
 @property(nonatomic,strong)NSString *xuhuaNum;
 
+@property(nonatomic,assign)NSInteger wordNum;
+
 @end

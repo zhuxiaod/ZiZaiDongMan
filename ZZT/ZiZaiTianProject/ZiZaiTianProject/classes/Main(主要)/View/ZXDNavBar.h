@@ -31,6 +31,8 @@
 // 是否显示底部线
 @property (nonatomic, assign) BOOL showBottomLabel;
 
+@property (nonatomic, assign) BOOL hide;
+
 @property (nonatomic, copy) void (^ leftButtonBlock)(void);
 
 @property (nonatomic, copy) void (^ leftTwoButtonBlock)(void);

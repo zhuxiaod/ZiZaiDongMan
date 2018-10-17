@@ -27,6 +27,7 @@
     }
     return _circleModelArray;
 }
+
 //加载数据
 - (NSMutableArray *)loadDatas {
     NSMutableArray *muArray = [NSMutableArray array];
@@ -46,6 +47,7 @@
     }
     return muArray;
 }
+
 //计算高度
 - (void)calculateItemHeight:(ZZTCircleModel *)item {
     //如果内容的高度是0

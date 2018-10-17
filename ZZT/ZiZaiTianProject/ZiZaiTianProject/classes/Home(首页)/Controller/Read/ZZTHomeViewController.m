@@ -83,6 +83,7 @@ NSString *SuggestionView = @"SuggestionView";
     self.tabBarController.delegate = self;
     
     self.navigationController.fd_prefersNavigationBarHidden = YES;
+
 }
 
 -(void)loadBookShelfData{
@@ -246,6 +247,7 @@ NSString *SuggestionView = @"SuggestionView";
     [_ReadView reloadData];
     [self loadBookShelfData];
     NSLog(@"width:%f",self.view.frame.size.width);
+    
 
 //    [_collectView reloadData];
 //    [_CreationView reloadData];
@@ -256,6 +258,8 @@ NSString *SuggestionView = @"SuggestionView";
     //可以控制定时关闭
     NSNotification *notification = [NSNotification notificationWithName:@"tongzhi" object:nil userInfo:nil];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
+    
+ 
     
 }
 
@@ -373,9 +377,11 @@ NSString *SuggestionView = @"SuggestionView";
 -(NSInteger)numberOfSectionsInSearchSuggestionView:(UITableView *)searchSuggestionView{
     return 1;
 }
+
 -(NSInteger)searchSuggestionView:(UITableView *)searchSuggestionView numberOfRowsInSection:(NSInteger)section{
     return self.searchSuggestionArray.count;
 }
+
 -(UITableViewCell *)searchSuggestionView:(UITableView *)searchSuggestionView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [searchSuggestionView dequeueReusableCellWithIdentifier:SuggestionView];
     if (cell == nil) {

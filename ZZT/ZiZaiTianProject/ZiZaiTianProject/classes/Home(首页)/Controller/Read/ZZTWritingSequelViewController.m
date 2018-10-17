@@ -93,7 +93,6 @@ static NSString *collectionID = @"collectionID";
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    
     ZZTCartoonCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:collectionID forIndexPath:indexPath];
     ZZTCartonnPlayModel *car = self.cartoons[indexPath.row];
     if (car) {

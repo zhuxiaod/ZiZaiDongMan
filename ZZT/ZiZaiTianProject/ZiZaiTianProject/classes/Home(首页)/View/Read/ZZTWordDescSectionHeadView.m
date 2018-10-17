@@ -18,16 +18,24 @@
 @end
 
 static CGFloat const spaceing = 8;
+
 static CGFloat const tbSpaceing = 12;
 
 @implementation ZZTWordDescSectionHeadView
 
 - (void)setDesc:(NSString *)desc {
     _desc = desc;
-    self.descLabel.text = desc;
+    if(desc){
+        NSMutableAttributedString *attributedString1 = [[NSMutableAttributedString alloc] initWithString:desc];
+        NSMutableParagraphStyle * paragraphStyle1 = [[NSMutableParagraphStyle alloc] init];
+        [paragraphStyle1 setLineSpacing:5.f];
+        [attributedString1 addAttribute:NSParagraphStyleAttributeName value:paragraphStyle1 range:NSMakeRange(0, [desc length])];
+        self.descLabel.attributedText = attributedString1;
+    }
+    
     //如果大于2行
     if (self.textHeight > self.descLabel.font.lineHeight * 2) {
-        
+        //流出放button的位置
         [self.descLabel mas_updateConstraints:^(MASConstraintMaker *make) {
             make.bottom.equalTo(self).offset(-tbSpaceing * 2);
         }];
@@ -44,7 +52,13 @@ static CGFloat const tbSpaceing = 12;
     }
     return self;
 }
+
 -(void)setupUI{
+//    self.backgroundColor = [UIColor whiteColor];
+    UIView *backView = [UIView new];
+    backView.backgroundColor = [UIColor whiteColor];
+    [self addSubview:backView];
+    
     UIView *topView = [UIView new];
     topView.backgroundColor = [UIColor colorWithHexString:@"#F0F1F2"];
     [self addSubview:topView];
@@ -54,19 +68,26 @@ static CGFloat const tbSpaceing = 12;
     [self addSubview:bottomView];
     
     UILabel *wordLabel = [UILabel new];
-    
     wordLabel.text = @"作品简介";
     [self addSubview:wordLabel];
     
     //显示内容
     UILabel *descLabel = [UILabel new];
-    
     descLabel.numberOfLines = 2;
-    descLabel.font = [UIFont systemFontOfSize:12];
+    descLabel.font = [UIFont systemFontOfSize:14];
     descLabel.textColor = [UIColor colorWithHexString:@"#A7A8A9"];
     descLabel.preferredMaxLayoutWidth = SCREEN_WIDTH - spaceing * 2;
-    
+
     [self addSubview:descLabel];
+    
+    
+    [backView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self).offset(0);
+        make.right.equalTo(self).offset(0);
+        make.left.equalTo(self).offset(0);
+        make.bottom.equalTo(self).offset(0);
+
+    }];
     
     [topView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self).offset(0);
@@ -109,6 +130,7 @@ static CGFloat const tbSpaceing = 12;
         make.height.equalTo(@(SINGLE_LINE_WIDTH));
     }];
 }
+
 - (CGFloat)myHeight {
     
     [self setNeedsLayout];
@@ -116,6 +138,7 @@ static CGFloat const tbSpaceing = 12;
     
     return [self systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
 }
+
 //文字高度
 - (CGFloat)textHeight {
     //如果文字高度大于1
@@ -124,6 +147,7 @@ static CGFloat const tbSpaceing = 12;
     }
     return _textHeight;
 }
+
 //获得文字高度
 - (CGFloat)getDescTextHeight {
     //最大尺寸
@@ -150,9 +174,6 @@ static CGFloat const tbSpaceing = 12;
         [openUpBtn setTitle:@"全部" forState:UIControlStateNormal];
         [openUpBtn setTitle:@"收起" forState:UIControlStateSelected];
         
-//        [openUpBtn setImage:[UIImage imageNamed:@"ic_album_open_7x4_"]  forState:UIControlStateNormal];
-//        [openUpBtn setImage:[UIImage imageNamed:@"ic_album_close_7x4_"] forState:UIControlStateSelected];
-        
         [openUpBtn addTarget:self action:@selector(openOrClose:) forControlEvents:UIControlEventTouchUpInside];
         
         [self addSubview:openUpBtn];
@@ -163,10 +184,8 @@ static CGFloat const tbSpaceing = 12;
             make.width.equalTo(@40);
             make.height.equalTo(@12);
         }];
-        
         _openUpBtn = openUpBtn;
     }
-    
     return _openUpBtn;
 }
 //开关状态

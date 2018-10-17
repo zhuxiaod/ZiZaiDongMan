@@ -8,9 +8,19 @@
 
 #import <UIKit/UIKit.h>
 @class ZZTCartoonModel;
+
+//代理
+@protocol ZZTCartoonContentCellDelegate <NSObject>
+
+- (void)cellHeightUpdataWithIndex:(NSUInteger)index Height:(CGFloat)height;
+
+@end
+
 @interface ZZTCartoonContentCell : UITableViewCell
 
 @property (nonatomic,strong,readonly) UIImageView *content;
+
+@property (nonatomic, weak) id <ZZTCartoonContentCellDelegate> delegate;
 
 @property (nonatomic,strong) ZZTCartoonModel *model;
 

@@ -374,10 +374,6 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
 
     cartoonDetailVC.dataModel = model;
     cartoonDetailVC.cartoonModel = _cartoonDetail;
-    //章节内容id
-//    cartoonDetailVC.cartoonId = [NSString stringWithFormat:@"%ld",model.id];//内容
-//    cartoonDetailVC.bookNameId = _cartoonDetail.id;
-    
  
     [self.navigationController pushViewController:cartoonDetailVC animated:YES];
 }
