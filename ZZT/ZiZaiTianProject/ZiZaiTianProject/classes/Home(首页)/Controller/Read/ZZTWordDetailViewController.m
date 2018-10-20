@@ -38,6 +38,8 @@
 @property (nonatomic,assign) CGRect navigationFrame;
 
 @property (nonatomic,assign) ZXDNavBar *navbar;
+
+@property (nonatomic,strong) ZZTWordsDetailHeadView *wordDetailHeadView;
 @end
 
 NSString *zztWordListCell = @"zztWordListCell";
@@ -55,8 +57,9 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.fd_prefersNavigationBarHidden = YES;
     
-    self.navigationController.fd_prefersNavigationBarHidden = YES;
+//    self.navigationController.fd_prefersNavigationBarHidden = YES;
     
     self.isHave = NO;
 
@@ -125,7 +128,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     UIButton *pageBtn = [[UIButton alloc] init];
     pageBtn.frame = CGRectMake(0, 0, SCREEN_WIDTH/3*2, 50);
     pageBtn.backgroundColor = [UIColor colorWithHexString:@"#DBDCDD"];
-    [pageBtn setTitle:@"1 - 12页" forState:UIControlStateNormal];
+    [pageBtn setTitle:@" " forState:UIControlStateNormal];
     _pageBtn = pageBtn;
     [pageBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [bottom addSubview:pageBtn];
@@ -153,19 +156,22 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 
 //开始阅读
 -(void)starReadTarget:(UIButton *)startBtn{
+    //章节模型
     ZZTChapterlistModel *model = [[ZZTChapterlistModel alloc] init];
     ZZTCartoonDetailViewController *cartoonDetailVC = [[ZZTCartoonDetailViewController alloc] init];
+    //如果没有阅读过
     if([startBtn.titleLabel.text isEqualToString:@"开始阅读"] && self.wordList.count > 0){
         model = self.wordList[0];
         cartoonDetailVC.indexRow = 0;
+        cartoonDetailVC.dataModel = model;
     }else if([startBtn.titleLabel.text isEqualToString:@"继续阅读"] && self.wordList.count > 0){
-        //取出来的
-        model = self.wordList[[self.model.chapterIndex integerValue]];
-        cartoonDetailVC.indexRow = [self.model.chapterIndex integerValue];
+        //阅读过
+        model = self.wordList[[self.model.chapterListRow integerValue]];
+        cartoonDetailVC.indexRow = [self.model.chapterListRow integerValue];
+        cartoonDetailVC.dataModel = model;
         cartoonDetailVC.testModel = self.model;
     }
     cartoonDetailVC.hidesBottomBarWhenPushed = YES;
-    cartoonDetailVC.dataModel = model;
     cartoonDetailVC.cartoonModel = _cartoonDetail;
     [self.navigationController pushViewController:cartoonDetailVC animated:YES];
 }
@@ -241,7 +247,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
                 if([self.cartoonDetail.type isEqualToString:@"1"]){
                     [self.pageBtn setTitle:[NSString stringWithFormat:@"%@画",model.chapterPage] forState:UIControlStateNormal];
                 }else{
-                    [self.pageBtn setTitle:[NSString stringWithFormat:@"%@页",model.chapterPage] forState:UIControlStateNormal];
+                    [self.pageBtn setTitle:[NSString stringWithFormat:@"%@",model.chapterName] forState:UIControlStateNormal];
                 }
             }
         }
@@ -265,24 +271,6 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     contenView.estimatedSectionFooterHeight = 0;
     contenView.estimatedRowHeight = 0;
     [contenView setSeparatorColor:[UIColor blueColor]];
-    
-//    [head.shareBtn addTarget:self action:@selector(shareWithSharePanel) forControlEvents:UIControlEventTouchUpInside];
-    
-//    //收藏业务
-//    head.buttonAction = ^(ZZTCarttonDetailModel *detailModel) {
-//        UserInfo *userInfo = [Utilities GetNSUserDefaults];
-//        NSDictionary *dic = @{
-//                              @"cartoonId":detailModel.id,
-//                              @"userId":[NSString stringWithFormat:@"%ld",userInfo.id]
-//                              };
-////        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-//        AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-//        [manager POST:[ZZTAPI stringByAppendingString:@"great/collects"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-//
-//        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-//
-//        }];
-//    };
     
     //先让数据显示
     [contenView registerClass:[ZZTWordListCell class] forCellReuseIdentifier:zztWordListCell];
@@ -351,12 +339,17 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     ZZTChapterlistModel *model = self.wordList[indexPath.row];
     //跳页
     ZZTCartoonDetailViewController *cartoonDetailVC = [[ZZTCartoonDetailViewController alloc] init];
-    cartoonDetailVC.hidesBottomBarWhenPushed = YES;
-    cartoonDetailVC.indexRow = indexPath.row;
     //书模型 cartoonDetail.id
     cartoonDetailVC.cartoonModel = _cartoonDetail;
     //章节
     cartoonDetailVC.dataModel = model;
+    cartoonDetailVC.indexRow = indexPath.row;
+    if(self.isHave == YES){
+        cartoonDetailVC.testModel = self.model;
+    }
+    cartoonDetailVC.hidesBottomBarWhenPushed = YES;
+
+
     
     [self.navigationController pushViewController:cartoonDetailVC animated:YES];
 }
@@ -389,11 +382,9 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 //设置头
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if(section == 0){
-        ZZTWordsDetailHeadView *head = [ZZTWordsDetailHeadView wordsDetailHeadViewWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, wordsDetailHeadViewHeight) scorllView:nil];
-        self.head = head;
         //设置数据
-        self.head.detailModel = self.cartoonDetail;
-        return head;
+        self.wordDetailHeadView.detailModel = self.ctDetail;
+        return self.wordDetailHeadView;
     }else{
         //介绍
         self.descHeadView.desc = self.ctDetail.intro;
@@ -418,6 +409,27 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     return _descHeadView;
 }
 
+- (ZZTWordsDetailHeadView *)wordDetailHeadView{
+    if(!_wordDetailHeadView){
+        _wordDetailHeadView = [ZZTWordsDetailHeadView wordsDetailHeadViewWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, wordsDetailHeadViewHeight) scorllView:nil];
+        [_wordDetailHeadView.shareBtn addTarget:self action:@selector(shareWithSharePanel) forControlEvents:UIControlEventTouchUpInside];
+        //收藏业务
+        _wordDetailHeadView.buttonAction = ^(ZZTCarttonDetailModel *detailModel) {
+            UserInfo *userInfo = [Utilities GetNSUserDefaults];
+            NSDictionary *dic = @{
+                                  @"cartoonId":detailModel.id,
+                                  @"userId":[NSString stringWithFormat:@"%ld",userInfo.id]
+                                  };
+            AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+            [manager POST:[ZZTAPI stringByAppendingString:@"great/collects"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                
+            } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                
+            }];
+        };
+    }
+    return _wordDetailHeadView;
+}
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if([self.cartoonDetail.type isEqualToString:@"1"]){
         return 120;
@@ -436,8 +448,9 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    self.navigationController.delegate = self;
-    [self.navigationController setNavigationBarHidden:YES animated:YES ];
+//    self.navigationController.delegate = self;
+//    [self.navigationController setNavigationBarHidden:YES animated:NO];
+    self.navigationController.navigationBar.alpha = 0;
     _navigationFrame = self.navigationController.navigationBar.frame;
 
     [self JiXuYueDuTarget];
@@ -446,8 +459,8 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     
-    [self.navigationController setNavigationBarHidden:YES animated:YES ];
-    self.navigationController.delegate = nil;
+//    [self.navigationController setNavigationBarHidden:YES animated:YES ];
+//    self.navigationController.delegate = nil;
 }
 
 -(ZZTJiXuYueDuModel *)model{
@@ -479,11 +492,18 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     //有的话 说明有记录
     if(self.isHave == YES){
         [_starRead setTitle:@"继续阅读" forState:UIControlStateNormal];
+        ZZTChapterModel *model = [[ZZTChapterModel alloc] init];
+        if(self.model.chapterArray.count > 0){
+            model = self.model.chapterArray[[self.model.arrayIndex integerValue]];
+        }
         //第几画
         if([self.cartoonDetail.type isEqualToString:@"1"]){
-            [_pageBtn setTitle:[NSString stringWithFormat:@"%@画",self.model.bookChapter] forState:UIControlStateNormal];
+            //得到最后一章
+            [_pageBtn setTitle:[NSString stringWithFormat:@"%@画",model.chapterPage] forState:UIControlStateNormal];
+
+//            [_pageBtn setTitle:[NSString stringWithFormat:@"%@画",self.model.bookChapter] forState:UIControlStateNormal];
         }else{
-            [_pageBtn setTitle:[NSString stringWithFormat:@"%@页",self.model.bookChapter] forState:UIControlStateNormal];
+            [_pageBtn setTitle:[NSString stringWithFormat:@"%@",model.chapterName] forState:UIControlStateNormal];
         }
     }else{
         //如果没有  保存进去

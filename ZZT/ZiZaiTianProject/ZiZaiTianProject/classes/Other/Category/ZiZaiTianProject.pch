@@ -68,7 +68,7 @@
 #import <UShareUI/UMSocialUIUtility.h>
 #import "ZZTUserModel.h"
 #import "NSString+SKYExtension.h"
-#import <SDAutoLayout.h>
+//#import <SDAutoLayout.h>
 #import "ZZTCommentHeaderView.h"
 #import <TTTAttributedLabel.h>
 #import "UIColor+SKYExtension.h"
@@ -76,6 +76,10 @@
 #import "UIButton+LXMImagePosition.h"
 #import "IQKeyboardManager.h"
 #import "ZXDNavBar.h"
+#import "ZZTChapterModel.h"
+#import "MBProgressHUD+XMG.h"
+#import "SectionFooterView.h"
+#define   SCREEN_MAX_LENGTH   (MAX(SCREEN_WIDTH, SCREEN_HEIGHT))
 
 #define detailViewHeaderHeight 60
 
@@ -109,14 +113,14 @@
 #define iPhone6plus ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? (CGSizeEqualToSize(CGSizeMake(1125,2001), [[UIScreen mainScreen] currentMode].size) || CGSizeEqualToSize(CGSizeMake(1242,2208), [[UIScreen mainScreen] currentMode].size)) : NO)
 
 //本地
-//#define ZZTAPI @"http://192.168.0.165:8888/"
+#define ZZTAPI @"http://192.168.0.165:8888/"
 
 //测试
 //#define ZZTAPI @"http://192.168.0.142:8888/"
 
 //#define BaseUrl(url)  [NSString stringWithFormat:@"http://192.168.0.142:8888/%@",(url)]
 
-#define ZZTAPI @"http://120.79.178.191:8888/"
+//#define ZZTAPI @"http://120.79.178.191:8888/"
 
 //本地
 //192.168.0.165

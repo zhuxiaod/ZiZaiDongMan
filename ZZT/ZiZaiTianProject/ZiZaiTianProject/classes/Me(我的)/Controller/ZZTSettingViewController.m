@@ -13,6 +13,7 @@
 #import "ZZTSettingModel.h"
 #import "ProgressHUD.h"
 #import <SDImageCache.h>
+#import "ZZTUserAgreementViewController.h"
 
 @interface ZZTSettingViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (strong, nonatomic)  UITableView *tableView;
@@ -196,8 +197,12 @@ NSString *ExitCell = @"ExitCell";
                 dissmiss();
                 [weakSelf reloadCacheSize];
                 [ProgressHUD showSuccessWithStatus:@"清理完毕" inView:weakSelf.view];
-                
             }];
+        }else if (indexPath.row == 3){
+            ZZTUserAgreementViewController *userAgreementVC = [[ZZTUserAgreementViewController alloc] init];
+            userAgreementVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:userAgreementVC animated:YES];
+
         }else if(indexPath.row == 4){
             //退出账号
             UserInfo *user = [[UserInfo alloc] init];

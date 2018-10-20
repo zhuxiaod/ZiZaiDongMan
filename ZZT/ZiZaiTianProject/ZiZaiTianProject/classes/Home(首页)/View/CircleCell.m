@@ -102,21 +102,21 @@
         text = [NSString stringWithFormat:@"%@: %@",plyer.nickName,model.content];
         self.commentLabel.text = text;
     }else{
-        text = [NSString stringWithFormat:@"%@回复%@: %@",plyer.nickName,replyer.nickName,model.content];
+        text = [NSString stringWithFormat:@"%@回复%@: %@",replyer.nickName,plyer.nickName,model.content];
         self.commentLabel.text = text;
     }
     
     //添加url
     //对文字添加跳转
     NSRange boldRange0 = NSMakeRange(0, [plyer.nickName length]);
-    NSRange boldRange1 = NSMakeRange([plyer.nickName length] + 2, [replyer.nickName length]);
+    NSRange boldRange1 = NSMakeRange([replyer.nickName length] + 2, [plyer.nickName length]);
 
     [self.commentLabel addLinkToTransitInformation:@{@"user_name":plyer.nickName} withRange:boldRange0];
     //如果回复人为空 回复人名字少于0 或者回复人ID 为
     if(replyer.nickName == nil || [replyer.nickName length] <= 0 || [replyer.ID isEqualToString:customer.ID]){
 
     } else {
-        [self.commentLabel addLinkToTransitInformation:@{@"user_name":replyer} withRange:boldRange1];
+        [self.commentLabel addLinkToTransitInformation:@{@"user_name":plyer} withRange:boldRange1];
     }
 }
 

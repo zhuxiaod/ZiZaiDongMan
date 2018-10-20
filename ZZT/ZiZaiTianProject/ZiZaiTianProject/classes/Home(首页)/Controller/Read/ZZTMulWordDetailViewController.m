@@ -148,8 +148,8 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
         cartoonDetailVC.indexRow = 0;
     }else if([startBtn.titleLabel.text isEqualToString:@"继续阅读"] && self.wordList.count > 0){
         //取出来的
-        model = self.wordList[[self.model.chapterIndex integerValue]];
-        cartoonDetailVC.indexRow = [self.model.chapterIndex integerValue];
+//        model = self.wordList[[self.model.chapterIndex integerValue]];
+//        cartoonDetailVC.indexRow = [self.model.chapterIndex integerValue];
         cartoonDetailVC.testModel = self.model;
     }
     cartoonDetailVC.cartoonModel = _cartoonDetail;
@@ -483,9 +483,9 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
         [_starRead setTitle:@"继续阅读" forState:UIControlStateNormal];
         //第几画
         if([self.cartoonDetail.type isEqualToString:@"1"]){
-            [_pageBtn setTitle:[NSString stringWithFormat:@"%@画",self.model.bookChapter] forState:UIControlStateNormal];
+//            [_pageBtn setTitle:[NSString stringWithFormat:@"%@画",self.model.bookChapter] forState:UIControlStateNormal];
         }else{
-            [_pageBtn setTitle:[NSString stringWithFormat:@"%@页",self.model.bookChapter] forState:UIControlStateNormal];
+//            [_pageBtn setTitle:[NSString stringWithFormat:@"%@页",self.model.bookChapter] forState:UIControlStateNormal];
         }
     }else{
         //如果没有  保存进去

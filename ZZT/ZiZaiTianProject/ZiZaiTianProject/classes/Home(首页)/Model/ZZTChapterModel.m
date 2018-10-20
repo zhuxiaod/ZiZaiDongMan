@@ -1,27 +1,20 @@
 //
-//  ZZTJiXuYueDuModel.m
+//  ZZTChapterModel.m
 //  ZiZaiTianProject
 //
-//  Created by mac on 2018/9/3.
+//  Created by mac on 2018/10/18.
 //  Copyright © 2018年 zxd. All rights reserved.
 //
 
-#import "ZZTJiXuYueDuModel.h"
+#import "ZZTChapterModel.h"
 
-@implementation ZZTJiXuYueDuModel
+@implementation ZZTChapterModel
 
-@synthesize bookName;
-@synthesize chapterArray;
-@synthesize bookId;
-@synthesize arrayIndex;
-@synthesize chapterListRow;
-
--(NSMutableArray *)chapterArray{
-    if(!chapterArray){
-        chapterArray = [NSMutableArray array];
-    }
-    return chapterArray;
-}
+@synthesize chapterIndex;
+@synthesize chapterName;
+@synthesize readPoint;
+@synthesize chapterPage;
+@synthesize chapterId;
 
 // 归档属性
 - (void)encodeWithCoder:(nonnull NSCoder *)aCoder {
@@ -58,5 +51,4 @@
         
     } return self;
 }
-
 @end

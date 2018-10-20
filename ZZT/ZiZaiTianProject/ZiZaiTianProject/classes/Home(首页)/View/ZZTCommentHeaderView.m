@@ -26,7 +26,7 @@ const CGFloat SectionHeaderMaxContentHeight = 104; //文本最大高度
 const CGFloat SectionHeaderOnePictureHeight = 100; //只有一张图片时的图片高度
 const CGFloat SectionHeaderSomePicturesHeight = 70; //有多张图片时的单张图片高度
 
-@interface ZZTCommentHeaderView ()
+@interface ZZTCommentHeaderView ()<TTTAttributedLabelDelegate>
 
 @property (nonatomic, strong) ZZTCircleModel *item;
 @property (nonatomic, assign) NSUInteger section;
@@ -78,6 +78,8 @@ const CGFloat SectionHeaderSomePicturesHeight = 70; //有多张图片时的单�
     
     //内容lab
     self.contentLabel = [TTTAttributedLabel new];
+    
+    self.contentLabel.delegate = self;
     //16号字体
     self.contentLabel.font = [UIFont systemFontOfSize:SectionHeaderBigFontSize];
     //不限制行数
@@ -88,6 +90,9 @@ const CGFloat SectionHeaderSomePicturesHeight = 70; //有多张图片时的单�
     self.contentLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     //宽度
     self.contentLabel.preferredMaxLayoutWidth = SCREEN_MIN_LENGTH - 3 * SectionHeaderHorizontalSpace - 36;
+    
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickCommentLab:)];
+    [self.contentLabel addGestureRecognizer:tapGesture];
     
     //更多按钮
     self.moreBtn = [UIButton new];
@@ -199,8 +204,10 @@ const CGFloat SectionHeaderSomePicturesHeight = 70; //有多张图片时的单�
     }
 }
 
--(void)clickCommentBtn:(UITapGestureRecognizer *)gesture{
-    
+-(void)clickCommentLab:(UITapGestureRecognizer *)gesture{
+    if ([_delegate respondsToSelector:@selector(didCommentLabelReply:)]) {
+        [_delegate didCommentLabelReply:self.section];
+    }
 }
 
 - (void)setContentData:(ZZTCircleModel *)circleItem section:(NSInteger)section{
@@ -327,6 +334,9 @@ const CGFloat SectionHeaderSomePicturesHeight = 70; //有多张图片时的单�
             }];
         }
         self.contentLabel.text = self.item.content;
+        
+       
+
         [self.moreBtn mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.contentLabel.mas_bottom).offset(SectionHeaderVerticalSpace);
             make.left.equalTo(self.timeLabel).offset(-3);
@@ -334,7 +344,26 @@ const CGFloat SectionHeaderSomePicturesHeight = 70; //有多张图片时的单�
             make.height.equalTo(@(SectionHeaderMoreBtnHeight));
         }];
     }
+    //加事件
+//    NSRange boldRange0 = NSMakeRange(0, self.item.content.length);
+//
+//    [self.contentLabel addLinkToTransitInformation:@{@"contentLabel":self.item.content} withRange:boldRange0];
+//    //正常状态下的属性
+//    _contentLabel.linkAttributes = @{
+//                                       (NSString *)kCTForegroundColorAttributeName:[UIColor blackColor],
+//                                       (NSString *)kCTUnderlineStyleAttributeName: @(YES)
+//                                       };
+    
+
 }
+
+//-(void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithTransitInformation:(NSDictionary *)components{
+//    if ([_delegate respondsToSelector:@selector(didCommentLabelReply:)]) {
+//        [_delegate didCommentLabelReply:components];
+//    }
+//}
+
+
 
 - (void)setImgBgViewContent{
     [self.imgBgView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
