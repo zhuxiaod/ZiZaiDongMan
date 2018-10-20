@@ -90,7 +90,7 @@
     ZZTUserReplyModel *model = item.replyComment[index];
     //回复人
     customer *replyer = model.replyCustomer;
-    //说话的人
+    //xxx:
     customer *plyer = model.customer;
     //发布者
     customer *customer = item.customer;    //初始化字符串
@@ -108,15 +108,20 @@
     
     //添加url
     //对文字添加跳转
-    NSRange boldRange0 = NSMakeRange(0, [plyer.nickName length]);
-    NSRange boldRange1 = NSMakeRange([replyer.nickName length] + 2, [plyer.nickName length]);
 
-    [self.commentLabel addLinkToTransitInformation:@{@"user_name":plyer.nickName} withRange:boldRange0];
+
     //如果回复人为空 回复人名字少于0 或者回复人ID 为
     if(replyer.nickName == nil || [replyer.nickName length] <= 0 || [replyer.ID isEqualToString:customer.ID]){
+        NSRange boldRange0 = NSMakeRange(0, [plyer.nickName length]);//w : xxxx
 
+        [self.commentLabel addLinkToTransitInformation:@{@"user_name":plyer.nickName} withRange:boldRange0];
     } else {
-        [self.commentLabel addLinkToTransitInformation:@{@"user_name":plyer} withRange:boldRange1];
+        NSRange boldRange0 = NSMakeRange(0, [replyer.nickName length]);//w : xxxx
+        NSRange boldRange1 = NSMakeRange([replyer.nickName length] + 2, [plyer.nickName length]);
+        
+        [self.commentLabel addLinkToTransitInformation:@{@"user_name":replyer.nickName} withRange:boldRange0];
+
+        [self.commentLabel addLinkToTransitInformation:@{@"user_name":plyer.nickName} withRange:boldRange1];
     }
 }
 

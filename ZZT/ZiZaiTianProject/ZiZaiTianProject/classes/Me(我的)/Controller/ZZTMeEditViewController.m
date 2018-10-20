@@ -221,8 +221,9 @@
         }
     }
     
+    UserInfo *user = [Utilities GetNSUserDefaults];
     NSDictionary *dic = @{
-                          @"userId":self.model.userId,
+                          @"userId":[NSString stringWithFormat:@"%ld",user.id],
                           @"nickName":self.userName,
                           @"intro":self.signature,//空
                           @"sex":self.sex,

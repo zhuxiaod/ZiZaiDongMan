@@ -80,11 +80,14 @@
 
 //判断恢复状态
 @property (nonatomic,assign) BOOL isReply;
-//回复者ID
+//回复者ID(节上的)
 @property (nonatomic,strong) NSString *replyId;
 
 @property (nonatomic,assign) NSInteger replySection;
+//回复人（cell上的）
+@property (nonatomic,strong) customer *replyer;
 
+@property (nonatomic,assign) dispatch_group_t group;
 
 @end
 
@@ -110,6 +113,13 @@ static bool needHide = false;
         _chapterModel = [[ZZTChapterModel alloc] init];
     }
     return _chapterModel;
+}
+
+-(customer *)replyer{
+    if(!_replyer){
+        _replyer = [[customer alloc] init];
+    }
+    return _replyer;
 }
 
 - (NSMutableArray *)imageCellHeightCache {
@@ -169,19 +179,20 @@ static bool needHide = false;
     
     self.view.backgroundColor = [UIColor whiteColor];
     
+    //内容页
     [self setupContentView];
-    
+    //自定义导航栏
     [self setupNavigationBar];
 
     self.commentId = @"0";
     
     self.navigationController.navigationBar.translucent = NO;
-    self.automaticallyAdjustsScrollViewInsets=NO;
+    self.automaticallyAdjustsScrollViewInsets = NO;
     
     //显示
     self.isNavHide = NO;
     
-    //title
+#warning 待改
     [self setupTitleView];
     
     self.isOnce = NO;
@@ -271,7 +282,7 @@ static bool needHide = false;
 //    self.tableView.estimatedRowHeight = 100;
 //    self.tableView.rowHeight = UITableViewAutomaticDimension;
 }
-
+//取消多余字符
 - (NSString *)getZZwithString:(NSString *)string{
     
     NSRegularExpression *regularExpretion = [NSRegularExpression regularExpressionWithPattern:@"<[^>]*>|\n" options:0 error:nil];
@@ -336,7 +347,22 @@ static bool needHide = false;
 }
 
 -(void)loadData{
-    [self loadCartoonDetail];
+//    [self loadCartoonDetail];
+    [self loadContent];
+//    [self loadCartoonDetail];
+////
+////
+//    [self loadCommentData];
+////
+////
+////
+//    [self loadLikeData];
+////
+////
+//    [self.tableView reloadData];
+////
+//    [self reloadCellWithIndex];
+
 }
 
 #pragma mark - navigationItem
@@ -360,7 +386,7 @@ static bool needHide = false;
 #pragma mark - tableViewDelegate
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if(self.commentArray.count > 0){
-        return self.commentArray.count + 1;
+        return self.commentArray.count + 2;
     }else{
         return 2;
     }
@@ -402,7 +428,6 @@ static bool needHide = false;
         }
     }else{
         ZZTCircleModel *model = self.commentArray[indexPath.section - 2];
-//        ZZTUserReplyModel *item = model.replyComment[indexPath.row];
         CircleCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellId forIndexPath:indexPath];
         [cell setContentData:model index:indexPath.row];
         cell.selectionStyle =UITableViewCellSelectionStyleNone;
@@ -415,11 +440,6 @@ static bool needHide = false;
     if(indexPath.section == 0){
         if([self.cartoonModel.type isEqualToString:@"1"]){
             return [self.imageCellHeightCache[indexPath.row] doubleValue];
-//            ZZTCartoonModel *model = self.cartoonDetailArray[indexPath.row];
-
-//            return [self.tableView fd_heightForCellWithIdentifier:CartoonContentCellIdentifier cacheByKey:indexPath configuration:^(ZZTCartoonContentCell *cell) {
-//                cell.model = model;
-//            }];
         }else{
             ZZTStoryModel *model = self.cartoonDetailArray[indexPath.row];
             if(model.content.length > 300){
@@ -429,7 +449,7 @@ static bool needHide = false;
             }
         }
     }else{
-        return 44;
+        return UITableViewAutomaticDimension;
     }
 }
 
@@ -437,32 +457,94 @@ static bool needHide = false;
     return ceil([text contentSizeWithWidth:Screen_Width - 20 font:[UIFont systemFontOfSize:SectionHeaderBigFontSize] lineSpacing:0].height);
 }
 
+-(void)loadContent{
+
+
+    dispatch_group_t group = dispatch_group_create();
+    
+    dispatch_queue_t q = dispatch_get_global_queue(0, 0);
+    
+    dispatch_group_async(group, q, ^{
+        dispatch_group_enter(group);
+        AFHTTPSessionManager *session = [[AFHTTPSessionManager alloc] init];
+        NSDictionary *paramDict = @{
+                                    @"id":[NSString stringWithFormat:@"%ld",self.dataModel.id]
+                                    };
+        [session POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonImg"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            self.imageCellHeightCache = nil;
+            NSString *data = responseObject[@"result"];
+            NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:data];
+            NSMutableArray *array = [ZZTCartoonModel mj_objectArrayWithKeyValuesArray:dic];
+            
+            self.cartoonDetailArray = array;
+            [self.tableView reloadData];
+            dispatch_group_leave(group);//很重要,不能少
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+            dispatch_group_leave(group);//很重要,不能少
+        }];
+        
+    });
+    UserInfo *user = [Utilities GetNSUserDefaults];
+
+    dispatch_group_async(group, q, ^{
+        dispatch_group_enter(group);
+        AFHTTPSessionManager *session = [[AFHTTPSessionManager alloc] init];
+        NSDictionary *commentDict = @{
+                                      @"itemId":[NSString stringWithFormat:@"%ld",self.dataModel.id],
+                                      @"type":self.cartoonModel.type,
+                                      @"pageNum":@"0",
+                                      @"pageSize":@"100",
+                                      @"userId":[NSString stringWithFormat:@"%ld",user.id]
+                                      };
+        [session POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonComment"] parameters:commentDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            NSDictionary *commenDdic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+            //这里有问题 应该是转成数组 然后把对象取出
+            NSMutableArray *array1 = [ZZTCircleModel mj_objectArrayWithKeyValuesArray:commenDdic];
+            //外面的数据
+            FriendCircleViewModel *circleViewModel = [[FriendCircleViewModel alloc] init];
+            circleViewModel.circleModelArray = array1;
+            self.commentArray = [circleViewModel loadDatas];
+            
+            //加工一下评论的数据
+            self.commentArray = array1;
+            [self.tableView reloadData];
+            dispatch_group_leave(group);
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+            dispatch_group_leave(group);//很重要,不能少
+        }];
+        
+    });
+    
+    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+//        [self.tableView reloadData];
+        [self reloadCellWithIndex];
+        NSLog(@"OK");
+    });
+    
+}
+
 #pragma mark - detailContentApi
 -(void)loadCartoonDetail{
     UserInfo *user = [Utilities GetNSUserDefaults];
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-    [MBProgressHUD showMessage:@"Loading..." toView:self.view];
-
+//    [MBProgressHUD showMessage:@"Loading..." toView:self.view];
+    
     if([self.cartoonModel.type isEqualToString:@"1"]){
         NSDictionary *paramDict = @{
                                     @"id":[NSString stringWithFormat:@"%ld",_dataModel.id]
                                     };
         [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonImg"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            [MBProgressHUD hideHUDForView:self.view];
+//            [MBProgressHUD hideHUDForView:self.view];
             self.imageCellHeightCache = nil;
             NSString *data = responseObject[@"result"];
             NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:data];
             NSMutableArray *array = [ZZTCartoonModel mj_objectArrayWithKeyValuesArray:dic];
-//            ZZTCartoonModel *cartModel = [[ZZTCartoonModel alloc] init];
-//            cartModel.cartoonArray = array;
+            
             self.cartoonDetailArray = array;
 
-            [self.tableView reloadData];
-//            [self.tableView layoutIfNeeded];
-            [self loadCommentData];
+
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            [MBProgressHUD hideHUDForView:self.view];
+//            [MBProgressHUD hideHUDForView:self.view];
         }];
     }else{
         //章节
@@ -471,7 +553,8 @@ static bool needHide = false;
                                     @"userId":[NSString stringWithFormat:@"%ld",user.id]
                                     };
         [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterInfo"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            [MBProgressHUD hideHUDForView:self.view];
+
+//            [MBProgressHUD hideHUDForView:self.view];
             NSString *data = responseObject[@"result"];
             NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:data];
             NSArray *array = [ZZTStoryModel mj_objectArrayWithKeyValuesArray:dic];
@@ -482,10 +565,8 @@ static bool needHide = false;
                 //下载txt
                 [self downLoadTxt:model.content];
             }
-            [self.tableView reloadData];
-            [self loadCommentData];
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            [MBProgressHUD hideHUDForView:self.view];
+//            [MBProgressHUD hideHUDForView:self.view];
         }];
     }
 }
@@ -521,18 +602,18 @@ static bool needHide = false;
 -(void)loadCommentData{
     UserInfo *user = [Utilities GetNSUserDefaults];
 
-    //评论
+    //评论UITableViewAutomaticDimension
     NSDictionary *commentDict = @{
                                   @"itemId":[NSString stringWithFormat:@"%ld",_dataModel.id],
                                   @"type":self.cartoonModel.type,
                                   @"pageNum":@"0",
-                                  @"pageSize":@"10",
+                                  @"pageSize":@"100",
                                   @"userId":[NSString stringWithFormat:@"%ld",user.id]
                                   };
     
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonComment"] parameters:commentDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+
         NSDictionary *commenDdic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
         NSMutableArray *array1 = [ZZTCircleModel mj_objectArrayWithKeyValuesArray:commenDdic];
@@ -543,11 +624,10 @@ static bool needHide = false;
 
         //加工一下评论的数据
         self.commentArray = array1;
-        [self.tableView reloadData];
-        
-        [self loadLikeData];
+        dispatch_group_leave(self.group);
+//        [self loadLikeData];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
+        dispatch_group_leave(self.group);
     }];
 }
 
@@ -560,15 +640,17 @@ static bool needHide = false;
 //    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/listChapterinfo"] parameters:likeDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+
         NSDictionary *likeDic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
         NSArray *array2 = [ZZTChapterlistModel mj_objectArrayWithKeyValuesArray:likeDic];
         NSLog(@"likeDic:%@",likeDic);
         self.userLikeArray = array2;
-        [self.tableView reloadData];
-        [self loadAuthorHead];
+        dispatch_group_leave(self.group);
+//        [self.tableView reloadData];
+//        [self loadAuthorHead];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
+         dispatch_group_leave(self.group);
     }];
 }
 
@@ -582,7 +664,8 @@ static bool needHide = false;
         user.userId = self.stroyModel.userId;
         self.author = user;
 //        [self.tableView reloadData];
-        [self reloadCellWithIndex];
+//        [self reloadCellWithIndex];
+        dispatch_group_leave(self.group);
         return;
     }
 //        dispatch_semaphore_t  sema = dispatch_semaphore_create(0);
@@ -600,9 +683,10 @@ static bool needHide = false;
             self.author = author;
         }
 //        [self.tableView reloadData];
-        [self reloadCellWithIndex];
+//        [self reloadCellWithIndex];
+        dispatch_group_leave(self.group);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
+        dispatch_group_leave(self.group);
     }];
 }
 
@@ -695,7 +779,12 @@ static bool needHide = false;
     }
     return 0;
 }
-
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section != 0 && indexPath.section != 1) {
+        return 100;
+    }
+    return 0;
+}
 //续画
 //-(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
 //    if (section == 0) {
@@ -716,6 +805,33 @@ static bool needHide = false;
 //}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    //如果是其他的cell
+    if(indexPath.section == 0 || indexPath.section == 1){
+        NSLog(@"你点中了不在进来的地方");
+    }else{
+        //点击了评论cell  获取这条cell的信息
+        ZZTCircleModel *model = self.commentArray[indexPath.section - 2];
+        ZZTUserReplyModel *item = model.replyComment[indexPath.row];
+        //回复人
+        customer *replyer = item.replyCustomer;
+        //xxx:
+        customer *plyer = item.customer;
+        
+        customer *customer = model.customer;    //初始化字符串
+
+        //回复谁
+        if(replyer.nickName == nil || [replyer.nickName length] <= 0 || [replyer.ID isEqualToString:customer.ID]){
+            //没有回复人的  p
+            self.replyer = plyer;
+            self.commentId = item.id;
+        }else{
+            self.replyer = replyer;
+            self.commentId = item.id;
+        }
+        self.isReply = YES;
+        //设置输入回复信息
+        [self startComment];
+    }
     //开始进来是显示的
     if(self.isNavHide == NO){
         self.isNavHide = YES;
@@ -965,12 +1081,12 @@ static bool needHide = false;
 }
 
 -(void)didCommentLabelReply:(NSInteger)section{
-    ZZTCircleModel *item = self.commentArray[section+2];
-    self.replyId = item.customerId;
+    ZZTCircleModel *item = self.commentArray[section];
+    self.commentId = item.id;
     //找到回复人了
     self.isReply = YES;
-    
-    self.replySection = section + 2;
+
+//    self.replySection = section;
     //弹出键盘
     [self startComment];
     //设置ID
@@ -1101,6 +1217,7 @@ static bool needHide = false;
 ////cell 漫画 3
 //
 
+#pragma mark cartCell代理
 -(void)cellHeightUpdataWithIndex:(NSUInteger)index Height:(CGFloat)height{
 
     NSNumber *newHeight = [NSNumber numberWithDouble:height];
@@ -1108,6 +1225,7 @@ static bool needHide = false;
     NSIndexPath *indexPath=[NSIndexPath indexPathForRow:index inSection:0];
     [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
 }
+
 #pragma mark - UITextViewDelegate
 - (void)textViewDidChange:(UITextView *)textView {
     if (textView.text.length > 5000) { // 限制5000字内
@@ -1158,13 +1276,17 @@ static bool needHide = false;
 - (void)textViewDidBeginEditing:(UITextView *)textView {
 
     if([textView.text isEqualToString:@"请输入评论"]){
-        textView.text = @"";
-        textView.textColor=[UIColor blackColor];
+        //要记得删除掉replyer
+//        if (self.replyer.nickName){
+//            textView.text = [NSString stringWithFormat:@"回复%@",self.replyer.nickName];
+//            textView.textColor = [UIColor blackColor];
+//        }else{
+            textView.text = @"";
+            textView.textColor = [UIColor blackColor];
+//        }
     }
     if(self.isReply == NO){
         self.commentId = @"0";
-    }else{
-        self.commentId = self.replyId;
     }
 }
 
@@ -1216,6 +1338,7 @@ static bool needHide = false;
 -(void)sendMessageSuccess{
     //刷新数据
     [self loadCommentData];
+    
     //小菊花
     //清空字数
     [self.kInputView mas_updateConstraints:^(MASConstraintMaker *make) {
@@ -1225,14 +1348,13 @@ static bool needHide = false;
 //    [self.kTextView ];
     self.kInputHeight = 50;
     [self hideKeyBoard];
-    [self.tableView reloadData];
+//    [self.tableView reloadData];
     
 //    //记录第几节
 //    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
 //        make.top.mas_equalTo(0);
 //        make.bottom.left.right.mas_equalTo(0);
 //    }];
-
 }
 
 #pragma mark - 通知方法

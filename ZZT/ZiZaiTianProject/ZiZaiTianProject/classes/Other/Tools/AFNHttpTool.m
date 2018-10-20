@@ -120,7 +120,8 @@ static AFHTTPSessionManager *manager;
     NSData *policyData = [policy dataUsingEncoding:NSUTF8StringEncoding];
     NSString *encodedPolicy = [GTMBase64 stringByWebSafeEncodingData:policyData padded:TRUE];
     const char *encodedPolicyStr = [encodedPolicy cStringUsingEncoding:NSUTF8StringEncoding];
-    char digestStr[CC_SHA1_DIGEST_LENGTH]; bzero(digestStr, 0);
+    char digestStr[CC_SHA1_DIGEST_LENGTH];
+    bzero(digestStr, 0);
     CCHmac(kCCHmacAlgSHA1, secretKeyStr, strlen(secretKeyStr), encodedPolicyStr, strlen(encodedPolicyStr), digestStr);
     NSString *encodedDigest = [GTMBase64 stringByWebSafeEncodingBytes:digestStr length:CC_SHA1_DIGEST_LENGTH padded:TRUE];
     NSString *token = [NSString stringWithFormat:@"%@:%@:%@", accessKey, encodedDigest, encodedPolicy];
@@ -139,7 +140,7 @@ static AFHTTPSessionManager *manager;
     //按七牛“上传策略”的描述： <bucket>:<key>，表示只允许用户上传指定key的文件。在这种格式下文件默认允许“修改”，若已存在同名资源则会被覆盖。如果只希望上传指定key的文件，并且不允许修改，那么可以将下面的 insertOnly 属性值设为 1。
     //所以如果参数只传users的话，下次上传key还是aaa的文件会提示存在同名文件，不能上传。
     //传users:aaa的话，可以覆盖更新，但实测延迟较长，我上传同名新文件上去，下载下来的还是老文件。
-    [dic setObject:@"image" forKey:@"scope"];//根据
+    [dic setObject:ZZTBucket forKey:@"scope"];//根据
     [dic setObject:deadlineNumber forKey:@"deadline"];
     NSString *json = [dic mj_JSONString];
     return json;
