@@ -79,6 +79,8 @@
 #import "ZZTChapterModel.h"
 #import "MBProgressHUD+XMG.h"
 #import "SectionFooterView.h"
+#import "TypeButton.h"
+
 #define   SCREEN_MAX_LENGTH   (MAX(SCREEN_WIDTH, SCREEN_HEIGHT))
 
 #define detailViewHeaderHeight 60

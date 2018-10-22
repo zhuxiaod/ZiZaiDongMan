@@ -178,4 +178,13 @@
     NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:nil];
     return dic;
 }
+
+-(NSArray *)getDecryArray:(NSString *)getData{
+    //解密
+    NSString *data = [self decryptString:getData keyString:@"ZIZAITIAN@666666" iv:[@"A-16-Byte-String" dataUsingEncoding:NSUTF8StringEncoding]];
+    NSData *jsonData = [data dataUsingEncoding:NSUTF8StringEncoding];
+    NSArray *dic = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:nil];
+    return dic;
+}
+
 @end

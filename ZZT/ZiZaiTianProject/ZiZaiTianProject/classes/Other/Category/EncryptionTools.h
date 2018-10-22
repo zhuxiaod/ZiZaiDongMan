@@ -70,4 +70,6 @@
 
 - (NSDictionary *)decry:(NSString *)getData;
 
+-(NSArray *)getDecryArray:(NSString *)getData;
+
 @end
