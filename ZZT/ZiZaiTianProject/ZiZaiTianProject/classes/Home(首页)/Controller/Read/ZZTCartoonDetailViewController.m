@@ -91,6 +91,14 @@
 @property (nonatomic,strong) dispatch_group_t group;
 
 @property (nonatomic,assign) dispatch_queue_t q;
+//点赞模型
+@property (nonatomic,strong) ZZTStoryModel *likeModel;
+//上一章下一章视图
+@property (nonatomic,strong) ZZTNextWordHeaderView *nextWordView;
+//电池条
+@property (nonatomic,strong) UIView *statusBar;
+
+@property (nonatomic,strong) UIButton *kLikeBtn;
 
 @end
 
@@ -189,10 +197,6 @@ static bool needHide = false;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-//    self.fd_prefersNavigationBarHidden = YES;
-//    //键盘改变
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
-    
     self.view.backgroundColor = [UIColor whiteColor];
     
     //内容页
@@ -230,7 +234,11 @@ static bool needHide = false;
 -(void)setupNavigationBar{
     ZXDNavBar *navbar = [[ZXDNavBar alloc]init];
     self.navbar = navbar;
-    navbar.backgroundColor = [UIColor purpleColor];
+//    navbar.backgroundColor = [UIColor blackColor];
+    [navbar setBackgroundColor:[UIColor colorWithRed:0.0 green:0 blue:0 alpha:0.5]];
+    //    navbar.mainView.backgroundColor = [UIColor blackColor];
+//    [navbar.mainView.backgroundColor colorWithAlphaComponent:0.5];
+//    navbar.mainView.alpha = 0.5;
     [self.view addSubview:navbar];
     
     [self.navbar mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -244,9 +252,9 @@ static bool needHide = false;
     navbar.leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 17);
     
     //中间
-    [navbar.centerButton setTitle:@" 111111" forState:UIControlStateNormal];
+    [navbar.centerButton setTitle:self.dataModel.chapterName forState:UIControlStateNormal];
     [navbar.centerButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [navbar.mainView setBackgroundColor:[UIColor colorWithRGB:@"121,105,212"]];
+//    [navbar.mainView setBackgroundColor:[UIColor colorWithRGB:@"121,105,212"]];
     
     navbar.showBottomLabel = NO;
 }
@@ -270,7 +278,6 @@ static bool needHide = false;
     
     [self loadViewIfNeeded];
 
-    
     tableView.pagingEnabled = NO;
     //评论
     //注册cell
@@ -295,21 +302,16 @@ static bool needHide = false;
     _kInputView.backgroundColor = [UIColor colorWithHexString:@"#eeeeee"];
     
     [self.view addSubview:self.kInputView];
-//    [IQKeyboardManager sharedManager];
-//    [[UIApplication sharedApplication].keyWindow addSubview:_kInputView];
     
     [_kInputView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.height.equalTo(@50);
-//        make.left.right.equalTo([UIApplication sharedApplication].keyWindow);
         make.left.right.equalTo(self.view);
-//        make.bottom.equalTo(@(self.kInputHeight));
         make.bottom.equalTo(@(0));
     }];
 
     self.kTextView = [UITextView new];
     _kTextView.backgroundColor = [UIColor whiteColor];
     _kTextView.layer.cornerRadius = 5;
-//    _kTextView.backgroundColor= [UIColor grayColor];
     _kTextView.text = @"请输入评论";
     _kTextView.textColor = [UIColor grayColor];
     NSMutableParagraphStyle *paragraphStyle = [NSMutableParagraphStyle new];
@@ -325,7 +327,7 @@ static bool needHide = false;
         make.top.equalTo(@7);
         make.bottom.equalTo(@(-7));
         make.left.equalTo(@14);
-        make.right.equalTo(@(-50));
+        make.right.equalTo(@(-90));
     }];
     
     //发布按钮
@@ -337,10 +339,43 @@ static bool needHide = false;
         make.top.equalTo(@7);
         make.bottom.equalTo(@(-7));
         make.left.equalTo(self.kTextView.mas_right).offset(4);
-        make.right.equalTo(self.kInputView.mas_right).offset(-4);
+        make.width.mas_equalTo(50);
     }];
     _publishBtn = publishBtn;
     [publishBtn addTarget:self action:@selector(sendMessage) forControlEvents:UIControlEventTouchUpInside];
+    
+    //点赞按钮
+    UIButton *kLikeBtn = [[UIButton alloc] init];
+    [kLikeBtn setImage:[UIImage imageNamed:@"正文-点赞-已点赞"] forState:UIControlStateNormal];
+    [_kInputView addSubview:kLikeBtn];
+    [kLikeBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(@10);
+        make.bottom.equalTo(@-10);
+        make.left.equalTo(self.publishBtn.mas_right).offset(4);
+        make.width.mas_equalTo(30);
+    }];
+    [kLikeBtn addTarget:self action:@selector(likeBtnTaget) forControlEvents:UIControlEventTouchUpInside];
+    self.kLikeBtn = kLikeBtn;
+}
+
+-(void)likeBtnTaget{
+    [MBProgressHUD showSuccess:@"点赞成功" toView:self.view];
+    dispatch_group_async(self.group, self.q, ^{
+        dispatch_group_enter(self.group);
+        [self headerViewLike];
+    });
+
+    //点赞完了以后 重新请求一次获取点赞的接口  刷新点赞图标
+    dispatch_group_async(self.group, self.q, ^{
+        dispatch_group_enter(self.group);
+        [self loadLikeData];
+    });
+    
+    dispatch_group_notify(self.group, dispatch_get_main_queue(), ^{
+//        [self.tableView reloadData];
+       
+//        [self reloadCellWithIndex];
+    });
 }
 
 -(void)loadData{
@@ -459,6 +494,7 @@ static bool needHide = false;
         [self.tableView reloadData];
         [self reloadCellWithIndex];
     });
+    
 }
 
 //把请求单独的抽出来
@@ -469,8 +505,8 @@ static bool needHide = false;
     if([self.cartoonModel.type isEqualToString:@"1"]){
         NSDictionary *paramDict = @{
                                    @"id":[NSString stringWithFormat:@"%ld",_dataModel.id],
-                                   @"pageNum":@"",
-                                   @"pageSize":@""
+                                   @"pageNum":@"0",
+                                   @"pageSize":@"200"
                                    };
         [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getCartoonCenter"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             [self.cartoonDetailArray removeAllObjects];
@@ -522,10 +558,17 @@ static bool needHide = false;
     NSDictionary *likeDict = @{
                                @"chapterId":self.dataModel.chapterId,
                                @"userId":[NSString stringWithFormat:@"%ld",user.id]
+//                               @"userId":@"1"
                                };
     [session POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterPraise"] parameters:likeDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-        
+        ZZTStoryModel *model = [ZZTStoryModel mj_objectWithKeyValues:dic];
+        self.nextWordView.likeModel = model;
+        if([model.ifpraise isEqualToString:@"0"]){
+            [self.kLikeBtn setImage:[UIImage imageNamed:@"正文-点赞-未点赞(灰色）"] forState:UIControlStateNormal];
+        }else{
+            [self.kLikeBtn setImage:[UIImage imageNamed:@"正文-点赞-已点赞"] forState:UIControlStateNormal];
+        }
         NSLog(@"%@",dic);
         dispatch_group_leave(self.group);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -733,14 +776,16 @@ static bool needHide = false;
         ZZTNextWordHeaderView *nextWordView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:nextWordViewIdentfier];
         [nextWordView.rightBtn addTarget:self action:@selector(nextWordWithBtn:) forControlEvents:UIControlEventTouchUpInside];
         [nextWordView.rightBtn setTag:2];
-        [nextWordView.liftBtn addTarget:self action:@selector(lastWord) forControlEvents:UIControlEventTouchUpInside];
+        [nextWordView.liftBtn addTarget:self action:@selector(nextWordWithBtn:) forControlEvents:UIControlEventTouchUpInside];
         [nextWordView.liftBtn setTag:1];
-        [nextWordView.centerBtn addTarget:self action:@selector(lastWord) forControlEvents:UIControlEventTouchUpInside];
-
+        nextWordView.block = ^{
+            [self headerViewLike];
+        };
         //如果没有头视图
         if(!nextWordView){
             nextWordView = [[ZZTNextWordHeaderView alloc] initWithReuseIdentifier:nextWordViewIdentfier];
         }
+        self.nextWordView = nextWordView;
         nextWordView.backgroundColor = [UIColor whiteColor];
         return nextWordView;
     }else{
@@ -762,15 +807,15 @@ static bool needHide = false;
     NSString *upDown;
     NSString *code = self.cartoonModel.type;
     if(btn.tag == 1){
-        upDown = @"1";
-    }else{
         upDown = @"2";
+    }else{
+        upDown = @"1";
     }
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     NSDictionary *dic = @{
                           @"cartoonId":self.cartoonModel.id,//书ID
                           @"chapterId":self.dataModel.chapterId,//章节ID
-                          @"upDown":upDown,//1.上 2.下
+                          @"upDown":upDown,//1.下 2.上
                           @"code":code//1.漫画 2.章节
                           };
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getupDown"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -786,9 +831,13 @@ static bool needHide = false;
             self.dataModel.chapterPage = model.chapterPage;
             self.dataModel.chapterName = model.chapterName;
             self.dataModel.chapterId = model.chapterId;
+            [self.navbar.centerButton setTitle:self.dataModel.chapterName forState:UIControlStateNormal];
             [self loadData];
             [self.tableView reloadData];
-            [self.tableView setContentOffset:CGPointMake(0,0) animated:NO];
+            [self.tableView layoutIfNeeded];
+//            NSIndexPath* indexPat = [NSIndexPath indexPathForRow:0 inSection:0];
+//            [self.tableView setContentOffset:CGPointMake(0,0) animated:NO];
+            [self.tableView  scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
         }else{
             //显示错误信息
             [MBProgressHUD showError:@"已经没有章节"];
@@ -798,12 +847,22 @@ static bool needHide = false;
     }];
 }
 
--(void)lastWord{
-    
-}
-
 -(void)headerViewLike{
-    
+
+    UserInfo *user = [Utilities GetNSUserDefaults];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    NSDictionary *dic = @{
+                          @"type":self.cartoonModel.type,
+                              @"typeId":[NSString stringWithFormat:@"%ld",self.dataModel.id],
+                              @"userId":[NSString stringWithFormat:@"%ld",user.id],
+//                          @"userId":@"1",
+                              @"cartoonId":self.cartoonModel.id
+                          };
+    [manager POST:[ZZTAPI stringByAppendingString:@"great/cartoonPraise"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
 }
 
 #pragma mark - 加尾巴
@@ -880,9 +939,18 @@ static bool needHide = false;
     //如果是其他的cell
     if(indexPath.section == 0 || indexPath.section == 1){
         NSLog(@"你点中了不在进来的地方");
+        //如果现在是隐藏状态
+        if(needHide == YES){
+            needHide = NO;
+            [self hideOrShowHeadBottomView:needHide];
+        }else{
+            needHide = YES;
+            [self hideOrShowHeadBottomView:needHide];
+        }
     }else{
         //点击了评论cell  获取这条cell的信息
         ZZTCircleModel *model = self.commentArray[indexPath.section - 2];
+        
         ZZTUserReplyModel *item = model.replyComment[indexPath.row];
         //回复人
         customer *replyer = item.replyCustomer;
@@ -937,21 +1005,29 @@ static bool needHide = false;
 }
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
-    needHide = targetContentOffset -> y;
-//    [self hideOrShowHeadBottomView:needHide];
+    NSLog(@"%lf",scrollView.contentOffset.y);
+    
+    //到顶部显示
+    if(targetContentOffset->y <= 64){
+        needHide = NO;
+        [self hideOrShowHeadBottomView:needHide];
+    }else{
+        needHide = YES;
+        [self hideOrShowHeadBottomView:needHide];
+
+        needHide = YES;
+        [self hideOrShowHeadBottomView:needHide];
+    }
     self.isNavHide = needHide;
 }
 
 - (void)hideOrShowHeadBottomView:(BOOL)needhide{
-    //电池条
-//    [self setNeedsStatusBarAppearanceUpdate];
-//    [self prefersStatusBarHidden];
     
     UIView  *statusBar = [[[UIApplication sharedApplication] valueForKey:@"statusBarWindow"] valueForKey:@"statusBar"];
     BOOL statusAlpha = needhide ? 0 : 1;
+    self.statusBar = statusBar;
     statusBar.alpha = statusAlpha;
 //    [[UIApplication sharedApplication] setStatusBarHidden:needhide];
-//    [UIApplication sharedApplication].sta
     CGFloat offset = needhide ? navHeight : 0;
     self.navbar.hide = needhide;
     if(needhide == YES){
@@ -959,47 +1035,32 @@ static bool needHide = false;
         [self.navbar mas_updateConstraints:^(MASConstraintMaker *make) {    //隐藏底部视图
             make.top.equalTo(self.view).offset(offset);
         }];
+        [self.kInputView mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.bottom.equalTo(self.view).offset(50);
+        }];
     }else{
         [self.navbar mas_updateConstraints:^(MASConstraintMaker *make) {    //隐藏底部视图
             make.top.equalTo(self.view).offset(offset);
         }];
+        [self.kInputView mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.bottom.equalTo(self.view).offset(0);
+        }];
     }
-    
-    [UIView animateWithDuration:0.25 animations:^{
-        [self.navbar layoutIfNeeded];
-        [self.tableView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
-    }];
-    
-    NSLog(@"needhide:%d self.navbar.hide:%d",needhide,self.navbar.hide);
-    
-//    if (self.navigationController.navigationBar.hidden == needhide) return;
-    //结束编写
-//    [self.view endEditing:needhide];
-    
-//    CGFloat offset = needhide ? bottomBarHeight : 0;
-    
-    //底部view隐藏
-//    [self.bottomView mas_updateConstraints:^(MASConstraintMaker *make) {    //隐藏底部视图
-//        make.bottom.equalTo(self.view).offset(offset);
-//    }];
     
     //隐藏动画
     [UIView animateWithDuration:0.25 animations:^{
-//        [self.bottomView layoutIfNeeded];
+        [self.kInputView layoutIfNeeded];
+        [self.navbar layoutIfNeeded];
     }];
 }
 
-//-(void)setBookNameId:(NSString *)bookNameId{
-//    _bookNameId = bookNameId;
-//}
-
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    [IQKeyboardManager sharedManager].enableAutoToolbar = YES;
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    [IQKeyboardManager sharedManager].enableAutoToolbar = NO;
     [IQKeyboardManager sharedManager].enable = YES;
     
-    [[UIApplication sharedApplication] setStatusBarHidden:NO];
-    
+    self.statusBar.alpha = 1;
     [self.navigationController setNavigationBarHidden:YES animated:NO];
     
     //继续阅读业务
@@ -1129,13 +1190,14 @@ static bool needHide = false;
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
     NSLog(@"width:%f",[UIScreen mainScreen].bounds.size.width);
     [IQKeyboardManager sharedManager].enable = YES;
 //    [IQKeyboardManager sharedManager];
 //    IQKeyboardManager *keyboardManager = [IQKeyboardManager sharedManager];
 //    _keyboardManager = keyboardManager;
-    [IQKeyboardManager sharedManager].enableAutoToolbar = NO;
+    [IQKeyboardManager sharedManager].enableAutoToolbar = YES;
     [IQKeyboardManager sharedManager].shouldResignOnTouchOutside = YES;
     
     self.navigationController.navigationBar.alpha = 0;
@@ -1336,7 +1398,6 @@ static bool needHide = false;
         }];
         [self.kTextView setText:@""];
         self.kInputHeight = 50;
-//        [self hideKeyBoard];
         return NO;
     }
     return YES;
@@ -1424,44 +1485,6 @@ static bool needHide = false;
 //    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
 //        make.top.mas_equalTo(0);
 //        make.bottom.left.right.mas_equalTo(0);
-//    }];
-}
-
-#pragma mark - 通知方法
-- (void)keyboardWillChangeFrame:(NSNotification *)notification {
-//    NSDictionary *userInfo = notification.userInfo;
-//    // 1,取出键盘动画的时间
-//    CGFloat duration = [userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
-//    // 2,取得键盘将要移动到的位置的frame
-//    CGRect keyboardFrame = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];//256
-//    // 3,计算kInputView需要平移的距离
-//    CGFloat moveY = self.view.frame.size.height + TOPBAR_HEIGHT - keyboardFrame.origin.y;//64
-//    // 4,执行动画
-//    UIWindow *window = [UIApplication sharedApplication].keyWindow;
-//    ZZTCommentHeaderView *headerView = (ZZTCommentHeaderView *)[self.tableView headerViewForSection:self.replySection];
-//    CGRect rect = [headerView.superview convertRect:headerView.frame toView:window];//93
-//    ZZTCircleModel *item = self.commentArray[self.replySection];
-//    CGFloat cellHeight = item.likerHeight;
-//    for (NSNumber *num in item.commentHeightArr) {
-//        cellHeight += [num floatValue];
-//    }
-//    CGFloat footerMaxY = CGRectGetMaxY(rect) + cellHeight + item.footerHeight;
-//    CGFloat delta = footerMaxY - (SCREEN_MAX_LENGTH - (moveY + self.kInputHeight));
-//    CGPoint offset = self.tableView.contentOffset;
-//    offset.y += delta;
-//    if (offset.y < 0) {
-//        offset.y = 0;
-//    }
-//    [self.tableView setContentOffset:offset animated:NO];
-//    [self.kInputView mas_updateConstraints:^(MASConstraintMaker *make) {
-//        if (moveY == 0) {
-//            make.bottom.equalTo(self.view.mas_bottom).offset(0);
-//        } else {
-//            make.bottom.equalTo(@(-256));//320
-//        }
-//    }];
-//    [UIView animateWithDuration:duration animations:^{
-//        [[UIApplication sharedApplication].keyWindow layoutIfNeeded];
 //    }];
 }
 

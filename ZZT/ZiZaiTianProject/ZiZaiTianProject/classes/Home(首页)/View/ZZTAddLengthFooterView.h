@@ -21,4 +21,5 @@ typedef void (^FooterBlock)(void);
 @property (nonatomic,copy) void (^addCellBtnClick)(UIButton *btn);
 
 @property (nonatomic,copy) void (^addLengthBtnClick)(UIButton *btn);
+
 @end

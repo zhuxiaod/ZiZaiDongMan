@@ -8,7 +8,7 @@
 
 #import "ZZTNextWordHeaderView.h"
 #import "ZXDCartoonFlexoBtn.h"
-
+#import "ZZTStoryModel.h"
 @interface ZZTNextWordHeaderView ()
 
 @property (nonatomic,strong) UIView *buttomView;
@@ -33,15 +33,16 @@
     //中间的
     _centerBtn = [[ZXDCartoonFlexoBtn alloc] init];
 //    _centerBtn.backgroundColor = [UIColor yellowColor];
-    [_centerBtn setImage:[UIImage imageNamed:@"正文-点赞-未点赞(灰色）"] forState:UIControlStateNormal];
+//    [_centerBtn setImage:[UIImage imageNamed:@"正文-点赞-未点赞(灰色）"] forState:UIControlStateNormal];
     [_centerBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [_centerBtn setTitle:@"100" forState:UIControlStateNormal];
+//    [_centerBtn setTitle:@"100" forState:UIControlStateNormal];
+    [_centerBtn addTarget:self action:@selector(clickLike) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:_centerBtn];
 
     //左
-    _liftBtn = [[UIButton alloc] init];
+    _liftBtn = [[ImageLeftBtn alloc] init];
 //    _liftBtn.backgroundColor = [UIColor redColor];
-    [_liftBtn setImage:[UIImage imageNamed:@"左箭头"] forState:UIControlStateNormal];
+    [_liftBtn setImage:[UIImage imageNamed:@"后退键"] forState:UIControlStateNormal];
     [_liftBtn setTitle:@"上一页" forState:UIControlStateNormal];
     [_liftBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.contentView addSubview:_liftBtn];
@@ -59,8 +60,28 @@
     _buttomView = buttomView;
 }
 
+-(void)clickLike{
+    NSInteger praiseNum = [self.centerBtn.titleLabel.text integerValue];
+    if([_likeModel.ifpraise isEqualToString:@"0"]){
+        //没有人点赞
+        _likeModel.ifpraise = @"1";
+        praiseNum++;
+        [self.centerBtn setImage:[UIImage imageNamed:@"正文-点赞-已点赞"] forState:UIControlStateNormal];
+        [self.centerBtn setTitle:[NSString stringWithFormat:@"%ld",praiseNum] forState:UIControlStateNormal];
+    }else{
+        _likeModel.ifpraise = @"0";
+        [self.centerBtn setImage:[UIImage imageNamed:@"正文-点赞-未点赞(灰色）"] forState:UIControlStateNormal];
+        praiseNum--;
+        [self.centerBtn setTitle:[NSString stringWithFormat:@"%ld",praiseNum] forState:UIControlStateNormal];
+    }
+    if (self.block)
+    {
+        self.block();
+    }
+}
 -(void)layoutSubviews{
     [super layoutSubviews];
+    
     [self.centerBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.contentView).offset(8);
         make.center.equalTo(self.contentView);
@@ -88,5 +109,15 @@
     }];
 }
 
+-(void)setLikeModel:(ZZTStoryModel *)likeModel{
+    _likeModel = likeModel;
+    //点赞
+    if([likeModel.ifpraise isEqualToString:@"0"]){
+        [self.centerBtn setImage:[UIImage imageNamed:@"正文-点赞-未点赞(灰色）"] forState:UIControlStateNormal];
+    }else{
+        [self.centerBtn setImage:[UIImage imageNamed:@"正文-点赞-已点赞"] forState:UIControlStateNormal];
+    }
+    [self.centerBtn setTitle:[NSString stringWithFormat:@"%ld",likeModel.praiseNum] forState:UIControlStateNormal];
+}
 
 @end

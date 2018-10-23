@@ -30,4 +30,6 @@
 
 @property (nonatomic,strong) NSString *nickName;
 
+@property (nonatomic,strong) NSString *ifpraise;
+
 @end

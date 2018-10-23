@@ -11,17 +11,26 @@
 
 @interface ZZTUpdateViewController ()<UICollectionViewDelegate,UICollectionViewDataSource>
 
-@property (nonatomic,strong) NSArray *cartoons;
+@property (nonatomic,strong) NSMutableArray *cartoons;
 
 @property (nonatomic,strong) UICollectionView *collectionView;
+
+@property (nonatomic,strong) NSMutableArray *idArray;
 
 @end
 
 @implementation ZZTUpdateViewController
 
+-(NSMutableArray *)idArray{
+    if(!_idArray){
+        _idArray = [NSMutableArray array];
+    }
+    return _idArray;
+}
+
 - (NSArray *)cartoons{
     if (!_cartoons) {
-        _cartoons = [NSArray array];
+        _cartoons = [NSMutableArray array];
     }
     return _cartoons;
 }
@@ -30,6 +39,8 @@
     [super viewDidLoad];
     
     [self setupTitle];
+    //清空
+    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithTitle:@"清空" target:self action:@selector(removeAllBooks)];
     
     self.automaticallyAdjustsScrollViewInsets = NO;
     
@@ -42,13 +53,13 @@
     
 }
 -(void)loadBookShelf{
-    
+    UserInfo *user = [Utilities GetNSUserDefaults];
     NSDictionary *dic = @{
-                          @"userId":@"1"
+                          @"userId":[NSString stringWithFormat:@"%ld",user.id]
                           };
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    record/ selBrowsehistory
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-    [manager POST:[ZZTAPI stringByAppendingString:@"great/userCollect"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:[ZZTAPI stringByAppendingString:@"record/selBrowsehistory"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
         //        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
@@ -58,6 +69,29 @@
         
     }];
 }
+
+-(void)removeAllBooks{
+    [self.idArray removeAllObjects];
+    for (int i = 0; i < self.cartoons.count; i++) {
+        ZZTCarttonDetailModel *book = self.cartoons[i];
+        [self.idArray addObject:book.id];
+    }
+    NSString *text = [self.idArray componentsJoinedByString:@","];
+    UserInfo *user = [Utilities GetNSUserDefaults];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSDictionary *dic = @{
+                          @"userId":[NSString stringWithFormat:@"%ld",user.id],
+                          @"id":text
+                          };
+    [manager POST:[ZZTAPI stringByAppendingString:@"record/delBrowsehistory"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [self.cartoons removeAllObjects];
+        [self.collectionView reloadData];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
+    
+}
+
 #pragma mark - 创建流水布局
 -(UICollectionViewFlowLayout *)setupCollectionViewFlowLayout{
     
