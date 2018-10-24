@@ -188,7 +188,12 @@ NSString *ExitCell = @"ExitCell";
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    if(indexPath.section == 3){
+    if(indexPath.section == 2){
+        if(indexPath.row == 2){
+            [self shareWithSharePanel];
+        }
+    }
+    else if(indexPath.section == 3){
         if(indexPath.row == 0){
             weakself(self);
             
@@ -234,5 +239,31 @@ NSString *ExitCell = @"ExitCell";
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 60;
+}
+
+-(void)shareWithSharePanel{
+    __weak typeof(self) ws = self;
+    [UMSocialUIManager showShareMenuViewInWindowWithPlatformSelectionBlock:^(UMSocialPlatformType platformType, NSDictionary *userInfo) {
+        [ws shareTextToPlatform:platformType];
+    }];
+}
+
+//分享
+-(void)shareTextToPlatform:(UMSocialPlatformType)plaform{
+    UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
+    
+    messageObject.text = @"友盟+";
+    
+    UMShareWebpageObject *shareObject = [UMShareWebpageObject shareObjectWithTitle:@"自在动漫" descr:@"自在动漫~自在~" thumImage:[UIImage imageNamed:@"我的-头像框"]];
+    shareObject.webpageUrl = @"http://www.zztian.cn/"; //分享消息对象设置分享内容对象
+    messageObject.shareObject = shareObject;
+    
+    [[UMSocialManager defaultManager] shareToPlatform:plaform messageObject:messageObject currentViewController:nil completion:^(id result, NSError *error) {
+        if(error){
+            //failed
+        }else{
+            //success
+        }
+    }];
 }
 @end

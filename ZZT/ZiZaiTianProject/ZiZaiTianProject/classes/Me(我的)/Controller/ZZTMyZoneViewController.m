@@ -12,6 +12,7 @@
 #import "ZZTCreationCartoonTypeViewController.h"
 #import "ZZTMyZoneHeaderView.h"
 #import "ZZTMEXuHuaCell.h"
+#import "ZZTZoneUpLoadViewController.h"
 
 static const CGFloat MJDuration = 1.0;
 
@@ -53,11 +54,13 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     _tabelView.dataSource = self;
     [_tabelView registerClass:[UITableViewCell class] forCellReuseIdentifier:myZoneCell];
     [_tabelView registerClass:[ZZTMEXuHuaCell class] forCellReuseIdentifier:zztMEXuHuaCell];
-
     
     self.automaticallyAdjustsScrollViewInsets = NO;
     
+    self.tabelView.mj_footer.hidden = YES;
+    
     self.edgesForExtendedLayout = UIRectEdgeNone;
+    
     [self.view addSubview:_tabelView];
     
     //头视图
@@ -71,6 +74,17 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     //cell 1 编辑 跳编辑器
     //cell 2 时间 内容 图片
     [self setupMJRefresh];
+    
+    //上传图片
+    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithTitle:@"上传" target:self action:@selector(pushUploadView)];
+}
+
+//跳转上传页
+-(void)pushUploadView{
+    
+    ZZTZoneUpLoadViewController *upLoadVC = [[ZZTZoneUpLoadViewController alloc] init];
+    
+    [self presentViewController:upLoadVC animated:YES completion:nil];
 }
 
 -(void)setupMJRefresh{

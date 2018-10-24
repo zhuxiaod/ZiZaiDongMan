@@ -246,6 +246,11 @@
 		049A99DB20E3879700ED27C9 /* ZZTVIPViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 049A99D920E3879700ED27C9 /* ZZTVIPViewController.m */; };
 		049A99EA20E394BB00ED27C9 /* ZZTVIPTopView.m in Sources */ = {isa = PBXBuildFile; fileRef = 049A99E820E394BB00ED27C9 /* ZZTVIPTopView.m */; };
 		049A99EB20E394BB00ED27C9 /* ZZTVIPTopView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 049A99E920E394BB00ED27C9 /* ZZTVIPTopView.xib */; };
+		04A0C09F21803FCD00D08F6C /* ZZTZoneUpLoadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A0C09E21803FCD00D08F6C /* ZZTZoneUpLoadViewController.m */; };
+		04A0C0A221804B8500D08F6C /* LxGridViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A0C0A121804B8500D08F6C /* LxGridViewFlowLayout.m */; };
+		04A0C0A521804C3600D08F6C /* TZTestCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A0C0A321804C3600D08F6C /* TZTestCell.m */; };
+		04A0C0E72180AB6A00D08F6C /* UIImage+ZFImageFromArrayUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A0C0E42180AB6900D08F6C /* UIImage+ZFImageFromArrayUtils.m */; };
+		04A0C0E82180AB6A00D08F6C /* UITableView+ZFTableViewSnapshot.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A0C0E62180AB6900D08F6C /* UITableView+ZFTableViewSnapshot.m */; };
 		04A2C6DF217D6EB6003D62BE /* ZZTNextWordHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A2C6DE217D6EB6003D62BE /* ZZTNextWordHeaderView.m */; };
 		04A30FC221378E6C00FAC781 /* ZZTCreatCartoonViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04A30FC121378E6C00FAC781 /* ZZTCreatCartoonViewController.xib */; };
 		04A30FC521379C0200FAC781 /* ToolBtn.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A30FC421379C0200FAC781 /* ToolBtn.m */; };
@@ -728,6 +733,16 @@
 		049A99E720E394BA00ED27C9 /* ZZTVIPTopView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZTVIPTopView.h; sourceTree = "<group>"; };
 		049A99E820E394BB00ED27C9 /* ZZTVIPTopView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZZTVIPTopView.m; sourceTree = "<group>"; };
 		049A99E920E394BB00ED27C9 /* ZZTVIPTopView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ZZTVIPTopView.xib; sourceTree = "<group>"; };
+		04A0C09D21803FCD00D08F6C /* ZZTZoneUpLoadViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTZoneUpLoadViewController.h; sourceTree = "<group>"; };
+		04A0C09E21803FCD00D08F6C /* ZZTZoneUpLoadViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTZoneUpLoadViewController.m; sourceTree = "<group>"; };
+		04A0C0A021804B8500D08F6C /* LxGridViewFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LxGridViewFlowLayout.h; sourceTree = "<group>"; };
+		04A0C0A121804B8500D08F6C /* LxGridViewFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LxGridViewFlowLayout.m; sourceTree = "<group>"; };
+		04A0C0A321804C3600D08F6C /* TZTestCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TZTestCell.m; sourceTree = "<group>"; };
+		04A0C0A421804C3600D08F6C /* TZTestCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TZTestCell.h; sourceTree = "<group>"; };
+		04A0C0E32180AB6900D08F6C /* UIImage+ZFImageFromArrayUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ZFImageFromArrayUtils.h"; sourceTree = "<group>"; };
+		04A0C0E42180AB6900D08F6C /* UIImage+ZFImageFromArrayUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ZFImageFromArrayUtils.m"; sourceTree = "<group>"; };
+		04A0C0E52180AB6900D08F6C /* UITableView+ZFTableViewSnapshot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+ZFTableViewSnapshot.h"; sourceTree = "<group>"; };
+		04A0C0E62180AB6900D08F6C /* UITableView+ZFTableViewSnapshot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+ZFTableViewSnapshot.m"; sourceTree = "<group>"; };
 		04A2C6DD217D6EB6003D62BE /* ZZTNextWordHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTNextWordHeaderView.h; sourceTree = "<group>"; };
 		04A2C6DE217D6EB6003D62BE /* ZZTNextWordHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTNextWordHeaderView.m; sourceTree = "<group>"; };
 		04A30FC121378E6C00FAC781 /* ZZTCreatCartoonViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ZZTCreatCartoonViewController.xib; sourceTree = "<group>"; };
@@ -997,6 +1012,10 @@
 		0466838720F314860095C6BC /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				04A0C0A021804B8500D08F6C /* LxGridViewFlowLayout.h */,
+				04A0C0A121804B8500D08F6C /* LxGridViewFlowLayout.m */,
+				04A0C0A421804C3600D08F6C /* TZTestCell.h */,
+				04A0C0A321804C3600D08F6C /* TZTestCell.m */,
 				0422F69E2124120000A8BDBB /* GTMBase64.h */,
 				0422F69F2124120000A8BDBB /* GTMBase64.m */,
 				0422F69D2124120000A8BDBB /* GTMDefines.h */,
@@ -1342,6 +1361,17 @@
 			path = Login;
 			sourceTree = "<group>";
 		};
+		04A0C0E22180AB6900D08F6C /* UITableViewSnapshot */ = {
+			isa = PBXGroup;
+			children = (
+				04A0C0E32180AB6900D08F6C /* UIImage+ZFImageFromArrayUtils.h */,
+				04A0C0E42180AB6900D08F6C /* UIImage+ZFImageFromArrayUtils.m */,
+				04A0C0E52180AB6900D08F6C /* UITableView+ZFTableViewSnapshot.h */,
+				04A0C0E62180AB6900D08F6C /* UITableView+ZFTableViewSnapshot.m */,
+			);
+			path = UITableViewSnapshot;
+			sourceTree = "<group>";
+		};
 		6A89D7600687879961A023BD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1402,6 +1432,7 @@
 		F7C04BE520DF3D190055E7A8 /* ZiZaiTianProject */ = {
 			isa = PBXGroup;
 			children = (
+				04A0C0E22180AB6900D08F6C /* UITableViewSnapshot */,
 				0404A11521521E4B003BC1CC /* ZiZaiTianProject.entitlements */,
 				0428E8BA21797BCE00702225 /* userAgreement.txt */,
 				F7C04BFC20DF3E9E0055E7A8 /* classes */,
@@ -1603,6 +1634,8 @@
 				04E9FAC3215372BD005A3986 /* ZZTMyZoneViewController.m */,
 				0428E8B72179765800702225 /* ZZTUserAgreementViewController.h */,
 				0428E8B82179765800702225 /* ZZTUserAgreementViewController.m */,
+				04A0C09D21803FCD00D08F6C /* ZZTZoneUpLoadViewController.h */,
+				04A0C09E21803FCD00D08F6C /* ZZTZoneUpLoadViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1845,6 +1878,7 @@
 				"${PODS_ROOT}/MJRefresh/MJRefresh/MJRefresh.bundle",
 				"${PODS_ROOT}/PYSearch/PYSearch/PYSearch.bundle",
 				"${PODS_ROOT}/SVProgressHUD/SVProgressHUD/SVProgressHUD.bundle",
+				"${PODS_ROOT}/TZImagePickerController/TZImagePickerController/TZImagePickerController/TZImagePickerController.bundle",
 				"${PODS_ROOT}/XHImageViewer/Source/Resources/1_1280x800-1.jpeg",
 				"${PODS_ROOT}/XHImageViewer/Source/Resources/1_1280x800.jpeg",
 				"${PODS_ROOT}/XHImageViewer/Source/Resources/4_1366x768.jpeg",
@@ -1859,6 +1893,7 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MJRefresh.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/PYSearch.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SVProgressHUD.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TZImagePickerController.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/1_1280x800-1.jpeg",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/1_1280x800.jpeg",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/4_1366x768.jpeg",
@@ -1907,6 +1942,7 @@
 				0450E2442135806A00AE924B /* ZZTFindAttentionViewController.m in Sources */,
 				048C333F20E211C100F69CE1 /* ZZTMeTopView.m in Sources */,
 				040D28122132AB18002A3B72 /* ZZTMallRecommendView.m in Sources */,
+				04A0C0E72180AB6A00D08F6C /* UIImage+ZFImageFromArrayUtils.m in Sources */,
 				0466837520F3096A0095C6BC /* DCPicItemConfiguration.m in Sources */,
 				049A99CA20E32AF600ED27C9 /* UIView+Frame.m in Sources */,
 				043B075120EDFC6900ED3F5B /* ZZTShoppingButtomCell.m in Sources */,
@@ -1999,6 +2035,7 @@
 				042769C5214B5CAD00DE238D /* MLIAPManager.m in Sources */,
 				046683C320F49CCB0095C6BC /* ZZTJiuGongGeView.m in Sources */,
 				F7C04C0C20DF3E9E0055E7A8 /* AppDelegate.m in Sources */,
+				04A0C09F21803FCD00D08F6C /* ZZTZoneUpLoadViewController.m in Sources */,
 				04E9FACD2153898D005A3986 /* ZZTMyZoneModel.m in Sources */,
 				040FD50E20EF384200004C71 /* ZZTShoppingBtnCell.m in Sources */,
 				0498B5E6212EBDC3005BD26D /* ZZTAuthorHeadView.m in Sources */,
@@ -2008,6 +2045,7 @@
 				043B075B20EE187F00ED3F5B /* ZZTShoppingMallCell.m in Sources */,
 				042BA0C420E9FFBD003E279A /* ZZTHistoryViewController.m in Sources */,
 				0466835920F308180095C6BC /* UIView+Extension.m in Sources */,
+				04A0C0A221804B8500D08F6C /* LxGridViewFlowLayout.m in Sources */,
 				042BA0C820EA0A1D003E279A /* ZZTSignInView.m in Sources */,
 				040A040C2100B231000FAE13 /* ZZTUpdatePageViewController.m in Sources */,
 				0471A89D20FC40F900ABFF35 /* ZZTCartoonModel.m in Sources */,
@@ -2060,6 +2098,7 @@
 				040FD51220EF415C00004C71 /* ZZTMaterialCell.m in Sources */,
 				0471A84E20F5E1CC00ABFF35 /* ZZTWordsDetailViewController.m in Sources */,
 				046683B620F45C7C0095C6BC /* ZZTFirstViewBtn.m in Sources */,
+				04A0C0E82180AB6A00D08F6C /* UITableView+ZFTableViewSnapshot.m in Sources */,
 				F7C04C2D20DF4F8F0055E7A8 /* UIImage+ColorWithImage.m in Sources */,
 				046FF6712101EB25005DED73 /* ZZTCreatPlayViewController.m in Sources */,
 				0471A88620F8596100ABFF35 /* ZZTCircleModel.m in Sources */,
@@ -2102,6 +2141,7 @@
 				0495D663215F5C8200A10E7B /* ZZTMulPlayCell.m in Sources */,
 				04D7D1EB20E64D46008D3969 /* EncryptionTools.m in Sources */,
 				0434BC91212C3E4100AC43E0 /* ZZTClassifyViewController.m in Sources */,
+				04A0C0A521804C3600D08F6C /* TZTestCell.m in Sources */,
 				F7C04C1120DF3FDD0055E7A8 /* ZZTNavigationViewController.m in Sources */,
 				0428E8BE2179B2B100702225 /* SectionFooterView.m in Sources */,
 				0471A84B20F59C0600ABFF35 /* ZZTSecondBtn.m in Sources */,

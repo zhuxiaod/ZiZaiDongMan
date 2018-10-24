@@ -137,19 +137,28 @@ NSString *bannerID = @"MeCell";
 #pragma mark - tableView
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 5;
+//    return 5;
+    return 3;
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+//    if(section == 0){
+//        return 1;
+//    }else if (section == 1){
+//        return 0;
+//    }else if (section == 2){
+//        return 0;
+//    }else if (section == 3){
+////        return 4;
+//        return 3;
+//    }else{
+//        return 1;
+//    }
     if(section == 0){
         return 1;
-    }else if (section == 1){
-        return 2;
-    }else if (section == 2){
-        return 2;
-    }else if (section == 3){
-        return 4;
+    }else if(section == 1){
+        return 3;
     }else{
         return 1;
     }
@@ -160,31 +169,15 @@ NSString *bannerID = @"MeCell";
     ZZTMeCell *cell = [tableView dequeueReusableCellWithIdentifier:bannerID];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    if (indexPath.section == 0) {
+    if(indexPath.section == 0){
         cell.textLabel.text = @"我的空间";
         return cell;
     }else if(indexPath.section == 1){
-        if (indexPath.row == 0) {
-            cell.textLabel.text = @"VIP";
-        }else if (indexPath.row ==1){
-            cell.textLabel.text = @"钱包";
-        }
-        return cell;
-    }else if(indexPath.section == 2){
-        if (indexPath.row == 0) {
-            cell.textLabel.text = @"自在商城";
-        }else if (indexPath.row ==1){
-            cell.textLabel.text = @"积分兑换";
-        }
-        return cell;
-    }else if(indexPath.section == 3){
-        if (indexPath.row == 0) {
-            cell.textLabel.text = @"参与作品";
-        }else if (indexPath.row ==1){
+        if (indexPath.row == 0){
             cell.textLabel.text = @"书柜";
-        }else if(indexPath.row == 2){
+        }else if(indexPath.row == 1){
             cell.textLabel.text = @"关注";
-        }else if(indexPath.row == 3){
+        }else if(indexPath.row == 2){
             cell.textLabel.text = @"浏览历史";
         }
         return cell;
@@ -192,7 +185,41 @@ NSString *bannerID = @"MeCell";
         cell.textLabel.text = @"设置";
         return cell;
     }
-    return cell;
+    
+//    if (indexPath.section == 0) {
+//        cell.textLabel.text = @"我的空间";
+//        return cell;
+//    }else if(indexPath.section == 1){
+//        if (indexPath.row == 0) {
+//            cell.textLabel.text = @"VIP";
+//        }else if (indexPath.row ==1){
+//            cell.textLabel.text = @"钱包";
+//        }
+//        return cell;
+//    }else if(indexPath.section == 2){
+//        if (indexPath.row == 0) {
+//            cell.textLabel.text = @"自在商城";
+//        }else if (indexPath.row ==1){
+//            cell.textLabel.text = @"积分兑换";
+//        }
+//        return cell;
+//    }else if(indexPath.section == 3){
+////        if (indexPath.row == 0) {
+////            cell.textLabel.text = @"参与作品";
+////        }else
+//        if (indexPath.row == 0){
+//            cell.textLabel.text = @"书柜";
+//        }else if(indexPath.row == 1){
+//            cell.textLabel.text = @"关注";
+//        }else if(indexPath.row == 2){
+//            cell.textLabel.text = @"浏览历史";
+//        }
+//        return cell;
+//    }else{
+//        cell.textLabel.text = @"设置";
+//        return cell;
+//    }
+//    return cell;
 }
 
 #pragma mark - 请求数据
@@ -267,69 +294,97 @@ NSString *bannerID = @"MeCell";
         myZoneView.user = self.userData;
         myZoneView.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:myZoneView animated:YES];
-    }
-    else if (indexPath.section == 1){
+    }else if (indexPath.section == 1){
         if(indexPath.row == 0){
-            //VIP
-            ZZTVIPViewController *VIPView = [[ZZTVIPViewController alloc]init];
-            VIPView.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:VIPView animated:YES];
-        }else if(indexPath.row == 1){
-            //钱包
-            ZZTMeWalletViewController *walletVC = [[ZZTMeWalletViewController alloc] init];
-            walletVC.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:walletVC animated:YES];
-        }
-    }else if(indexPath.section == 2){
-        if(indexPath.row == 0){
-            //自在商城
-            ZZTShoppingMallViewController *shoppingMallVC = [[ZZTShoppingMallViewController alloc] init];
-            shoppingMallVC.hidesBottomBarWhenPushed = YES;
-            shoppingMallVC.isShopping = YES;
-            shoppingMallVC.viewTitle = @"自在商城";
-            [self.navigationController pushViewController:shoppingMallVC animated:YES];
-        }else if(indexPath.row == 1){
-            //积分兑换
-            ZZTShoppingMallViewController *shoppingMallVC = [[ZZTShoppingMallViewController alloc] init];
-            shoppingMallVC.hidesBottomBarWhenPushed = YES;
-            shoppingMallVC.isShopping = YES;
-            shoppingMallVC.viewTitle = @"积分兑换";
-            [self.navigationController pushViewController:shoppingMallVC animated:YES];
-        }
-    }else if (indexPath.section == 3){
-        if(indexPath.row == 0){
-            ZZTCartoonViewController *bookVC = [[ZZTCartoonViewController alloc] init];
-            bookVC.hidesBottomBarWhenPushed = YES;
-            bookVC.viewTitle = @"参与作品";
-            bookVC.viewType = @"1";
-//            bookVC.user = self.userData;
-            [self.navigationController pushViewController:bookVC animated:YES];
-        }else if(indexPath.row == 1){
             //书柜
             ZZTCartoonViewController *bookVC = [[ZZTCartoonViewController alloc] init];
             bookVC.hidesBottomBarWhenPushed = YES;
             bookVC.viewTitle = @"书柜";
             bookVC.viewType = @"2";
-//            bookVC.user = self.userData;
+            //            bookVC.user = self.userData;
             [self.navigationController pushViewController:bookVC animated:YES];
-        }else if(indexPath.row == 2){
+        }else if(indexPath.row == 1){
             //关注
             ZZTMeAttentionViewController *meAttentionVC = [[ZZTMeAttentionViewController alloc] init];
             meAttentionVC.hidesBottomBarWhenPushed = YES;
-//            meAttentionVC.user = self.userData;
+            //            meAttentionVC.user = self.userData;
             [self.navigationController pushViewController:meAttentionVC animated:YES];
-        }else if(indexPath.row == 3){
+        }else if(indexPath.row == 2){
             //浏览历史
             ZZTHistoryViewController *historyVC = [[ZZTHistoryViewController alloc] init];
             historyVC.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:historyVC animated:YES];
         }
-    }else if(indexPath.section == 4){
+    }else{
         //设置
         ZZTSettingViewController *settingVC = [[ZZTSettingViewController alloc] init];
         settingVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:settingVC animated:YES];
     }
+    
+//    else if (indexPath.section == 1){
+//        if(indexPath.row == 0){
+//            //VIP
+//            ZZTVIPViewController *VIPView = [[ZZTVIPViewController alloc]init];
+//            VIPView.hidesBottomBarWhenPushed = YES;
+//            [self.navigationController pushViewController:VIPView animated:YES];
+//        }else if(indexPath.row == 1){
+//            //钱包
+//            ZZTMeWalletViewController *walletVC = [[ZZTMeWalletViewController alloc] init];
+//            walletVC.hidesBottomBarWhenPushed = YES;
+//            [self.navigationController pushViewController:walletVC animated:YES];
+//        }
+//    }else if(indexPath.section == 2){
+//        if(indexPath.row == 0){
+//            //自在商城
+//            ZZTShoppingMallViewController *shoppingMallVC = [[ZZTShoppingMallViewController alloc] init];
+//            shoppingMallVC.hidesBottomBarWhenPushed = YES;
+//            shoppingMallVC.isShopping = YES;
+//            shoppingMallVC.viewTitle = @"自在商城";
+//            [self.navigationController pushViewController:shoppingMallVC animated:YES];
+//        }else if(indexPath.row == 1){
+//            //积分兑换
+//            ZZTShoppingMallViewController *shoppingMallVC = [[ZZTShoppingMallViewController alloc] init];
+//            shoppingMallVC.hidesBottomBarWhenPushed = YES;
+//            shoppingMallVC.isShopping = YES;
+//            shoppingMallVC.viewTitle = @"积分兑换";
+//            [self.navigationController pushViewController:shoppingMallVC animated:YES];
+//        }
+//    }else if (indexPath.section == 3){
+////        if(indexPath.row == 0){
+////            ZZTCartoonViewController *bookVC = [[ZZTCartoonViewController alloc] init];
+////            bookVC.hidesBottomBarWhenPushed = YES;
+////            bookVC.viewTitle = @"参与作品";
+////            bookVC.viewType = @"1";
+//////            bookVC.user = self.userData;
+////            [self.navigationController pushViewController:bookVC animated:YES];
+////        }else
+//        if(indexPath.row == 0){
+//            //书柜
+//            ZZTCartoonViewController *bookVC = [[ZZTCartoonViewController alloc] init];
+//            bookVC.hidesBottomBarWhenPushed = YES;
+//            bookVC.viewTitle = @"书柜";
+//            bookVC.viewType = @"2";
+////            bookVC.user = self.userData;
+//            [self.navigationController pushViewController:bookVC animated:YES];
+//        }else if(indexPath.row == 1){
+//            //关注
+//            ZZTMeAttentionViewController *meAttentionVC = [[ZZTMeAttentionViewController alloc] init];
+//            meAttentionVC.hidesBottomBarWhenPushed = YES;
+////            meAttentionVC.user = self.userData;
+//            [self.navigationController pushViewController:meAttentionVC animated:YES];
+//        }else if(indexPath.row == 2){
+//            //浏览历史
+//            ZZTHistoryViewController *historyVC = [[ZZTHistoryViewController alloc] init];
+//            historyVC.hidesBottomBarWhenPushed = YES;
+//            [self.navigationController pushViewController:historyVC animated:YES];
+//        }
+//    }else if(indexPath.section == 4){
+//        //设置
+//        ZZTSettingViewController *settingVC = [[ZZTSettingViewController alloc] init];
+//        settingVC.hidesBottomBarWhenPushed = YES;
+//        [self.navigationController pushViewController:settingVC animated:YES];
+//    }
 }
 -(void)viewWillDisappear:(BOOL)animated{
     [self.navigationController setNavigationBarHidden:NO animated:YES];

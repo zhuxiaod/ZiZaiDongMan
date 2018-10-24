@@ -28,6 +28,7 @@
     
     //调整图片的位置和尺寸
     self.imageView.width = self.width * 0.2;
+    
     self.imageView.height = self.height * 0.6;
     
     self.imageView.centerY = self.height / 2;

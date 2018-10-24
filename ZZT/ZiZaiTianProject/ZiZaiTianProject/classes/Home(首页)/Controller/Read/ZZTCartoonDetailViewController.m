@@ -5,7 +5,6 @@
 //  Created by mac on 2018/8/23.
 //  Copyright © 2018年 zxd. All rights reserved.
 //
-
 #import "ZZTCartoonDetailViewController.h"
 #import "ZZTCartoonContentCell.h"
 #import "ZZTCartoonModel.h"
@@ -27,6 +26,7 @@
 #import "FriendCircleViewModel.h"
 #import "ZZTChapterModel.h"
 #import "ZZTNextWordHeaderView.h"
+#import "UITableView+ZFTableViewSnapshot.h"
 
 
 @interface ZZTCartoonDetailViewController ()<UITableViewDelegate,UITableViewDataSource,CircleCellDelegate,ZZTCommentHeaderViewDelegate,UITextViewDelegate,NSURLSessionDataDelegate,ZZTCartoonContentCellDelegate>
@@ -229,6 +229,8 @@ static bool needHide = false;
     
     //初始化 没有人回复
     self.isReply = NO;
+    
+    UIImage *image = [self generateSnapshot];
 }
 
 -(void)setupNavigationBar{
@@ -256,6 +258,8 @@ static bool needHide = false;
     [navbar.centerButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
 //    [navbar.mainView setBackgroundColor:[UIColor colorWithRGB:@"121,105,212"]];
     
+    [navbar.rightButton setTitle:@"分享" forState:UIControlStateNormal];
+    [navbar.rightButton addTarget:self action:@selector(shareWithSharePanel) forControlEvents:UIControlEventTouchUpInside];
     navbar.showBottomLabel = NO;
 }
 
@@ -493,6 +497,7 @@ static bool needHide = false;
     dispatch_group_notify(self.group, dispatch_get_main_queue(), ^{
         [self.tableView reloadData];
         [self reloadCellWithIndex];
+        UIImage *image = [self generateSnapshot];
     });
     
 }
@@ -1492,5 +1497,57 @@ static bool needHide = false;
     [self.kInputView removeFromSuperview];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
 }
+
+-(void)shareWithSharePanel{
+    __weak typeof(self) ws = self;
+    [UMSocialUIManager showShareMenuViewInWindowWithPlatformSelectionBlock:^(UMSocialPlatformType platformType, NSDictionary *userInfo) {
+        [ws shareTextToPlatform:platformType];
+    }];
+}
+
+//分享
+-(void)shareTextToPlatform:(UMSocialPlatformType)plaform{
+    UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
+    
+    messageObject.text = @"友盟+";
+    
+    UMShareWebpageObject *shareObject = [UMShareWebpageObject shareObjectWithTitle:@"自在动漫" descr:@"自在动漫~自在~" thumImage:[UIImage imageNamed:@"我的-头像框"]];
+    shareObject.webpageUrl = @"http://www.zztian.cn/"; //分享消息对象设置分享内容对象
+    messageObject.shareObject = shareObject;
+    
+    [[UMSocialManager defaultManager] shareToPlatform:plaform messageObject:messageObject currentViewController:nil completion:^(id result, NSError *error) {
+        if(error){
+            //failed
+        }else{
+            //success
+        }
+    }];
+}
+
+#pragma mark - 屏幕快照
+-(UIImage *)generateSnapshot {
+    NSMutableArray *screenshots = [NSMutableArray array];
+    
+    //cell
+    for (int row = 0; row < [self.tableView numberOfRowsInSection:0]; row++) {
+        
+        NSIndexPath *cellIndexPath = [NSIndexPath indexPathForRow:row inSection:0];
+        
+        UIImage *cellScreenshot = [self.tableView screenshotOfCellAtIndexPath:cellIndexPath];
+        
+        if (cellScreenshot) [screenshots addObject:cellScreenshot];
+        
+    }
+    UIImage *image = [UIImage verticalImageFromArray:screenshots];
+    
+    NSString *homeDirectory = NSHomeDirectory();
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *path = [paths objectAtIndex:0];
+    NSString *filePath = [path stringByAppendingPathComponent:@"image.png"];
+    NSLog(@"filePath%@",filePath);
+    [UIImagePNGRepresentation(image) writeToFile:filePath atomically:YES];
+    return image;
+}
+
 
 @end

@@ -22,6 +22,7 @@
     
     return [[UIBarButtonItem alloc] initWithCustomView:containView];
 }
+
 //快速创建一个Item
 +(UIBarButtonItem *)itemWithTitle:(NSString *)title target:(id)target action:(SEL)action
 {

@@ -99,6 +99,9 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     [navbar.centerButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [navbar.mainView setBackgroundColor:[UIColor colorWithRGB:@"121,105,212"]];
     
+    [navbar.rightButton setTitle:@"分享" forState:UIControlStateNormal];
+    [navbar.rightButton addTarget:self action:@selector(shareWithSharePanel) forControlEvents:UIControlEventTouchUpInside];
+    
     navbar.showBottomLabel = NO;
 }
 

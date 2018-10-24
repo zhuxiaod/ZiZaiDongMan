@@ -124,6 +124,8 @@
 
 //#define BaseUrl(url)  [NSString stringWithFormat:@"http://192.168.0.142:8888/%@",(url)]
 
+#import "UITableView+ZFTableViewSnapshot.h"
+
 #define ZZTAPI @"http://120.79.178.191:8888/"
 
 //本地
