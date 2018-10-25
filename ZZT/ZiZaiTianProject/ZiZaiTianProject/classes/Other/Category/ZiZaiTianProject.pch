@@ -80,6 +80,8 @@
 #import "MBProgressHUD+XMG.h"
 #import "SectionFooterView.h"
 #import "TypeButton.h"
+#import "GGVerifyCodeViewBtn.h"
+#import "ZXDCheckContent.h"
 
 #define   SCREEN_MAX_LENGTH   (MAX(SCREEN_WIDTH, SCREEN_HEIGHT))
 
@@ -117,7 +119,7 @@
 #define iPhone6plus ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? (CGSizeEqualToSize(CGSizeMake(1125,2001), [[UIScreen mainScreen] currentMode].size) || CGSizeEqualToSize(CGSizeMake(1242,2208), [[UIScreen mainScreen] currentMode].size)) : NO)
 
 //本地
-//#define ZZTAPI @"http://192.168.0.165:8888/"
+#define ZZTAPI @"http://192.168.0.165:8888/"
 
 //测试
 //#define ZZTAPI @"http://192.168.0.142:8888/"
@@ -126,7 +128,7 @@
 
 #import "UITableView+ZFTableViewSnapshot.h"
 
-#define ZZTAPI @"http://120.79.178.191:8888/"
+//#define ZZTAPI @"http://120.79.178.191:8888/"
 
 //本地
 //192.168.0.165

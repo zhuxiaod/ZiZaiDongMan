@@ -62,5 +62,8 @@
 
 MJCodingImplementation
 
+-(void)setIndex:(NSUInteger)index{
+    _index = index;
+}
 
 @end

@@ -8,7 +8,6 @@
 
 #import "UserInfo.h"
 
-
 @implementation UserInfo
 
 -(NSString *)cover{
@@ -44,6 +43,7 @@
 @synthesize intro;
 @synthesize cover;
 @synthesize nickName;
+@synthesize phone;
 
 // 归档属性
 - (void)encodeWithCoder:(nonnull NSCoder *)aCoder {

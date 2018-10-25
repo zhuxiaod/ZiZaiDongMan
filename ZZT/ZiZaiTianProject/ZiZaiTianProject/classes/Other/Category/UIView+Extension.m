@@ -39,11 +39,6 @@
     return nil;
 }
 
-
-
-
-
-
 - (CGFloat)x {
     return self.frame.origin.x;
 }

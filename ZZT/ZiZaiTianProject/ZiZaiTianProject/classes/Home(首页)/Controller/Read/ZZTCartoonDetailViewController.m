@@ -27,6 +27,7 @@
 #import "ZZTChapterModel.h"
 #import "ZZTNextWordHeaderView.h"
 #import "UITableView+ZFTableViewSnapshot.h"
+#import "TJLongImgCut.h"
 
 
 @interface ZZTCartoonDetailViewController ()<UITableViewDelegate,UITableViewDataSource,CircleCellDelegate,ZZTCommentHeaderViewDelegate,UITextViewDelegate,NSURLSessionDataDelegate,ZZTCartoonContentCellDelegate>
@@ -229,8 +230,6 @@ static bool needHide = false;
     
     //初始化 没有人回复
     self.isReply = NO;
-    
-    UIImage *image = [self generateSnapshot];
 }
 
 -(void)setupNavigationBar{
@@ -1360,6 +1359,10 @@ static bool needHide = false;
     [self.imageCellHeightCache replaceObjectAtIndex:index withObject:newHeight];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
 //    [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
+//    [self.tableView reloadData];
+//    if(index == self.cartoonDetailArray.count - 1){
+//        [self.tableView reloadData];
+//    }
 }
 
 #pragma mark - UITextViewDelegate
@@ -1499,6 +1502,12 @@ static bool needHide = false;
 }
 
 -(void)shareWithSharePanel{
+//    UIImage *imageView = [[TJLongImgCut manager] screenShotForTableView:self.tableView screenRect:UIEdgeInsetsMake(0, 0, 88, 40) imageKB:1024 * 10];//获取图片小于等于1M
+//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//    NSString *path = [paths objectAtIndex:0];
+//    NSString *filePath = [path stringByAppendingPathComponent:@"imageView.png"];
+//    NSLog(@"filePath%@",filePath);
+//    [UIImagePNGRepresentation(imageView) writeToFile:filePath atomically:YES];
     __weak typeof(self) ws = self;
     [UMSocialUIManager showShareMenuViewInWindowWithPlatformSelectionBlock:^(UMSocialPlatformType platformType, NSDictionary *userInfo) {
         [ws shareTextToPlatform:platformType];
@@ -1529,18 +1538,16 @@ static bool needHide = false;
     NSMutableArray *screenshots = [NSMutableArray array];
     
     //cell
-    for (int row = 0; row < [self.tableView numberOfRowsInSection:0]; row++) {
+    for (int row = 0; row < self.cartoonDetailArray.count; row++) {
         
         NSIndexPath *cellIndexPath = [NSIndexPath indexPathForRow:row inSection:0];
         
         UIImage *cellScreenshot = [self.tableView screenshotOfCellAtIndexPath:cellIndexPath];
         
         if (cellScreenshot) [screenshots addObject:cellScreenshot];
-        
     }
-    UIImage *image = [UIImage verticalImageFromArray:screenshots];
     
-    NSString *homeDirectory = NSHomeDirectory();
+    UIImage *image = [UIImage verticalImageFromArray:screenshots];
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *path = [paths objectAtIndex:0];
     NSString *filePath = [path stringByAppendingPathComponent:@"image.png"];
@@ -1549,5 +1556,37 @@ static bool needHide = false;
     return image;
 }
 
+- (UIImage *)getImage:(UITableView *)cell
+{
+    
+    UIImage* viewImage = nil;
+    UITableView *scrollView = self.tableView;
+    UIGraphicsBeginImageContextWithOptions(scrollView.contentSize, scrollView.opaque, 0.0);
+    {
+        CGPoint savedContentOffset = scrollView.contentOffset;
+        CGRect savedFrame = scrollView.frame;
+        
+        scrollView.contentOffset = CGPointZero;
+        
+        scrollView.frame = CGRectMake(0, 0, scrollView.contentSize.width, scrollView.contentSize.height);
+        
+        [scrollView.layer renderInContext: UIGraphicsGetCurrentContext()];
+        
+        viewImage = UIGraphicsGetImageFromCurrentImageContext();
+        
+        scrollView.contentOffset = savedContentOffset;
+        
+        scrollView.frame = savedFrame;
+    }
+    UIGraphicsEndImageContext();
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *path = [paths objectAtIndex:0];
+    NSString *filePath = [path stringByAppendingPathComponent:@"cellImage.png"];
+    NSLog(@"filePath%@",filePath);
+    [UIImagePNGRepresentation(viewImage) writeToFile:filePath atomically:YES];
+    
+    return viewImage;
+}
 
 @end

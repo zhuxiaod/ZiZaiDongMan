@@ -207,6 +207,7 @@
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+
 }
 
 //已经展示
@@ -283,7 +284,7 @@
     //如果是最后一个
     if (indexPath.item == _selectedPhotos.count) {
         //显示加号
-        cell.imageView.image = [UIImage imageNamed:@"加号"];
+        cell.imageView.image = [UIImage imageNamed:@"zone_add"];
         //隐藏删除lab
         cell.deleteBtn.hidden = YES;
         cell.gifLable.hidden = YES;

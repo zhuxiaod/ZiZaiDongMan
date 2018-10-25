@@ -14,6 +14,8 @@
 #import "ProgressHUD.h"
 #import <SDImageCache.h>
 #import "ZZTUserAgreementViewController.h"
+#import "ZZTPhoneNumViewController.h"
+#import "ZZTAssociatedPhoneViewController.h"
 
 @interface ZZTSettingViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (strong, nonatomic)  UITableView *tableView;
@@ -27,6 +29,8 @@
 @property (nonatomic,strong)NSArray *array3;
 
 @property (nonatomic,strong) NSString *cacheSize;
+
+@property (nonatomic,strong) UserInfo *userData;
 
 @end
 
@@ -74,6 +78,7 @@ NSString *ExitCell = @"ExitCell";
     //title数据
     [self titleData];
 
+    self.userData = [Utilities GetNSUserDefaults];
 }
 #pragma mark - tableView
 -(void)setupTableView{
@@ -106,8 +111,6 @@ NSString *ExitCell = @"ExitCell";
     _array2 = [NSArray arrayWithObjects:@"赏个好评",@"意见反馈",@"推荐给好友", nil];
     _array3 = [NSArray arrayWithObjects:@"缓存清理",@"帮助中心",@"关于我们",@"用户协议", nil];
 }
-
-
 
 #pragma mark - tableView
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -146,7 +149,10 @@ NSString *ExitCell = @"ExitCell";
         }
         cell.textLabel.text = @"手机号码";
         UILabel *label = [[UILabel alloc] init];
-        label.text = @"188****8888";
+        
+        NSString *numberString = [self.userData.phone stringByReplacingCharactersInRange:NSMakeRange(3, 4) withString:@"****"];
+        label.text = numberString;
+        
         label.font = [UIFont boldSystemFontOfSize:14];
         [label sizeToFit];
         label.backgroundColor = [UIColor clearColor];
@@ -188,7 +194,21 @@ NSString *ExitCell = @"ExitCell";
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    if(indexPath.section == 2){
+    if(indexPath.section == 1){
+        if(indexPath.row == 0){
+            //如果有号码
+            if(_userData.phone){
+                //电话号码
+                ZZTPhoneNumViewController *phoneNum = [[ZZTPhoneNumViewController alloc] init];
+                [self.navigationController pushViewController:phoneNum animated:YES];
+            }else{
+                ZZTAssociatedPhoneViewController *phoneVC = [[ZZTAssociatedPhoneViewController alloc] init];
+                phoneVC.viewTitle = @"绑定手机号";
+                [self.navigationController pushViewController:phoneVC animated:YES];
+            }
+        }
+    }
+    else if(indexPath.section == 2){
         if(indexPath.row == 2){
             [self shareWithSharePanel];
         }

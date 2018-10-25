@@ -17,6 +17,7 @@
 {
     return [[[self class] alloc] initWithImage:image pressImage:pressImage target:target action:action];
 }
+
 - (instancetype)initWithImage:(NSString *)image
                    pressImage:(NSString *)pressImage
                        target:(id)target action:(SEL)action
@@ -34,4 +35,5 @@
     
     return [self initWithCustomView:btn];
 }
+
 @end

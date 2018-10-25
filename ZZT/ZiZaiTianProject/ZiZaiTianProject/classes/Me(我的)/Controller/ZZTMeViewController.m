@@ -268,6 +268,7 @@ NSString *bannerID = @"MeCell";
                 self.userData = model;
                 [self setupTopView];
                 //存一下数据
+                [Utilities SetNSUserDefaults:model];
             }
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             

@@ -19,6 +19,7 @@
     NSString *intro;//简介
     NSString *cover;//封面
     NSString *nickName;//昵称
+    NSString *phone;//手机号
 }
 
 @property (nonatomic,assign)BOOL isLogin;

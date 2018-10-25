@@ -10,15 +10,22 @@
 #import "DCPagerController.h"
 #import "ZZTFindWorldViewController.h"
 #import "ZZTFindAttentionViewController.h"
+#import "LxGridViewFlowLayout.h"
+#import "TZTestCell.h"
+#import "TZImagePickerController.h"
+#import "TZImageManager.h"
+#import "TZAssetModel.h"
+#import "ZZTZoneUpLoadViewController.h"
 
-@interface ZZTFindViewController ()<PYSearchViewControllerDelegate,PYSearchViewControllerDataSource>
+@interface ZZTFindViewController ()<PYSearchViewControllerDelegate,PYSearchViewControllerDataSource,UINavigationControllerDelegate,UIImagePickerControllerDelegate,TZImagePickerControllerDelegate>
 
 @property (nonatomic, weak) UIViewController *currentVC;
 @property (nonatomic,strong) UIButton *leftBtn;
 @property (nonatomic,strong) UIButton *rightBtn;
 @property (nonatomic,weak) PYSearchViewController *searchVC;
 @property (nonatomic,strong) NSMutableArray *searchSuggestionArray;
-
+@property (strong, nonatomic) CLLocation *location;
+@property (nonatomic, strong) UIImagePickerController *imagePickerVc;
 
 @end
 NSString *SuggestionView3 = @"SuggestionView";
@@ -73,8 +80,42 @@ NSString *SuggestionView3 = @"SuggestionView";
     [self setupNavigationBar];
 }
 
+-(void)addMoment{
+    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+
+    UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"手机拍摄" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        //打开相机
+        [self takePhoto];
+    }];
+    [action1 setValue:[UIColor blackColor] forKey:@"_titleTextColor"];
+   
+    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"从手机相册选择" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    [action2 setValue:[UIColor blackColor] forKey:@"_titleTextColor"];
+    
+//    UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"进入编辑器" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//        
+//    }];
+//    [action3 setValue:[UIColor blackColor] forKey:@"_titleTextColor"];
+    
+    UIAlertAction *action4 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        NSLog(@"点击了取消");
+    }];
+    [action4 setValue:[UIColor blackColor] forKey:@"_titleTextColor"];
+    
+    [actionSheet addAction:action1];
+    [actionSheet addAction:action2];
+    [actionSheet addAction:action3];
+    [actionSheet addAction:action4];
+    
+    [self presentViewController:actionSheet animated:YES completion:nil];
+}
+
 -(void)setupNavigationBar{
     self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithImage:[UIImage imageNamed:@"search"] highImage:[UIImage imageNamed:@"search"] target:self action:@selector(search)];
+    
+    self.navigationItem.leftBarButtonItem = [UIBarButtonItem itemWithImage:[UIImage imageNamed:@"加号"] highImage:[UIImage imageNamed:@"加号"] target:self action:@selector(addMoment)];
 }
 
 -(void)search{
@@ -109,7 +150,6 @@ NSString *SuggestionView3 = @"SuggestionView";
                               @"fuzzy":searchText
                               };
         //添加数据
-//        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
         AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
         [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/queryFuzzy"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
@@ -124,9 +164,11 @@ NSString *SuggestionView3 = @"SuggestionView";
 -(NSInteger)numberOfSectionsInSearchSuggestionView:(UITableView *)searchSuggestionView{
     return 1;
 }
+
 -(NSInteger)searchSuggestionView:(UITableView *)searchSuggestionView numberOfRowsInSection:(NSInteger)section{
     return self.searchSuggestionArray.count;
 }
+
 -(UITableViewCell *)searchSuggestionView:(UITableView *)searchSuggestionView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [searchSuggestionView dequeueReusableCellWithIdentifier:SuggestionView3];
     if (cell == nil) {
@@ -168,4 +210,94 @@ NSString *SuggestionView3 = @"SuggestionView";
     self.currentVC = vc;
 }
 
+#pragma mark - UIImagePickerController
+- (void)takePhoto {
+    AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    if (authStatus == AVAuthorizationStatusRestricted || authStatus == AVAuthorizationStatusDenied) {
+        // 无相机权限 做一个友好的提示
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"无法使用相机" message:@"请在iPhone的""设置-隐私-相机""中允许访问相机" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"设置", nil];
+        [alert show];
+    } else if (authStatus == AVAuthorizationStatusNotDetermined) {
+        // fix issue 466, 防止用户首次拍照拒绝授权时相机页黑屏
+        [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+            if (granted) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self takePhoto];
+                });
+            }
+        }];
+        // 拍照之前还需要检查相册权限
+    } else if ([PHPhotoLibrary authorizationStatus] == 2) { // 已被拒绝，没有相册权限，将无法保存拍的照片
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"无法访问相册" message:@"请在iPhone的""设置-隐私-相册""中允许访问相册" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"设置", nil];
+        [alert show];
+    } else if ([PHPhotoLibrary authorizationStatus] == 0) { // 未请求过相册权限
+        [[TZImageManager manager] requestAuthorizationWithCompletion:^{
+            [self takePhoto];
+        }];
+    } else {
+        [self pushImagePickerController];
+    }
+}
+
+// 调用相机
+- (void)pushImagePickerController {
+    // 提前定位
+    __weak typeof(self) weakSelf = self;
+    [[TZLocationManager manager] startLocationWithSuccessBlock:^(NSArray<CLLocation *> *locations) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        strongSelf.location = [locations firstObject];
+    } failureBlock:^(NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        strongSelf.location = nil;
+    }];
+    
+    UIImagePickerControllerSourceType sourceType = UIImagePickerControllerSourceTypeCamera;
+    if ([UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera]) {
+        self.imagePickerVc.sourceType = sourceType;
+        NSMutableArray *mediaTypes = [NSMutableArray array];
+        //        if (NO) {
+        //            [mediaTypes addObject:(NSString *)kUTTypeMovie];
+        //        }
+        //        if (NO) {
+        //            [mediaTypes addObject:(NSString *)kUTTypeImage];
+        //        }
+        if (mediaTypes.count) {
+            _imagePickerVc.mediaTypes = mediaTypes;
+        }
+        [self presentViewController:_imagePickerVc animated:YES completion:nil];
+    } else {
+        NSLog(@"模拟器中无法打开照相机,请在真机中使用");
+    }
+}
+
+//创建一个图片选择控制器
+- (UIImagePickerController *)imagePickerVc {
+    if (_imagePickerVc == nil) {
+        _imagePickerVc = [[UIImagePickerController alloc] init];
+        _imagePickerVc.delegate = self;
+        // set appearance / 改变相册选择页的导航栏外观
+        _imagePickerVc.navigationBar.barTintColor = self.navigationController.navigationBar.barTintColor;
+        _imagePickerVc.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
+        UIBarButtonItem *tzBarItem, *BarItem;
+        if (@available(iOS 9, *)) {
+            tzBarItem = [UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[TZImagePickerController class]]];
+            BarItem = [UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[UIImagePickerController class]]];
+        } else {
+            tzBarItem = [UIBarButtonItem appearanceWhenContainedIn:[TZImagePickerController class], nil];
+            BarItem = [UIBarButtonItem appearanceWhenContainedIn:[UIImagePickerController class], nil];
+        }
+        NSDictionary *titleTextAttributes = [tzBarItem titleTextAttributesForState:UIControlStateNormal];
+        [BarItem setTitleTextAttributes:titleTextAttributes forState:UIControlStateNormal];
+    }
+    return _imagePickerVc;
+}
+
+//相机返回代理
+- (void)imagePickerController:(UIImagePickerController*)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    [picker dismissViewControllerAnimated:YES completion:^{
+        ZZTZoneUpLoadViewController *uploadVC = [[ZZTZoneUpLoadViewController alloc] init];
+        [self presentViewController:uploadVC animated:YES completion:nil];
+    }];
+
+}
 @end

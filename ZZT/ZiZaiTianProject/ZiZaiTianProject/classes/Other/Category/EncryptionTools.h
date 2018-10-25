@@ -72,4 +72,6 @@
 
 -(NSArray *)getDecryArray:(NSString *)getData;
 
+-(NSString *)getStrWithdecry:(NSString *)getData;
+
 @end
