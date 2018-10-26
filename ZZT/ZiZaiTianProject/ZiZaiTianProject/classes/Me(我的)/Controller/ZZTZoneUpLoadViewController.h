@@ -10,4 +10,12 @@
 
 @interface ZZTZoneUpLoadViewController : UIViewController
 
+@property (nonatomic,strong) PHAsset *addAssets;
+
+@property (nonatomic,strong) UIImage *addPhotos;
+
+@property (nonatomic,strong) NSArray *addAssetsArray;
+
+@property (nonatomic,strong) NSArray *addPhotosArray;
+
 @end

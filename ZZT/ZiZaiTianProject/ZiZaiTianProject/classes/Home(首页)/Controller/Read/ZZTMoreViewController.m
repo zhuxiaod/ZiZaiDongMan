@@ -36,7 +36,9 @@ NSString *WordCell = @"WordCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     self.pageNumber = @"0";
+    
     self.view.backgroundColor = [UIColor whiteColor];
     
     self.navigationItem.title = @"更多推荐";
@@ -48,13 +50,15 @@ NSString *WordCell = @"WordCell";
     //创建UICollectionView：黑色
     [self setupCollectionView:layout];
     
-    [self loadMoreData];
+//    [self loadMoreData];
     
     [self setupMJRefresh];
     
     NSString *pageNumber = [NSString stringWithFormat:@"0"];
+    
     [self.collectionView.mj_header beginRefreshing];
 
+    [self setBackItemWithImage:@"blackBack" pressImage:nil];
 }
 
 #pragma mark - 创建流水布局
@@ -67,6 +71,7 @@ NSString *WordCell = @"WordCell";
     layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     //行距
     layout.minimumLineSpacing = 0;
+    
     layout.minimumInteritemSpacing = 5;
     
     return layout;
@@ -87,13 +92,47 @@ NSString *WordCell = @"WordCell";
 
 -(void)setupMJRefresh{
     self.collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        [self loadMoreData];
+//        [self loadMoreData];
     }];
     self.collectionView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
        
         [self loadMoreData];
     }];
 }
+-(void)loadNewData{
+    NSDictionary *dic = @{
+                          @"pageNum":@"0",
+                          @"pageSize":self.pageNumber,
+                          };
+    //    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getRecommendCartoon"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
+        NSInteger total = [[dic objectForKey:@"total"] integerValue];
+        self.dataArray = array;
+//        [self.dataArray addObjectsFromArray:array];
+        
+        // 模拟延迟加载数据，因此2秒后才调用（真实开发中，可以移除这段gcd代码）
+        [self.collectionView reloadData];
+        
+        if(self.dataArray.count >= total){
+            [self.collectionView.mj_footer endRefreshingWithNoMoreData];
+        }else{
+            [self.collectionView.mj_footer endRefreshing];
+        }
+        
+        [self.collectionView.mj_header endRefreshing];
+        
+        self.pageNumber = [NSString stringWithFormat:@"%ld",([self.pageNumber integerValue] + 10)];
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [self.collectionView.mj_footer endRefreshing];
+        
+        [self.collectionView.mj_header endRefreshing];
+    }];
+}
+
 -(void)loadMoreData{
     NSDictionary *dic = @{
                           @"pageNum":self.pageNumber,
@@ -103,14 +142,20 @@ NSString *WordCell = @"WordCell";
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getRecommendCartoon"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
-        self.dataArray = array;
-//        [self.dataArray addObjectsFromArray:array];
+        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
+        NSInteger total = [[dic objectForKey:@"total"] integerValue];
+//        self.dataArray = array;
+        [self.dataArray addObjectsFromArray:array];
+        
         // 模拟延迟加载数据，因此2秒后才调用（真实开发中，可以移除这段gcd代码）
         [self.collectionView reloadData];
-        // 结束刷新
-        [self.collectionView.mj_footer endRefreshing];
-
+        
+        if(self.dataArray.count >= total){
+            [self.collectionView.mj_footer endRefreshingWithNoMoreData];
+        }else{
+            [self.collectionView.mj_footer endRefreshing];
+        }
+        
         [self.collectionView.mj_header endRefreshing];
 
         self.pageNumber = [NSString stringWithFormat:@"%ld",([self.pageNumber integerValue] + 10)];
@@ -124,6 +169,7 @@ NSString *WordCell = @"WordCell";
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
+    self.collectionView.mj_footer.hidden = (self.dataArray.count == 0);
     return self.dataArray.count;
 }
 

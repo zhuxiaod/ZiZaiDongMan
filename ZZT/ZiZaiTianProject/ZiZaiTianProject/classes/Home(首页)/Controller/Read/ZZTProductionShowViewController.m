@@ -47,6 +47,8 @@ NSString *SuggestionView1 = @"SuggestionView1";
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor], NSFontAttributeName : [UIFont fontWithName:@"Helvetica-Bold" size:17]}];
 
     [self setupNavBar];
+    
+    [self setBackItemWithImage:@"blackBack" pressImage:nil];
 }
 
 -(void)setArray:(NSArray *)array{
@@ -119,7 +121,7 @@ NSString *SuggestionView1 = @"SuggestionView1";
 -(void)setupNavBar
 {
     //右边导航条
-    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithImage:[UIImage imageNamed:@"search"] highImage:[UIImage imageNamed:@"search"] target:self action:@selector(search)];
+    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithImage:[UIImage imageNamed:@"read_search"] highImage:[UIImage imageNamed:@"read_search"] target:self action:@selector(search)];
 }
 
 -(void)search{

@@ -12,13 +12,15 @@
 #import "ZZTCartonnPlayModel.h"
 @interface ZZTRankViewController ()<UITableViewDelegate,UITableViewDataSource>
 
-@property (nonatomic,strong) NSArray *array;
+@property (nonatomic,strong) NSMutableArray *array;
 
 @property (nonatomic,strong) UIView *topView;
 
-@property (nonatomic,strong) NSArray *dataArray;
+@property (nonatomic,strong) NSMutableArray *dataArray;
 
 @property (nonatomic,strong) UITableView *tableView;
+
+@property (nonatomic,assign) NSInteger pageNumber;
 
 @end
 
@@ -26,16 +28,16 @@ NSString *zztRankCell = @"zztRankCell";
 
 @implementation ZZTRankViewController
 
--(NSArray *)array{
+-(NSMutableArray *)array{
     if(!_array){
-        _array = [NSArray array];
+        _array = [NSMutableArray array];
     }
     return _array;
 }
 
--(NSArray *)dataArray{
+-(NSMutableArray *)dataArray{
     if(!_dataArray){
-        _dataArray = [NSArray array];
+        _dataArray = [NSMutableArray array];
     }
     return _dataArray;
 }
@@ -52,29 +54,59 @@ NSString *zztRankCell = @"zztRankCell";
     [self setupTableView];
     
     self.navigationItem.title = @"排行榜";
+    
+    [self setBackItemWithImage:@"blackBack" pressImage:nil];
+
+    self.pageNumber = 0;
+    
+    [self setupMJRefresh];
+    
+//    [self.tableView.mj_header beginRefreshing];
+//    [self loadData];
 }
 
--(void)loadData:(RankButton *)btn{
+-(void)setupMJRefresh{
+//    self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+//        [self loadData];
+//    }];
+    
+    self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        [self loadData];
+    }];
+}
+
+-(void)loadData{
+    
     NSDictionary *dic = @{
-                          @"bookType":btn.rankType,
                           //众创
-                          @"cartoonType":@"1",
-                          @"pageNum":@"1",
+                          @"pageNum":[NSString stringWithFormat:@"%ld",self.pageNumber],
                           @"pageSize":@"10"
                           };
 //    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonlist"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getCartoonRanking"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
-        self.dataArray = [self addIsHave:array];
+        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
+        id to = [dic objectForKey:@"total"];
+        NSInteger total = [to integerValue];
+        array = [self addIsHave:array];
+        [self.dataArray addObjectsFromArray:array];
         [self.tableView reloadData];
+        if(self.dataArray.count >= total){
+            [self.tableView.mj_footer endRefreshingWithNoMoreData];
+        }else{
+            [self.tableView.mj_footer endRefreshing];
+        }
+        //page+size
+        self.pageNumber += 10;
+//        [self.tableView.mj_header endRefreshing];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
+        [self.tableView.mj_footer endRefreshing];
+//        [self.tableView.mj_header endRefreshing];
     }];
 }
 
--(NSArray *)addIsHave:(NSArray *)array{
+-(NSMutableArray *)addIsHave:(NSMutableArray *)array{
     for (int i = 0; i < array.count; i++) {
         ZZTCarttonDetailModel *model = array[i];
         model.isHave = NO;
@@ -132,7 +164,7 @@ NSString *zztRankCell = @"zztRankCell";
     boom.rankType = @"5";
     [btnView addSubview:boom];
     
-    NSArray *array = [NSArray arrayWithObjects:man,woman,multiplayer,boom, nil];
+    NSMutableArray *array = [NSMutableArray arrayWithObjects:man,woman,multiplayer,boom, nil];
     self.array = array;
 }
 
@@ -141,7 +173,7 @@ NSString *zztRankCell = @"zztRankCell";
         if(button == btn){
             [btn setTitleColor:[UIColor colorWithHexString:@"#7B7BE4"] forState:UIControlStateNormal];
             [btn setImage:[UIImage imageNamed:@"排行榜-当前榜单"] forState:UIControlStateNormal];
-            [self loadData:btn];
+            [self loadData];
         }else{
             [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             [button setImage:nil forState:UIControlStateNormal];
@@ -150,7 +182,7 @@ NSString *zztRankCell = @"zztRankCell";
 }
 
 -(void)setupTableView{
-    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.topView.height + 10, SCREEN_WIDTH, SCREEN_HEIGHT - self.topView.height +10) style:UITableViewStyleGrouped];
+    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.topView.height + 10, SCREEN_WIDTH, SCREEN_HEIGHT - self.topView.height +10 - navHeight) style:UITableViewStyleGrouped];
     tableView.backgroundColor = [UIColor whiteColor];
     tableView.delegate = self;
     tableView.dataSource = self;

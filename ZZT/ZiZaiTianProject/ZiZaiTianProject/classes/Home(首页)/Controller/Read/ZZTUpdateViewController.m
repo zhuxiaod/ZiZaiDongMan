@@ -40,7 +40,7 @@
     
     [self setupTitle];
     //清空
-    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithTitle:@"清空" target:self action:@selector(removeAllBooks)];
+    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithTitle:@"清空" target:self action:@selector(removeAllBooks) titleColor:[UIColor blackColor]];
     
     self.automaticallyAdjustsScrollViewInsets = NO;
     
@@ -50,6 +50,9 @@
     [self setupCollectionView:layout];
     //请求书柜
     [self loadBookShelf];
+    
+    [self setBackItemWithImage:@"blackBack" pressImage:nil];
+
     
 }
 -(void)loadBookShelf{
@@ -74,6 +77,7 @@
     [self.idArray removeAllObjects];
     for (int i = 0; i < self.cartoons.count; i++) {
         ZZTCarttonDetailModel *book = self.cartoons[i];
+        //历史id
         [self.idArray addObject:book.id];
     }
     NSString *text = [self.idArray componentsJoinedByString:@","];
@@ -134,7 +138,7 @@
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    ZZTCarttonDetailModel *md = self.cartoons[indexPath.row];
+    ZZTCarttonDetailModel *md = self.cartoons[indexPath.row];//type 2 漫画 剧本
     if([md.cartoonType isEqualToString:@"1"]){
         ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
         detailVC.isId = NO;

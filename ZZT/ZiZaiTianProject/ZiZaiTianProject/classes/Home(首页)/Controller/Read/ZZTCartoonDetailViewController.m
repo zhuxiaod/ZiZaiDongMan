@@ -518,9 +518,11 @@ static bool needHide = false;
             
             NSArray *dataArray = [[EncryptionTools sharedEncryptionTools] getDecryArray:responseObject[@"result"]];
             if(dataArray.count > 0){
-                NSMutableArray *array = [ZZTCartoonModel mj_objectArrayWithKeyValuesArray:dataArray[0]];
+                NSDictionary *dict = dataArray[0];
+                NSArray *array = dict[@"list"];
+                NSMutableArray *cartArray = [ZZTCartoonModel mj_objectArrayWithKeyValuesArray:array];
                 UserInfo *author = [UserInfo mj_objectWithKeyValues:dataArray[1]];
-                    self.cartoonDetailArray = array;
+                    self.cartoonDetailArray = cartArray;
                     self.author = author;
             }
             dispatch_group_leave(self.group);

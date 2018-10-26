@@ -17,7 +17,8 @@
 #import "ZZTCarttonDetailModel.h"
 #import "ZZTUpdateViewController.h"
 #import "ZZTCollectView.h"
-@interface ZZTHomeViewController ()<UIScrollViewDelegate,PYSearchViewControllerDelegate,PYSearchViewControllerDataSource,UITableViewDataSource,UITabBarControllerDelegate>
+
+@interface ZZTHomeViewController ()<UIScrollViewDelegate,PYSearchViewControllerDelegate,PYSearchViewControllerDataSource,UITableViewDataSource,UITabBarControllerDelegate,ListViewDelegate>
 
 @property (nonatomic,weak) UIView *customNavBar;
 @property (nonatomic,weak) ListView *listView;
@@ -117,13 +118,17 @@ NSString *SuggestionView = @"SuggestionView";
 }
 
 -(void)setupNavgationStyle:(UINavigationController *)nav{
-    UIImage *image = [UIImage imageNamed:@"APP架构-作品-顶部渐变条-IOS"];
-    // 设置左边端盖宽度
-    NSInteger leftCapWidth = image.size.width * 0.5;
-    // 设置上边端盖高度
-    NSInteger topCapHeight = image.size.height * 0.5;
-    UIImage *newImage = [image stretchableImageWithLeftCapWidth:leftCapWidth topCapHeight:topCapHeight];
-    [nav.navigationBar setBackgroundImage:newImage forBarMetrics:UIBarMetricsDefault];
+//    UIImage *image = [UIImage imageNamed:@"APP架构-作品-顶部渐变条-IOS"];
+    UIImage *image = [UIImage createImageWithColor:[UIColor clearColor]];
+//    // 设置左边端盖宽度
+//    NSInteger leftCapWidth = image.size.width * 0.5;
+//    // 设置上边端盖高度
+//    NSInteger topCapHeight = image.size.height * 0.5;
+//    UIImage *newImage = [image stretchableImageWithLeftCapWidth:leftCapWidth topCapHeight:topCapHeight];
+    [nav.navigationBar setBackgroundImage:image forBarMetrics:UIBarMetricsDefault];
+    nav.navigationBar.backgroundColor = [UIColor whiteColor];
+    nav.navigationBar.barTintColor = [UIColor blackColor];
+//    nav.navigationBar.backIndicatorImage.
 }
 
 -(void)receiveNotification:(NSNotification *)infoNotification {
@@ -167,18 +172,34 @@ NSString *SuggestionView = @"SuggestionView";
     //设置动画
     lc.hasSelectAnimate = YES;
     //选择时的颜色
-    lc.labelSelectTextColor = [UIColor whiteColor];
-    lc.labelTextColor = [UIColor colorWithHexString:@"#0D2882"];
+    lc.labelSelectTextColor = [UIColor blackColor];
+    lc.labelTextColor = [UIColor colorWithRGB:@"131,131,131"];
     lc.font       = [UIFont systemFontOfSize:14];
     lc.spaceing   = SPACEING;
     lc.labelWidth = listViewItemSize;
     lc.monitorScrollView = self.mainView;
     
     ListView *listView = [[ListView alloc] initWithFrame:CGRectMake(0,0,listViewWidth,44) TextArray:textArray Configuration:lc];
+    listView.delegate = self;
     //重点！！！
     self.navigationItem.titleView = listView;
     //全局
     self.listView = listView;
+}
+
+-(void)listView:(ListView *)listView didTapLab:(UILabel *)lab{
+    
+    if([lab.text isEqualToString:@"书柜"]){
+        //书柜
+        self.navigationItem.leftBarButtonItem.customView.hidden = YES;
+        //左边导航条
+        self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithTitle:@"清空" target:self action:@selector(removeAllBook) titleColor:[UIColor blackColor]];
+        
+    }else{
+        //书柜
+        self.navigationItem.leftBarButtonItem.customView.hidden = NO;
+        self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithImage:[UIImage imageNamed:@"read_search"] highImage:[UIImage imageNamed:@"search"] target:self action:@selector(search)];
+    }
 }
 
 #pragma mark - 设置添加滚动子页
@@ -248,6 +269,9 @@ NSString *SuggestionView = @"SuggestionView";
     [self loadBookShelfData];
     NSLog(@"width:%f",self.view.frame.size.width);
     
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+
+
 
 //    [_collectView reloadData];
 //    [_CreationView reloadData];
@@ -258,19 +282,17 @@ NSString *SuggestionView = @"SuggestionView";
     //可以控制定时关闭
     NSNotification *notification = [NSNotification notificationWithName:@"tongzhi" object:nil userInfo:nil];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
-    
- 
-    
 }
 
 #pragma mark - 设置导航条
 -(void)setupNavBar
 {
     //右边导航条
-    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithImage:[UIImage imageNamed:@"search"] highImage:[UIImage imageNamed:@"search"] target:self action:@selector(search)];
+    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithImage:[UIImage imageNamed:@"read_search"] highImage:[UIImage imageNamed:@"search"] target:self action:@selector(search)];
     //左边导航条
-    self.navigationItem.leftBarButtonItem = [UIBarButtonItem itemWithImage:[UIImage imageNamed:@"time"] highImage:[UIImage imageNamed:@"time"] target:self action:@selector(history)];
+    self.navigationItem.leftBarButtonItem = [UIBarButtonItem itemWithImage:[UIImage imageNamed:@"read_readHistory"] highImage:[UIImage imageNamed:@"time"] target:self action:@selector(history)];
 }
+
 //更新
 -(void)history{
     ZZTUpdateViewController *updateVC = [[ZZTUpdateViewController alloc] init];
@@ -285,12 +307,12 @@ NSString *SuggestionView = @"SuggestionView";
         //书柜
         self.navigationItem.leftBarButtonItem.customView.hidden = YES;
         //左边导航条
-        self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithTitle:@"清空" target:self action:@selector(removeAllBook)];
+        self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithTitle:@"清空" target:self action:@selector(removeAllBook) titleColor:[UIColor blackColor]];
         
     }else{
-        //阅读
+        //书柜
         self.navigationItem.leftBarButtonItem.customView.hidden = NO;
-        self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithImage:[UIImage imageNamed:@"search"] highImage:[UIImage imageNamed:@"search"] target:self action:@selector(search)];
+        self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithImage:[UIImage imageNamed:@"read_search"] highImage:[UIImage imageNamed:@"search"] target:self action:@selector(search)];
     }
 }
                                                  

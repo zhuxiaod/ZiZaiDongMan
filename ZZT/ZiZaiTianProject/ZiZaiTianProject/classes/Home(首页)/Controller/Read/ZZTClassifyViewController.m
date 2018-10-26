@@ -73,6 +73,9 @@ NSString *SuggestionView2 = @"SuggestionView2";
     [self loadTopViewData];
     
     [self setupNavBar];
+    
+    [self setBackItemWithImage:@"blackBack" pressImage:nil];
+
 }
 
 -(void)setupCollectionView{
@@ -100,7 +103,7 @@ NSString *SuggestionView2 = @"SuggestionView2";
 #pragma mark - 创建CollectionView
 -(void)setupCollectionView:(UICollectionViewFlowLayout *)layout
 {
-    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, self.scrollView.y + self.scrollView.height, Screen_Width, Screen_Height - self.scrollView.height) collectionViewLayout:layout];
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, self.scrollView.y + self.scrollView.height, Screen_Width, Screen_Height - self.scrollView.height - navHeight) collectionViewLayout:layout];
     self.collectionView = collectionView;
     collectionView.dataSource = self;
     [collectionView setBackgroundColor:[UIColor whiteColor]];
@@ -220,7 +223,7 @@ NSString *SuggestionView2 = @"SuggestionView2";
 -(void)setupNavBar
 {
     //右边导航条
-    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithImage:[UIImage imageNamed:@"search"] highImage:[UIImage imageNamed:@"search"] target:self action:@selector(search)];
+    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithImage:[UIImage imageNamed:@"read_search"] highImage:[UIImage imageNamed:@"read_search"] target:self action:@selector(search)];
 }
 
 -(void)search{

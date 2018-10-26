@@ -43,7 +43,7 @@
         }
     }
     //轮播器模型
-    SDCycleScrollView *cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, (SCREEN_HEIGHT - navHeight +20)*0.4) delegate:self placeholderImage:[UIImage imageNamed:@"peien"]];
+    SDCycleScrollView *cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, BanerHeight) delegate:self placeholderImage:[UIImage imageNamed:@"peien"]];
         //数组
     cycleScrollView.imageURLStringsGroup = self.imageArray;
     cycleScrollView.autoScrollTimeInterval = 5.0f;// 自动滚动时间间隔

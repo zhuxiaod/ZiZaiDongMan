@@ -34,6 +34,13 @@
 
 @end
 
+@class ListView;
+
+@protocol ListViewDelegate <NSObject>
+
+-(void)listView:(ListView *)listView didTapLab:(UILabel *)lab;
+
+@end
 
 @interface ListView : UIView
 {
@@ -52,6 +59,7 @@
 
 @property (nonatomic,readonly) NSInteger currentIndex;
 
+@property(nonatomic,weak)id<ListViewDelegate> delegate;
 
 + (instancetype)listViewWithFrame:(CGRect)frame
                         TextArray:(NSArray *)textArray

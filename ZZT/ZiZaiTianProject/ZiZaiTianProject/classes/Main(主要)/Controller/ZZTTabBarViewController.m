@@ -22,29 +22,31 @@
 @end
 
 @implementation ZZTTabBarViewController
-
-+(void)load
-{
-    //获取那个类中的UITabBarItem
-    UITabBarItem *item = [UITabBarItem appearanceWhenContainedInInstancesOfClasses:@[[UIView class]]];
-    //设置按钮选中标题的颜色
-    //创建一个描述文字属性的字典
-    NSMutableDictionary *attrs = [NSMutableDictionary dictionary];
-    attrs[NSForegroundColorAttributeName] = [UIColor whiteColor];
-    [item setTitleTextAttributes:attrs forState:UIControlStateSelected];
-    
-    //字体只能在正常状态下设置
-    NSMutableDictionary *attrsNor = [NSMutableDictionary dictionary];
-    attrsNor[NSFontAttributeName] = [UIFont systemFontOfSize:20];
-    
-    [item setTitleTextAttributes:attrsNor forState:UIControlStateNormal];
-    [item setTitlePositionAdjustment:UIOffsetMake(0, -10)];
-   
-}
+//
+//+(void)load
+//{
+//    //获取那个类中的UITabBarItem
+//    UITabBarItem *item = [UITabBarItem appearanceWhenContainedInInstancesOfClasses:@[[UIView class]]];
+//    //设置按钮选中标题的颜色
+//    //创建一个描述文字属性的字典
+//    NSMutableDictionary *attrs = [NSMutableDictionary dictionary];
+//    attrs[NSForegroundColorAttributeName] = [UIColor whiteColor];
+//    [item setTitleTextAttributes:attrs forState:UIControlStateSelected];
+//    
+//    //字体只能在正常状态下设置
+//    NSMutableDictionary *attrsNor = [NSMutableDictionary dictionary];
+//    attrsNor[NSFontAttributeName] = [UIFont systemFontOfSize:20];
+//    
+//    [item setTitleTextAttributes:attrsNor forState:UIControlStateNormal];
+//    [item setTitlePositionAdjustment:UIOffsetMake(0, -10)];
+//   
+//}
 
 #pragma mark - 生命周期方法
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self setupItem];
     
     [self setupAllChildViewController];
     
@@ -59,7 +61,7 @@
     //首页
     ZZTHomeViewController *homeVC = [[ZZTHomeViewController alloc] init];
     ZZTNavigationViewController *nac1 = [[ZZTNavigationViewController alloc] initWithRootViewController:homeVC];
-    homeVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"漫画" image:nil selectedImage:nil];
+//    homeVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"漫画" image:nil selectedImage:nil];
     [self addChildViewController:nac1];
     
     //发现
@@ -79,22 +81,22 @@
     //2.2设置tabBar上按钮内容 ->由对应的子控制器
     //0:nav
     UINavigationController *nav = self.childViewControllers[0];
-    nav.tabBarItem.title = @"漫画";
-//    nav.tabBarItem.image = [UIImage imageOriginalWithName:@"tabBar_essence_icon"];
-//    UIImage *image = [UIImage imageOriginalWithName:@"tabBar_essence_click_icon"];
-//    nav.tabBarItem.selectedImage = image;
+    nav.tabBarItem.title = @"作品";
+    nav.tabBarItem.image = [UIImage imageOriginalWithName:@"read_production"];
+    UIImage *image = [UIImage imageOriginalWithName:@"read_production_select"];
+    nav.tabBarItem.selectedImage = image;
     
     //1:nav1
     UINavigationController *nav1 = self.childViewControllers[1];
     nav1.tabBarItem.title = @"发现";
-//    nav1.tabBarItem.image = [UIImage imageOriginalWithName:@"tabBar_new_icon"];
-//    nav1.tabBarItem.selectedImage = [UIImage imageOriginalWithName:@"tabBar_new_click_icon"];
+    nav1.tabBarItem.image = [UIImage imageOriginalWithName:@"find_find"];
+    nav1.tabBarItem.selectedImage = [UIImage imageOriginalWithName:@"find_find_select"];
     
     //2:nav2
     UINavigationController *nav2 = self.childViewControllers[2];
     nav2.tabBarItem.title = @"我的";
-//    nav2.tabBarItem.image = [UIImage imageOriginalWithName:@"tabBar_me_icon"];
-//    nav2.tabBarItem.selectedImage = [UIImage imageOriginalWithName:@"tabBar_me_click_icon"];
+    nav2.tabBarItem.image = [UIImage imageOriginalWithName:@"me_me"];
+    nav2.tabBarItem.selectedImage = [UIImage imageOriginalWithName:@"me_me_select"];
 }
 
 - (void)setHidesBottomBar:(BOOL)hidesBottomBar {
@@ -116,5 +118,29 @@
         }];
         
     }
+}
+
+/**
+* 设置item属性
+*/
+- (void)setupItem
+{
+    // UIControlStateNormal状态下的文字属性
+    NSMutableDictionary *normalAttrs = [NSMutableDictionary dictionary];
+    // 文字颜色
+    normalAttrs[NSForegroundColorAttributeName] = [UIColor whiteColor];
+    // 文字大小
+    normalAttrs[NSFontAttributeName] = [UIFont systemFontOfSize:12];
+    
+    // UIControlStateSelected状态下的文字属性
+    NSMutableDictionary *selectedAttrs = [NSMutableDictionary dictionary];
+    // 文字颜色
+    selectedAttrs[NSForegroundColorAttributeName] = [UIColor colorWithRGB:@"94,80,175"];
+    
+    // 统一给所有的UITabBarItem设置文字属性
+    // 只有后面带有UI_APPEARANCE_SELECTOR的属性或方法, 才可以通过appearance对象来统一设置
+    UITabBarItem *item = [UITabBarItem appearance];
+    [item setTitleTextAttributes:normalAttrs forState:UIControlStateNormal];
+    [item setTitleTextAttributes:selectedAttrs forState:UIControlStateSelected];
 }
 @end

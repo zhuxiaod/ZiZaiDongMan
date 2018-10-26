@@ -169,14 +169,17 @@ static NSString *const zxdCartoonBtnCell = @"zxdCartoonBtnCell";
     
     CGFloat width = self.bounds.size.width;
     CGFloat height = self.bounds.size.height;
-    CGFloat btnWidth = 40;
-    CGFloat btnY = 25;
-    CGFloat btnHeight = height - height/5 * 2;
-    CGFloat btnViewWidth = width - 100;
-    CGFloat btnViewHeight = height - 4;
-    CGFloat space = (btnViewWidth - btnWidth*4)/3;
+    CGFloat bottomViewH = self.height * 0.06;
+
+    CGFloat btnWidth = width *0.1;
+    CGFloat btnY = self.bounds.size.height * 0.12;
+    CGFloat btnHeight = self.bounds.size.height * 0.7;
+    CGFloat btnViewX = width * 0.1;
+    CGFloat btnViewWidth = width - btnViewX * 2;
+    CGFloat btnViewHeight = height - bottomViewH;
+    CGFloat space = width * 0.12;
     
-    self.btnView.frame = CGRectMake((width - btnViewWidth)/2, 0, btnViewWidth, btnViewHeight);
+    self.btnView.frame = CGRectMake(btnViewX, 0, btnViewWidth, btnViewHeight);
 
     self.multiplayer.frame = CGRectMake(0, btnY, btnWidth, btnHeight);
 
@@ -186,7 +189,6 @@ static NSString *const zxdCartoonBtnCell = @"zxdCartoonBtnCell";
 
     self.classify.frame = CGRectMake(self.rank.x+btnWidth+space, btnY, btnWidth, btnHeight);
 
-    self.botttomView.frame = CGRectMake(0, height - 4, width, 4);
+    self.botttomView.frame = CGRectMake(0, height - bottomViewH, width, bottomViewH);
 }
-
 @end

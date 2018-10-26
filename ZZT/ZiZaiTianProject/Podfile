@@ -21,6 +21,5 @@ pod 'IQKeyboardManager'
 pod 'TTTAttributedLabel'
 pod 'UIColor+SKYExtension'
 pod 'SDAutoLayout'
-pod 'TZImagePickerController' 
 end
 

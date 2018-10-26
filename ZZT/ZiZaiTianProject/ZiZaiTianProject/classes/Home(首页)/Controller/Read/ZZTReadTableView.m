@@ -16,6 +16,7 @@
 #import "ZZTCartoonHeaderView.h"
 #import "ZZTWordsDetailViewController.h"
 #import "ZZTCarttonDetailModel.h"
+
 @interface ZZTReadTableView()<UITableViewDataSource,UITableViewDelegate,DCPicScrollViewDelegate,DCPicScrollViewDataSource>
 
 @property (nonatomic,weak) DCPicScrollView *bannerView;
@@ -95,11 +96,10 @@ static NSString *caiNiXiHuan = @"caiNiXiHuan";
                           @"pageSize":@"6"
                           };
     EncryptionTools *tool = [[EncryptionTools alloc]init];
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getRecommendCartoon"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [tool decry:responseObject[@"result"]];
-        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
+        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
         self.caiNiXiHuan = array;
         [self reloadData];
         [self.mj_header endRefreshing];
@@ -170,14 +170,16 @@ static NSString *caiNiXiHuan = @"caiNiXiHuan";
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 0) {
-        return (SCREEN_HEIGHT - navHeight + 20) * 0.4;
+//        return (SCREEN_HEIGHT - navHeight + 20) * 0.3;
+        return BanerHeight;
     }else if (indexPath.section == 1){
-        return 100;
+//        return 100;
+        return SCREEN_HEIGHT * 0.11;
     }else{
-        return 400;
+        return SCREEN_HEIGHT * 0.6;
     }
 }
-
+//1820
 //添加headerView
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     NSString *title = @"为您推荐";
@@ -207,4 +209,6 @@ static NSString *caiNiXiHuan = @"caiNiXiHuan";
         scrollView.contentInset = UIEdgeInsetsMake(-sectionHeaderHeight, 0, 0, 0);
     }
 }
+
+
 @end

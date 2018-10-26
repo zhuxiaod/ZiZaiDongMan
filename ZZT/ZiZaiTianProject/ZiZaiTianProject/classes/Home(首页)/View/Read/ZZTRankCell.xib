@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -48,13 +49,14 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DV2-bE-JJw">
                         <rect key="frame" x="213" y="72" width="97" height="97"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="排行榜图标-第1名" translatesAutoresizingMaskIntoConstraints="NO" id="8qy-Vy-hzN">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="排行榜图标-第1名" translatesAutoresizingMaskIntoConstraints="NO" id="8qy-Vy-hzN">
                                 <rect key="frame" x="0.0" y="0.0" width="97" height="97"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i6Z-0w-1AT">
-                                <rect key="frame" x="32" y="21" width="32" height="54"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i6Z-0w-1AT">
+                                <rect key="frame" x="22" y="26.5" width="54" height="43"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="i6Z-0w-1AT" secondAttribute="height" multiplier="34:27" id="OOd-k1-6Rd"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="36"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -63,7 +65,13 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="97" id="5qr-cT-pQY"/>
+                            <constraint firstItem="8qy-Vy-hzN" firstAttribute="leading" secondItem="DV2-bE-JJw" secondAttribute="leading" id="QX4-Xl-AY3"/>
                             <constraint firstAttribute="height" constant="97" id="YvR-oc-MpU"/>
+                            <constraint firstItem="8qy-Vy-hzN" firstAttribute="top" secondItem="DV2-bE-JJw" secondAttribute="top" id="aXk-Zc-QR9"/>
+                            <constraint firstAttribute="bottom" secondItem="8qy-Vy-hzN" secondAttribute="bottom" id="gqL-HF-d7o"/>
+                            <constraint firstItem="i6Z-0w-1AT" firstAttribute="centerY" secondItem="DV2-bE-JJw" secondAttribute="centerY" id="hCf-Y2-apf"/>
+                            <constraint firstAttribute="trailing" secondItem="8qy-Vy-hzN" secondAttribute="trailing" id="kdQ-Tc-Wg2"/>
+                            <constraint firstItem="i6Z-0w-1AT" firstAttribute="centerX" secondItem="DV2-bE-JJw" secondAttribute="centerX" id="tdB-XP-Uq2"/>
                         </constraints>
                     </view>
                 </subviews>

@@ -90,7 +90,7 @@ static NSString *circleCell = @"circleCell";
     
     self.navigationItem.title = self.viewTitle;
     
-    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithTitle:@"清空" target:self action:@selector(removeAllBook)];
+    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithTitle:@"清空" target:self action:@selector(removeAllBook) titleColor:[UIColor whiteColor]];
 }
 
 -(void)removeAllBook{

@@ -198,15 +198,13 @@ static NSString * const offsetKeyPath = @"contentOffset";
         label.tag = index;
         label.text = text;
         //颜色
-        label.textColor = [UIColor colorWithHexString:@"#0D2882"];
+        label.textColor = self.configuration.labelTextColor;
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(labelDidTap:)];
         [label addGestureRecognizer:tap];
         
         [self.scrollView addSubview:label];
         [_titleLabelArray addObject:label];
-        
     }
-    
 }
 
 
@@ -223,7 +221,6 @@ static NSString * const offsetKeyPath = @"contentOffset";
 
 - (void)selectItem:(UILabel *)selectLabel {
 
-
     if (self.configuration.monitorScrollView) {
         
         CGFloat offsetX = self.configuration.MonitorScrollViewItemWidth * selectLabel.tag;
@@ -237,7 +234,12 @@ static NSString * const offsetKeyPath = @"contentOffset";
         [self scrollWithOffsetX:selectLabel.center.x];
     }
     
-  
+    //如果是点击了这个lab 有什么其他事件
+    if (self.delegate && [self.delegate respondsToSelector:@selector(listView:didTapLab:)])
+    { // 调用代理方法
+        [self.delegate listView:self didTapLab:selectLabel];
+        
+    }
 }
 
 - (void)scrollWithOffsetX:(CGFloat)x {

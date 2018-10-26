@@ -38,7 +38,6 @@ PODS:
   - SDWebImage/Core (4.4.1)
   - SVProgressHUD (2.2.5)
   - TTTAttributedLabel (2.0.0)
-  - TZImagePickerController (3.0.0)
   - "UIColor+SKYExtension (0.0.1)"
   - "UITableView+FDTemplateLayoutCell (1.6)"
   - XHImageViewer (0.1.2)
@@ -62,7 +61,6 @@ DEPENDENCIES:
   - SDWebImage (~> 4.0)
   - SVProgressHUD
   - TTTAttributedLabel
-  - TZImagePickerController
   - "UIColor+SKYExtension"
   - "UITableView+FDTemplateLayoutCell"
   - XHImageViewer
@@ -88,7 +86,6 @@ SPEC REPOS:
     - SDWebImage
     - SVProgressHUD
     - TTTAttributedLabel
-    - TZImagePickerController
     - "UIColor+SKYExtension"
     - "UITableView+FDTemplateLayoutCell"
     - XHImageViewer
@@ -113,11 +110,10 @@ SPEC CHECKSUMS:
   SDWebImage: 47e9b5b925cbce75946c23f0c42dd19464189af4
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   TTTAttributedLabel: 8cffe8e127e4e82ff3af1e5386d4cd0ad000b656
-  TZImagePickerController: fb2642a6530dc12eb38c14a53972fd6869327677
   "UIColor+SKYExtension": 9e1d1a8f67df4673fd2d71d9dd6aad9687b4b437
   "UITableView+FDTemplateLayoutCell": 5c949b4a5059c404b442926c0e80f81d10a2d66f
   XHImageViewer: 7b275d2aa829e56761c30303b9d51cae086a90b9
 
-PODFILE CHECKSUM: f20c22f03060407d5e42f7f19cb9d15bdc963785
+PODFILE CHECKSUM: 8dc588f83c0e2cbff6a1fc383bfaa3714c001baa
 
 COCOAPODS: 1.5.3

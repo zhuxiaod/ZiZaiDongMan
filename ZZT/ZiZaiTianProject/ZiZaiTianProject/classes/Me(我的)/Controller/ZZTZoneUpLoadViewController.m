@@ -16,8 +16,8 @@
 @interface ZZTZoneUpLoadViewController ()<UICollectionViewDataSource,UICollectionViewDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,TZImagePickerControllerDelegate,UITextViewDelegate>{
     CGFloat _margin;
     CGFloat _itemWH;
-    NSMutableArray *_selectedPhotos;
-    NSMutableArray *_selectedAssets;
+//    NSMutableArray *_selectedPhotos;
+//    NSMutableArray *_selectedAssets;
     BOOL _isSelectOriginalPhoto;
 }
 @property (nonatomic, strong) UIImagePickerController *imagePickerVc;
@@ -36,9 +36,28 @@
 
 @property (nonatomic,strong) NSMutableArray *imageUrlArr;
 
+@property (nonatomic,strong) NSMutableArray *selectedPhotos;
+
+@property (nonatomic,strong) NSMutableArray *selectedAssets;
+
+
 @end
 
 @implementation ZZTZoneUpLoadViewController
+
+-(NSMutableArray *)selectedAssets{
+    if(!_selectedAssets){
+        _selectedAssets = [NSMutableArray array];
+    }
+    return _selectedAssets;
+}
+
+-(NSMutableArray *)selectedPhotos{
+    if(!_selectedPhotos){
+        _selectedPhotos = [NSMutableArray array];
+    }
+    return _selectedPhotos;
+}
 
 -(NSMutableArray *)imageUrlArr{
     if(!_imageUrlArr){
@@ -64,9 +83,9 @@
     //照片View
     [self setupImageView];
     
-    _selectedPhotos = [NSMutableArray array];
-    
-    _selectedAssets = [NSMutableArray array];
+//    _selectedPhotos = [NSMutableArray array];
+//
+//    _selectedAssets = [NSMutableArray array];
 }
 
 -(void)setupImageView{
@@ -96,7 +115,16 @@
 
 -(void)setupTextView{
     UITextView *textView = [[UITextView alloc] init];
-//    textView.backgroundColor = [UIColor blueColor];
+    textView.layer.cornerRadius = 5;
+    textView.text = @"请输入评论";
+    textView.textColor = [UIColor grayColor];
+    NSMutableParagraphStyle *paragraphStyle = [NSMutableParagraphStyle new];
+    paragraphStyle.lineSpacing = 5;// 字体的行间距
+    NSDictionary *attributes = @{
+                                 NSFontAttributeName:[UIFont systemFontOfSize:16], NSParagraphStyleAttributeName:paragraphStyle
+                                 };
+    textView.typingAttributes = attributes;
+    textView.returnKeyType = UIReturnKeySend;
     textView.delegate = self;
     self.textView = textView;
     [self.scrollView addSubview:textView];
@@ -702,5 +730,27 @@
         textView.textColor = [UIColor blackColor];
     }
 
+}
+
+-(void)setAddAssets:(PHAsset *)addAssets{
+    _addAssets = addAssets;
+    [self.selectedAssets addObject:addAssets];
+}
+
+-(void)setAddPhotos:(UIImage *)addPhotos{
+    _addPhotos = addPhotos;
+    [self.selectedPhotos addObject:addPhotos];
+    [self.collectionView reloadData];
+}
+
+-(void)setAddAssetsArray:(NSArray *)addAssetsArray{
+    _addAssetsArray = addAssetsArray;
+    [self.selectedAssets addObjectsFromArray:addAssetsArray];
+}
+
+-(void)setAddPhotosArray:(NSArray *)addPhotosArray{
+    _addPhotosArray = addPhotosArray;
+    [self.selectedPhotos addObjectsFromArray:addPhotosArray];
+    [self.collectionView reloadData];
 }
 @end

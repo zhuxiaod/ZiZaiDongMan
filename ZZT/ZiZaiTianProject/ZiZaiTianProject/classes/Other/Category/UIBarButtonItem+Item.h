@@ -9,9 +9,15 @@
 #import <UIKit/UIKit.h>
 
 @interface UIBarButtonItem (Item)
+
+//+(UIBarButtonItem *)itemWithTitle:(NSString *)title target:(id)target action:(SEL)action titleColor:(UIColor *)titleColor;
+
 +(UIBarButtonItem *)itemWithImage:(UIImage *)image highImage:(UIImage *)highImage target:(id)target action:(SEL)action;
 
 +(UIBarButtonItem *)backItemWithImage:(UIImage *)image highImage:(UIImage *)highImage target:(id)target action:(SEL)action title:(NSString *)title;
 
-+(UIBarButtonItem *)itemWithTitle:(NSString *)title target:(id)target action:(SEL)action;
+//+(UIBarButtonItem *)itemWithTitle:(NSString *)title target:(id)target action:(SEL)action;
+
++(UIBarButtonItem *)itemWithTitle:(NSString *)title target:(id)target action:(SEL)action titleColor:(UIColor *)titleColor;
+
 @end

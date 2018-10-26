@@ -76,7 +76,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     [self setupMJRefresh];
     
     //上传图片
-    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithTitle:@"上传" target:self action:@selector(pushUploadView)];
+    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithTitle:@"上传" target:self action:@selector(pushUploadView) titleColor:[UIColor whiteColor]];
 }
 
 //跳转上传页

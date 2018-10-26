@@ -24,16 +24,17 @@
 }
 
 //快速创建一个Item
-+(UIBarButtonItem *)itemWithTitle:(NSString *)title target:(id)target action:(SEL)action
++(UIBarButtonItem *)itemWithTitle:(NSString *)title target:(id)target action:(SEL)action titleColor:(UIColor *)titleColor
 {
     UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
     [btn setTitle:title forState:UIControlStateNormal];
+//    [btn setTitleColor:titleColor forState:UIControlStateNormal];
     [btn sizeToFit];
     [btn addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
     UIView *containView = [[UIView alloc] initWithFrame:btn.bounds];
     btn.titleLabel.tintColor = [UIColor whiteColor];
-    [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
+    [btn setTitleColor:titleColor forState:UIControlStateNormal];
+    [btn setTitleColor:titleColor forState:UIControlStateSelected];
     [containView addSubview:btn];
     
     return [[UIBarButtonItem alloc] initWithCustomView:containView];
