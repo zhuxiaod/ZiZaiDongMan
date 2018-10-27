@@ -2428,7 +2428,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = ZiZaiTianProject/ZiZaiTianProject.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = THS25B4LK9;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2452,8 +2452,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = zxd.ZiZaiTianProject2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "5e3abc30-cad9-4446-b854-48ef015a6b1d";
-				PROVISIONING_PROFILE_SPECIFIER = ZZTian2;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -2466,7 +2466,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = ZiZaiTianProject/ZiZaiTianProject.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = THS25B4LK9;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2491,8 +2491,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = zxd.ZiZaiTianProject2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "5e3abc30-cad9-4446-b854-48ef015a6b1d";
-				PROVISIONING_PROFILE_SPECIFIER = ZZTian2;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

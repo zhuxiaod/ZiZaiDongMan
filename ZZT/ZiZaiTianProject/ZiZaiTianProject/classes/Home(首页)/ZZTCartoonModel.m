@@ -66,4 +66,10 @@ MJCodingImplementation
     _index = index;
 }
 
+-(BOOL)isDownload{
+    if(!_isDownload){
+        _isDownload = NO;
+    }
+    return _isDownload;
+}
 @end

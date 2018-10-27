@@ -59,7 +59,7 @@
     
 //    [_content sd_setImageWithURL:[NSURL URLWithString:model.cartoonUrl] placeholderImage:[UIImage imageNamed:@"peien"]];
     
-    [_content sd_setImageWithURL:[NSURL URLWithString:model.cartoonUrl] placeholderImage:[UIImage createImageWithColor:[UIColor blackColor]] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+    [_content sd_setImageWithURL:[NSURL URLWithString:model.cartoonUrl] placeholderImage:[UIImage createImageWithColor:[UIColor blackColor]] options:0 completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
         CGFloat percentage;
         CGFloat imageHeight;
         if(image.size.width > Screen_Width){
@@ -69,10 +69,26 @@
             percentage = Screen_Width / image.size.width;
             imageHeight = image.size.height * percentage;
         }
+        //刷新
         if ([self.delegate respondsToSelector:@selector(cellHeightUpdataWithIndex:Height:)]) {
             [self.delegate cellHeightUpdataWithIndex:model.index Height:imageHeight];
         }
+        NSLog(@"imageURL:%@",[NSString stringWithFormat:@"%@",imageURL]);
     }];
+//    [_content sd_setImageWithURL:[NSURL URLWithString:model.cartoonUrl] placeholderImage:[UIImage createImageWithColor:[UIColor blackColor] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+//        CGFloat percentage;
+//        CGFloat imageHeight;
+//        if(image.size.width > Screen_Width){
+//            percentage = image.size.width / Screen_Width;
+//            imageHeight = image.size.height / percentage;
+//        }else{
+//            percentage = Screen_Width / image.size.width;
+//            imageHeight = image.size.height * percentage;
+//        }
+//        if ([self.delegate respondsToSelector:@selector(cellHeightUpdataWithIndex:Height:)]) {
+//            [self.delegate cellHeightUpdataWithIndex:model.index Height:imageHeight];
+//        }
+//    }];
 }
 
 @end

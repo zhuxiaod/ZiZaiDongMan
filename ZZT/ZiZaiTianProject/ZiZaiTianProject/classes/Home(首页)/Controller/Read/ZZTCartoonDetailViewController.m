@@ -30,7 +30,7 @@
 #import "TJLongImgCut.h"
 
 
-@interface ZZTCartoonDetailViewController ()<UITableViewDelegate,UITableViewDataSource,CircleCellDelegate,ZZTCommentHeaderViewDelegate,UITextViewDelegate,NSURLSessionDataDelegate,ZZTCartoonContentCellDelegate>
+@interface ZZTCartoonDetailViewController ()<UITableViewDelegate,UITableViewDataSource,CircleCellDelegate,ZZTCommentHeaderViewDelegate,UITextViewDelegate,NSURLSessionDataDelegate,ZZTCartoonContentCellDelegate,ZZTStoryDetailCellDelegate>
 
 @property (nonatomic,strong) NSMutableArray *cartoonDetailArray;
 
@@ -100,6 +100,12 @@
 @property (nonatomic,strong) UIView *statusBar;
 
 @property (nonatomic,strong) UIButton *kLikeBtn;
+//图片地址数组
+@property (nonatomic,strong) NSMutableArray *imageUrlArray;
+//TXTURL
+@property (nonatomic,strong) NSString *TXTURL;
+
+@property (nonatomic,strong) NSString *fileName;
 
 @end
 
@@ -118,6 +124,13 @@ static const CGFloat imageCellHeight = 500.0f;
 static bool needHide = false;
 
 @implementation ZZTCartoonDetailViewController
+
+-(NSMutableArray *)imageUrlArray{
+    if(!_imageUrlArray){
+        _imageUrlArray = [NSMutableArray array];
+    }
+    return _imageUrlArray;
+}
 
 -(dispatch_group_t)group{
     if(!_group){
@@ -439,8 +452,10 @@ static bool needHide = false;
             return cell;
         }else{
             ZZTStoryDetailCell *cell = [tableView dequeueReusableCellWithIdentifier:story];
+            cell.delegate = self;
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             ZZTStoryModel *model = self.cartoonDetailArray[indexPath.row];
+            cell.index = indexPath.row;
             cell.str = model.content;
             NSLog(@"model.content:%@",model.content)
             return cell;
@@ -494,68 +509,128 @@ static bool needHide = false;
     });
     
     dispatch_group_notify(self.group, dispatch_get_main_queue(), ^{
-        [self.tableView reloadData];
-        [self reloadCellWithIndex];
-        UIImage *image = [self generateSnapshot];
+//        [self.tableView reloadData];
+//        [self reloadCellWithIndex];
+//        UIImage *image = [self generateSnapshot];
+        [self downloadTxT];
     });
     
+}
+
+-(void)downloadTxT{
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    // 1. 创建会话管理者
+    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+    // 2. 创建下载路径和请求对象
+    NSURL *URL = [NSURL URLWithString:self.TXTURL]; NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+    // 3.创建下载任务 /** * 第一个参数 - request：请求对象 * 第二个参数 - progress：下载进度block * 其中： downloadProgress.completedUnitCount：已经完成的大小 * downloadProgress.totalUnitCount：文件的总大小 * 第三个参数 - destination：自动完成文件剪切操作 * 其中： 返回值:该文件应该被剪切到哪里 * targetPath：临时路径 tmp NSURL * response：响应头 * 第四个参数 - completionHandler：下载完成回调 * 其中： filePath：真实路径 == 第三个参数的返回值 * error:错误信息 */
+    NSURLSessionDownloadTask *downloadTask = [manager downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+        
+        //保存的文件路径
+        NSString *fullPath = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:response.suggestedFilename];
+        
+        NSLog(@"response:%@",response.suggestedFilename);
+        
+        return [NSURL fileURLWithPath:fullPath];
+
+    } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+        NSLog(@"File downloaded to: %@", filePath.path);
+        //把response的文件名
+        self.fileName = response.suggestedFilename;
+    }];
+    // 4. 开启下载任务
+    [downloadTask resume];
 }
 
 //把请求单独的抽出来
 -(void)loadContentData{
     UserInfo *user = [Utilities GetNSUserDefaults];
+
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     
     if([self.cartoonModel.type isEqualToString:@"1"]){
-        NSDictionary *paramDict = @{
-                                   @"id":[NSString stringWithFormat:@"%ld",_dataModel.id],
-                                   @"pageNum":@"0",
-                                   @"pageSize":@"200"
-                                   };
-        [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getCartoonCenter"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            [self.cartoonDetailArray removeAllObjects];
-            self.imageCellHeightCache = nil;
+        //漫画
+        if(self.chapterModel.imageUrlArray.count > 0){
+            self.cartoonDetailArray = self.chapterModel.imageUrlArray;
+            self.imageUrlArray = self.cartoonDetailArray;
+            dispatch_group_leave(self.group);
+            [self reloadCellWithIndex];
+        }else{
             
-            NSArray *dataArray = [[EncryptionTools sharedEncryptionTools] getDecryArray:responseObject[@"result"]];
-            if(dataArray.count > 0){
-                NSDictionary *dict = dataArray[0];
-                NSArray *array = dict[@"list"];
-                NSMutableArray *cartArray = [ZZTCartoonModel mj_objectArrayWithKeyValuesArray:array];
-                UserInfo *author = [UserInfo mj_objectWithKeyValues:dataArray[1]];
+            NSDictionary *paramDict = @{
+                                        @"id":[NSString stringWithFormat:@"%ld",_dataModel.id],
+                                        @"pageNum":@"0",
+                                        @"pageSize":@"200"
+                                        };
+            [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getCartoonCenter"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                [self.cartoonDetailArray removeAllObjects];
+                self.imageCellHeightCache = nil;
+                
+                NSArray *dataArray = [[EncryptionTools sharedEncryptionTools] getDecryArray:responseObject[@"result"]];
+                if(dataArray.count > 0){
+                    NSDictionary *dict = dataArray[0];
+                    NSArray *array = dict[@"list"];
+                    NSMutableArray *cartArray = [ZZTCartoonModel mj_objectArrayWithKeyValuesArray:array];
+                    UserInfo *author = [UserInfo mj_objectWithKeyValues:dataArray[1]];
                     self.cartoonDetailArray = cartArray;
+                    self.imageUrlArray = cartArray;
                     self.author = author;
-            }
-            dispatch_group_leave(self.group);
-            [MBProgressHUD hideHUDForView:self.view];
-        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            dispatch_group_leave(self.group);
-//            [MBProgressHUD hideHUDForView:self.view];
-        }];
+                }
+                dispatch_group_leave(self.group);
+                [self reloadCellWithIndex];
+//                [MBProgressHUD hideHUDForView:self.view];
+            } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                dispatch_group_leave(self.group);
+                //            [MBProgressHUD hideHUDForView:self.view];
+            }];
+            
+        }
     }else{
-        //章节
-        NSDictionary *paramDict = @{
-                                    @"chapterinfoId":[NSString stringWithFormat:@"%ld",_dataModel.id],
-                                    @"userId":[NSString stringWithFormat:@"%ld",user.id]
-                                    };
-        [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterInfo"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            self.cartoonDetailArray = nil;
-            NSString *data = responseObject[@"result"];
-            NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:data];
-            NSMutableArray *array = [ZZTStoryModel mj_objectArrayWithKeyValuesArray:dic];
-            self.cartoonDetailArray = array;
-            if(array.count > 0) {
-                ZZTStoryModel *model = array[0];
-                self.stroyModel = model;
-                //下载txt
-                [self downLoadTxt:model.content];
-            }
+        if(self.chapterModel.TXTFileName){
+            //文件名
+             NSString *cachePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+            NSString *voiceName = [cachePath stringByAppendingPathComponent:self.chapterModel.TXTFileName];
+            
+            ZZTStoryModel *model = [[ZZTStoryModel alloc] init];
+            model.content = voiceName;
+            [self.cartoonDetailArray addObject:model];
+            self.TXTURL = voiceName;
+            //            [self downLoadTxt:model.content];
             dispatch_group_leave(self.group);
-//            [MBProgressHUD hideHUDForView:self.view];
-        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            dispatch_group_leave(self.group);
-//            [MBProgressHUD hideHUDForView:self.view];
-        }];
+            [self reloadCellWithIndex];
+
+        }else{
+            //章节
+            NSDictionary *paramDict = @{
+                                        @"chapterinfoId":[NSString stringWithFormat:@"%ld",_dataModel.id],
+                                        @"userId":[NSString stringWithFormat:@"%ld",user.id]
+                                        };
+            [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterInfo"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                self.cartoonDetailArray = nil;
+                NSString *data = responseObject[@"result"];
+                NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:data];
+                NSMutableArray *array = [ZZTStoryModel mj_objectArrayWithKeyValuesArray:dic];
+                //                self.imageUrlArray = array;
+                self.cartoonDetailArray = array;
+                if(array.count > 0) {
+                    ZZTStoryModel *model = array[0];
+                    self.stroyModel = model;
+                    self.TXTURL = model.content;
+                    //下载txt
+                    [self downLoadTxt:model.content];
+                }
+                dispatch_group_leave(self.group);
+                [self reloadCellWithIndex];
+
+                //            [MBProgressHUD hideHUDForView:self.view];
+            } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                dispatch_group_leave(self.group);
+                //            [MBProgressHUD hideHUDForView:self.view];
+            }];
+        }
     }
+//    [self.tableView reloadData];
+
 }
 
 -(void)loadLikeData{
@@ -650,19 +725,18 @@ static bool needHide = false;
 
 //下载txt
 -(void)downLoadTxt:(NSString *)txtUrl{
-    NSError *error;
-    NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
-
-    NSString *htmlString = [NSString stringWithContentsOfURL:[NSURL URLWithString:txtUrl] encoding:enc error:&error];
-    if(!error){
-        htmlString = [self getZZwithString:htmlString];
-        self.stroyModel.content = htmlString;
-//        [self.tableView reloadData];
-        [self.tableView layoutIfNeeded];
-        [self reloadCellWithIndex];
-    }else{
-        NSLog(@"error:%@",error);
-    }
+//    NSError *error;
+//    NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+//
+//    NSString *htmlString = [NSString stringWithContentsOfURL:[NSURL URLWithString:txtUrl] encoding:enc error:&error];
+//    if(!error){
+//        htmlString = [self getZZwithString:htmlString];
+//        self.stroyModel.content = htmlString;
+////        [self.tableView reloadData];
+//        [self reloadCellWithIndex];
+//    }else{
+//        NSLog(@"error:%@",error);
+//    }
 }
 
 //json字符串转化成OC键值对
@@ -745,10 +819,20 @@ static bool needHide = false;
         dispatch_async(dispatch_get_main_queue(), ^{
 
             [self.tableView layoutIfNeeded];
+            
+            [self.tableView reloadData];
+
 
             CGFloat y = self.chapterModel.readPoint.y;
         
             [self.tableView setContentOffset:CGPointMake(0 , y)];
+        });
+    }else{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            [self.tableView layoutIfNeeded];
+            
+            [self.tableView reloadData];
         });
     }
 }
@@ -1095,6 +1179,12 @@ static bool needHide = false;
     chapterModel.chapterIndex = self.indexRow;//第几行
     chapterModel.chapterId = self.dataModel.id;//章节id
     chapterModel.readPoint = self.readPoint;
+    if([self.cartoonModel.type isEqualToString:@"1"]){
+        chapterModel.imageUrlArray = self.imageUrlArray;
+    }else{
+        chapterModel.TxTContent = self.TXTURL;
+        chapterModel.TXTFileName = self.fileName;
+    }
     NSLog(@"退出：readPoint:%@",NSStringFromCGPoint(chapterModel.readPoint));
     
     //先看有没有这篇文章
@@ -1365,6 +1455,13 @@ static bool needHide = false;
 //    if(index == self.cartoonDetailArray.count - 1){
 //        [self.tableView reloadData];
 //    }
+}
+
+-(void)updataStoryCellHeight:(NSString *)story index:(NSUInteger)index{
+    ZZTStoryModel *model = [[ZZTStoryModel alloc] init];
+    model.content = story;
+    [self.cartoonDetailArray replaceObjectAtIndex:index withObject:model];
+    [self.tableView reloadData];
 }
 
 #pragma mark - UITextViewDelegate

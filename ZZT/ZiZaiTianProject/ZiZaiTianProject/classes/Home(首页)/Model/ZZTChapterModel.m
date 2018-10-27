@@ -15,6 +15,16 @@
 @synthesize readPoint;
 @synthesize chapterPage;
 @synthesize chapterId;
+@synthesize imageUrlArray;
+@synthesize TxTContent;
+@synthesize TXTFileName;
+
+-(NSMutableArray *)imageUrlArray{
+    if(!imageUrlArray){
+        imageUrlArray = [NSMutableArray array];
+    }
+    return imageUrlArray;
+}
 
 // 归档属性
 - (void)encodeWithCoder:(nonnull NSCoder *)aCoder {

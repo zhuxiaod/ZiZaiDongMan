@@ -17,7 +17,7 @@
 @property (nonatomic,strong)NSString *cartoonUrl;
 @property (nonatomic,assign)NSInteger carImgHeight;
 @property (nonatomic,assign)NSUInteger index;
-
+@property (nonatomic,assign)BOOL isDownload;
 - (NSMutableArray *)loadDatas;
 
 

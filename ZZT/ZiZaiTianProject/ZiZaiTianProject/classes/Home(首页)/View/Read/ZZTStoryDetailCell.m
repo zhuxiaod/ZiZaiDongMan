@@ -12,7 +12,7 @@
 @interface ZZTStoryDetailCell()
 
 @property (strong, nonatomic) UILabel *storyContent;
-
+@property (assign,nonatomic) BOOL isReload;
 @end
 
 @implementation ZZTStoryDetailCell
@@ -22,6 +22,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         [self setupUI];
+        _isReload = NO;
     }
     return self;
 }
@@ -50,7 +51,39 @@
 
 -(void)setStr:(NSString *)str{
     _str = str;
-    [self.storyContent setText:str];
+    NSError *error;
+    NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+    
+    NSString *htmlString = [NSString stringWithContentsOfURL:[NSURL URLWithString:str] encoding:enc error:&error];
+    if(!error){
+        htmlString = [self getZZwithString:htmlString];
+//        self.stroyModel.content = htmlString;
+        //        [self.tableView reloadData];
+//        [self reloadCellWithIndex];
+        if(_isReload == NO){
+            //更新高度
+            if ([self.delegate respondsToSelector:@selector(updataStoryCellHeight:index:)]) {
+                [self.delegate updataStoryCellHeight:htmlString index:_index];
+            }
+            _isReload = YES;
+            [self.storyContent setText:htmlString];
+        }
+    }else{
+        NSLog(@"error:%@",error);
+    }
+}
+
+-(void)setIndex:(NSUInteger)index{
+    _index = index;
+}
+//取消多余字符
+- (NSString *)getZZwithString:(NSString *)string{
+    
+    NSRegularExpression *regularExpretion = [NSRegularExpression regularExpressionWithPattern:@"<[^>]*>|\n" options:0 error:nil];
+    
+    string = [regularExpretion stringByReplacingMatchesInString:string options:NSMatchingReportProgress range:NSMakeRange(0, string.length) withTemplate:@""];
+    
+    return string;
 }
 
 -(void)setModel:(ZZTStoryModel *)model{

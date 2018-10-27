@@ -8,8 +8,21 @@
 
 #import <UIKit/UIKit.h>
 @class ZZTStoryModel;
+
+@protocol ZZTStoryDetailCellDelegate <NSObject>
+
+-(void)updataStoryCellHeight:(NSString *)story index:(NSUInteger)index;
+
+@end
+
 @interface ZZTStoryDetailCell : UITableViewCell
 
 @property(nonatomic,strong) NSString *str;
+
 @property(nonatomic,strong) ZZTStoryModel *model;
+
+@property (nonatomic, weak) id <ZZTStoryDetailCellDelegate> delegate;
+
+@property(nonatomic,assign) NSUInteger index;
+
 @end

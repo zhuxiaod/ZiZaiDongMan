@@ -14,6 +14,9 @@
     CGPoint readPoint;
     NSString *chapterPage;
     NSInteger chapterId;
+    NSMutableArray *imageUrlArray;
+    NSString *TxTContent;
+    NSString *TXTFileName;
 }
 
 @property (nonatomic,assign) NSInteger chapterIndex;
@@ -25,5 +28,11 @@
 @property (nonatomic,strong) NSString *chapterPage;
 
 @property (nonatomic,assign) NSInteger chapterId;
+
+@property (nonatomic,strong) NSMutableArray *imageUrlArray;
+
+@property (nonatomic,strong) NSString *TxTContent;
+
+@property (nonatomic,strong) NSString *TXTFileName;
 
 @end

@@ -14,6 +14,7 @@
 
 - (void)cellHeightUpdataWithIndex:(NSUInteger)index Height:(CGFloat)height;
 
+- (void)saveImageUrl:(NSURL *)url index:(NSUInteger)index;
 @end
 
 @interface ZZTCartoonContentCell : UITableViewCell
