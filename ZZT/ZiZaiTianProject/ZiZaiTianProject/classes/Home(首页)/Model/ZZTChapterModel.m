@@ -18,6 +18,7 @@
 @synthesize imageUrlArray;
 @synthesize TxTContent;
 @synthesize TXTFileName;
+@synthesize storyModel;
 
 -(NSMutableArray *)imageUrlArray{
     if(!imageUrlArray){

@@ -20,6 +20,5 @@ pod 'XHImageViewer'
 pod 'IQKeyboardManager'
 pod 'TTTAttributedLabel'
 pod 'UIColor+SKYExtension'
-pod 'SDAutoLayout'
 end
 

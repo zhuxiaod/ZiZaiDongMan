@@ -32,4 +32,6 @@
 
 @property (nonatomic,strong) NSString *ifpraise;
 
+@property (nonatomic,strong) NSString *TXTContent;
+
 @end

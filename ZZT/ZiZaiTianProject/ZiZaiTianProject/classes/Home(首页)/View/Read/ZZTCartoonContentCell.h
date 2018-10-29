@@ -25,4 +25,6 @@
 
 @property (nonatomic,strong) ZZTCartoonModel *model;
 
+-(NSNumber *)getImgaeHeight;
+
 @end

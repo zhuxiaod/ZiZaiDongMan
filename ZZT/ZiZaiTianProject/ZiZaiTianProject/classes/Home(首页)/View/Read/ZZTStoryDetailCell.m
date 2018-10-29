@@ -51,15 +51,21 @@
 
 -(void)setStr:(NSString *)str{
     _str = str;
+    NSString *htmlString = @"";
+
     NSError *error;
     NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
     
-    NSString *htmlString = [NSString stringWithContentsOfURL:[NSURL URLWithString:str] encoding:enc error:&error];
+    if([[str substringToIndex:5]isEqualToString:@"/var/"])
+    {
+        htmlString = [[NSString alloc] initWithContentsOfFile:str encoding:enc error:&error];
+    }else{
+        htmlString = [NSString stringWithContentsOfURL:[NSURL URLWithString:str] encoding:enc error:&error];
+    }
+    
     if(!error){
         htmlString = [self getZZwithString:htmlString];
-//        self.stroyModel.content = htmlString;
-        //        [self.tableView reloadData];
-//        [self reloadCellWithIndex];
+
         if(_isReload == NO){
             //更新高度
             if ([self.delegate respondsToSelector:@selector(updataStoryCellHeight:index:)]) {
@@ -68,6 +74,7 @@
             _isReload = YES;
             [self.storyContent setText:htmlString];
         }
+        
     }else{
         NSLog(@"error:%@",error);
     }

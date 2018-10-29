@@ -12,6 +12,7 @@
 
 @property (nonatomic,strong) UIImageView *likeView;
 
+@property (nonatomic,strong) NSNumber *imageHeight;
 @end
 
 @implementation ZZTCartoonContentCell
@@ -23,6 +24,14 @@
         [self.contentView addSubview:imageView];
         
         _content = imageView;
+//
+//        imageView.sd_layout
+//        .leftSpaceToView(self.contentView, 0)
+//        .rightSpaceToView(self.contentView, 0)
+//        .topSpaceToView(self.contentView, 0)
+//        .autoHeightRatio(0);
+//        [self setupAutoHeightWithBottomView:_content bottomMargin:0];
+
         
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         
@@ -58,7 +67,7 @@
     _model = model;
     
 //    [_content sd_setImageWithURL:[NSURL URLWithString:model.cartoonUrl] placeholderImage:[UIImage imageNamed:@"peien"]];
-    
+    __block float height;
     [_content sd_setImageWithURL:[NSURL URLWithString:model.cartoonUrl] placeholderImage:[UIImage createImageWithColor:[UIColor blackColor]] options:0 completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
         CGFloat percentage;
         CGFloat imageHeight;
@@ -69,26 +78,26 @@
             percentage = Screen_Width / image.size.width;
             imageHeight = image.size.height * percentage;
         }
-        //刷新
-        if ([self.delegate respondsToSelector:@selector(cellHeightUpdataWithIndex:Height:)]) {
-            [self.delegate cellHeightUpdataWithIndex:model.index Height:imageHeight];
-        }
-        NSLog(@"imageURL:%@",[NSString stringWithFormat:@"%@",imageURL]);
-    }];
-//    [_content sd_setImageWithURL:[NSURL URLWithString:model.cartoonUrl] placeholderImage:[UIImage createImageWithColor:[UIColor blackColor] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-//        CGFloat percentage;
-//        CGFloat imageHeight;
-//        if(image.size.width > Screen_Width){
-//            percentage = image.size.width / Screen_Width;
-//            imageHeight = image.size.height / percentage;
-//        }else{
-//            percentage = Screen_Width / image.size.width;
-//            imageHeight = image.size.height * percentage;
-//        }
+        height = imageHeight;
+//        刷新
+//        判断图片是否加载完成 如果是不用
 //        if ([self.delegate respondsToSelector:@selector(cellHeightUpdataWithIndex:Height:)]) {
 //            [self.delegate cellHeightUpdataWithIndex:model.index Height:imageHeight];
 //        }
-//    }];
+        NSNumber *newHeight = [NSNumber numberWithDouble:height];
+////        NSNumber *index = [NSNumber numberWithDouble:model.index];
+//
+//        NSDictionary *dic = @{@"index":[NSString stringWithFormat:@"%ld",model.index],@"height":newHeight};
+        
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"cellreloadData" object:nil userInfo:dic];
+
+        self.imageHeight = newHeight;
+        NSLog(@"imageURL:%@",[NSString stringWithFormat:@"%@",imageURL]);
+    }];
+
 }
 
+-(NSNumber *)getImgaeHeight{
+    return self.imageHeight;
+}
 @end

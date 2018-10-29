@@ -30,7 +30,6 @@ PODS:
   - RTRootNavigationController (0.6.7):
     - RTRootNavigationController/Core (= 0.6.7)
   - RTRootNavigationController/Core (0.6.7)
-  - SDAutoLayout (2.2.1)
   - SDCycleScrollView (1.75):
     - SDWebImage (>= 4.0.0)
   - SDWebImage (4.4.1):
@@ -56,7 +55,6 @@ DEPENDENCIES:
   - PYSearch
   - Qiniu
   - RTRootNavigationController
-  - SDAutoLayout
   - SDCycleScrollView (~> 1.75)
   - SDWebImage (~> 4.0)
   - SVProgressHUD
@@ -81,7 +79,6 @@ SPEC REPOS:
     - PYSearch
     - Qiniu
     - RTRootNavigationController
-    - SDAutoLayout
     - SDCycleScrollView
     - SDWebImage
     - SVProgressHUD
@@ -105,7 +102,6 @@ SPEC CHECKSUMS:
   PYSearch: 55175e6046e2e1b5236a90c780351988e914a015
   Qiniu: 65384bca1cdb0480a68d9b9b8f54db53418c0355
   RTRootNavigationController: d6aa6cbb78a3eaecea4f6e4df63f15dd887836b8
-  SDAutoLayout: 8bf6b3bbc8b01f775d4defbb4fda2ace805461be
   SDCycleScrollView: 884b88f0266dd4708a0e1934975c69cb971707b1
   SDWebImage: 47e9b5b925cbce75946c23f0c42dd19464189af4
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
@@ -114,6 +110,6 @@ SPEC CHECKSUMS:
   "UITableView+FDTemplateLayoutCell": 5c949b4a5059c404b442926c0e80f81d10a2d66f
   XHImageViewer: 7b275d2aa829e56761c30303b9d51cae086a90b9
 
-PODFILE CHECKSUM: 8dc588f83c0e2cbff6a1fc383bfaa3714c001baa
+PODFILE CHECKSUM: bca9096da6422a6a1a1a203f05b37d88286f7d5c
 
 COCOAPODS: 1.5.3

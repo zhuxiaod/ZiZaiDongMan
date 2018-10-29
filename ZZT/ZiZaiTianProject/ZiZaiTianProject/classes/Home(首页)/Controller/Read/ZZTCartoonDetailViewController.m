@@ -106,6 +106,8 @@
 @property (nonatomic,strong) NSString *TXTURL;
 
 @property (nonatomic,strong) NSString *fileName;
+//刷新计数
+@property (nonatomic,assign) NSInteger reloadDataCount;
 
 @end
 
@@ -145,6 +147,7 @@ static bool needHide = false;
     }
     return _q;
 }
+
 #pragma mark Lazy load
 -(ZZTChapterModel *)chapterModel{
     if(!_chapterModel){
@@ -243,7 +246,36 @@ static bool needHide = false;
     
     //初始化 没有人回复
     self.isReply = NO;
+    
+    self.reloadDataCount = 0;
+    
+    self.tableView.fd_debugLogEnabled = YES;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNotification:) name:@"cellreloadData" object:nil];
 }
+
+-(void)receiveNotification:(NSNotification *)infoNotification {
+    
+    NSDictionary *dic = [infoNotification userInfo];
+    
+    NSString *index = [dic objectForKey:@"index"];
+    
+    NSNumber *height = [dic objectForKey:@"height"];
+    
+    NSInteger indexRow = [index integerValue];
+    
+    NSLog(@"height:%@  ",height);
+    
+    
+    [self.tableView beginUpdates];
+    if(height > 0)[self.imageCellHeightCache replaceObjectAtIndex:indexRow withObject:height];
+
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:indexRow inSection:0];
+    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+
+    [self.tableView endUpdates];
+}
+
 
 -(void)setupNavigationBar{
     ZXDNavBar *navbar = [[ZXDNavBar alloc]init];
@@ -441,14 +473,23 @@ static bool needHide = false;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"indexRow:%ld",(long)indexPath.row);
     if(indexPath.section == 0){
         //漫画   是这里的数据
         if([self.cartoonModel.type isEqualToString:@"1"]){
+          
             ZZTCartoonContentCell *cell = [tableView dequeueReusableCellWithIdentifier:CartoonContentCellIdentifier];
             cell.delegate = self;
             ZZTCartoonModel *model = self.cartoonDetailArray[indexPath.row];
             model.index = indexPath.row;
             cell.model = model;
+            NSNumber *imageHeight = [cell getImgaeHeight];
+            if(imageHeight < @400){
+                [self.imageCellHeightCache replaceObjectAtIndex:indexPath.row withObject:imageHeight];
+                NSLog(@"imageHeight:%@",imageHeight);
+//                [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+//                [self.tableView reloadData];
+            }
             return cell;
         }else{
             ZZTStoryDetailCell *cell = [tableView dequeueReusableCellWithIdentifier:story];
@@ -473,11 +514,21 @@ static bool needHide = false;
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if(indexPath.section == 0){
         if([self.cartoonModel.type isEqualToString:@"1"]){
+            NSLog(@"heightindexRow:%ld",(long)indexPath.row);
+//            [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
             return [self.imageCellHeightCache[indexPath.row] doubleValue];
+//            ZZTCartoonModel *model = self.cartoonDetailArray[indexPath.row];
+//            return [self.tableView cellHeightForIndexPath:indexPath model:model keyPath:@"model" cellClass:[ZZTCartoonContentCell class] contentViewWidth:SCREEN_WIDTH];
+//            return [self.tableView cellHeightForIndexPath:indexPath cellContentViewWidth:[UIScreen mainScreen].bounds.size.width];
+//            CartoonContentCellIdentifier
+//            return [self.tableView fd_heightForCellWithIdentifier:CartoonContentCellIdentifier cacheByKey:indexPath configuration:^(ZZTCartoonContentCell *cell) {
+//                ZZTCartoonModel *model = self.cartoonDetailArray[indexPath.row];
+//                cell.model = model;
+//            }];
         }else{
             ZZTStoryModel *model = self.cartoonDetailArray[indexPath.row];
-            if(model.content.length > 300){
-                return [self calculateStringHeight:model.content];
+            if(model.TXTContent.length > 300){
+                return [self calculateStringHeight:model.TXTContent];
             }else{
                 return 0;
             }
@@ -508,11 +559,16 @@ static bool needHide = false;
         [self loadLikeData];
     });
     
+
     dispatch_group_notify(self.group, dispatch_get_main_queue(), ^{
-//        [self.tableView reloadData];
-//        [self reloadCellWithIndex];
-//        UIImage *image = [self generateSnapshot];
-        [self downloadTxT];
+        //        [self.tableView reloadData];
+        //        [self reloadCellWithIndex];
+        //        UIImage *image = [self generateSnapshot];
+        if(!self.chapterModel.TXTFileName){
+            [self downloadTxT];
+        }else{
+//            [self.tableView reloadData];
+        }
     });
     
 }
@@ -536,7 +592,7 @@ static bool needHide = false;
     } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
         NSLog(@"File downloaded to: %@", filePath.path);
         //把response的文件名
-        self.fileName = response.suggestedFilename;
+        self.fileName = filePath.path;
     }];
     // 4. 开启下载任务
     [downloadTask resume];
@@ -558,6 +614,7 @@ static bool needHide = false;
         }else{
             
             NSDictionary *paramDict = @{
+                                        @"userId":@"0",
                                         @"id":[NSString stringWithFormat:@"%ld",_dataModel.id],
                                         @"pageNum":@"0",
                                         @"pageSize":@"200"
@@ -587,18 +644,21 @@ static bool needHide = false;
         }
     }else{
         if(self.chapterModel.TXTFileName){
-            //文件名
-             NSString *cachePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-            NSString *voiceName = [cachePath stringByAppendingPathComponent:self.chapterModel.TXTFileName];
             
             ZZTStoryModel *model = [[ZZTStoryModel alloc] init];
-            model.content = voiceName;
+            model = self.chapterModel.storyModel;
+            model.content = self.chapterModel.TXTFileName;
             [self.cartoonDetailArray addObject:model];
-            self.TXTURL = voiceName;
-            //            [self downLoadTxt:model.content];
+            self.fileName = self.chapterModel.TXTFileName;
+            self.stroyModel = model;
+
+            [self reloadCellWithIndex];
             dispatch_group_leave(self.group);
             [self reloadCellWithIndex];
-
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                [self.tableView reloadData];
+//            });
+//
         }else{
             //章节
             NSDictionary *paramDict = @{
@@ -615,17 +675,18 @@ static bool needHide = false;
                 if(array.count > 0) {
                     ZZTStoryModel *model = array[0];
                     self.stroyModel = model;
+                    //下载文件的地址  为了缓存下载
                     self.TXTURL = model.content;
-                    //下载txt
-                    [self downLoadTxt:model.content];
                 }
-                dispatch_group_leave(self.group);
-                [self reloadCellWithIndex];
 
-                //            [MBProgressHUD hideHUDForView:self.view];
+//                [self reloadCellWithIndex];
+                dispatch_group_leave(self.group);
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                [self.tableView reloadData];
+                [self reloadCellWithIndex];
+//            });
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                 dispatch_group_leave(self.group);
-                //            [MBProgressHUD hideHUDForView:self.view];
             }];
         }
     }
@@ -702,6 +763,7 @@ static bool needHide = false;
     //        dispatch_semaphore_t  sema = dispatch_semaphore_create(0);
     //头像
     NSDictionary *headDict = @{
+                               @"userId":@"0",
                                @"id":[NSString stringWithFormat:@"%ld",_dataModel.id],
                                @"pageNum":@"",
                                @"pageSize":@""
@@ -822,10 +884,9 @@ static bool needHide = false;
             
             [self.tableView reloadData];
 
-
             CGFloat y = self.chapterModel.readPoint.y;
         
-            [self.tableView setContentOffset:CGPointMake(0 , y)];
+            [self.tableView setContentOffset:CGPointMake(0 , y) animated:NO];
         });
     }else{
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -991,10 +1052,16 @@ static bool needHide = false;
     if(indexPath.section == 0){
         if([self.cartoonModel.type isEqualToString:@"1"]){
             return [self.imageCellHeightCache[indexPath.row] doubleValue];
+//            ZZTCartoonModel *model = self.cartoonDetailArray[indexPath.row];
+//           return [self.tableView cellHeightForIndexPath:indexPath model:model keyPath:@"model" cellClass:[ZZTCartoonContentCell class] contentViewWidth:SCREEN_WIDTH];
+//            return [self.tableView fd_heightForCellWithIdentifier:CartoonContentCellIdentifier cacheByKey:indexPath configuration:^(ZZTCartoonContentCell *cell) {
+//                ZZTCartoonModel *model = self.cartoonDetailArray[indexPath.row];
+//                cell.model = model;
+//            }];
         }else{
             ZZTStoryModel *model = self.cartoonDetailArray[indexPath.row];
-            if(model.content.length > 300){
-                return [self calculateStringHeight:model.content];
+            if(model.TXTContent.length > 300){
+                return [self calculateStringHeight:model.TXTContent];
             }else{
                 return 0;
             }
@@ -1184,6 +1251,7 @@ static bool needHide = false;
     }else{
         chapterModel.TxTContent = self.TXTURL;
         chapterModel.TXTFileName = self.fileName;
+        chapterModel.storyModel = self.stroyModel;
     }
     NSLog(@"退出：readPoint:%@",NSStringFromCGPoint(chapterModel.readPoint));
     
@@ -1445,23 +1513,30 @@ static bool needHide = false;
 
 #pragma mark cartCell代理
 -(void)cellHeightUpdataWithIndex:(NSUInteger)index Height:(CGFloat)height{
+    NSLog(@"index:%ld height:%f",index,height);
+    
     //存一个数
     //如果不一样就先刷新一下
-    NSNumber *newHeight = [NSNumber numberWithDouble:height];
-    [self.imageCellHeightCache replaceObjectAtIndex:index withObject:newHeight];
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-//    [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
-//    [self.tableView reloadData];
-//    if(index == self.cartoonDetailArray.count - 1){
-//        [self.tableView reloadData];
+//    NSNumber *newHeight = [NSNumber numberWithDouble:height];
+//    if(newHeight > 0)[self.imageCellHeightCache replaceObjectAtIndex:index withObject:newHeight];
+//    NSInteger indexCount = [self tableView:self.tableView numberOfRowsInSection:0];
+    
+//    if(index < indexCount - 1){
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+        //    [self.tableView reloadData];
+        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:nil];
 //    }
+//    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+////    [self.tableView reloadData];
+//    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+//    [self.tableView fd_reloadDataWithoutInvalidateIndexPathHeightCache];
+
+    
 }
 
 -(void)updataStoryCellHeight:(NSString *)story index:(NSUInteger)index{
-    ZZTStoryModel *model = [[ZZTStoryModel alloc] init];
-    model.content = story;
-    [self.cartoonDetailArray replaceObjectAtIndex:index withObject:model];
-    [self.tableView reloadData];
+    self.stroyModel.TXTContent = story;
+    [self.cartoonDetailArray replaceObjectAtIndex:index withObject:self.stroyModel];
 }
 
 #pragma mark - UITextViewDelegate
@@ -1598,6 +1673,8 @@ static bool needHide = false;
 - (void)dealloc {
     [self.kInputView removeFromSuperview];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+
 }
 
 -(void)shareWithSharePanel{
