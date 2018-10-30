@@ -166,12 +166,16 @@ static bool needHide = false;
 - (NSMutableArray *)imageCellHeightCache {
     if (!_imageCellHeightCache && self.cartoonDetailArray) {
         
-        NSMutableArray *arr = [[NSMutableArray alloc] init];
-        
-        for (NSInteger index = 0; index < self.cartoonDetailArray.count; index++) {
-            [arr addObject:@(imageCellHeight)];
+        if(self.chapterModel.imageHeightCache.count > 0){
+            _imageCellHeightCache = self.chapterModel.imageHeightCache;
+        }else{
+            NSMutableArray *arr = [[NSMutableArray alloc] init];
+            
+            for (NSInteger index = 0; index < self.cartoonDetailArray.count; index++) {
+                [arr addObject:@(imageCellHeight)];
+            }
+            _imageCellHeightCache = arr;
         }
-        _imageCellHeightCache = arr;
     }
     return _imageCellHeightCache;
 }
@@ -477,19 +481,12 @@ static bool needHide = false;
     if(indexPath.section == 0){
         //漫画   是这里的数据
         if([self.cartoonModel.type isEqualToString:@"1"]){
-          
+            //数据源
             ZZTCartoonContentCell *cell = [tableView dequeueReusableCellWithIdentifier:CartoonContentCellIdentifier];
             cell.delegate = self;
             ZZTCartoonModel *model = self.cartoonDetailArray[indexPath.row];
             model.index = indexPath.row;
             cell.model = model;
-            NSNumber *imageHeight = [cell getImgaeHeight];
-            if(imageHeight < @400){
-                [self.imageCellHeightCache replaceObjectAtIndex:indexPath.row withObject:imageHeight];
-                NSLog(@"imageHeight:%@",imageHeight);
-//                [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-//                [self.tableView reloadData];
-            }
             return cell;
         }else{
             ZZTStoryDetailCell *cell = [tableView dequeueReusableCellWithIdentifier:story];
@@ -505,7 +502,7 @@ static bool needHide = false;
         ZZTCircleModel *model = self.commentArray[indexPath.section - 2];
         CircleCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellId forIndexPath:indexPath];
         [cell setContentData:model index:indexPath.row];
-        cell.selectionStyle =UITableViewCellSelectionStyleNone;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.delegate = self;
         return cell;
     }
@@ -514,17 +511,7 @@ static bool needHide = false;
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if(indexPath.section == 0){
         if([self.cartoonModel.type isEqualToString:@"1"]){
-            NSLog(@"heightindexRow:%ld",(long)indexPath.row);
-//            [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
             return [self.imageCellHeightCache[indexPath.row] doubleValue];
-//            ZZTCartoonModel *model = self.cartoonDetailArray[indexPath.row];
-//            return [self.tableView cellHeightForIndexPath:indexPath model:model keyPath:@"model" cellClass:[ZZTCartoonContentCell class] contentViewWidth:SCREEN_WIDTH];
-//            return [self.tableView cellHeightForIndexPath:indexPath cellContentViewWidth:[UIScreen mainScreen].bounds.size.width];
-//            CartoonContentCellIdentifier
-//            return [self.tableView fd_heightForCellWithIdentifier:CartoonContentCellIdentifier cacheByKey:indexPath configuration:^(ZZTCartoonContentCell *cell) {
-//                ZZTCartoonModel *model = self.cartoonDetailArray[indexPath.row];
-//                cell.model = model;
-//            }];
         }else{
             ZZTStoryModel *model = self.cartoonDetailArray[indexPath.row];
             if(model.TXTContent.length > 300){
@@ -534,7 +521,8 @@ static bool needHide = false;
             }
         }
     }else{
-        return UITableViewAutomaticDimension;
+//        return UITableViewAutomaticDimension;
+        return 0;
     }
 }
 
@@ -740,7 +728,7 @@ static bool needHide = false;
         
         //加工一下评论的数据
 //        self.commentArray = array1;
-//        [self.tableView reloadData];
+        [self.tableView reloadData];
         dispatch_group_leave(self.group);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         dispatch_group_leave(self.group);//很重要,不能少
@@ -1048,30 +1036,25 @@ static bool needHide = false;
     }
 }
 
-- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if(indexPath.section == 0){
-        if([self.cartoonModel.type isEqualToString:@"1"]){
-            return [self.imageCellHeightCache[indexPath.row] doubleValue];
-//            ZZTCartoonModel *model = self.cartoonDetailArray[indexPath.row];
-//           return [self.tableView cellHeightForIndexPath:indexPath model:model keyPath:@"model" cellClass:[ZZTCartoonContentCell class] contentViewWidth:SCREEN_WIDTH];
-//            return [self.tableView fd_heightForCellWithIdentifier:CartoonContentCellIdentifier cacheByKey:indexPath configuration:^(ZZTCartoonContentCell *cell) {
-//                ZZTCartoonModel *model = self.cartoonDetailArray[indexPath.row];
-//                cell.model = model;
-//            }];
-        }else{
-            ZZTStoryModel *model = self.cartoonDetailArray[indexPath.row];
-            if(model.TXTContent.length > 300){
-                return [self calculateStringHeight:model.TXTContent];
-            }else{
-                return 0;
-            }
-        }
-    }else if(indexPath.section == 2){
-        return 100;
-    }else{
-        return 0;
-    }
-}
+//- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
+//    if(indexPath.section == 0){
+//        if([self.cartoonModel.type isEqualToString:@"1"]){
+//            return [self.imageCellHeightCache[indexPath.row] doubleValue];
+//        }else{
+//            ZZTStoryModel *model = self.cartoonDetailArray[indexPath.row];
+//            if(model.TXTContent.length > 300){
+//                return [self calculateStringHeight:model.TXTContent];
+//            }else{
+//                return 0;
+//            }
+//        }
+//    }else if(indexPath.section == 2){
+////        return 100;
+//        return 0;
+//    }else{
+//        return 0;
+//    }
+//}
 
 //续画
 //-(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
@@ -1164,19 +1147,20 @@ static bool needHide = false;
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     NSLog(@"%lf",scrollView.contentOffset.y);
     
-    //到顶部显示
-    if(targetContentOffset->y <= 64){
-        needHide = NO;
-        [self hideOrShowHeadBottomView:needHide];
-    }else{
-        needHide = YES;
-        [self hideOrShowHeadBottomView:needHide];
-
-        needHide = YES;
-        [self hideOrShowHeadBottomView:needHide];
-    }
-    self.isNavHide = needHide;
+//    //到顶部显示
+//    if(targetContentOffset->y <= 64){
+//        needHide = NO;
+//        [self hideOrShowHeadBottomView:needHide];
+//    }else{
+//        needHide = YES;
+//        [self hideOrShowHeadBottomView:needHide];
+//
+//        needHide = YES;
+//        [self hideOrShowHeadBottomView:needHide];
+//    }
+//    self.isNavHide = needHide;
 }
+
 
 - (void)hideOrShowHeadBottomView:(BOOL)needhide{
     
@@ -1248,6 +1232,7 @@ static bool needHide = false;
     chapterModel.readPoint = self.readPoint;
     if([self.cartoonModel.type isEqualToString:@"1"]){
         chapterModel.imageUrlArray = self.imageUrlArray;
+        chapterModel.imageHeightCache = self.imageCellHeightCache;
     }else{
         chapterModel.TxTContent = self.TXTURL;
         chapterModel.TXTFileName = self.fileName;
@@ -1346,6 +1331,19 @@ static bool needHide = false;
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     CGPoint readPoint = CGPointMake(scrollView.contentOffset.x, scrollView.contentOffset.y);
     _readPoint = readPoint;
+//    NSLog(@"%f",scrollView.contentOffset.y);
+    //到顶部显示
+    if(scrollView.contentOffset.y <= 64){
+        needHide = NO;
+        [self hideOrShowHeadBottomView:needHide];
+    }else{
+        needHide = YES;
+        [self hideOrShowHeadBottomView:needHide];
+
+        needHide = YES;
+        [self hideOrShowHeadBottomView:needHide];
+    }
+    self.isNavHide = needHide;
 }
 
 -(void)setIndexRow:(NSInteger)indexRow{
@@ -1408,130 +1406,16 @@ static bool needHide = false;
     }];
 }
 
-//// 开始拖拽
-//- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-//    [self hideKeyBoard];
-//}
-//
-//- (void)hideKeyBoard {
-//    [self.kTextView resignFirstResponder];
-//}
-//- (void)startComment {
-//    [self.kTextView becomeFirstResponder];
-//}
-
-//- (void)dealloc {
-//    [self.kInputView removeFromSuperview];
-//    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
-//}
-//
-//
-//- (void)textViewDidChange:(UITextView *)textView {
-//    if (textView.text.length > 5000) { // 限制5000字内
-//        textView.text = [textView.text substringToIndex:5000];
-//    }
-//    static CGFloat maxHeight = 36 + 24 * 2;//初始高度为36，每增加一行，高度增加24
-//    CGRect frame = textView.frame;
-//    CGSize constraintSize = CGSizeMake(frame.size.width, MAXFLOAT);
-//    CGSize size = [textView sizeThatFits:constraintSize];
-//    if (size.height >= maxHeight) {
-//        size.height = maxHeight;
-//        textView.scrollEnabled = YES;   // 允许滚动
-//    } else {
-//        textView.scrollEnabled = NO;    // 不允许滚动
-//    }
-//    if ((ceil(size.height) + 14) != self.kInputHeight) {
-//        CGPoint offset = self.tableView.contentOffset;
-//        CGFloat delta = ceil(size.height) + 14 - self.kInputHeight;
-//        offset.y += delta;
-//        if (offset.y < 0) {
-//            offset.y = 0;
-//        }
-//        [self.tableView setContentOffset:offset animated:NO];
-//        self.kInputHeight = ceil(size.height) + 14;
-//        [self.kInputView mas_updateConstraints:^(MASConstraintMaker *make) {
-//            make.height.equalTo(@(ceil(size.height) + 14));
-//        }];
-//    }
-//}
-//
-//- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
-//    if ([text isEqualToString:@"\n"]){
-//        if (self.kTextView.text.length > 0) {     // send Text
-////            [self sendMessage:self.kTextView.text];
-//        }
-//        [self.kInputView mas_updateConstraints:^(MASConstraintMaker *make) {
-//            make.height.equalTo(@50);
-//        }];
-//        [self.kTextView setText:@""];
-//        self.kInputHeight = 50;
-//        [self hideKeyBoard];
-//        return NO;
-//    }
-//    return YES;
-//}
-//
-//#pragma mark - 通知方法
-//- (void)keyboardWillChangeFrame:(NSNotification *)notification {
-//    NSDictionary *userInfo = notification.userInfo;
-//    // 1,取出键盘动画的时间
-//    CGFloat duration = [userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
-//    // 2,取得键盘将要移动到的位置的frame
-//    CGRect keyboardFrame = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-//    // 3,计算kInputView需要平移的距离
-//    CGFloat moveY = self.view.frame.size.height + TOPBAR_HEIGHT - keyboardFrame.origin.y;
-//    // 4,执行动画
-//
-//    UIWindow *window = [UIApplication sharedApplication].keyWindow;
-////    SectionHeaderView *headerView = (SectionHeaderView *)[self.tableView headerViewForSection:self.selectedSection];
-////    CGRect rect = [headerView.superview convertRect:headerView.frame toView:window];
-////    CircleItem *item = self.dataMuArr[self.selectedSection];
-////    CGFloat cellHeight = item.likerHeight;
-////    for (NSNumber *num in item.commentHeightArr) {
-////        cellHeight += [num floatValue];
-////    }
-////    CGFloat footerMaxY = CGRectGetMaxY(rect) + cellHeight + item.footerHeight;
-////    CGFloat delta = footerMaxY - (SCREEN_MAX_LENGTH - (moveY + self.kInputHeight));
-////    CGPoint offset = self.tableView.contentOffset;
-//////    offset.y += delta;
-////    if (offset.y < 0) {
-////        offset.y = 0;
-////    }
-////    [self.tableView setContentOffset:offset animated:NO];
-////    [self.kInputView mas_updateConstraints:^(MASConstraintMaker *make) {
-////        if (moveY == 0) {
-////            make.bottom.equalTo(@(self.kInputHeight));
-////        } else {
-////            make.bottom.equalTo(@(-moveY));
-////        }
-////    }];
-////    [UIView animateWithDuration:duration animations:^{
-////        [[UIApplication sharedApplication].keyWindow layoutIfNeeded];
-////    }];
-//}
-////cell 漫画 3
-
 #pragma mark cartCell代理
 -(void)cellHeightUpdataWithIndex:(NSUInteger)index Height:(CGFloat)height{
-    NSLog(@"index:%ld height:%f",index,height);
+    //走到这里说明第一次图片第一次来   记录高度
+    NSNumber *newHeight = [NSNumber numberWithDouble:height];
     
-    //存一个数
-    //如果不一样就先刷新一下
-//    NSNumber *newHeight = [NSNumber numberWithDouble:height];
-//    if(newHeight > 0)[self.imageCellHeightCache replaceObjectAtIndex:index withObject:newHeight];
-//    NSInteger indexCount = [self tableView:self.tableView numberOfRowsInSection:0];
+    if(newHeight > 0)[self.imageCellHeightCache replaceObjectAtIndex:index withObject:newHeight];
     
-//    if(index < indexCount - 1){
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-        //    [self.tableView reloadData];
-        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:nil];
-//    }
-//    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-////    [self.tableView reloadData];
-//    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-//    [self.tableView fd_reloadDataWithoutInvalidateIndexPathHeightCache];
-
+     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
     
+    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
 }
 
 -(void)updataStoryCellHeight:(NSString *)story index:(NSUInteger)index{
@@ -1554,6 +1438,7 @@ static bool needHide = false;
     } else {
         textView.scrollEnabled = NO;    // 不允许滚动
     }
+    
     if ((ceil(size.height) + 14) != self.kInputHeight) {
         CGPoint offset = self.tableView.contentOffset;
         CGFloat delta = ceil(size.height) + 14 - self.kInputHeight;
@@ -1649,7 +1534,7 @@ static bool needHide = false;
 
 -(void)sendMessageSuccess{
     //刷新数据
-    [self loadCommentData];
+//    [self loadCommentData];
     [self.tableView reloadData];
     
     //小菊花

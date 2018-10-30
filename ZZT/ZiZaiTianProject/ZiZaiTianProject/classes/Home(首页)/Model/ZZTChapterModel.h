@@ -15,6 +15,7 @@
     NSString *chapterPage;
     NSInteger chapterId;
     NSMutableArray *imageUrlArray;
+    NSMutableArray *imageHeightCache;
     NSString *TxTContent;
     NSString *TXTFileName;
     ZZTStoryModel *storyModel;
@@ -37,5 +38,8 @@
 @property (nonatomic,strong) NSString *TXTFileName;
 
 @property (nonatomic,strong) ZZTStoryModel *storyModel;
+
+@property (nonatomic,strong) NSMutableArray *imageHeightCache;
+
 
 @end

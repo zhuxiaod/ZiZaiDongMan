@@ -96,7 +96,7 @@ static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
             [self.contentView.mj_footer endRefreshing];
         }
         //page+size
-        self.pageNumber += 6;
+        self.pageNumber += 12;
         [self.contentView.mj_header endRefreshing];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [self.contentView.mj_footer endRefreshing];

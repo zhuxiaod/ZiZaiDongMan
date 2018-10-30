@@ -69,5 +69,29 @@
     return imageData;
 }
 
++(UIImage *)compressImageWith:(UIImage *)image{
+    float imageWidth = image.size.width;
+    float imageHeight = image.size.height;
+    float width = 320;
+    float height = image.size.height / (image.size.width/width);
+    
+    float widthScale = imageWidth / width;
+    float heightScale = imageHeight / height;
+    
+    UIGraphicsBeginImageContext(CGSizeMake(width, height));
+    
+    if(widthScale > heightScale){
+        [image drawInRect:CGRectMake(0, 0, imageWidth/heightScale, height)];
+    }else{
+        [image drawInRect:CGRectMake(0, 0, width, imageWidth/widthScale)];
+    }
+
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return newImage;
+
+}
 
 @end

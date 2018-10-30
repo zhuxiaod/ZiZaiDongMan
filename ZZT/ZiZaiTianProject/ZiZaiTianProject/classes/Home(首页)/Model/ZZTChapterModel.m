@@ -19,12 +19,20 @@
 @synthesize TxTContent;
 @synthesize TXTFileName;
 @synthesize storyModel;
+@synthesize imageHeightCache;
 
 -(NSMutableArray *)imageUrlArray{
     if(!imageUrlArray){
         imageUrlArray = [NSMutableArray array];
     }
     return imageUrlArray;
+}
+
+-(NSMutableArray *)imageHeightCache{
+    if(!imageHeightCache){
+        imageHeightCache = [NSMutableArray array];
+    }
+    return imageHeightCache;
 }
 
 // 归档属性

@@ -24,7 +24,7 @@
         [self.contentView addSubview:imageView];
         
         _content = imageView;
-//
+
 //        imageView.sd_layout
 //        .leftSpaceToView(self.contentView, 0)
 //        .rightSpaceToView(self.contentView, 0)
@@ -68,7 +68,9 @@
     
 //    [_content sd_setImageWithURL:[NSURL URLWithString:model.cartoonUrl] placeholderImage:[UIImage imageNamed:@"peien"]];
     __block float height;
-    [_content sd_setImageWithURL:[NSURL URLWithString:model.cartoonUrl] placeholderImage:[UIImage createImageWithColor:[UIColor blackColor]] options:0 completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+    [[SDImageCache sharedImageCache] setValue:nil forKey:@"memCache"];
+
+    [_content sd_setImageWithURL:[NSURL URLWithString:model.cartoonUrl] placeholderImage:[UIImage createImageWithColor:[UIColor whiteColor]] options:0 completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
         CGFloat percentage;
         CGFloat imageHeight;
         if(image.size.width > Screen_Width){
@@ -81,18 +83,14 @@
         height = imageHeight;
 //        刷新
 //        判断图片是否加载完成 如果是不用
-//        if ([self.delegate respondsToSelector:@selector(cellHeightUpdataWithIndex:Height:)]) {
-//            [self.delegate cellHeightUpdataWithIndex:model.index Height:imageHeight];
-//        }
-        NSNumber *newHeight = [NSNumber numberWithDouble:height];
-////        NSNumber *index = [NSNumber numberWithDouble:model.index];
-//
-//        NSDictionary *dic = @{@"index":[NSString stringWithFormat:@"%ld",model.index],@"height":newHeight};
+        if(cacheType == SDImageCacheTypeNone){
+            if ([self.delegate respondsToSelector:@selector(cellHeightUpdataWithIndex:Height:)]) {
+                [self.delegate cellHeightUpdataWithIndex:model.index Height:imageHeight];
+            }
+        }
         
-//        [[NSNotificationCenter defaultCenter] postNotificationName:@"cellreloadData" object:nil userInfo:dic];
-
+        NSNumber *newHeight = [NSNumber numberWithDouble:height];
         self.imageHeight = newHeight;
-        NSLog(@"imageURL:%@",[NSString stringWithFormat:@"%@",imageURL]);
     }];
 
 }

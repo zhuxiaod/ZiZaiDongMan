@@ -14,6 +14,7 @@
 #import "ZZTCartoonDetailViewController.h"
 #import "ZZTJiXuYueDuModel.h"
 #import "ZZTCarttonDetailModel.h"
+#import "ZZTChapterChooseView.h"
 
 @interface ZZTWordDetailViewController ()<UITableViewDelegate,UITableViewDataSource,UINavigationControllerDelegate>
 
@@ -40,6 +41,9 @@
 @property (nonatomic,assign) ZXDNavBar *navbar;
 
 @property (nonatomic,strong) ZZTWordsDetailHeadView *wordDetailHeadView;
+
+@property (nonatomic,strong) ZZTChapterChooseView *chapterChooseView;
+
 @end
 
 NSString *zztWordListCell = @"zztWordListCell";
@@ -317,11 +321,14 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     //第一个View单独一节
     //
 //    return 1;
-    return 2;
+//    return 2;
+    return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if(section == 0){
+        return 0;
+    }else if (section == 1){
         return 0;
     }else{
         return self.wordList.count;
@@ -351,8 +358,6 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
         cartoonDetailVC.testModel = self.model;
     }
     cartoonDetailVC.hidesBottomBarWhenPushed = YES;
-
-
     
     [self.navigationController pushViewController:cartoonDetailVC animated:YES];
 }
@@ -375,10 +380,12 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if(section == 0){
         return 190;
-    }else{
+    }else if(section == 1){
         //字符串
         self.descHeadView.desc = self.ctDetail.intro;
         return self.descHeadView.myHeight;
+    }else{
+        return Screen_Height * 0.16;
     }
 }
 
@@ -388,14 +395,25 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
         //设置数据
         self.wordDetailHeadView.detailModel = self.ctDetail;
         return self.wordDetailHeadView;
-    }else{
+    }else if(section == 1){
         //介绍
         self.descHeadView.desc = self.ctDetail.intro;
         return self.descHeadView;
+    }else{
+        return self.chapterChooseView;
     }
 }
 
+
 #pragma mark - lazyLoad
+- (ZZTChapterChooseView *)chapterChooseView{
+    if(!_chapterChooseView){
+        _chapterChooseView = [[ZZTChapterChooseView alloc] initWithFrame:self.view.bounds];
+        _chapterChooseView.backgroundColor = [UIColor whiteColor];
+    }
+    return _chapterChooseView;
+}
+
 - (ZZTWordDescSectionHeadView *)descHeadView {
     if (!_descHeadView) {
         
@@ -513,8 +531,6 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
         [_starRead setTitle:@"开始阅读" forState:UIControlStateNormal];
     }
 }
-//- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
-//    return 1;
-//}
+
 
 @end

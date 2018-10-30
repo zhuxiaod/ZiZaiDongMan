@@ -68,7 +68,7 @@
 #import <UShareUI/UMSocialUIUtility.h>
 #import "ZZTUserModel.h"
 #import "NSString+SKYExtension.h"
-//#import <SDAutoLayout.h>
+#import <SDAutoLayout.h>
 #import "ZZTCommentHeaderView.h"
 #import <TTTAttributedLabel.h>
 #import "UIColor+SKYExtension.h"
@@ -124,13 +124,13 @@
 //#define ZZTAPI @"http://192.168.0.165:8888/"
 
 //测试
-//#define ZZTAPI @"http://192.168.0.142:8888/"
+#define ZZTAPI @"http://192.168.0.142:8888/"
 
 //#define BaseUrl(url)  [NSString stringWithFormat:@"http://192.168.0.142:8888/%@",(url)]
 
 //#import "UITableView+ZFTableViewSnapshot.h"
 
-#define ZZTAPI @"http://120.79.178.191:8888/"
+//#define ZZTAPI @"http://120.79.178.191:8888/"
 
 //本地
 //192.168.0.165
