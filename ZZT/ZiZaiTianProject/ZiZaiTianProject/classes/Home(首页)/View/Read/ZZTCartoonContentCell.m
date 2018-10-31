@@ -68,8 +68,6 @@
     
 //    [_content sd_setImageWithURL:[NSURL URLWithString:model.cartoonUrl] placeholderImage:[UIImage imageNamed:@"peien"]];
     __block float height;
-    [[SDImageCache sharedImageCache] setValue:nil forKey:@"memCache"];
-
     [_content sd_setImageWithURL:[NSURL URLWithString:model.cartoonUrl] placeholderImage:[UIImage createImageWithColor:[UIColor whiteColor]] options:0 completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
         CGFloat percentage;
         CGFloat imageHeight;
@@ -84,11 +82,20 @@
 //        刷新
 //        判断图片是否加载完成 如果是不用
         if(cacheType == SDImageCacheTypeNone){
+            NSLog(@"我是刚被下载下来的");
+        }
+        if(cacheType == SDImageCacheTypeDisk){
+            NSLog(@"我本来就在");
+        }
+        if(cacheType == SDImageCacheTypeMemory){
+            NSLog(@"我是内存里面的");
+        }
+//        if(cacheType == SDImageCacheTypeNone || cacheType == SDImageCacheTypeDisk){
             if ([self.delegate respondsToSelector:@selector(cellHeightUpdataWithIndex:Height:)]) {
                 [self.delegate cellHeightUpdataWithIndex:model.index Height:imageHeight];
             }
-        }
-        
+//        }
+    
         NSNumber *newHeight = [NSNumber numberWithDouble:height];
         self.imageHeight = newHeight;
     }];

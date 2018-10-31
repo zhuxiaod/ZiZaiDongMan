@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+@class ZZTChapterChooseModel;
+
 @interface ZZTChapterChooseCell : UICollectionViewCell
+
+@property (nonatomic,strong) NSNumber *isChangeStyle;
+
+@property (nonatomic,strong) ZZTChapterChooseModel *model;
 
 @end

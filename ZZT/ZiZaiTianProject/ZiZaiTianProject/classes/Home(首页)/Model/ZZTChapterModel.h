@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 @class ZZTStoryModel;
+@class UserInfo;
+
 @interface ZZTChapterModel : NSObject<NSCoding>{
     NSInteger chapterIndex;
     NSString *chapterName;
@@ -19,6 +21,7 @@
     NSString *TxTContent;
     NSString *TXTFileName;
     ZZTStoryModel *storyModel;
+    UserInfo *autherData;
 }
 
 @property (nonatomic,assign) NSInteger chapterIndex;
@@ -40,6 +43,8 @@
 @property (nonatomic,strong) ZZTStoryModel *storyModel;
 
 @property (nonatomic,strong) NSMutableArray *imageHeightCache;
+
+@property (nonatomic,strong) UserInfo *autherData;
 
 
 @end

@@ -12,7 +12,7 @@
 
 @property (nonatomic,copy) NSString *desc;
 
-@property (nonatomic,copy) void (^needReloadHeight)();
+@property (nonatomic,copy) void (^needReloadHeight)(void);
 
 - (CGFloat)myHeight;
 

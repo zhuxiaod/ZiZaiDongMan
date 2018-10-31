@@ -15,8 +15,9 @@
 #import "ZZTJiXuYueDuModel.h"
 #import "ZZTCarttonDetailModel.h"
 #import "ZZTChapterChooseView.h"
+#import "ZZTChapterChooseModel.h"
 
-@interface ZZTWordDetailViewController ()<UITableViewDelegate,UITableViewDataSource,UINavigationControllerDelegate>
+@interface ZZTWordDetailViewController ()<UITableViewDelegate,UITableViewDataSource,UINavigationControllerDelegate,ZZTChapterChooseViewDelegate>
 
 @property (nonatomic,strong) ZZTWordsDetailHeadView *head;
 
@@ -67,7 +68,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     
     self.isHave = NO;
 
-    self.view.backgroundColor = [UIColor colorWithRGB:@"121,105,212"];
+    self.view.backgroundColor = [UIColor whiteColor];
     
     //设置挡住tableView白色的view
     [self setupShieldView];
@@ -83,7 +84,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 }
 
 -(void)setupShieldView{
-    UIView *shieldView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, Screen_Width, TOPBAR_HEIGHT * 2)];
+    UIView *shieldView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, Screen_Width, 300)];
     [shieldView setBackgroundColor:[UIColor colorWithRGB:@"121,105,212"]];
     [self.view addSubview:shieldView];
 }
@@ -224,9 +225,9 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
         [self.navbar.centerButton setTitle:mode.bookName forState:UIControlStateNormal];
         [self.contentView reloadData];
         if(self.isId == YES){
-            [self loadListData:self.cartoonDetail.id];
+            [self loadListData:self.cartoonDetail.id pageNum:@"1" isFirst:YES];
         }else{
-            [self loadListData:self.cartoonDetail.cartoonId];
+            [self loadListData:self.cartoonDetail.cartoonId pageNum:@"1" isFirst:YES];
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
@@ -234,11 +235,13 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 }
 
 //目录
--(void)loadListData:(NSString *)ID{
+-(void)loadListData:(NSString *)ID pageNum:(NSString *)pageNum isFirst:(BOOL)isFirst{
     NSDictionary *paramDict = @{
                                 @"cartoonId":ID,
                                 @"type":self.cartoonDetail.type,//1.漫画 剧本
                                 @"cartoonType":self.cartoonDetail.cartoonType, //1 独创 2 众创
+                                @"pageNum":pageNum,
+                                @"pageSize":@"5"
                                 };
 //    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
@@ -246,9 +249,13 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterlist"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic2 = [tool decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
-        NSMutableArray *array = [ZZTChapterlistModel mj_objectArrayWithKeyValuesArray:dic2];
+        NSMutableArray *array = [ZZTChapterlistModel mj_objectArrayWithKeyValuesArray:dic2[@"list"]];
+//        NSMutableArray *array = [ZZTChapterlistModel mj_objectArrayWithKeyValuesArray:dic2];
         self.wordList = array;
-        if(array.count > 0){
+        //总共的数量
+        NSNumber *totalData = dic2[@"total"];
+        self.chapterChooseView.total = [totalData integerValue];
+        if(array.count > 0 && isFirst == YES){
             ZZTChapterlistModel *model = array[0];
             if(self.isHave == NO){
                 if([self.cartoonDetail.type isEqualToString:@"1"]){
@@ -384,8 +391,9 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
         //字符串
         self.descHeadView.desc = self.ctDetail.intro;
         return self.descHeadView.myHeight;
-    }else{
-        return Screen_Height * 0.16;
+    }
+    else{
+        return self.chapterChooseView.myHeight;
     }
 }
 
@@ -399,19 +407,34 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
         //介绍
         self.descHeadView.desc = self.ctDetail.intro;
         return self.descHeadView;
-    }else{
+    }
+    else{
+        
         return self.chapterChooseView;
     }
 }
-
 
 #pragma mark - lazyLoad
 - (ZZTChapterChooseView *)chapterChooseView{
     if(!_chapterChooseView){
         _chapterChooseView = [[ZZTChapterChooseView alloc] initWithFrame:self.view.bounds];
+        _chapterChooseView.delegate = self;
+        weakself(self);
+        _chapterChooseView.needReloadHeight = ^{
+            [weakSelf.contentView reloadData];
+        };
         _chapterChooseView.backgroundColor = [UIColor whiteColor];
     }
     return _chapterChooseView;
+}
+
+-(void)chapterChooseView:(ZZTChapterChooseView *)chapterChooseView didItemWithModel:(ZZTChapterChooseModel *)model{
+    
+    if(self.isId == YES){
+        [self loadListData:self.cartoonDetail.id pageNum:[NSString stringWithFormat:@"%ld",model.APIPage] isFirst:NO];
+    }else{
+        [self loadListData:self.cartoonDetail.cartoonId pageNum:[NSString stringWithFormat:@"%ld",model.APIPage] isFirst:NO];
+    }
 }
 
 - (ZZTWordDescSectionHeadView *)descHeadView {
@@ -521,8 +544,6 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
         if([self.cartoonDetail.type isEqualToString:@"1"]){
             //得到最后一章
             [_pageBtn setTitle:[NSString stringWithFormat:@"%@画",model.chapterPage] forState:UIControlStateNormal];
-
-//            [_pageBtn setTitle:[NSString stringWithFormat:@"%@画",self.model.bookChapter] forState:UIControlStateNormal];
         }else{
             [_pageBtn setTitle:[NSString stringWithFormat:@"%@",model.chapterName] forState:UIControlStateNormal];
         }

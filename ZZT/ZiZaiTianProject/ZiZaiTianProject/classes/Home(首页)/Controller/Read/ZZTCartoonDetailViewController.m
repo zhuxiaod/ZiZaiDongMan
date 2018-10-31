@@ -268,8 +268,7 @@ static bool needHide = false;
     
     NSInteger indexRow = [index integerValue];
     
-    NSLog(@"height:%@  ",height);
-    
+    NSLog(@"height:%@",height);
     
     [self.tableView beginUpdates];
     if(height > 0)[self.imageCellHeightCache replaceObjectAtIndex:indexRow withObject:height];
@@ -597,6 +596,7 @@ static bool needHide = false;
         if(self.chapterModel.imageUrlArray.count > 0){
             self.cartoonDetailArray = self.chapterModel.imageUrlArray;
             self.imageUrlArray = self.cartoonDetailArray;
+            self.author = self.chapterModel.autherData;
             dispatch_group_leave(self.group);
             [self reloadCellWithIndex];
         }else{
@@ -616,6 +616,7 @@ static bool needHide = false;
                     NSDictionary *dict = dataArray[0];
                     NSArray *array = dict[@"list"];
                     NSMutableArray *cartArray = [ZZTCartoonModel mj_objectArrayWithKeyValuesArray:array];
+                    //作者名字 信息
                     UserInfo *author = [UserInfo mj_objectWithKeyValues:dataArray[1]];
                     self.cartoonDetailArray = cartArray;
                     self.imageUrlArray = cartArray;
@@ -639,14 +640,11 @@ static bool needHide = false;
             [self.cartoonDetailArray addObject:model];
             self.fileName = self.chapterModel.TXTFileName;
             self.stroyModel = model;
-
+            self.author = self.chapterModel.autherData;
             [self reloadCellWithIndex];
             dispatch_group_leave(self.group);
             [self reloadCellWithIndex];
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                [self.tableView reloadData];
-//            });
-//
+
         }else{
             //章节
             NSDictionary *paramDict = @{
@@ -658,21 +656,19 @@ static bool needHide = false;
                 NSString *data = responseObject[@"result"];
                 NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:data];
                 NSMutableArray *array = [ZZTStoryModel mj_objectArrayWithKeyValuesArray:dic];
-                //                self.imageUrlArray = array;
                 self.cartoonDetailArray = array;
                 if(array.count > 0) {
                     ZZTStoryModel *model = array[0];
                     self.stroyModel = model;
                     //下载文件的地址  为了缓存下载
                     self.TXTURL = model.content;
+                    //作者信息
+                    UserInfo *userData = [UserInfo initAuthorWithUserId:model.userId headImg:model.headimg nikeName:model.nickName];
+                    self.author = userData;
                 }
 
-//                [self reloadCellWithIndex];
                 dispatch_group_leave(self.group);
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                [self.tableView reloadData];
                 [self reloadCellWithIndex];
-//            });
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                 dispatch_group_leave(self.group);
             }];
@@ -743,34 +739,9 @@ static bool needHide = false;
         user.id = self.stroyModel.id;
         user.userId = self.stroyModel.userId;
         self.author = user;
-//        [self.tableView reloadData];
-        //        [self reloadCellWithIndex];
         dispatch_group_leave(self.group);
         return;
     }
-    //        dispatch_semaphore_t  sema = dispatch_semaphore_create(0);
-    //头像
-    NSDictionary *headDict = @{
-                               @"userId":@"0",
-                               @"id":[NSString stringWithFormat:@"%ld",_dataModel.id],
-                               @"pageNum":@"",
-                               @"pageSize":@""
-                               };
-    //    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getCartoonCenter"] parameters:headDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-        NSArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
-//        if(array.count != 0){
-//            UserInfo *author = array[1];
-//            self.author = author;
-//        }
-//        [self.tableView reloadData];
-        //        [self reloadCellWithIndex];
-        dispatch_group_leave(self.group);
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        dispatch_group_leave(self.group);
-    }];
 }
 
 //下载txt
@@ -1230,6 +1201,8 @@ static bool needHide = false;
     chapterModel.chapterIndex = self.indexRow;//第几行
     chapterModel.chapterId = self.dataModel.id;//章节id
     chapterModel.readPoint = self.readPoint;
+    chapterModel.autherData = self.author;
+    
     if([self.cartoonModel.type isEqualToString:@"1"]){
         chapterModel.imageUrlArray = self.imageUrlArray;
         chapterModel.imageHeightCache = self.imageCellHeightCache;
@@ -1289,18 +1262,6 @@ static bool needHide = false;
     [NSKeyedArchiver archiveRootObject:arrayDict toFile:path];
     NSLog(@"readPoint111111:%@",NSStringFromCGPoint(_readPoint));
 }
-
-//点击继续阅读的时候 才会传这个
-//
-//-(void)setModel:(ZZTJiXuYueDuModel *)model{
-//    _model = model;
-//    if(model){
-//        self.isJXYD = YES;
-//    }
-//    else{
-//        self.isJXYD = NO;
-//    }
-//}
 
 -(void)setTestModel:(ZZTJiXuYueDuModel *)testModel{
     _testModel = testModel;
@@ -1409,12 +1370,15 @@ static bool needHide = false;
 #pragma mark cartCell代理
 -(void)cellHeightUpdataWithIndex:(NSUInteger)index Height:(CGFloat)height{
     //走到这里说明第一次图片第一次来   记录高度
+    if(isnan(height)){
+        height = 500;
+    }
     NSNumber *newHeight = [NSNumber numberWithDouble:height];
-    
+
     if(newHeight > 0)[self.imageCellHeightCache replaceObjectAtIndex:index withObject:newHeight];
-    
+
      NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-    
+
     [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
 }
 
@@ -1516,7 +1480,6 @@ static bool needHide = false;
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/insertCartoonComment"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [MBProgressHUD hideHUDForView:self.view animated:YES];
         [self sendMessageSuccess];
-   
         //关闭键盘
         //如果字数小于0 不能发布
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -1559,7 +1522,6 @@ static bool needHide = false;
     [self.kInputView removeFromSuperview];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-
 }
 
 -(void)shareWithSharePanel{
@@ -1619,7 +1581,6 @@ static bool needHide = false;
 
 - (UIImage *)getImage:(UITableView *)cell
 {
-    
     UIImage* viewImage = nil;
     UITableView *scrollView = self.tableView;
     UIGraphicsBeginImageContextWithOptions(scrollView.contentSize, scrollView.opaque, 0.0);
@@ -1650,4 +1611,107 @@ static bool needHide = false;
     return viewImage;
 }
 
+#pragma mark 预加载
+//当view开始减速的时候
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{   //预加载
+    [self prefetchImagesForTableView:self.tableView];
+}
+
+//当view已经停止的时候
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{   //预加载
+    if(!decelerate){
+        [self prefetchImagesForTableView:self.tableView];
+    }
+}
+
+-(void)prefetchImagesForTableView:(UITableView *)tableView{
+    //获取显示出来的行
+    NSArray *indexPaths = [self.tableView indexPathsForVisibleRows];
+    //如果行为0 不继续执行
+    if ([indexPaths count] == 0) return;
+    //显示出来的第一行
+    NSIndexPath *minimumIndexPath = indexPaths[0];
+    //显示出来的最后一行
+    NSIndexPath *maximumIndexPath = [indexPaths lastObject];
+    //遍历
+    for (NSIndexPath *indexPath in indexPaths)
+    {   //得到最小行 和 最大行
+        if (indexPath.section < minimumIndexPath.section || (indexPath.section == minimumIndexPath.section && indexPath.row < minimumIndexPath.row)) minimumIndexPath = indexPath;
+        if (indexPath.section > maximumIndexPath.section || (indexPath.section == maximumIndexPath.section && indexPath.row > maximumIndexPath.row)) maximumIndexPath = indexPath;
+    }
+    
+//  预加载的图片数组
+    NSMutableArray *imageURLs = [NSMutableArray array];
+    
+//    indexPaths = [self tableView:tableView priorIndexPathCount:3 fromIndexPath:minimumIndexPath];
+    
+//    for (NSIndexPath *indexPath in indexPaths){
+//        ZZTCartoonModel *model = self.cartoonDetailArray[indexPath.row];
+//        [imageURLs addObject:model];
+//    }
+    //获取下面的行数
+    indexPaths = [self tableView:tableView nextIndexPathCount:3 fromIndexPath:maximumIndexPath];
+    
+    for (NSIndexPath *indexPath in indexPaths){
+        ZZTCartoonModel *model = self.cartoonDetailArray[indexPath.row];
+        [imageURLs addObject:model.cartoonUrl];
+    }
+    
+    // now prefetch
+    if ([imageURLs count] > 0)
+    {
+        [[SDWebImagePrefetcher sharedImagePrefetcher] prefetchURLs:imageURLs];
+    }
+}
+
+- (NSArray *)tableView:(UITableView *)tableView priorIndexPathCount:(NSInteger)count fromIndexPath:(NSIndexPath *)indexPath
+{
+    NSMutableArray *indexPaths = [NSMutableArray array];
+    NSInteger row = indexPath.row;
+    NSInteger section = indexPath.section;
+    
+    for (NSInteger i = 0; i < count; i++) {
+        //如果是第一行不再进行
+        if (row == 0) {
+            if (section == 0) {
+                return indexPaths;
+            } else {
+                //如果不是第一节
+                section--;
+                row = [tableView numberOfRowsInSection:section] - 1;
+            }
+        } else {
+            row--;
+        }
+        [indexPaths addObject:[NSIndexPath indexPathForRow:row inSection:section]];
+        NSLog(@"priorIndexPathCount:%ld row:%ld",section,row);
+    }
+    return indexPaths;
+}
+//获取下行的数据索引
+- (NSArray *)tableView:(UITableView *)tableView nextIndexPathCount:(NSInteger)count fromIndexPath:(NSIndexPath *)indexPath
+{
+    //创建数组
+    NSMutableArray *indexPaths = [NSMutableArray array];
+    //第几行
+    NSInteger row = indexPath.row;
+    //第几节
+    NSInteger section = indexPath.section;
+    //这一节有多少行
+    NSInteger rowCountForSection = [tableView numberOfRowsInSection:section];
+    //需要获取几行数据
+    for (NSInteger i = 0; i < count; i++) {
+        //下一行
+        row++;
+        //如果row是最后一行
+        if (row == rowCountForSection) {
+            return indexPaths;
+        }
+        [indexPaths addObject:[NSIndexPath indexPathForRow:row inSection:section]];
+        NSLog(@"nextIndexPathCount:%ld row:%ld",section,row);
+    }
+    return indexPaths;
+}
 @end

@@ -10,4 +10,10 @@
 
 @interface ZZTChapterChooseModel : NSObject
 
+@property (nonatomic,strong) NSString *benginPage;
+
+@property (nonatomic,strong) NSString *endPage;
+
+@property (nonatomic,assign) NSInteger APIPage;
+
 @end

@@ -7,11 +7,24 @@
 //
 
 #import <UIKit/UIKit.h>
-
 @class ZZTChapterChooseModel;
+@class ZZTChapterChooseView;
+//代理
+@protocol ZZTChapterChooseViewDelegate <NSObject>
+
+-(void)chapterChooseView:(ZZTChapterChooseView *)chapterChooseView didItemWithModel:(ZZTChapterChooseModel *)model;
+
+@end
+
 
 @interface ZZTChapterChooseView : UITableViewHeaderFooterView
 
-@property (nonatomic,strong) ZZTChapterChooseModel *model;
+@property (nonatomic,copy) void (^needReloadHeight)(void);
+
+@property (nonatomic, weak) id <ZZTChapterChooseViewDelegate> delegate;
+
+@property (nonatomic,assign) NSInteger total;
+
+- (CGFloat)myHeight;
 
 @end

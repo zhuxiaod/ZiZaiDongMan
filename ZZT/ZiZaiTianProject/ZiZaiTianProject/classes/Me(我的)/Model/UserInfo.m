@@ -81,4 +81,11 @@
     } return self;
 }
 
++(instancetype)initAuthorWithUserId:(NSString *)userId headImg:(NSString *)headImg nikeName:(NSString *)nikeName{
+    UserInfo *user = [[UserInfo alloc] init];
+    user.userId = userId;
+    user.headimg = headImg;
+    user.nickName = nikeName;
+    return user;
+}
 @end

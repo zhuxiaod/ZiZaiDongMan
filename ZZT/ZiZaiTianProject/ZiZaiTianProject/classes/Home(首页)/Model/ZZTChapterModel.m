@@ -20,6 +20,7 @@
 @synthesize TXTFileName;
 @synthesize storyModel;
 @synthesize imageHeightCache;
+@synthesize autherData;
 
 -(NSMutableArray *)imageUrlArray{
     if(!imageUrlArray){

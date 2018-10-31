@@ -36,6 +36,7 @@ extern const CGFloat SectionHeaderSomePicturesHeight; //有多张图片时的单
 - (void)didClickCommentButton:(NSInteger)section;
 
 -(void)didCommentLabelReply:(NSInteger)section;
+
 @end
 
 @interface ZZTCommentHeaderView : UITableViewHeaderFooterView

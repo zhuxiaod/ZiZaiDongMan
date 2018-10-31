@@ -7,7 +7,58 @@
 //
 
 #import "ZZTChapterChooseCell.h"
+#import "ZZTChapterChooseModel.h"
+
+@interface ZZTChapterChooseCell ()
+
+@property (nonatomic,strong) UILabel *label;
+
+@end
 
 @implementation ZZTChapterChooseCell
 
+- (instancetype)initWithFrame:(CGRect)frame{
+    if (self = [super initWithFrame:frame])
+    {
+        //添加自己需要个子视图控件
+      [self setUpAllChildView];
+    
+    } return self;
+    
+}
+
+-(void)setUpAllChildView{
+    //button
+    UILabel *label = [[UILabel alloc] init];
+    label.text = @"";
+    label.layer.borderColor = [UIColor grayColor].CGColor;
+    label.font = [UIFont systemFontOfSize:12];
+    label.textAlignment = NSTextAlignmentCenter;
+    label.layer.borderWidth = 1.0f;
+    _label = label;
+    [self.contentView addSubview:label];
+}
+
+-(void)layoutSubviews{
+    [super layoutSubviews];
+    [_label mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.left.right.bottom.equalTo(self.contentView).offset(0);
+    }];
+}
+
+-(void)setModel:(ZZTChapterChooseModel *)model{
+    _model = model;
+    _label.text = [NSString stringWithFormat:@"%@-%@话",model.benginPage,model.endPage];
+}
+
+-(void)setIsChangeStyle:(NSNumber *)isChangeStyle{
+    _isChangeStyle = isChangeStyle;
+    if([isChangeStyle isEqualToNumber:@1]){
+        _label.layer.borderColor = [UIColor blueColor].CGColor;
+        _label.textColor = [UIColor blueColor];
+    }else{
+        _label.layer.borderColor = [UIColor grayColor].CGColor;
+        _label.textColor = [UIColor grayColor];
+    }
+}
 @end
