@@ -9,12 +9,14 @@
 #import "ZZTNextWordHeaderView.h"
 #import "ZXDCartoonFlexoBtn.h"
 #import "ZZTStoryModel.h"
+
 @interface ZZTNextWordHeaderView ()
 
 @property (nonatomic,strong) UIView *buttomView;
 
-@end
+@property (nonatomic,strong) UIView *centerView;
 
+@end
 
 @implementation ZZTNextWordHeaderView
 
@@ -29,95 +31,67 @@
 -(void)setup{
     //背景色
     self.contentView.backgroundColor = [UIColor whiteColor];
-    //三个View
-    //中间的
-    _centerBtn = [[ZXDCartoonFlexoBtn alloc] init];
-//    _centerBtn.backgroundColor = [UIColor yellowColor];
-//    [_centerBtn setImage:[UIImage imageNamed:@"正文-点赞-未点赞(灰色）"] forState:UIControlStateNormal];
-    [_centerBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-//    [_centerBtn setTitle:@"100" forState:UIControlStateNormal];
-    [_centerBtn addTarget:self action:@selector(clickLike) forControlEvents:UIControlEventTouchUpInside];
-    [self.contentView addSubview:_centerBtn];
-
+    
     //左
-    _liftBtn = [[ImageLeftBtn alloc] init];
+    _leftBtn = [[UIButton alloc] init];
 //    _liftBtn.backgroundColor = [UIColor redColor];
-    [_liftBtn setImage:[UIImage imageNamed:@"后退键"] forState:UIControlStateNormal];
-    [_liftBtn setTitle:@"上一页" forState:UIControlStateNormal];
-    [_liftBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.contentView addSubview:_liftBtn];
+    [_leftBtn setImage:[UIImage imageNamed:@"后退键"] forState:UIControlStateNormal];
+    [_leftBtn setTitle:@"上一页" forState:UIControlStateNormal];
+    [_leftBtn setTitleColor:[UIColor colorWithRGB:@"127,127,127"] forState:UIControlStateNormal];
+    [self.contentView addSubview:_leftBtn];
+    [_leftBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
+    [_leftBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 8)];
+    
     //右
-    _rightBtn = [[TypeButton alloc] init];
+    _rightBtn = [[UIButton alloc] init];
 //    _rightBtn.backgroundColor = [UIColor blueColor];
     [_rightBtn setImage:[UIImage imageNamed:@"箭头右"] forState:UIControlStateNormal];
     [_rightBtn setTitle:@"下一页" forState:UIControlStateNormal];
-    [_rightBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [_rightBtn setTitleColor:[UIColor colorWithRGB:@"127,127,127"] forState:UIControlStateNormal];
     [self.contentView addSubview:_rightBtn];
+    [_rightBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 60)];
+    [_rightBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 80, 0, 0)];
     
     UIView *buttomView = [[UIView alloc] init];
-    [buttomView setBackgroundColor:[UIColor grayColor]];
+    buttomView.backgroundColor = [UIColor colorWithRGB:@"246,246,251"];
     [self.contentView addSubview:buttomView];
     _buttomView = buttomView;
+    
+    //中间View
+    UIView *centerView = [[UIView alloc] init];
+    [centerView setBackgroundColor:[UIColor colorWithRGB:@"229,229,229"]];
+    [self.contentView addSubview:centerView];
+    _centerView = centerView;
 }
 
--(void)clickLike{
-    NSInteger praiseNum = [self.centerBtn.titleLabel.text integerValue];
-    if([_likeModel.ifpraise isEqualToString:@"0"]){
-        //没有人点赞
-        _likeModel.ifpraise = @"1";
-        praiseNum++;
-        [self.centerBtn setImage:[UIImage imageNamed:@"正文-点赞-已点赞"] forState:UIControlStateNormal];
-        [self.centerBtn setTitle:[NSString stringWithFormat:@"%ld",praiseNum] forState:UIControlStateNormal];
-    }else{
-        _likeModel.ifpraise = @"0";
-        [self.centerBtn setImage:[UIImage imageNamed:@"正文-点赞-未点赞(灰色）"] forState:UIControlStateNormal];
-        praiseNum--;
-        [self.centerBtn setTitle:[NSString stringWithFormat:@"%ld",praiseNum] forState:UIControlStateNormal];
-    }
-    if (self.block)
-    {
-        self.block();
-    }
-}
 -(void)layoutSubviews{
     [super layoutSubviews];
     
-    [self.centerBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.contentView).offset(8);
-        make.center.equalTo(self.contentView);
-        make.bottom.equalTo(self.contentView).offset(-8);
-        make.width.mas_equalTo(30);
-    }];
-    
-    [self.liftBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(self.centerBtn);
-        make.right.equalTo(self.centerBtn.mas_left).offset(-8);
-        make.width.mas_equalTo(70);
-        make.height.mas_equalTo(24);
+    [self.leftBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.contentView).offset(0);
+        make.left.equalTo(self.contentView).offset(0);
+        make.bottom.equalTo(self.contentView).offset(0);
+        make.width.equalTo(self.contentView).multipliedBy(0.5);
     }];
     
     [self.rightBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(self.centerBtn);
-        make.left.equalTo(self.centerBtn.mas_right).offset(8);
-        make.width.mas_equalTo(70);
-        make.height.mas_equalTo(24);
+        make.top.equalTo(self.contentView).offset(0);
+        make.right.equalTo(self.contentView).offset(0);
+        make.bottom.equalTo(self.contentView).offset(0);
+        make.width.equalTo(self.contentView).multipliedBy(0.5);
     }];
     
     [self.buttomView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.right.left.equalTo(self.contentView);
-        make.height.mas_equalTo(1);
+        make.height.mas_equalTo(4);
     }];
-}
-
--(void)setLikeModel:(ZZTStoryModel *)likeModel{
-    _likeModel = likeModel;
-    //点赞
-    if([likeModel.ifpraise isEqualToString:@"0"]){
-        [self.centerBtn setImage:[UIImage imageNamed:@"正文-点赞-未点赞(灰色）"] forState:UIControlStateNormal];
-    }else{
-        [self.centerBtn setImage:[UIImage imageNamed:@"正文-点赞-已点赞"] forState:UIControlStateNormal];
-    }
-    [self.centerBtn setTitle:[NSString stringWithFormat:@"%ld",likeModel.praiseNum] forState:UIControlStateNormal];
+    
+    [self.centerView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(self.contentView);
+        make.top.equalTo(self.contentView).offset(14);
+        make.bottom.equalTo(self.contentView).offset(-14);
+        make.width.mas_equalTo(1);
+    }];
 }
 
 @end

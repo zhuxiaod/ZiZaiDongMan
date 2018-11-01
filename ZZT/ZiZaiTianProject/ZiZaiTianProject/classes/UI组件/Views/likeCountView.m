@@ -7,7 +7,7 @@
 //
 
 #import "likeCountView.h"
-#import "NetWorkManager.h"
+//#import "NetWorkManager.h"
 #import "CommonMacro.h"
 #import "NSString+Extension.h"
 #import "UIView+Extension.h"

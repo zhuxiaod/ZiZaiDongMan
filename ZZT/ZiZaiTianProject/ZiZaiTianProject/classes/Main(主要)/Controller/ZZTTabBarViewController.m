@@ -12,7 +12,7 @@
 #import "ZZTMeViewController.h"
 #import "ZZTNavigationViewController.h"
 #import "UIImage+ZZTimage.h"
-#import "BaseModel.h"
+//#import "BaseModel.h"
 #import "MainTabbar.h"
 
 @interface ZZTTabBarViewController ()

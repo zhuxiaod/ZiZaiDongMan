@@ -325,7 +325,6 @@ NSString *SuggestionView3 = @"SuggestionView";
         
         [self presentViewController:uploadVC animated:YES completion:nil];
     }];
-   
 }
 
 - (void)refreshCollectionViewWithAddedAsset:(PHAsset *)asset image:(UIImage *)image {
@@ -350,26 +349,14 @@ NSString *SuggestionView3 = @"SuggestionView";
     
 #pragma mark - 五类个性化设置，这些参数都可以不传，此时会走默认设置
     imagePickerVc.isSelectOriginalPhoto = YES;
-    //如果大于1
-//    if (self.maxCountTF.text.integerValue > 1) {
-        // 1.设置目前已经选中的图片数组
-        imagePickerVc.selectedAssets = _selectedAssets; // 目前已经选中的图片数组
-//    }
+
+    imagePickerVc.selectedAssets = _selectedAssets; // 目前已经选中的图片数组
+
     imagePickerVc.allowTakePicture = YES; // 在内部显示拍照按钮
-//    imagePickerVc.allowTakeVideo = self.showTakeVideoBtnSwitch.isOn;   // 在内部显示拍视频按
-//    imagePickerVc.videoMaximumDuration = 10; // 视频最大拍摄时间
+
     [imagePickerVc setUiImagePickerControllerSettingBlock:^(UIImagePickerController *imagePickerController) {
         imagePickerController.videoQuality = UIImagePickerControllerQualityTypeHigh;
     }];
-    
-    // imagePickerVc.photoWidth = 1000;
-    
-    // 2. Set the appearance
-    // 2. 在这里设置imagePickerVc的外观
-    // imagePickerVc.navigationBar.barTintColor = [UIColor greenColor];
-    // imagePickerVc.oKButtonTitleColorDisabled = [UIColor lightGrayColor];
-    // imagePickerVc.oKButtonTitleColorNormal = [UIColor greenColor];
-    // imagePickerVc.navigationBar.translucent = NO;
     
     //主题颜色
     imagePickerVc.iconThemeColor = [UIColor colorWithRed:31 / 255.0 green:185 / 255.0 blue:34 / 255.0 alpha:1.0];
@@ -381,14 +368,7 @@ NSString *SuggestionView3 = @"SuggestionView";
     [imagePickerVc setPhotoPickerPageUIConfigBlock:^(UICollectionView *collectionView, UIView *bottomToolBar, UIButton *previewButton, UIButton *originalPhotoButton, UILabel *originalPhotoLabel, UIButton *doneButton, UIImageView *numberImageView, UILabel *numberLabel, UIView *divideLine) {
         [doneButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
     }];
-    /*
-     [imagePickerVc setAssetCellDidSetModelBlock:^(TZAssetCell *cell, UIImageView *imageView, UIImageView *selectImageView, UILabel *indexLabel, UIView *bottomView, UILabel *timeLength, UIImageView *videoImgView) {
-     cell.contentView.clipsToBounds = YES;
-     cell.contentView.layer.cornerRadius = cell.contentView.tz_width * 0.5;
-     }];
-     */
     
-    // 3. Set allow picking video & photo & originalPhoto or not
     // 3. 设置是否可以选择视频/图片/原图
     imagePickerVc.allowPickingVideo = NO;
     imagePickerVc.allowPickingImage = YES;
@@ -398,14 +378,7 @@ NSString *SuggestionView3 = @"SuggestionView";
     
     // 4. 照片排列按修改时间升序
     imagePickerVc.sortAscendingByModificationDate = YES;
-    
-    // imagePickerVc.minImagesCount = 3;
-    // imagePickerVc.alwaysEnableDoneBtn = YES;
-    
-    // imagePickerVc.minPhotoWidthSelectable = 3000;
-    // imagePickerVc.minPhotoHeightSelectable = 2000;
-    
-    /// 5. Single selection mode, valid when maxImagesCount = 1
+
     /// 5. 单选模式,maxImagesCount为1时才生效
     imagePickerVc.showSelectBtn = NO;
     imagePickerVc.allowCrop = NO;
@@ -415,42 +388,17 @@ NSString *SuggestionView3 = @"SuggestionView";
     NSInteger widthHeight = self.view.width - 2 * left;
     NSInteger top = (self.view.height - widthHeight) / 2;
     imagePickerVc.cropRect = CGRectMake(left, top, widthHeight, widthHeight);
-    // 设置横屏下的裁剪尺寸
-    // imagePickerVc.cropRectLandscape = CGRectMake((self.view.tz_height - widthHeight) / 2, left, widthHeight, widthHeight);
-    /*
-     [imagePickerVc setCropViewSettingBlock:^(UIView *cropView) {
-     cropView.layer.borderColor = [UIColor redColor].CGColor;
-     cropView.layer.borderWidth = 2.0;
-     }];*/
-    
-    //imagePickerVc.allowPreview = NO;
-    // 自定义导航栏上的返回按钮
-    /*
-     [imagePickerVc setNavLeftBarButtonSettingBlock:^(UIButton *leftButton){
-     [leftButton setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
-     [leftButton setImageEdgeInsets:UIEdgeInsetsMake(0, -10, 0, 20)];
-     }];
-     imagePickerVc.delegate = self;
-     */
-    
-    // Deprecated, Use statusBarStyle
-    // imagePickerVc.isStatusBarDefault = NO;
+
     imagePickerVc.statusBarStyle = UIStatusBarStyleLightContent;
     
     // 设置是否显示图片序号
     imagePickerVc.showSelectedIndex = YES;
     
-    // 设置首选语言 / Set preferred language
-    // imagePickerVc.preferredLanguage = @"zh-Hans";
-    
-    // 设置languageBundle以使用其它语言 / Set languageBundle to use other language
-    // imagePickerVc.languageBundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"tz-ru" ofType:@"lproj"]];
-    
 #pragma mark - 到这里为止
-    
-    // You can get the photos by block, the same as by delegate.
+
     // 你可以通过block或者代理，来得到用户选择的照片.
     [imagePickerVc setDidFinishPickingPhotosHandle:^(NSArray<UIImage *> *photos, NSArray *assets, BOOL isSelectOriginalPhoto) {
+        
         ZZTZoneUpLoadViewController *uploadVC = [[ZZTZoneUpLoadViewController alloc] init];
         
         TZImagePickerController *tzImagePickerVc = [[TZImagePickerController alloc] initWithMaxImagesCount:9 delegate:self];

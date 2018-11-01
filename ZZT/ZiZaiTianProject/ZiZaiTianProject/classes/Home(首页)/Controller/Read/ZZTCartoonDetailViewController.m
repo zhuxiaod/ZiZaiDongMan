@@ -28,6 +28,7 @@
 #import "ZZTNextWordHeaderView.h"
 #import "UITableView+ZFTableViewSnapshot.h"
 #import "TJLongImgCut.h"
+#import "ZZTLikeCollectShareHeaderView.h"
 
 
 @interface ZZTCartoonDetailViewController ()<UITableViewDelegate,UITableViewDataSource,CircleCellDelegate,ZZTCommentHeaderViewDelegate,UITextViewDelegate,NSURLSessionDataDelegate,ZZTCartoonContentCellDelegate,ZZTStoryDetailCellDelegate>
@@ -96,6 +97,8 @@
 @property (nonatomic,strong) ZZTStoryModel *likeModel;
 //上一章下一章视图
 @property (nonatomic,strong) ZZTNextWordHeaderView *nextWordView;
+//点赞视图
+@property (nonatomic,strong) ZZTLikeCollectShareHeaderView *likeCollectView;
 //电池条
 @property (nonatomic,strong) UIView *statusBar;
 
@@ -494,7 +497,7 @@ static bool needHide = false;
             ZZTStoryModel *model = self.cartoonDetailArray[indexPath.row];
             cell.index = indexPath.row;
             cell.str = model.content;
-            NSLog(@"model.content:%@",model.content)
+            NSLog(@"model.content:%@",model.content);
             return cell;
         }
     }else{
@@ -531,10 +534,10 @@ static bool needHide = false;
 
 -(void)loadContent{
     
-    dispatch_group_async(self.group, self.q, ^{
-        dispatch_group_enter(self.group);
-        [self loadContentData];
-    });
+//    dispatch_group_async(self.group, self.q, ^{
+//        dispatch_group_enter(self.group);
+//        [self loadContentData];
+//    });
 
     dispatch_group_async(self.group, self.q, ^{
         dispatch_group_enter(self.group);
@@ -689,13 +692,7 @@ static bool needHide = false;
     [session POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterPraise"] parameters:likeDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         ZZTStoryModel *model = [ZZTStoryModel mj_objectWithKeyValues:dic];
-        self.nextWordView.likeModel = model;
-        if([model.ifpraise isEqualToString:@"0"]){
-            [self.kLikeBtn setImage:[UIImage imageNamed:@"正文-点赞-未点赞(灰色）"] forState:UIControlStateNormal];
-        }else{
-            [self.kLikeBtn setImage:[UIImage imageNamed:@"正文-点赞-已点赞"] forState:UIControlStateNormal];
-        }
-        NSLog(@"%@",dic);
+        self.likeCollectView.likeModel = model;
         dispatch_group_leave(self.group);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         dispatch_group_leave(self.group);
@@ -721,7 +718,6 @@ static bool needHide = false;
         FriendCircleViewModel *circleViewModel = [[FriendCircleViewModel alloc] init];
         circleViewModel.circleModelArray = array1;
         self.commentArray = [circleViewModel loadDatas];
-        
         //加工一下评论的数据
 //        self.commentArray = array1;
         [self.tableView reloadData];
@@ -863,7 +859,8 @@ static bool needHide = false;
         return 100;
     }else if(section == 1)
     {
-        return 60;
+        //点赞 关注 分享
+        return 100;
     }else{
         if(self.commentArray.count > 0){
             ZZTCircleModel *item = self.commentArray[section - 2];
@@ -882,22 +879,19 @@ static bool needHide = false;
         authorHead.userModel = self.author;
         return authorHead;
     }else if(section == 1){
-        static NSString *nextWordViewIdentfier = @"nextWordView";
-        ZZTNextWordHeaderView *nextWordView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:nextWordViewIdentfier];
-        [nextWordView.rightBtn addTarget:self action:@selector(nextWordWithBtn:) forControlEvents:UIControlEventTouchUpInside];
-        [nextWordView.rightBtn setTag:2];
-        [nextWordView.liftBtn addTarget:self action:@selector(nextWordWithBtn:) forControlEvents:UIControlEventTouchUpInside];
-        [nextWordView.liftBtn setTag:1];
-        nextWordView.block = ^{
+        //点赞 关注 分享
+        static NSString *likeCollectShareHeaderView = @"likeCollectShareHeaderView";
+        ZZTLikeCollectShareHeaderView *headerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:likeCollectShareHeaderView];
+        //如果没有头视图
+        if(!headerView){
+            headerView = [[ZZTLikeCollectShareHeaderView alloc] initWithReuseIdentifier:likeCollectShareHeaderView];
+        }
+        headerView.centerBtnBlock = ^{
             [self headerViewLike];
         };
-        //如果没有头视图
-        if(!nextWordView){
-            nextWordView = [[ZZTNextWordHeaderView alloc] initWithReuseIdentifier:nextWordViewIdentfier];
-        }
-        self.nextWordView = nextWordView;
-        nextWordView.backgroundColor = [UIColor whiteColor];
-        return nextWordView;
+        [headerView.shareBtn addTarget:self action:@selector(shareWithSharePanel) forControlEvents:UIControlEventTouchUpInside];
+        _likeCollectView = headerView;
+        return headerView;
     }else{
         static NSString *viewIdentfier = @"headView";
         ZZTCommentHeaderView *headerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:viewIdentfier];
@@ -909,6 +903,71 @@ static bool needHide = false;
         ZZTCircleModel *model = self.commentArray[section - 2];
         [headerView setContentData:model section:section - 2];
         return headerView;
+    }
+}
+
+//-(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+//    if(section == 1){
+//        static NSString *nextWordViewIdentfier = @"nextWordView";
+//        ZZTNextWordHeaderView *nextWordView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:nextWordViewIdentfier];
+////        [nextWordView.rightBtn addTarget:self action:@selector(nextWordWithBtn:) forControlEvents:UIControlEventTouchUpInside];
+////        [nextWordView.rightBtn setTag:2];
+////        [nextWordView.liftBtn addTarget:self action:@selector(nextWordWithBtn:) forControlEvents:UIControlEventTouchUpInside];
+////        [nextWordView.liftBtn setTag:1];
+////        nextWordView.block = ^{
+////            [self headerViewLike];
+////        };
+//        //如果没有头视图
+//        if(!nextWordView){
+//            nextWordView = [[ZZTNextWordHeaderView alloc] initWithReuseIdentifier:nextWordViewIdentfier];
+//        }
+//        self.nextWordView = nextWordView;
+//    }else{
+//        return nil;
+//    }
+//}
+
+#pragma mark - 加尾巴
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    if(section == 1){
+        static NSString *nextWordViewIdentfier = @"nextWordView";
+        ZZTNextWordHeaderView *nextWordView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:nextWordViewIdentfier];
+        //如果没有头视图
+        if(!nextWordView){
+            nextWordView = [[ZZTNextWordHeaderView alloc] initWithReuseIdentifier:nextWordViewIdentfier];
+        }
+        [nextWordView.rightBtn addTarget:self action:@selector(nextWordWithBtn:) forControlEvents:UIControlEventTouchUpInside];
+        [nextWordView.rightBtn setTag:2];
+        [nextWordView.leftBtn addTarget:self action:@selector(nextWordWithBtn:) forControlEvents:UIControlEventTouchUpInside];
+        [nextWordView.leftBtn setTag:1];
+        self.nextWordView = nextWordView;
+        return nextWordView;
+//        ZZTCommentHeadView *commentHeadView = [[ZZTCommentHeadView alloc] init];
+//        commentHeadView.backgroundColor = [UIColor whiteColor];
+//        return commentHeadView;
+    }else{
+        static NSString *viewIdentfier = @"footerView";
+        SectionFooterView *footerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:viewIdentfier];
+        if(!footerView){
+            footerView = [[SectionFooterView alloc] initWithReuseIdentifier:viewIdentfier];
+            if (!self.headerMuArr) {
+                self.headerMuArr = [NSMutableArray array];
+            }
+            [self.headerMuArr addObject:footerView];
+        }
+        return footerView;
+    }
+}
+
+//设置高度
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    if(section == 2 && self.commentArray.count > 0){
+        ZZTCircleModel *item = self.commentArray[section - 2];
+        return item.footerHeight;
+    }else if (section == 1){
+        return 100;
+    }else{
+        return 0;
     }
 }
 
@@ -958,7 +1017,7 @@ static bool needHide = false;
 }
 
 -(void)headerViewLike{
-
+    
     UserInfo *user = [Utilities GetNSUserDefaults];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     NSDictionary *dic = @{
@@ -975,37 +1034,7 @@ static bool needHide = false;
     }];
 }
 
-#pragma mark - 加尾巴
-- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
-    if(section == 1){
-        ZZTCommentHeadView *commentHeadView = [[ZZTCommentHeadView alloc] init];
-        commentHeadView.backgroundColor = [UIColor whiteColor];
-        return commentHeadView;
-    }else{
-        static NSString *viewIdentfier = @"footerView";
-        SectionFooterView *footerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:viewIdentfier];
-        if(!footerView){
-            footerView = [[SectionFooterView alloc] initWithReuseIdentifier:viewIdentfier];
-            if (!self.headerMuArr) {
-                self.headerMuArr = [NSMutableArray array];
-            }
-            [self.headerMuArr addObject:footerView];
-        }
-        return footerView;
-    }
-}
 
-//设置高度
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    if(section == 2 && self.commentArray.count > 0){
-        ZZTCircleModel *item = self.commentArray[section - 2];
-        return item.footerHeight;
-    }else if (section == 1){
-        return 40;
-    }else{
-        return 0;
-    }
-}
 
 //- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
 //    if(indexPath.section == 0){
@@ -1437,14 +1466,8 @@ static bool needHide = false;
 - (void)textViewDidBeginEditing:(UITextView *)textView {
 
     if([textView.text isEqualToString:@"请输入评论"]){
-        //要记得删除掉replyer
-//        if (self.replyer.nickName){
-//            textView.text = [NSString stringWithFormat:@"回复%@",self.replyer.nickName];
-//            textView.textColor = [UIColor blackColor];
-//        }else{
-            textView.text = @"";
-            textView.textColor = [UIColor blackColor];
-//        }
+        textView.text = @"";
+        textView.textColor = [UIColor blackColor];
     }
     if(self.isReply == NO){
         self.commentId = @"0";

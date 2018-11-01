@@ -88,6 +88,7 @@ static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
         NSInteger total = [to integerValue];
         NSArray *list = [dic objectForKey:@"list"];
         NSMutableArray *array = [ZZTMyZoneModel mj_objectArrayWithKeyValuesArray:list];
+
         [self.dataArray addObjectsFromArray:array];
         [self.contentView reloadData];
         if(self.dataArray.count >= total){
@@ -113,6 +114,7 @@ static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.dataArray.count;
 }
+
 #pragma mark - 内容设置
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     ZZTFindCommentCell *cell = [ZZTFindCommentCell dynamicCellWithTable:tableView];

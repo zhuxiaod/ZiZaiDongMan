@@ -12,33 +12,31 @@
 #import <AFNetworking.h>
 @implementation NetWorkManager
 
-
-
-- (NSURLSessionDataTask *)requestWithMethod:(NSString *)method
-                                        url:(NSString *)url
-                                 parameters:(id)parameters
-                                   complish:(void (^)(id res,NSError *error))complish {
-    
-    NSParameterAssert(complish);
-    
-    NSURLSessionDataTask *dataTask = [self dataTaskWithHTTPMethod:method URLString:url parameters:parameters uploadProgress:nil downloadProgress:nil success:^(NSURLSessionDataTask * _Nonnull task, id _Nonnull responseObject) {
-        
-        if (complish) {
-            complish(responseObject,nil);
-        }
-        
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
-        if (complish) {
-            complish(nil,error);
-        }
-        
-    }];
-    
-    [dataTask resume];
-        
-    return dataTask;
-}
+//- (NSURLSessionDataTask *)requestWithMethod:(NSString *)method
+//                                        url:(NSString *)url
+//                                 parameters:(id)parameters
+//                                   complish:(void (^)(id res,NSError *error))complish {
+//
+//    NSParameterAssert(complish);
+//
+//    NSURLSessionDataTask *dataTask = [self dataTaskWithHTTPMethod:method URLString:url parameters:parameters uploadProgress:nil downloadProgress:nil success:^(NSURLSessionDataTask * _Nonnull task, id _Nonnull responseObject) {
+//
+//        if (complish) {
+//            complish(responseObject,nil);
+//        }
+//
+//    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+//
+//        if (complish) {
+//            complish(nil,error);
+//        }
+//
+//    }];
+//
+//    [dataTask resume];
+//
+//    return dataTask;
+//}
 
 
 

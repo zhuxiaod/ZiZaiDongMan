@@ -16,11 +16,15 @@ typedef void (^centerBtnBlock) (void);
 
 @interface ZZTNextWordHeaderView : UITableViewHeaderFooterView
 
-@property (nonatomic,strong) ZXDCartoonFlexoBtn *centerBtn;
+//@property (nonatomic,strong) ZXDCartoonFlexoBtn *centerBtn;
 
-@property (nonatomic,strong) ImageLeftBtn *liftBtn;
+//@property (nonatomic,strong) ImageLeftBtn *liftBtn;
 
-@property (nonatomic,strong) TypeButton *rightBtn;
+//@property (nonatomic,strong) TypeButton *rightBtn;
+
+@property (nonatomic,strong) UIButton *leftBtn;
+
+@property (nonatomic,strong) UIButton *rightBtn;
 
 @property (nonatomic,strong) ZZTStoryModel *likeModel;
 

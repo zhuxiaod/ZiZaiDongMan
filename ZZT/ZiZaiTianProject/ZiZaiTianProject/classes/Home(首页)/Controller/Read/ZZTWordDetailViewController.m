@@ -84,7 +84,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 }
 
 -(void)setupShieldView{
-    UIView *shieldView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, Screen_Width, 300)];
+    UIView *shieldView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, Screen_Width, 100)];
     [shieldView setBackgroundColor:[UIColor colorWithRGB:@"121,105,212"]];
     [self.view addSubview:shieldView];
 }
@@ -280,12 +280,13 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     contenView.dataSource = self;
     contenView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.contentView = contenView;
-    contenView.sectionFooterHeight  = 1.0;
+    contenView.sectionFooterHeight = 0.01;
+    contenView.sectionHeaderHeight = 0.01;
     contenView.estimatedSectionHeaderHeight = 0;
     contenView.estimatedSectionFooterHeight = 0;
     contenView.estimatedRowHeight = 0;
     [contenView setSeparatorColor:[UIColor blueColor]];
-    
+
     //先让数据显示
     [contenView registerClass:[ZZTWordListCell class] forCellReuseIdentifier:zztWordListCell];
     
@@ -393,7 +394,8 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
         return self.descHeadView.myHeight;
     }
     else{
-        return self.chapterChooseView.myHeight;
+//        return self.chapterChooseView.myHeight;
+        return 0.01;
     }
 }
 
@@ -407,11 +409,27 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
         //介绍
         self.descHeadView.desc = self.ctDetail.intro;
         return self.descHeadView;
+    }else{
+        return nil;
     }
-    else{
-        
+
+}
+
+-(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+    if(section == 1){
         return self.chapterChooseView;
+    }else{
+        static NSString *viewIdentfier = @"footerView";
+        SectionFooterView *footerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:viewIdentfier];
+        return footerView;
     }
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+    if(section == 1){
+        return self.chapterChooseView.myHeight;
+    }
+    return 0.01;
 }
 
 #pragma mark - lazyLoad
