@@ -14,4 +14,5 @@
 + (UIButton *)createButtonWithImg:(UIImage *)img title:(NSString *)title titleColor:(UIColor *)titleColor;
 + (UIButton *)createButtonWithTopImg:(UIImage *)img title:(NSString *)title titleColor:(UIColor *)titleColor;
 
+
 @end

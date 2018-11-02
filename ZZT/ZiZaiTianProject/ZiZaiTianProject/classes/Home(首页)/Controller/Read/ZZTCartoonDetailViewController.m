@@ -29,6 +29,7 @@
 #import "UITableView+ZFTableViewSnapshot.h"
 #import "TJLongImgCut.h"
 #import "ZZTLikeCollectShareHeaderView.h"
+#import "ZZTAuthorHeaderView.h"
 
 
 @interface ZZTCartoonDetailViewController ()<UITableViewDelegate,UITableViewDataSource,CircleCellDelegate,ZZTCommentHeaderViewDelegate,UITextViewDelegate,NSURLSessionDataDelegate,ZZTCartoonContentCellDelegate,ZZTStoryDetailCellDelegate>
@@ -111,6 +112,8 @@
 @property (nonatomic,strong) NSString *fileName;
 //刷新计数
 @property (nonatomic,assign) NSInteger reloadDataCount;
+//底部作者视图
+@property (nonatomic,strong) ZZTAuthorHeaderView *authorHeaderView;
 
 @end
 
@@ -165,7 +168,7 @@ static bool needHide = false;
     }
     return _replyer;
 }
-
+//初始化图片高度 如果有缓存使用缓存高度
 - (NSMutableArray *)imageCellHeightCache {
     if (!_imageCellHeightCache && self.cartoonDetailArray) {
         
@@ -222,9 +225,7 @@ static bool needHide = false;
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor whiteColor];
-    
-    //内容页
-    [self setupContentView];
+
     //自定义导航栏
     [self setupNavigationBar];
 
@@ -243,9 +244,7 @@ static bool needHide = false;
     if(self.model){
         self.isOnce = YES;
     }
-    
-    [self loadData];
-    
+
     //键盘输入框
     [self addInputView];
     
@@ -259,6 +258,9 @@ static bool needHide = false;
     self.tableView.fd_debugLogEnabled = YES;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNotification:) name:@"cellreloadData" object:nil];
+    
+    //加载数据
+    [self loadContent];
 }
 
 -(void)receiveNotification:(NSNotification *)infoNotification {
@@ -313,33 +315,6 @@ static bool needHide = false;
     navbar.showBottomLabel = NO;
 }
 
-
--(void)setupContentView{
-    //先把漫画显示出来
-    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT) style:UITableViewStyleGrouped];
-    tableView.delegate = self;
-    tableView.dataSource = self;
-    tableView.contentInset = UIEdgeInsetsMake(0,0,50,0);
-    tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    tableView.estimatedRowHeight = 0;
-    tableView.estimatedSectionHeaderHeight = 0;
-    tableView.estimatedSectionFooterHeight = 0;
-    tableView.tableFooterView = [UIView new];
-    [tableView registerClass:[ZZTCartoonContentCell class] forCellReuseIdentifier:CartoonContentCellIdentifier];
-    tableView.showsVerticalScrollIndicator = YES;
-    _tableView = tableView;
-    [self.view addSubview:tableView];
-    
-    [self loadViewIfNeeded];
-
-    tableView.pagingEnabled = NO;
-    //评论
-    //注册cell
-    [self.tableView registerClass:[CircleCell class] forCellReuseIdentifier:kCellId];
-    [self.tableView registerClass:[ZZTStoryDetailCell class] forCellReuseIdentifier:story];
-    
-    self.tableView.tableFooterView = [UIView new];
-}
 //取消多余字符
 - (NSString *)getZZwithString:(NSString *)string{
     
@@ -351,10 +326,9 @@ static bool needHide = false;
 }
 
 - (void)addInputView {
-    //创建底部View
+    //创建输入View
     self.kInputView = [UIView new];
     _kInputView.backgroundColor = [UIColor colorWithHexString:@"#eeeeee"];
-    
     [self.view addSubview:self.kInputView];
     
     [_kInputView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -362,7 +336,7 @@ static bool needHide = false;
         make.left.right.equalTo(self.view);
         make.bottom.equalTo(@(0));
     }];
-
+    //输入View
     self.kTextView = [UITextView new];
     _kTextView.backgroundColor = [UIColor whiteColor];
     _kTextView.layer.cornerRadius = 5;
@@ -398,6 +372,7 @@ static bool needHide = false;
     _publishBtn = publishBtn;
     [publishBtn addTarget:self action:@selector(sendMessage) forControlEvents:UIControlEventTouchUpInside];
     
+    //改
     //点赞按钮
     UIButton *kLikeBtn = [[UIButton alloc] init];
     [kLikeBtn setImage:[UIImage imageNamed:@"正文-点赞-已点赞"] forState:UIControlStateNormal];
@@ -424,17 +399,10 @@ static bool needHide = false;
         dispatch_group_enter(self.group);
         [self loadLikeData];
     });
-    
-    dispatch_group_notify(self.group, dispatch_get_main_queue(), ^{
-//        [self.tableView reloadData];
-       
-//        [self reloadCellWithIndex];
-    });
 }
 
--(void)loadData{
-    [self loadContent];
-}
+
+
 
 #pragma mark - navigationItem
 - (void)setupTitleView{
@@ -457,22 +425,24 @@ static bool needHide = false;
 #pragma mark - tableViewDelegate
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if(self.commentArray.count > 0){
-        return self.commentArray.count + 2;
+        return self.commentArray.count + 3;
     }else{
-        return 2;
+        return 3;
     }
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if(section == 0){
         return self.cartoonDetailArray.count;
-    }else if (section == 1){
+    }else if (section == 1 || section == 2){
         return 0;
     }else{
+        //如果有评论
         if(self.commentArray.count > 0){
-            ZZTCircleModel *model = self.commentArray[section - 2];
+            ZZTCircleModel *model = self.commentArray[section - 3];
             return model.replyComment.count;
         }else{
+            //如果没有评论
             return 0;
         }
     }
@@ -501,6 +471,7 @@ static bool needHide = false;
             return cell;
         }
     }else{
+        //回复cell
         ZZTCircleModel *model = self.commentArray[indexPath.section - 2];
         CircleCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellId forIndexPath:indexPath];
         [cell setContentData:model index:indexPath.row];
@@ -523,8 +494,7 @@ static bool needHide = false;
             }
         }
     }else{
-//        return UITableViewAutomaticDimension;
-        return 0;
+        return UITableViewAutomaticDimension;
     }
 }
 
@@ -548,19 +518,42 @@ static bool needHide = false;
         dispatch_group_enter(self.group);
         [self loadLikeData];
     });
-    
 
+    dispatch_group_async(self.group, self.q, ^{
+        dispatch_group_enter(self.group);
+        [self loadUpDownBtnData];
+    });
+    
     dispatch_group_notify(self.group, dispatch_get_main_queue(), ^{
-        //        [self.tableView reloadData];
-        //        [self reloadCellWithIndex];
-        //        UIImage *image = [self generateSnapshot];
+
+        //显示作者信息
+        self.authorHeaderView.userModel = self.author;
+        //没有本地连接
         if(!self.chapterModel.TXTFileName){
+            //下载地址
             [self downloadTxT];
         }else{
 //            [self.tableView reloadData];
         }
+        [self.tableView reloadData];
     });
-    
+}
+
+#warning 上下页btn样式
+//上下页btn样式
+-(void)loadUpDownBtnData{
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    NSDictionary *dic = @{
+                          @"cartoonId":self.cartoonModel.id,//书ID
+                          @"chapterId":self.dataModel.chapterId,//章节ID
+//                          @"upDown":upDown,//1.下 2.上
+//                          @"code":code//1.漫画 2.章节
+                          };
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getupDown"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+       
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
 }
 
 -(void)downloadTxT{
@@ -602,6 +595,7 @@ static bool needHide = false;
             self.author = self.chapterModel.autherData;
             dispatch_group_leave(self.group);
             [self reloadCellWithIndex];
+            
         }else{
             
             NSDictionary *paramDict = @{
@@ -612,7 +606,7 @@ static bool needHide = false;
                                         };
             [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getCartoonCenter"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                 [self.cartoonDetailArray removeAllObjects];
-                self.imageCellHeightCache = nil;
+                [self.imageUrlArray removeAllObjects];
                 
                 NSArray *dataArray = [[EncryptionTools sharedEncryptionTools] getDecryArray:responseObject[@"result"]];
                 if(dataArray.count > 0){
@@ -627,10 +621,8 @@ static bool needHide = false;
                 }
                 dispatch_group_leave(self.group);
                 [self reloadCellWithIndex];
-//                [MBProgressHUD hideHUDForView:self.view];
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                 dispatch_group_leave(self.group);
-                //            [MBProgressHUD hideHUDForView:self.view];
             }];
             
         }
@@ -677,8 +669,6 @@ static bool needHide = false;
             }];
         }
     }
-//    [self.tableView reloadData];
-
 }
 
 -(void)loadLikeData{
@@ -719,7 +709,6 @@ static bool needHide = false;
         circleViewModel.circleModelArray = array1;
         self.commentArray = [circleViewModel loadDatas];
         //加工一下评论的数据
-//        self.commentArray = array1;
         [self.tableView reloadData];
         dispatch_group_leave(self.group);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -857,42 +846,61 @@ static bool needHide = false;
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if(section == 0){
         return 100;
-    }else if(section == 1)
-    {
+    }else if(section == 1){
         //点赞 关注 分享
         return 100;
+    }else if (section == 2){
+        //作者
+        return 100;
     }else{
+        //判断有没有评论  给评论高度
         if(self.commentArray.count > 0){
-            ZZTCircleModel *item = self.commentArray[section - 2];
+            ZZTCircleModel *item = self.commentArray[section - 3];
             return item.headerHeight;
         }
         return 0;
     }
+
 }
 
 //添加头 ZZTCartoonDetailFoot
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     NSLog(@"section%ld",section);
     if(section == 0){
-        //作者 上数据
+        //作者 顶部
         ZZTAuthorHeadView *authorHead = [ZZTAuthorHeadView AuthorHeadView];
         authorHead.userModel = self.author;
         return authorHead;
     }else if(section == 1){
         //点赞 关注 分享
         static NSString *likeCollectShareHeaderView = @"likeCollectShareHeaderView";
-        ZZTLikeCollectShareHeaderView *headerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:likeCollectShareHeaderView];
+        ZZTLikeCollectShareHeaderView *likeCollectView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:likeCollectShareHeaderView];
         //如果没有头视图
-        if(!headerView){
-            headerView = [[ZZTLikeCollectShareHeaderView alloc] initWithReuseIdentifier:likeCollectShareHeaderView];
+        if(!likeCollectView){
+            likeCollectView = [[ZZTLikeCollectShareHeaderView alloc] initWithReuseIdentifier:likeCollectShareHeaderView];
         }
-        headerView.centerBtnBlock = ^{
-            [self headerViewLike];
+        likeCollectView.isCollect = self.isCollect;
+        weakself(self);
+        likeCollectView.likeBtnBlock = ^{
+            [weakSelf headerViewLike];
         };
-        [headerView.shareBtn addTarget:self action:@selector(shareWithSharePanel) forControlEvents:UIControlEventTouchUpInside];
-        _likeCollectView = headerView;
-        return headerView;
+        likeCollectView.collectBtnBlock = ^{
+            [weakSelf headerViewCollect];
+        };
+        [likeCollectView.shareBtn addTarget:self action:@selector(shareWithSharePanel) forControlEvents:UIControlEventTouchUpInside];
+        _likeCollectView = likeCollectView;
+        return _likeCollectView;
+    }else if (section == 2){
+        //作者
+        static NSString *authorView = @"authorHeaderView";
+        self.authorHeaderView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:authorView];
+        //如果没有头视图
+        if(!_authorHeaderView){
+            _authorHeaderView = [[ZZTAuthorHeaderView alloc] initWithReuseIdentifier:authorView];
+        }
+        return _authorHeaderView;
     }else{
+        //评论
         static NSString *viewIdentfier = @"headView";
         ZZTCommentHeaderView *headerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:viewIdentfier];
         //如果没有头视图
@@ -900,8 +908,8 @@ static bool needHide = false;
             headerView = [[ZZTCommentHeaderView alloc] initWithReuseIdentifier:viewIdentfier];
         }
         headerView.delegate = self;
-        ZZTCircleModel *model = self.commentArray[section - 2];
-        [headerView setContentData:model section:section - 2];
+        ZZTCircleModel *model = self.commentArray[section - 3];
+        [headerView setContentData:model section:section - 3];
         return headerView;
     }
 }
@@ -927,25 +935,28 @@ static bool needHide = false;
 //    }
 //}
 
-#pragma mark - 加尾巴
+#pragma mark - FooterView
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     if(section == 1){
+        //上下篇
         static NSString *nextWordViewIdentfier = @"nextWordView";
-        ZZTNextWordHeaderView *nextWordView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:nextWordViewIdentfier];
+        _nextWordView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:nextWordViewIdentfier];
         //如果没有头视图
-        if(!nextWordView){
-            nextWordView = [[ZZTNextWordHeaderView alloc] initWithReuseIdentifier:nextWordViewIdentfier];
+        if(!_nextWordView){
+            _nextWordView = [[ZZTNextWordHeaderView alloc] initWithReuseIdentifier:nextWordViewIdentfier];
         }
-        [nextWordView.rightBtn addTarget:self action:@selector(nextWordWithBtn:) forControlEvents:UIControlEventTouchUpInside];
-        [nextWordView.rightBtn setTag:2];
-        [nextWordView.leftBtn addTarget:self action:@selector(nextWordWithBtn:) forControlEvents:UIControlEventTouchUpInside];
-        [nextWordView.leftBtn setTag:1];
-        self.nextWordView = nextWordView;
-        return nextWordView;
-//        ZZTCommentHeadView *commentHeadView = [[ZZTCommentHeadView alloc] init];
-//        commentHeadView.backgroundColor = [UIColor whiteColor];
-//        return commentHeadView;
+        [_nextWordView.rightBtn addTarget:self action:@selector(nextWordWithBtn:) forControlEvents:UIControlEventTouchUpInside];
+        [_nextWordView.rightBtn setTag:2];
+        [_nextWordView.leftBtn addTarget:self action:@selector(nextWordWithBtn:) forControlEvents:UIControlEventTouchUpInside];
+        [_nextWordView.leftBtn setTag:1];
+        return _nextWordView;
+    }else if (section == 2){
+        //精彩点评
+        ZZTCommentHeadView *commentHeadView = [[ZZTCommentHeadView alloc] init];
+        commentHeadView.backgroundColor = [UIColor whiteColor];
+        return commentHeadView;
     }else{
+        //评论白尾巴
         static NSString *viewIdentfier = @"footerView";
         SectionFooterView *footerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:viewIdentfier];
         if(!footerView){
@@ -961,11 +972,17 @@ static bool needHide = false;
 
 //设置高度
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    if(section == 2 && self.commentArray.count > 0){
-        ZZTCircleModel *item = self.commentArray[section - 2];
-        return item.footerHeight;
+//    if(section == 2 && self.commentArray.count > 0){
+//    if(self.commentArray.count > 0){
+//        ZZTCircleModel *item = self.commentArray[section - 2];
+//        return item.footerHeight;
+//    }else
+    if(section == 0){
+        return 0;
     }else if (section == 1){
         return 100;
+    }else if (section == 2){
+        return 40;
     }else{
         return 0;
     }
@@ -973,14 +990,17 @@ static bool needHide = false;
 
 #pragma mark - ZZTNextWordHeaderView target
 -(void)nextWordWithBtn:(UIButton *)btn{
+    //上下
     NSString *upDown;
+    //判断是漫画还是文章
     NSString *code = self.cartoonModel.type;
+    //判断是上一篇 下一篇
     if(btn.tag == 1){
         upDown = @"2";
     }else{
         upDown = @"1";
     }
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     NSDictionary *dic = @{
                           @"cartoonId":self.cartoonModel.id,//书ID
                           @"chapterId":self.dataModel.chapterId,//章节ID
@@ -990,23 +1010,23 @@ static bool needHide = false;
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getupDown"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         if(dic){
+            //准备跳转  --->   初始化数据源
             [self.cartoonDetailArray removeAllObjects];
-            [self.imageCellHeightCache removeAllObjects];
+            self.imageCellHeightCache = nil;
             [self.headerMuArr removeAllObjects];
-            [self.tableView reloadData];
+            self.commentArray = nil;
+            self.tableView = nil;
+            //获得内容id
             ZZTChapterlistModel *model = [ZZTChapterlistModel mj_objectWithKeyValues:dic];
             self.dataModel.id = model.id;
             //最近观看改一下
             self.dataModel.chapterPage = model.chapterPage;
             self.dataModel.chapterName = model.chapterName;
             self.dataModel.chapterId = model.chapterId;
+            //通过书id 找到这本书的id
+            self.testModel = [self getJuXuYueDuModelWithBookId:self.cartoonModel.id];
             [self.navbar.centerButton setTitle:self.dataModel.chapterName forState:UIControlStateNormal];
-            [self loadData];
-            [self.tableView reloadData];
-            [self.tableView layoutIfNeeded];
-//            NSIndexPath* indexPat = [NSIndexPath indexPathForRow:0 inSection:0];
-//            [self.tableView setContentOffset:CGPointMake(0,0) animated:NO];
-            [self.tableView  scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
+            [self loadContent];
         }else{
             //显示错误信息
             [MBProgressHUD showError:@"已经没有章节"];
@@ -1016,6 +1036,24 @@ static bool needHide = false;
     }];
 }
 
+-(ZZTJiXuYueDuModel *)getJuXuYueDuModelWithBookId:(NSString *)bookId{
+    NSMutableArray *arrayDict = [NSKeyedUnarchiver unarchiveObjectWithFile:JiXuYueDuAPI];
+    if (arrayDict == nil) {
+        arrayDict = [NSMutableArray array];
+    }
+    ZZTJiXuYueDuModel *model = [[ZZTJiXuYueDuModel alloc] init];
+    for (int i = 0; i < arrayDict.count; i++) {
+        //看这个数组里面的模型是否有这本书
+        model = arrayDict[i];
+        if([model.bookId isEqualToString:bookId]){
+            self.model = model;
+            break;
+        }
+    }
+    return model;
+}
+
+//点赞
 -(void)headerViewLike{
     
     UserInfo *user = [Utilities GetNSUserDefaults];
@@ -1024,7 +1062,6 @@ static bool needHide = false;
                           @"type":self.cartoonModel.type,
                               @"typeId":[NSString stringWithFormat:@"%ld",self.dataModel.id],
                               @"userId":[NSString stringWithFormat:@"%ld",user.id],
-//                          @"userId":@"1",
                               @"cartoonId":self.cartoonModel.id
                           };
     [manager POST:[ZZTAPI stringByAppendingString:@"great/cartoonPraise"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -1034,27 +1071,28 @@ static bool needHide = false;
     }];
 }
 
-
-
-//- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    if(indexPath.section == 0){
-//        if([self.cartoonModel.type isEqualToString:@"1"]){
-//            return [self.imageCellHeightCache[indexPath.row] doubleValue];
-//        }else{
-//            ZZTStoryModel *model = self.cartoonDetailArray[indexPath.row];
-//            if(model.TXTContent.length > 300){
-//                return [self calculateStringHeight:model.TXTContent];
-//            }else{
-//                return 0;
-//            }
-//        }
-//    }else if(indexPath.section == 2){
-////        return 100;
-//        return 0;
-//    }else{
-//        return 0;
-//    }
-//}
+//估算行高度
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    //准确估算卡通高度
+    if(indexPath.section == 0){
+        if([self.cartoonModel.type isEqualToString:@"1"]){
+            return [self.imageCellHeightCache[indexPath.row] doubleValue];
+        }else{
+            //估算文章高度
+            ZZTStoryModel *model = self.cartoonDetailArray[indexPath.row];
+            if(model.TXTContent.length > 300){
+                return [self calculateStringHeight:model.TXTContent];
+            }else{
+                return 0;
+            }
+        }
+    }else if(indexPath.section == 3){
+        //恢复高度
+        return 100;
+    }else{
+        return 0;
+    }
+}
 
 //续画
 //-(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
@@ -1089,7 +1127,7 @@ static bool needHide = false;
         }
     }else{
         //点击了评论cell  获取这条cell的信息
-        ZZTCircleModel *model = self.commentArray[indexPath.section - 2];
+        ZZTCircleModel *model = self.commentArray[indexPath.section - 3];
         
         ZZTUserReplyModel *item = model.replyComment[indexPath.row];
         //回复人
@@ -1143,32 +1181,14 @@ static bool needHide = false;
     
     [self.navigationController setNavigationBarHidden:needHide animated:YES];
 }
-
-- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
-    NSLog(@"%lf",scrollView.contentOffset.y);
-    
-//    //到顶部显示
-//    if(targetContentOffset->y <= 64){
-//        needHide = NO;
-//        [self hideOrShowHeadBottomView:needHide];
-//    }else{
-//        needHide = YES;
-//        [self hideOrShowHeadBottomView:needHide];
-//
-//        needHide = YES;
-//        [self hideOrShowHeadBottomView:needHide];
-//    }
-//    self.isNavHide = needHide;
-}
-
-
+//隐藏上下视图
 - (void)hideOrShowHeadBottomView:(BOOL)needhide{
-    
-    UIView  *statusBar = [[[UIApplication sharedApplication] valueForKey:@"statusBarWindow"] valueForKey:@"statusBar"];
+    //隐藏状态bar
+    UIView *statusBar = [[[UIApplication sharedApplication] valueForKey:@"statusBarWindow"] valueForKey:@"statusBar"];
     BOOL statusAlpha = needhide ? 0 : 1;
     self.statusBar = statusBar;
     statusBar.alpha = statusAlpha;
-//    [[UIApplication sharedApplication] setStatusBarHidden:needhide];
+    //隐藏navbar
     CGFloat offset = needhide ? navHeight : 0;
     self.navbar.hide = needhide;
     if(needhide == YES){
@@ -1204,8 +1224,12 @@ static bool needHide = false;
     self.statusBar.alpha = 1;
     [self.navigationController setNavigationBarHidden:YES animated:NO];
     
+    [self continueReading];
+}
+//继续浏览
+-(void)continueReading{
     //继续阅读业务
-    //从本地拿到数据源
+    //获取已经存储的继续阅读数据
     NSMutableArray *arrayDict = [NSKeyedUnarchiver unarchiveObjectWithFile:JiXuYueDuAPI];
     if (arrayDict == nil) {
         arrayDict = [NSMutableArray array];
@@ -1214,33 +1238,24 @@ static bool needHide = false;
     NSLog(@"arrayDict:%@",arrayDict);
     
     //直接存这本书
-    //创建一本书
+    //创建书模型
     ZZTJiXuYueDuModel *model = [[ZZTJiXuYueDuModel alloc] init];
     //书名
     model.bookName = _cartoonModel.bookName;
     //书ID
     model.bookId = _cartoonModel.id;    //判断那本书
-    model.chapterListRow = [NSString stringWithFormat:@"%ld",self.indexRow];
+    model.chapterListRow = [NSString stringWithFormat:@"%ld",self.indexRow];//位于第几章节第几行
     
-//    model.lastChapterId = self.dataModel.id;
-    //这本书有哪些章节
+    //章节模型 信息
     ZZTChapterModel *chapterModel = [[ZZTChapterModel alloc] init];
-    chapterModel.chapterName = self.dataModel.chapterName;//章节名
-    chapterModel.chapterPage = self.dataModel.chapterPage;//章节字数  多少画
-    chapterModel.chapterIndex = self.indexRow;//第几行
-    chapterModel.chapterId = self.dataModel.id;//章节id
-    chapterModel.readPoint = self.readPoint;
-    chapterModel.autherData = self.author;
     
     if([self.cartoonModel.type isEqualToString:@"1"]){
-        chapterModel.imageUrlArray = self.imageUrlArray;
-        chapterModel.imageHeightCache = self.imageCellHeightCache;
+        
+        chapterModel = [ZZTChapterModel initCarttonChapter:self.dataModel.id chapterName:self.dataModel.chapterName autherData:self.author chapterPage:self.dataModel.chapterPage chapterIndex:self.indexRow readPoint:self.readPoint imageUrlArray:self.imageUrlArray imageHeightCache:self.imageCellHeightCache];
     }else{
-        chapterModel.TxTContent = self.TXTURL;
-        chapterModel.TXTFileName = self.fileName;
-        chapterModel.storyModel = self.stroyModel;
+
+        chapterModel = [ZZTChapterModel initTxtChapter:self.dataModel.id chapterName:self.dataModel.chapterName autherData:self.author chapterPage:self.dataModel.chapterPage chapterIndex:self.indexRow readPoint:self.readPoint TxTContent:self.TXTURL TXTFileName:self.fileName storyModel:self.stroyModel];
     }
-    NSLog(@"退出：readPoint:%@",NSStringFromCGPoint(chapterModel.readPoint));
     
     //先看有没有这篇文章
     BOOL isHave = NO;
@@ -1255,7 +1270,7 @@ static bool needHide = false;
             break;
         }
     }
-
+    
     //如果有 就修改
     if(isHave == YES){
         //取出这本书
@@ -1289,13 +1304,12 @@ static bool needHide = false;
     //存
     NSString *path = JiXuYueDuAPI;
     [NSKeyedArchiver archiveRootObject:arrayDict toFile:path];
-    NSLog(@"readPoint111111:%@",NSStringFromCGPoint(_readPoint));
 }
-
+//继续阅读本地文件
 -(void)setTestModel:(ZZTJiXuYueDuModel *)testModel{
     _testModel = testModel;
     if(testModel){
-        self.isJXYD = YES;
+        self.isJXYD = YES;//是否继续阅读
         self.model = testModel;
         if(self.model.chapterArray.count > 0){
             for (int i = 0; i < self.model.chapterArray.count; i++) {
@@ -1317,11 +1331,10 @@ static bool needHide = false;
     }
     return _model;
 }
-
+//滑动时候 隐藏视图的逻辑
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     CGPoint readPoint = CGPointMake(scrollView.contentOffset.x, scrollView.contentOffset.y);
     _readPoint = readPoint;
-//    NSLog(@"%f",scrollView.contentOffset.y);
     //到顶部显示
     if(scrollView.contentOffset.y <= 64){
         needHide = NO;
@@ -1335,7 +1348,7 @@ static bool needHide = false;
     }
     self.isNavHide = needHide;
 }
-
+//章节 位于章节列表的索引
 -(void)setIndexRow:(NSInteger)indexRow{
     _indexRow = indexRow;
 }
@@ -1346,9 +1359,6 @@ static bool needHide = false;
     
     NSLog(@"width:%f",[UIScreen mainScreen].bounds.size.width);
     [IQKeyboardManager sharedManager].enable = YES;
-//    [IQKeyboardManager sharedManager];
-//    IQKeyboardManager *keyboardManager = [IQKeyboardManager sharedManager];
-//    _keyboardManager = keyboardManager;
     [IQKeyboardManager sharedManager].enableAutoToolbar = YES;
     [IQKeyboardManager sharedManager].shouldResignOnTouchOutside = YES;
     
@@ -1358,7 +1368,7 @@ static bool needHide = false;
 
 #pragma mark - SectionHeaderViewDelegate
 - (void)spreadContent:(BOOL)isSpread section:(NSUInteger)section{
-    ZZTCircleModel *item = self.commentArray[section - 2];
+    ZZTCircleModel *item = self.commentArray[section - 3];
     item.isSpread = isSpread;
     item.headerHeight = [[FriendCircleViewModel new] getHeaderHeight:item];
     [self.tableView reloadData];
@@ -1408,7 +1418,9 @@ static bool needHide = false;
 
      NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
 
+    [self.tableView beginUpdates];
     [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView endUpdates];
 }
 
 -(void)updataStoryCellHeight:(NSString *)story index:(NSUInteger)index{
@@ -1737,4 +1749,79 @@ static bool needHide = false;
     }
     return indexPaths;
 }
+
+#pragma mark lazyLoad
+- (ZZTAuthorHeaderView *)authorHeaderView{
+    if(!_authorHeaderView){
+        _authorHeaderView = [[ZZTAuthorHeaderView alloc] initWithFrame:CGRectZero];
+    }
+    return _authorHeaderView;
+}
+
+-(ZZTNextWordHeaderView *)nextWordView{
+    if(!_nextWordView){
+        _nextWordView= [[ZZTNextWordHeaderView alloc] initWithFrame:CGRectZero];
+        [_nextWordView.rightBtn addTarget:self action:@selector(nextWordWithBtn:) forControlEvents:UIControlEventTouchUpInside];
+        [_nextWordView.rightBtn setTag:2];
+        [_nextWordView.leftBtn addTarget:self action:@selector(nextWordWithBtn:) forControlEvents:UIControlEventTouchUpInside];
+        [_nextWordView.leftBtn setTag:1];
+    }
+    return _nextWordView;
+}
+
+//-(ZZTLikeCollectShareHeaderView *)likeCollectView{
+//    if(_likeCollectView){
+//        _likeCollectView = [[ZZTLikeCollectShareHeaderView alloc] initWithFrame:CGRectZero];
+//    }
+//    return _likeCollectView;
+//}
+
+-(UITableView *)tableView{
+    if(!_tableView){
+        //先把漫画显示出来
+        UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT) style:UITableViewStyleGrouped];
+        tableView.delegate = self;
+        tableView.dataSource = self;
+        tableView.contentInset = UIEdgeInsetsMake(0,0,50,0);
+        tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        tableView.estimatedRowHeight = 0;
+        tableView.estimatedSectionHeaderHeight = 0;
+        tableView.estimatedSectionFooterHeight = 0;
+        tableView.tableFooterView = [UIView new];
+        [tableView registerClass:[ZZTCartoonContentCell class] forCellReuseIdentifier:CartoonContentCellIdentifier];
+        tableView.showsVerticalScrollIndicator = YES;
+        _tableView = tableView;
+        [self.view addSubview:tableView];
+        
+        [self loadViewIfNeeded];
+        
+        tableView.pagingEnabled = NO;
+        //评论
+        //注册cell
+        [self.tableView registerClass:[CircleCell class] forCellReuseIdentifier:kCellId];
+        [self.tableView registerClass:[ZZTStoryDetailCell class] forCellReuseIdentifier:story];
+        
+        self.tableView.tableFooterView = [UIView new];
+    }
+    return _tableView;
+}
+-(void)headerViewCollect{
+    UserInfo *userInfo = [Utilities GetNSUserDefaults];
+    NSDictionary *dic = @{
+                          @"cartoonId":_cartoonModel.id,
+                          @"userId":[NSString stringWithFormat:@"%ld",userInfo.id]
+                          };
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    [manager POST:[ZZTAPI stringByAppendingString:@"great/collects"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+
+    }];
+}
+//是否收藏
+-(void)setIsCollect:(NSString *)isCollect{
+    _isCollect = isCollect;
+    //@"1" 是收藏
+}
+
 @end

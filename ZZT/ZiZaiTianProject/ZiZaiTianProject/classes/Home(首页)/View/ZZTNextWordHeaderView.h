@@ -30,6 +30,7 @@ typedef void (^centerBtnBlock) (void);
 
 @property (nonatomic,strong) centerBtnBlock block;
 
+
 //@property (nonatomic, copy) void (^ centerBtnBlock)(void);
 
 @end

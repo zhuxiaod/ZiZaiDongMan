@@ -31,9 +31,10 @@
     [btn setTitle:@"点评" forState:UIControlStateNormal];
     btn.backgroundColor = [UIColor colorWithHexString:@"#C4A9D3"];
     [self addSubview:btn];
+    btn.hidden = YES;
     
     UIView *bottomView = [[UIView alloc] init];
-    bottomView.backgroundColor = [UIColor grayColor];
+    bottomView.backgroundColor = [UIColor colorWithRGB:@"246,246,251"];
     [self addSubview:bottomView];
     
     [bottomView mas_makeConstraints:^(MASConstraintMaker *make) {

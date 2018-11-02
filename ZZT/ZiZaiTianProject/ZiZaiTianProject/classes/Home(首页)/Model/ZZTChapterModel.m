@@ -71,4 +71,31 @@
         
     } return self;
 }
+
++(instancetype)initCarttonChapter:(NSInteger)chapterId chapterName:(NSString *)chapterName autherData:(UserInfo *)autherData chapterPage:(NSString *)chapterPage chapterIndex:(NSInteger)chapterIndex readPoint:(CGPoint)readPoint imageUrlArray:(NSMutableArray *)imageUrlArray imageHeightCache:(NSMutableArray *)imageHeightCache{
+    ZZTChapterModel *model = [[ZZTChapterModel alloc] init];
+    model.chapterName = chapterName;//章节名
+    model.chapterPage = chapterPage;//章节字数  多少画
+    model.chapterIndex = chapterIndex;//第几行
+    model.chapterId = chapterId;//章节id
+    model.readPoint = readPoint;
+    model.autherData = autherData;
+    model.imageUrlArray = imageUrlArray;
+    model.imageHeightCache = imageHeightCache;
+    return model;
+}
++(instancetype)initTxtChapter:(NSInteger )chapterId chapterName:(NSString *)chapterName autherData:(UserInfo *)autherData chapterPage:(NSString *)chapterPage chapterIndex:(NSInteger )chapterIndex readPoint:(CGPoint)readPoint TxTContent:(NSString *)TxTContent TXTFileName:(NSString *)TXTFileName storyModel:(ZZTStoryModel *)storyModel{
+    ZZTChapterModel *model = [[ZZTChapterModel alloc] init];
+    model.chapterName = chapterName;//章节名
+    model.chapterPage = chapterPage;//章节字数  多少画
+    model.chapterIndex = chapterIndex;//第几行
+    model.chapterId = chapterId;//章节id
+    model.readPoint = readPoint;
+    model.autherData = autherData;
+    model.TxTContent = TxTContent;
+    model.TXTFileName = TXTFileName;
+    model.storyModel = storyModel;
+    return model;
+}
+
 @end

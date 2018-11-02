@@ -72,12 +72,9 @@ static NSString * const offsetKeyPath = @"contentOffset";
         self.participationNum.text = [NSString stringWithFormat:@"收藏： %zd",detailModel.collectNum];
     }
     
-    self.participationNum.text = [NSString stringWithFormat:@"收藏： %ld万",detailModel.collectNum];
-    
-    self.likeNum.text = [NSString stringWithFormat:@"%ld",detailModel.collectNum];
+    self.likeNum.text = [NSString stringWithFormat:@"%ld",detailModel.praiseNum];
 
     self.commentNum.text = [NSString stringWithFormat:@"%ld",detailModel.commentNum];
-    
     
     if (detailModel.clickNum >= 10000) {
         self.heatNum.text = [NSString stringWithFormat:@"热度：%zd",detailModel.clickNum/10000];

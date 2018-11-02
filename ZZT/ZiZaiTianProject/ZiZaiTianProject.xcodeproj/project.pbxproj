@@ -1460,6 +1460,21 @@
 			path = "ZiZaiTianProject/classes/Me(我的)/Model";
 			sourceTree = SOURCE_ROOT;
 		};
+		04949C49218BF19F0029A59F /* common */ = {
+			isa = PBXGroup;
+			children = (
+				04949C4A218BF1FB0029A59F /* UI组件 */,
+			);
+			path = common;
+			sourceTree = "<group>";
+		};
+		04949C4A218BF1FB0029A59F /* UI组件 */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "UI组件";
+			sourceTree = "<group>";
+		};
 		049A99A820E3288400ED27C9 /* Login */ = {
 			isa = PBXGroup;
 			children = (
@@ -1811,6 +1826,7 @@
 		F7C04C1220DF43C90055E7A8 /* Category */ = {
 			isa = PBXGroup;
 			children = (
+				04949C49218BF19F0029A59F /* common */,
 				0428E8B121796B8900702225 /* MBProgressHUD */,
 				04E9FAC92153784B005A3986 /* GlobalUI.h */,
 				04E9FAC82153784A005A3986 /* GlobalUI.m */,

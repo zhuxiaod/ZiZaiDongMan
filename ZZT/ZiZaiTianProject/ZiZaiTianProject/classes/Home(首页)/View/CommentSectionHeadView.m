@@ -18,6 +18,8 @@ static const CGFloat contentHeight = 20.0f;
 
 @property (nonatomic,weak) UILabel *titleView;
 
+@property (nonatomic,strong) UIView *bottomView;
+
 
 @end
 
@@ -71,6 +73,17 @@ static const CGFloat contentHeight = 20.0f;
     }];
     
     self.titleView = titleView;
+    
+    UIView *bottomView = [[UIView alloc] init];
+    _bottomView = bottomView;
+    bottomView.backgroundColor = [UIColor colorWithRGB:@"246,246,251"];
+    [self addSubview:bottomView];
+    
+    [bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.right.left.equalTo(self).offset(0);
+        make.height.mas_equalTo(1);
+    }];
+    
 }
 
 @end

@@ -46,6 +46,7 @@
     _likeBtn = likeBtn;
 //    _likeBtn.backgroundColor = [UIColor redColor];
     likeBtn.titleLabel.font = [UIFont systemFontOfSize:12];
+    likeBtn.enabled = NO;
     [likeBtn addTarget:self action:@selector(likeTarget:) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:likeBtn];
     
@@ -63,6 +64,9 @@
     _collectBtn = collectBtn;
 //    collectBtn.backgroundColor = [UIColor redColor];
     collectBtn.titleLabel.font = [UIFont systemFontOfSize:12];
+    [collectBtn addTarget:self action:@selector(collectTarget:) forControlEvents:UIControlEventTouchUpInside];
+    [collectBtn setImage:[UIImage imageNamed:@"作品-作品信息-收藏-未收藏"] forState:UIControlStateNormal];
+    [collectBtn setImage:[UIImage imageNamed:@"作品-作品信息-收藏-已收藏"] forState:UIControlStateSelected];
     [self.contentView addSubview:collectBtn];
 
     //关注lab
@@ -79,6 +83,7 @@
     _shareBtn = shareBtn;
 //    _shareBtn.backgroundColor = [UIColor redColor];
     shareBtn.titleLabel.font = [UIFont systemFontOfSize:12];
+
     [self.contentView addSubview:shareBtn];
     
     //分享lab
@@ -97,6 +102,13 @@
     [self.contentView addSubview:bottomView];
 }
 
+-(void)collectTarget:(UIButton *)btn{
+    _collectBtn.selected = !_collectBtn.selected;
+    if(_collectBtnBlock){
+        self.collectBtnBlock();
+    }
+}
+
 -(void)likeTarget:(UIButton *)btn{
     if([self.isLike isEqualToString:@"0"]){
         //没有点赞
@@ -108,10 +120,9 @@
         self.likeNum--;
     }
     _likeLab.text = [NSString stringWithFormat:@"赞 %ld",self.likeNum];
-    if(_centerBtnBlock){
-        self.centerBtnBlock();
+    if(_likeBtnBlock){
+        self.likeBtnBlock();
     }
-
 }
 
 -(void)layoutSubviews{
@@ -169,6 +180,7 @@
     _likeModel = likeModel;
     self.likeNum = likeModel.praiseNum;
     self.isLike = likeModel.ifpraise;
+    _likeBtn.enabled = YES;
     //点赞
     if([likeModel.ifpraise isEqualToString:@"0"]){
         [self.likeBtn setImage:[UIImage imageNamed:@"正文-点赞-未点赞(灰色）"] forState:UIControlStateNormal];
@@ -176,5 +188,15 @@
         [self.likeBtn setImage:[UIImage imageNamed:@"正文-点赞-已点赞"] forState:UIControlStateNormal];
     }
     _likeLab.text = [NSString stringWithFormat:@"赞 %ld",likeModel.praiseNum];
+}
+
+-(void)setIsCollect:(NSString *)isCollect{
+    _isCollect = isCollect;
+    if ([_isCollect isEqualToString:@"1"]) {
+        //点赞了
+        _collectBtn.selected = YES;
+    }else{
+        _collectBtn.selected = NO;
+    }
 }
 @end

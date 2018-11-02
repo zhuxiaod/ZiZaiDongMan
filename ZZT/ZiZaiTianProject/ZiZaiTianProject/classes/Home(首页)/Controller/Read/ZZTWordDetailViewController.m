@@ -81,6 +81,8 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     
     //自定义navigationBar
     [self setupNavigationBar];
+    
+
 }
 
 -(void)setupShieldView{
@@ -191,18 +193,18 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 //设置数据
 -(void)setCartoonDetail:(ZZTCarttonDetailModel *)cartoonDetail{
     _cartoonDetail = cartoonDetail;
-    if(self.isId == YES){
-        //上部分View
-        [self loadtopData:cartoonDetail.id];
-       //目录
-//        [self loadListData:cartoonDetail.id];
-       //评论
-//        [self loadCommentData:cartoonDetail.id];
-    }else{
-        [self loadtopData:cartoonDetail.cartoonId];
-        //目录
-//        [self loadListData:cartoonDetail.cartoonId];
-    }
+//    if(self.isId == YES){
+//        //上部分View
+//        [self loadtopData:cartoonDetail.id];
+//       //目录
+////        [self loadListData:cartoonDetail.id];
+//       //评论
+////        [self loadCommentData:cartoonDetail.id];
+//    }else{
+//        [self loadtopData:cartoonDetail.cartoonId];
+//        //目录
+////        [self loadListData:cartoonDetail.cartoonId];
+//    }
 }
 
 //请求该漫画的资料
@@ -366,7 +368,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
         cartoonDetailVC.testModel = self.model;
     }
     cartoonDetailVC.hidesBottomBarWhenPushed = YES;
-    
+    cartoonDetailVC.isCollect = self.ctDetail.ifCollect;
     [self.navigationController pushViewController:cartoonDetailVC animated:YES];
 }
 
@@ -378,7 +380,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 //    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"record/ifUserAtAuthor"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
+
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
@@ -476,6 +478,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
         _wordDetailHeadView = [ZZTWordsDetailHeadView wordsDetailHeadViewWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, wordsDetailHeadViewHeight) scorllView:nil];
         [_wordDetailHeadView.shareBtn addTarget:self action:@selector(shareWithSharePanel) forControlEvents:UIControlEventTouchUpInside];
         //收藏业务
+        weakself(self);
         _wordDetailHeadView.buttonAction = ^(ZZTCarttonDetailModel *detailModel) {
             UserInfo *userInfo = [Utilities GetNSUserDefaults];
             NSDictionary *dic = @{
@@ -484,7 +487,8 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
                                   };
             AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
             [manager POST:[ZZTAPI stringByAppendingString:@"great/collects"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-                
+                //重新获取信息
+                [weakSelf loadData];
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                 
             }];
@@ -510,12 +514,23 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-//    self.navigationController.delegate = self;
-//    [self.navigationController setNavigationBarHidden:YES animated:NO];
+
     self.navigationController.navigationBar.alpha = 0;
     _navigationFrame = self.navigationController.navigationBar.frame;
 
     [self JiXuYueDuTarget];
+
+    //请求数据
+    [self loadData];
+}
+
+-(void)loadData{
+    if(self.isId == YES){
+        //上部分View
+        [self loadtopData:self.cartoonDetail.id];
+    }else{
+        [self loadtopData:self.cartoonDetail.cartoonId];
+    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated{

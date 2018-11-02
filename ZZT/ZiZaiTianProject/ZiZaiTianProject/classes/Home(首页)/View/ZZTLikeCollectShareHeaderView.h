@@ -10,7 +10,9 @@
 
 @class ZZTStoryModel;
 
-typedef void (^centerBtnBlock) (void);
+typedef void (^likeBtnBlock) (void);
+
+typedef void (^collectBtnBlock) (void);
 
 @interface ZZTLikeCollectShareHeaderView : UITableViewHeaderFooterView
 
@@ -21,6 +23,10 @@ typedef void (^centerBtnBlock) (void);
 
 @property (nonatomic,strong) UIButton *shareBtn;
 
-@property (nonatomic, copy) void (^ centerBtnBlock)(void);
+@property (nonatomic, copy) void (^ likeBtnBlock)(void);
+
+@property (nonatomic, copy) void (^ collectBtnBlock)(void);
+
+@property (nonatomic,strong) NSString *isCollect;
 
 @end

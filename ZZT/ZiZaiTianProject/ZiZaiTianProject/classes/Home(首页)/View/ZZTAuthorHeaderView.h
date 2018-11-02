@@ -10,4 +10,6 @@
 
 @interface ZZTAuthorHeaderView : UITableViewHeaderFooterView
 
+@property (nonatomic,strong) UserInfo *userModel;
+
 @end

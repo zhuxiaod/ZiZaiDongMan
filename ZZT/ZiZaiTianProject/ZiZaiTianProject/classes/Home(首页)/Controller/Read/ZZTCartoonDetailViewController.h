@@ -19,6 +19,8 @@
 @property (nonatomic,strong) ZZTCarttonDetailModel *cartoonModel;
 @property (nonatomic,strong) ZZTJiXuYueDuModel *testModel;
 @property (nonatomic,assign) NSInteger indexRow;
+
+@property (nonatomic,strong) NSString *isCollect;
 //书
 //@property (nonatomic,strong) NSString *bookNameId;
 
