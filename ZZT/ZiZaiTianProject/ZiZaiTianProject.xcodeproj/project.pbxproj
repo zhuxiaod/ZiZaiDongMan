@@ -263,6 +263,7 @@
 		049A99DB20E3879700ED27C9 /* ZZTVIPViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 049A99D920E3879700ED27C9 /* ZZTVIPViewController.m */; };
 		049A99EA20E394BB00ED27C9 /* ZZTVIPTopView.m in Sources */ = {isa = PBXBuildFile; fileRef = 049A99E820E394BB00ED27C9 /* ZZTVIPTopView.m */; };
 		049A99EB20E394BB00ED27C9 /* ZZTVIPTopView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 049A99E920E394BB00ED27C9 /* ZZTVIPTopView.xib */; };
+		049D0791218DA43800F5D141 /* ZZTCommentAirView.m in Sources */ = {isa = PBXBuildFile; fileRef = 049D0790218DA43800F5D141 /* ZZTCommentAirView.m */; };
 		04A0C09F21803FCD00D08F6C /* ZZTZoneUpLoadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A0C09E21803FCD00D08F6C /* ZZTZoneUpLoadViewController.m */; };
 		04A0C0A221804B8500D08F6C /* LxGridViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A0C0A121804B8500D08F6C /* LxGridViewFlowLayout.m */; };
 		04A0C0A521804C3600D08F6C /* TZTestCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A0C0A321804C3600D08F6C /* TZTestCell.m */; };
@@ -791,6 +792,8 @@
 		049A99E720E394BA00ED27C9 /* ZZTVIPTopView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZTVIPTopView.h; sourceTree = "<group>"; };
 		049A99E820E394BB00ED27C9 /* ZZTVIPTopView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZZTVIPTopView.m; sourceTree = "<group>"; };
 		049A99E920E394BB00ED27C9 /* ZZTVIPTopView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ZZTVIPTopView.xib; sourceTree = "<group>"; };
+		049D078F218DA43800F5D141 /* ZZTCommentAirView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTCommentAirView.h; sourceTree = "<group>"; };
+		049D0790218DA43800F5D141 /* ZZTCommentAirView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTCommentAirView.m; sourceTree = "<group>"; };
 		04A0C09D21803FCD00D08F6C /* ZZTZoneUpLoadViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTZoneUpLoadViewController.h; sourceTree = "<group>"; };
 		04A0C09E21803FCD00D08F6C /* ZZTZoneUpLoadViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTZoneUpLoadViewController.m; sourceTree = "<group>"; };
 		04A0C0A021804B8500D08F6C /* LxGridViewFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LxGridViewFlowLayout.h; sourceTree = "<group>"; };
@@ -1195,6 +1198,8 @@
 				042D148C218B337200BE05F6 /* CommentSectionHeadView.m */,
 				042D148F218B339F00BE05F6 /* ZZTAuthorHeaderView.h */,
 				042D1490218B339F00BE05F6 /* ZZTAuthorHeaderView.m */,
+				049D078F218DA43800F5D141 /* ZZTCommentAirView.h */,
+				049D0790218DA43800F5D141 /* ZZTCommentAirView.m */,
 			);
 			name = View;
 			path = "ZiZaiTianProject/classes/Home(首页)/View";
@@ -2303,6 +2308,7 @@
 				04A0C0F921816BD900D08F6C /* ZZTUpdataPhoneViewController.m in Sources */,
 				040D281F2133AB5B002A3B72 /* ZZTTopUpView.m in Sources */,
 				047720FE210822AE00FC97B5 /* EditImageView.m in Sources */,
+				049D0791218DA43800F5D141 /* ZZTCommentAirView.m in Sources */,
 				04A32767216EDE0F00542C65 /* NSDate+UTF8.m in Sources */,
 				042D148E218B337400BE05F6 /* CommentSectionHeadView.m in Sources */,
 				042D147F218AA86400BE05F6 /* TZPhotoPreviewCell.m in Sources */,

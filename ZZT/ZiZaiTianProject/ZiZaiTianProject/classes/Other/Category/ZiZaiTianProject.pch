@@ -122,8 +122,8 @@
 #define iPhone6plus ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? (CGSizeEqualToSize(CGSizeMake(1125,2001), [[UIScreen mainScreen] currentMode].size) || CGSizeEqualToSize(CGSizeMake(1242,2208), [[UIScreen mainScreen] currentMode].size)) : NO)
 
 //测试环境
+
 //#define ZZTAPI @"http://192.168.0.165:8888/"
-//
 //#define ZZTBucket @"image"
 //#define imageHost @"http://p872ue3rt.bkt.clouddn.com"
 
@@ -136,6 +136,7 @@
 //#import "UITableView+ZFTableViewSnapshot.h"
 
 //正式环境
+
 #define ZZTAPI @"http://120.79.178.191:8888/"
 #define ZZTBucket @"zizaitian"
 #define imageHost @"http://img.cdn.zztian.cn"

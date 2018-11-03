@@ -54,12 +54,14 @@
     commentLabel.delegate = self;
     self.commentLabel = commentLabel;
     [self.contentView addSubview:commentLabel];
+    
     [commentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.contentView).offset(3);
         make.bottom.equalTo(self.contentView).offset(-3);
         make.right.equalTo(self.contentView).offset(-SectionHeaderHorizontalSpace);
-        make.left.equalTo(@(36 + SectionHeaderHorizontalSpace * 2 + 5));
+        make.left.equalTo(@(64));
     }];
+    
     [self linkStyles];
 }
 

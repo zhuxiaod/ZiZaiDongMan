@@ -53,7 +53,7 @@ const CGFloat SectionHeaderSomePicturesHeight = 70; //有多张图片时的单�
     }
     return self;
 }
-
+//创建UI
 -(void)setup{
     //背景色
     self.contentView.backgroundColor = [UIColor whiteColor];
@@ -90,9 +90,9 @@ const CGFloat SectionHeaderSomePicturesHeight = 70; //有多张图片时的单�
     self.contentLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     //宽度
     self.contentLabel.preferredMaxLayoutWidth = SCREEN_MIN_LENGTH - 3 * SectionHeaderHorizontalSpace - 36;
-    
-    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickCommentLab:)];
-    [self.contentLabel addGestureRecognizer:tapGesture];
+    //取消点击Lab 进行评论
+//    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickCommentLab:)];
+//    [self.contentLabel addGestureRecognizer:tapGesture];
     
     //更多按钮
     self.moreBtn = [UIButton new];
@@ -112,8 +112,8 @@ const CGFloat SectionHeaderSomePicturesHeight = 70; //有多张图片时的单�
     
     //评论按钮
     self.commentBtn = [UIButton new];
-    [self.commentBtn setImage:[UIImage imageNamed:@"AlbumOperateMore"] forState:UIControlStateNormal];
-    [self.commentBtn addTarget:self action:@selector(clickCommentBtn:) forControlEvents:UIControlEventTouchUpInside];
+    [self.commentBtn setImage:[UIImage imageNamed:@"作品-作品信息-评论(灰色）"] forState:UIControlStateNormal];
+    [self.commentBtn addTarget:self action:@selector(clickCommentLab:) forControlEvents:UIControlEventTouchUpInside];
     
     //评论按钮
     self.likeBtn = [[ImageLeftBtn alloc] init];
@@ -313,6 +313,14 @@ const CGFloat SectionHeaderSomePicturesHeight = 70; //有多张图片时的单�
             make.top.equalTo(self.timeLabel.mas_bottom).offset(SectionHeaderVerticalSpace);
             make.left.right.equalTo(self.timeLabel);
         }];
+        //评论约束  有字的情况 但是不排除 会有图片 有图片会改正
+        [self.commentBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.contentLabel.mas_bottom).offset(SectionHeaderVerticalSpace);
+            make.right.equalTo(self.timeLabel).offset(-SectionHeaderVerticalSpace);
+            make.height.mas_equalTo(20);
+            make.width.mas_equalTo(20);
+        }];
+        
         self.moreBtn.hidden = YES;
         self.contentLabel.text = self.item.content;
     } else {
@@ -343,6 +351,15 @@ const CGFloat SectionHeaderSomePicturesHeight = 70; //有多张图片时的单�
             make.width.equalTo(@40);
             make.height.equalTo(@(SectionHeaderMoreBtnHeight));
         }];
+        
+        //评论约束  有字的情况 但是不排除 会有图片 有图片会改正
+        [self.commentBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.moreBtn.mas_bottom).offset(SectionHeaderVerticalSpace);
+            make.right.equalTo(self.timeLabel).offset(-SectionHeaderVerticalSpace);
+            make.height.mas_equalTo(20);
+            make.width.mas_equalTo(20);
+        }];
+        
     }
     //加事件
 //    NSRange boldRange0 = NSMakeRange(0, self.item.content.length);

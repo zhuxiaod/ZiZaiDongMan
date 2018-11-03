@@ -45,6 +45,10 @@
 
 @property (nonatomic,strong) ZZTChapterChooseView *chapterChooseView;
 
+@property (nonatomic,strong) dispatch_group_t group;
+
+@property (nonatomic,assign) dispatch_queue_t q;
+
 @end
 
 NSString *zztWordListCell = @"zztWordListCell";
@@ -52,6 +56,20 @@ NSString *zztWordListCell = @"zztWordListCell";
 NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 
 @implementation ZZTWordDetailViewController
+
+-(dispatch_group_t)group{
+    if(!_group){
+        _group = dispatch_group_create();
+    }
+    return _group;
+}
+
+-(dispatch_queue_t)q{
+    if(!_q){
+        _q = dispatch_get_global_queue(0, 0);
+    }
+    return _q;
+}
 
 -(NSMutableArray *)wordList{
     if(!_wordList){
@@ -62,9 +80,8 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.fd_prefersNavigationBarHidden = YES;
     
-//    self.navigationController.fd_prefersNavigationBarHidden = YES;
+    self.fd_prefersNavigationBarHidden = YES;
     
     self.isHave = NO;
 
@@ -215,24 +232,21 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
                                 @"id":ID,
                                 @"userId":[NSString stringWithFormat:@"%ld",user.id]
                                 };
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     EncryptionTools *tool = [[EncryptionTools alloc]init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/particulars"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
         NSDictionary *dic1 = [tool decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
         ZZTCarttonDetailModel *mode = [ZZTCarttonDetailModel mj_objectWithKeyValues:dic1];
         self.ctDetail = mode;
         self.head.detailModel = mode;
         [self.navbar.centerButton setTitle:mode.bookName forState:UIControlStateNormal];
+        dispatch_group_leave(self.group);
         [self.contentView reloadData];
-        if(self.isId == YES){
-            [self loadListData:self.cartoonDetail.id pageNum:@"1" isFirst:YES];
-        }else{
-            [self loadListData:self.cartoonDetail.cartoonId pageNum:@"1" isFirst:YES];
-        }
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        dispatch_group_leave(self.group);
     }];
 }
 
@@ -245,14 +259,12 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
                                 @"pageNum":pageNum,
                                 @"pageSize":@"5"
                                 };
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     EncryptionTools *tool = [[EncryptionTools alloc]init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterlist"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic2 = [tool decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
         NSMutableArray *array = [ZZTChapterlistModel mj_objectArrayWithKeyValuesArray:dic2[@"list"]];
-//        NSMutableArray *array = [ZZTChapterlistModel mj_objectArrayWithKeyValuesArray:dic2];
         self.wordList = array;
         //总共的数量
         NSNumber *totalData = dic2[@"total"];
@@ -268,8 +280,9 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
             }
         }
         [self.contentView reloadData];
+        dispatch_group_leave(self.group);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
+        dispatch_group_leave(self.group);
     }];
 }
 
@@ -455,6 +468,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     }else{
         [self loadListData:self.cartoonDetail.cartoonId pageNum:[NSString stringWithFormat:@"%ld",model.APIPage] isFirst:NO];
     }
+    
 }
 
 - (ZZTWordDescSectionHeadView *)descHeadView {
@@ -488,7 +502,15 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
             AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
             [manager POST:[ZZTAPI stringByAppendingString:@"great/collects"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                 //重新获取信息
-                [weakSelf loadData];
+                dispatch_group_async(weakSelf.group, weakSelf.q, ^{
+                    dispatch_group_enter(weakSelf.group);
+                    if(self.isId == YES){
+                        //上部分View
+                        [weakSelf loadtopData:weakSelf.cartoonDetail.id];
+                    }else{
+                        [weakSelf loadtopData:weakSelf.cartoonDetail.cartoonId];
+                    }
+                });
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                 
             }];
@@ -525,12 +547,24 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 }
 
 -(void)loadData{
-    if(self.isId == YES){
-        //上部分View
-        [self loadtopData:self.cartoonDetail.id];
-    }else{
-        [self loadtopData:self.cartoonDetail.cartoonId];
-    }
+     dispatch_group_async(self.group, self.q, ^{
+         dispatch_group_enter(self.group);
+         if(self.isId == YES){
+             //上部分View
+             [self loadtopData:self.cartoonDetail.id];
+         }else{
+             [self loadtopData:self.cartoonDetail.cartoonId];
+         }
+    });
+    
+    dispatch_group_async(self.group, self.q, ^{
+        dispatch_group_enter(self.group);
+        if(self.isId == YES){
+            [self loadListData:self.cartoonDetail.id pageNum:@"1" isFirst:YES];
+        }else{
+            [self loadListData:self.cartoonDetail.cartoonId pageNum:@"1" isFirst:YES];
+        }
+    });
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
