@@ -31,6 +31,7 @@
 #import "ZZTLikeCollectShareHeaderView.h"
 #import "ZZTAuthorHeaderView.h"
 #import "ZZTCommentAirView.h"
+#import "ZZTCommentViewController.h"
 
 
 @interface ZZTCartoonDetailViewController ()<UITableViewDelegate,UITableViewDataSource,CircleCellDelegate,ZZTCommentHeaderViewDelegate,UITextViewDelegate,NSURLSessionDataDelegate,ZZTCartoonContentCellDelegate,ZZTStoryDetailCellDelegate>
@@ -278,15 +279,28 @@ static bool needHide = false;
 }
 
 -(void)setupMJRefresh{
-    //刷新评论的page数
-    _moreCommentPage = 2;
-    //更新评论的page数
-    _updataCommentPage = 1;
-    self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
-        [self loadMoreCommentData];
-    }];
+//    //刷新评论的page数
+//    _moreCommentPage = 2;
+//    //更新评论的page数
+//    _updataCommentPage = 1;
+//    self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+//        [self loadMoreCommentData];
+//    }];
+
+    self.tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(pullUpToReloadMoreData:)];
+
 }
 
+- (void)pullUpToReloadMoreData:(MJRefreshBackNormalFooter *)table{
+    NSLog(@"--- 上拉");
+    
+    //显示评论页面
+    ZZTCommentViewController *commentView = [[ZZTCommentViewController alloc] init];
+    [self presentViewController:commentView animated:YES completion:nil];
+
+    [table endRefreshing];
+
+}
 //下拉评论接口
 - (void)loadMoreCommentData{
     UserInfo *user = [Utilities GetNSUserDefaults];
@@ -558,11 +572,11 @@ static bool needHide = false;
 }
 
 -(void)loadContent{
-    
-    dispatch_group_async(self.group, self.q, ^{
-        dispatch_group_enter(self.group);
-        [self loadContentData];
-    });
+//
+//    dispatch_group_async(self.group, self.q, ^{
+//        dispatch_group_enter(self.group);
+//        [self loadContentData];
+//    });
 
     dispatch_group_async(self.group, self.q, ^{
         dispatch_group_enter(self.group);
@@ -750,14 +764,44 @@ static bool needHide = false;
     _isHasComment = NO;
     UserInfo *user = [Utilities GetNSUserDefaults];
     AFHTTPSessionManager *session = [[AFHTTPSessionManager alloc] init];
-    NSDictionary *commentDict = @{
-                                  @"itemId":[NSString stringWithFormat:@"%ld",self.dataModel.id],
-                                  @"type":self.cartoonModel.type,
-                                  @"pageNum":[NSString stringWithFormat:@"%ld",self.updataCommentPage],//刷新评论信息  每次下拉一次 这里就要改变一次
-                                  @"pageSize":@"10",
-                                  @"userId":[NSString stringWithFormat:@"%ld",user.id]
-                                  };
-    [session POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonComment"] parameters:commentDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+//    NSDictionary *commentDict = @{
+//                                  @"itemId":[NSString stringWithFormat:@"%ld",self.dataModel.id],
+//                                  @"type":self.cartoonModel.type,
+//                                  @"pageNum":[NSString stringWithFormat:@"%ld",self.updataCommentPage],//刷新评论信息  每次下拉一次 这里就要改变一次
+//                                  @"pageSize":@"10",
+//                                  @"userId":[NSString stringWithFormat:@"%ld",user.id]
+//                                  };
+//    [session POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonComment"] parameters:commentDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+//        self.commentArray = nil;
+//        NSDictionary *commenDdic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+//        //这里有问题 应该是转成数组 然后把对象取出
+//        NSMutableArray *array1 = [ZZTCircleModel mj_objectArrayWithKeyValuesArray:commenDdic];
+//        if(array1.count == 0){
+//            //没有数据的时候
+//            [self.commentArray addObject:@"1"];
+//            self.isHasComment = YES;
+////            [self.tableView.mj_footer endRefreshingWithNoMoreData];
+//        }else{
+//            //外面的数据
+//            FriendCircleViewModel *circleViewModel = [[FriendCircleViewModel alloc] init];
+//            circleViewModel.circleModelArray = array1;
+//            self.commentArray = [circleViewModel loadDatas];
+////            [self.tableView.mj_footer endRefreshing];
+//        }
+//        //加工一下评论的数据
+//        [self.tableView reloadData];
+//        dispatch_group_leave(self.group);
+//    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+//        dispatch_group_leave(self.group);//很重要,不能少
+////        [self.tableView.mj_footer endRefreshing];
+//
+//    }];
+    NSDictionary *dict = @{
+                           @"chapterId":[NSString stringWithFormat:@"%ld",self.dataModel.id],
+                               @"type":self.cartoonModel.type,
+                               @"userId":[NSString stringWithFormat:@"%ld",user.id]
+                           };
+    [session POST:[ZZTAPI stringByAppendingString:@"circle/comment"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         self.commentArray = nil;
         NSDictionary *commenDdic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
@@ -778,9 +822,7 @@ static bool needHide = false;
         [self.tableView reloadData];
         dispatch_group_leave(self.group);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        dispatch_group_leave(self.group);//很重要,不能少
-//        [self.tableView.mj_footer endRefreshing];
-
+        
     }];
 }
 
@@ -1216,7 +1258,7 @@ static bool needHide = false;
     }else{
         //点击了评论cell  获取这条cell的信息
         ZZTCircleModel *model = self.commentArray[indexPath.section - 3];
-        
+        //第几条回复
         ZZTUserReplyModel *item = model.replyComment[indexPath.row];
         //回复人
         customer *replyer = item.replyCustomer;
@@ -1226,7 +1268,7 @@ static bool needHide = false;
         customer *customer = model.customer;    //初始化字符串
 
         //回复谁
-        if(replyer.nickName == nil || [replyer.nickName length] <= 0 || [replyer.ID isEqualToString:customer.ID]){
+        if(replyer.nickName == nil || [replyer.nickName length] <= 0 || [replyer.id isEqualToString:customer.id]){
             //没有回复人的  p
             self.replyer = plyer;
             self.commentId = item.id;
@@ -1238,37 +1280,7 @@ static bool needHide = false;
         //设置输入回复信息
         [self startComment];
     }
-    //开始进来是显示的
-    if(self.isNavHide == NO){
-        self.isNavHide = YES;
-//        [[UIApplication sharedApplication] setStatusBarHidden:YES];
-//        [self hideOrShowHeadBottomView:self.isNavHide];
-    }else{
-        self.isNavHide = NO;
-//        [[UIApplication sharedApplication] setStatusBarHidden:NO];
-//        [self hideOrShowHeadBottomView:self.isNavHide];
-    }
-
-//    //弹出键盘
-//    ZZTCircleModel *item = self.commentArray[indexPath.section - 2];
-//    ZZTUserReplyModel *model = item.replyComment[indexPath.row];
-//    if(model){
-//        customer *toUser = model.replyCustomer;
-//        self.selectedSection = indexPath.section;
-//        self.toPeople = @{
-////                          @"comment_to_user_id": toUser.ID,
-//                          @"comment_to_user_name":toUser.nickName,
-//                          };
-//        [self startComment];
-//    }
 }
-//
-//-(void)hideOrShowHeadView:(BOOL)needHide{
-//
-//    if(self.navigationController.navigationBar.hidden == needHide) return;
-//
-//    [self.navigationController setNavigationBarHidden:needHide animated:YES];
-//}
 
 //隐藏navBar
 - (void)hideOrShowHeadView:(BOOL)needhide{
@@ -1477,16 +1489,13 @@ static bool needHide = false;
 
 -(void)didCommentLabelReply:(NSInteger)section{
     ZZTCircleModel *item = self.commentArray[section];
+    
     self.commentId = item.id;
     //找到回复人了
     self.isReply = YES;
-
-//    self.replySection = section;
+    
     //弹出键盘
     [self startComment];
-    //设置ID
-    //发送请求
-    NSLog(@"点中了");
 }
 
 -(void)didClickLikeButton:(NSInteger)section{

@@ -107,7 +107,7 @@
         //发布者
         customer *customer = item.customer;
         
-        if(replyer.nickName == nil || [replyer.nickName length] <= 0 || [replyer.ID isEqualToString:customer.ID]){
+        if(replyer.nickName == nil || [replyer.nickName length] <= 0 || [replyer.id isEqualToString:customer.id]){
             text = [NSString stringWithFormat:@"%@: %@",plyer.nickName,model.content];
         }else{
             text = [NSString stringWithFormat:@"%@回复%@: %@",plyer.nickName,replyer.nickName,model.content];

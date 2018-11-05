@@ -106,6 +106,7 @@
 //    playVC.view.backgroundColor = [UIColor yellowColor];
 //    [self addChildViewController:playVC];
 }
+
 //返回上一页
 - (IBAction)disMis:(UIButton *)sender {
 

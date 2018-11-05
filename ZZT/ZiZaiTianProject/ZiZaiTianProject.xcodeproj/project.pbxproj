@@ -136,6 +136,10 @@
 		0450E2412135804900AE924B /* ZZTFindWorldViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0450E2402135804900AE924B /* ZZTFindWorldViewController.m */; };
 		0450E2442135806A00AE924B /* ZZTFindAttentionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0450E2432135806A00AE924B /* ZZTFindAttentionViewController.m */; };
 		0450E2472135869900AE924B /* ZZTCaiNiXiHuanView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0450E2462135869900AE924B /* ZZTCaiNiXiHuanView.m */; };
+		0456F14B21903A520077739A /* ZZTCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0456F14A21903A520077739A /* ZZTCommentViewController.m */; };
+		0456F15121903E780077739A /* ZZTNewestCommentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0456F15021903E780077739A /* ZZTNewestCommentView.m */; };
+		0456F154219041800077739A /* ZZTNavBarTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0456F153219041800077739A /* ZZTNavBarTitleView.m */; };
+		0456F157219052170077739A /* UserInfoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0456F156219052170077739A /* UserInfoManager.m */; };
 		0457EABA2160BE4400BD7373 /* ZZTMEXuHuaCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0457EAB92160BE4400BD7373 /* ZZTMEXuHuaCell.m */; };
 		046152E321087FDB0061AEA8 /* UIImage+Rotate.m in Sources */ = {isa = PBXBuildFile; fileRef = 046152E221087FDB0061AEA8 /* UIImage+Rotate.m */; };
 		0466835620F306220095C6BC /* UIBarButtonItem+EXtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 0466835420F306220095C6BC /* UIBarButtonItem+EXtension.m */; };
@@ -567,6 +571,14 @@
 		0450E2432135806A00AE924B /* ZZTFindAttentionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTFindAttentionViewController.m; sourceTree = "<group>"; };
 		0450E2452135869900AE924B /* ZZTCaiNiXiHuanView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ZZTCaiNiXiHuanView.h; path = "ZiZaiTianProject/classes/Find(发现)/Controller/ZZTCaiNiXiHuanView.h"; sourceTree = SOURCE_ROOT; };
 		0450E2462135869900AE924B /* ZZTCaiNiXiHuanView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ZZTCaiNiXiHuanView.m; path = "ZiZaiTianProject/classes/Find(发现)/Controller/ZZTCaiNiXiHuanView.m"; sourceTree = SOURCE_ROOT; };
+		0456F14921903A520077739A /* ZZTCommentViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTCommentViewController.h; sourceTree = "<group>"; };
+		0456F14A21903A520077739A /* ZZTCommentViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTCommentViewController.m; sourceTree = "<group>"; };
+		0456F14F21903E780077739A /* ZZTNewestCommentView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTNewestCommentView.h; sourceTree = "<group>"; };
+		0456F15021903E780077739A /* ZZTNewestCommentView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTNewestCommentView.m; sourceTree = "<group>"; };
+		0456F152219041800077739A /* ZZTNavBarTitleView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTNavBarTitleView.h; sourceTree = "<group>"; };
+		0456F153219041800077739A /* ZZTNavBarTitleView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTNavBarTitleView.m; sourceTree = "<group>"; };
+		0456F155219052170077739A /* UserInfoManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserInfoManager.h; sourceTree = "<group>"; };
+		0456F156219052170077739A /* UserInfoManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserInfoManager.m; sourceTree = "<group>"; };
 		0457EAB82160BE4400BD7373 /* ZZTMEXuHuaCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTMEXuHuaCell.h; sourceTree = "<group>"; };
 		0457EAB92160BE4400BD7373 /* ZZTMEXuHuaCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTMEXuHuaCell.m; sourceTree = "<group>"; };
 		046152E121087FDB0061AEA8 /* UIImage+Rotate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Rotate.h"; sourceTree = "<group>"; };
@@ -1267,6 +1279,8 @@
 				0498B5DD212E6123005BD26D /* ZZTMulWordDetailViewController.m */,
 				04C39F502136C47A00F4CB4A /* ZZTWritingSequelViewController.h */,
 				04C39F512136C47A00F4CB4A /* ZZTWritingSequelViewController.m */,
+				0456F14921903A520077739A /* ZZTCommentViewController.h */,
+				0456F14A21903A520077739A /* ZZTCommentViewController.m */,
 			);
 			path = Read;
 			sourceTree = "<group>";
@@ -1335,6 +1349,10 @@
 				04D2AFA7212FB3E5008F6CCB /* ZZTCommentHeadView.m */,
 				0425302C215DC38D00B4DAF9 /* ZZTMulCreationCell.h */,
 				0425302D215DC38D00B4DAF9 /* ZZTMulCreationCell.m */,
+				0456F14F21903E780077739A /* ZZTNewestCommentView.h */,
+				0456F15021903E780077739A /* ZZTNewestCommentView.m */,
+				0456F152219041800077739A /* ZZTNavBarTitleView.h */,
+				0456F153219041800077739A /* ZZTNavBarTitleView.m */,
 			);
 			path = Read;
 			sourceTree = "<group>";
@@ -1469,6 +1487,8 @@
 			isa = PBXGroup;
 			children = (
 				04949C4A218BF1FB0029A59F /* UI组件 */,
+				0456F155219052170077739A /* UserInfoManager.h */,
+				0456F156219052170077739A /* UserInfoManager.m */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -2133,6 +2153,7 @@
 				0484E7E7210B02E700C39369 /* ZZTAddLengthFooterView.m in Sources */,
 				049A99DB20E3879700ED27C9 /* ZZTVIPViewController.m in Sources */,
 				04E49F93213D5C57007EE617 /* ZZTJiXuYueDuModel.m in Sources */,
+				0456F14B21903A520077739A /* ZZTCommentViewController.m in Sources */,
 				0498B5D3212D5E47005BD26D /* ZZTWordDetailViewController.m in Sources */,
 				04772101210823EC00FC97B5 /* ZZTImageEditView.m in Sources */,
 				0466837720F3096A0095C6BC /* DCPicScrollViewConfiguration.m in Sources */,
@@ -2204,6 +2225,7 @@
 				04E9FACD2153898D005A3986 /* ZZTMyZoneModel.m in Sources */,
 				040FD50E20EF384200004C71 /* ZZTShoppingBtnCell.m in Sources */,
 				0498B5E6212EBDC3005BD26D /* ZZTAuthorHeadView.m in Sources */,
+				0456F15121903E780077739A /* ZZTNewestCommentView.m in Sources */,
 				04E6D49520EC6B4E00116085 /* ZZTMeEditViewController.m in Sources */,
 				042BA0BF20E9FACC003E279A /* ZZTMyCircleCellCollectionViewCell.m in Sources */,
 				0471A89720FC2ADF00ABFF35 /* ZZTCartoonDetailView.m in Sources */,
@@ -2234,6 +2256,7 @@
 				042D1481218AA86400BE05F6 /* TZProgressView.m in Sources */,
 				046683C620F4BC990095C6BC /* ZZTCartoonHeaderView.m in Sources */,
 				0450E23E21351D6600AE924B /* ZZTMeAttentionViewController.m in Sources */,
+				0456F157219052170077739A /* UserInfoManager.m in Sources */,
 				0471A8A020FC4C5400ABFF35 /* ZZTCartoonDetailHead.m in Sources */,
 				04E9FAD62153D2DD005A3986 /* UserInfoContext.m in Sources */,
 				0422217E217038F600E67F59 /* ZZTUserReplyModel.m in Sources */,
@@ -2281,6 +2304,7 @@
 				0422F6A02124120100A8BDBB /* GTMBase64.m in Sources */,
 				0428E8B92179765800702225 /* ZZTUserAgreementViewController.m in Sources */,
 				042BA0B720E9BF2F003E279A /* ZZTAttentionCell.m in Sources */,
+				0456F154219041800077739A /* ZZTNavBarTitleView.m in Sources */,
 				0466837C20F3096A0095C6BC /* ProgressHUD.m in Sources */,
 				04C39F4E2136493900F4CB4A /* ZZTFindCommentCell.m in Sources */,
 				042BA0BB20E9C75B003E279A /* ZZTCircleImage.m in Sources */,

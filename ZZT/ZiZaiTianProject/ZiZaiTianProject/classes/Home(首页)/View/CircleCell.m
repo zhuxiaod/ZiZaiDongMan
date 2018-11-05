@@ -100,7 +100,7 @@
     //如果用户名为空 用户名字数小于0 数据ID 相同
     //如果是用户说。那么走这个
     //没有回复其他人 自己和自己说话
-    if(replyer.nickName == nil || [replyer.nickName length] <= 0 || [replyer.ID isEqualToString:customer.ID]){
+    if(replyer.nickName == nil || [replyer.nickName length] <= 0 || [replyer.id isEqualToString:customer.id]){
         text = [NSString stringWithFormat:@"%@: %@",plyer.nickName,model.content];
         self.commentLabel.text = text;
     }else{
@@ -113,7 +113,7 @@
 
 
     //如果回复人为空 回复人名字少于0 或者回复人ID 为
-    if(replyer.nickName == nil || [replyer.nickName length] <= 0 || [replyer.ID isEqualToString:customer.ID]){
+    if(replyer.nickName == nil || [replyer.nickName length] <= 0 || [replyer.id isEqualToString:customer.id]){
         NSRange boldRange0 = NSMakeRange(0, [plyer.nickName length]);//w : xxxx
 
         [self.commentLabel addLinkToTransitInformation:@{@"user_name":plyer.nickName} withRange:boldRange0];
