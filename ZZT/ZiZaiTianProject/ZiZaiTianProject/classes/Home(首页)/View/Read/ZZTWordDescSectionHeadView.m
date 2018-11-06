@@ -26,6 +26,7 @@ static CGFloat const tbSpaceing = 12;
 - (void)setDesc:(NSString *)desc {
     _desc = desc;
     if(desc){
+        //行距 边距
         NSMutableAttributedString *attributedString1 = [[NSMutableAttributedString alloc] initWithString:desc];
         NSMutableParagraphStyle * paragraphStyle1 = [[NSMutableParagraphStyle alloc] init];
         [paragraphStyle1 setLineSpacing:5.f];
@@ -86,7 +87,6 @@ static CGFloat const tbSpaceing = 12;
         make.right.equalTo(self).offset(0);
         make.left.equalTo(self).offset(0);
         make.bottom.equalTo(self).offset(0);
-
     }];
     
     [topView mas_makeConstraints:^(MASConstraintMaker *make) {

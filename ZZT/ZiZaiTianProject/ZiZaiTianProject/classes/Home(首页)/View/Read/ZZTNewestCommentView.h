@@ -8,6 +8,24 @@
 
 #import <UIKit/UIKit.h>
 
+@class ZZTCircleModel;
+
+@protocol ZZTNewestCommentViewDelegate <NSObject>
+
+-(void)commentView:(UITableView *)tableView sendReply:(ZZTCircleModel *)model;
+
+-(void)commentView:(UITableView *)tableView sendCellReply:(ZZTCircleModel *)model indexRow:(NSInteger)indexRow;
+
+-(void)longPressDeleteComment:(ZZTCircleModel *)circleItem;
+
+@end
+
 @interface ZZTNewestCommentView : UITableView
+
+@property (nonatomic, weak) id <ZZTNewestCommentViewDelegate> adelegate;
+
+@property (nonatomic,assign) NSInteger dataNum;
+
+- (void)update;
 
 @end

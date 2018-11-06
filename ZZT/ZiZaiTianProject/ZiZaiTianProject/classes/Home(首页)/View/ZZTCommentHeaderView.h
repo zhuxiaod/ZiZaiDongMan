@@ -37,6 +37,8 @@ extern const CGFloat SectionHeaderSomePicturesHeight; //有多张图片时的单
 
 -(void)didCommentLabelReply:(NSInteger)section;
 
+-(void)deleteCommentHeaderView:(ZZTCircleModel *)circleItem;
+
 @end
 
 @interface ZZTCommentHeaderView : UITableViewHeaderFooterView

@@ -29,6 +29,7 @@
 
 @property(nonatomic,strong) NSString *ifPraise;
 
+@property (nonatomic,assign) BOOL isOpenComment;
 //图片数组
 @property(nonatomic,strong) NSArray *imageArray;
 

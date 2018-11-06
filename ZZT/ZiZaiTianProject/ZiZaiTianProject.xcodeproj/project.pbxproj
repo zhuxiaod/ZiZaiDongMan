@@ -239,6 +239,9 @@
 		048C335C20E2540F00F69CE1 /* ZZTCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 048C335B20E2540F00F69CE1 /* ZZTCell.m */; };
 		048C33E820E25E6400F69CE1 /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 048C33E720E25E6400F69CE1 /* UIColor+Hex.m */; };
 		0495D663215F5C8200A10E7B /* ZZTMulPlayCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0495D662215F5C8200A10E7B /* ZZTMulPlayCell.m */; };
+		0495DC3521916EF900761EE8 /* ZZTStatusCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0495DC3421916EF900761EE8 /* ZZTStatusCell.m */; };
+		0495DC382191A04900761EE8 /* ZZTStatusFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0495DC372191A04900761EE8 /* ZZTStatusFooterView.m */; };
+		0495DC3B2191DFD700761EE8 /* ZZTCommentOpenCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0495DC3A2191DFD700761EE8 /* ZZTCommentOpenCell.m */; };
 		0498B5D0212CFCFA005BD26D /* CellIdentifierModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0498B5CF212CFCFA005BD26D /* CellIdentifierModel.m */; };
 		0498B5D3212D5E47005BD26D /* ZZTWordDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0498B5D2212D5E47005BD26D /* ZZTWordDetailViewController.m */; };
 		0498B5D7212D8058005BD26D /* ZZTWordListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0498B5D5212D8058005BD26D /* ZZTWordListCell.m */; };
@@ -757,6 +760,12 @@
 		048C33E720E25E6400F69CE1 /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
 		0495D661215F5C8200A10E7B /* ZZTMulPlayCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTMulPlayCell.h; sourceTree = "<group>"; };
 		0495D662215F5C8200A10E7B /* ZZTMulPlayCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTMulPlayCell.m; sourceTree = "<group>"; };
+		0495DC3321916EF900761EE8 /* ZZTStatusCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTStatusCell.h; sourceTree = "<group>"; };
+		0495DC3421916EF900761EE8 /* ZZTStatusCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTStatusCell.m; sourceTree = "<group>"; };
+		0495DC362191A04900761EE8 /* ZZTStatusFooterView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTStatusFooterView.h; sourceTree = "<group>"; };
+		0495DC372191A04900761EE8 /* ZZTStatusFooterView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTStatusFooterView.m; sourceTree = "<group>"; };
+		0495DC392191DFD700761EE8 /* ZZTCommentOpenCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTCommentOpenCell.h; sourceTree = "<group>"; };
+		0495DC3A2191DFD700761EE8 /* ZZTCommentOpenCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTCommentOpenCell.m; sourceTree = "<group>"; };
 		0498B5CE212CFCFA005BD26D /* CellIdentifierModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CellIdentifierModel.h; path = "ZiZaiTianProject/classes/Home(首页)/Controller/CellIdentifierModel.h"; sourceTree = SOURCE_ROOT; };
 		0498B5CF212CFCFA005BD26D /* CellIdentifierModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CellIdentifierModel.m; path = "ZiZaiTianProject/classes/Home(首页)/Controller/CellIdentifierModel.m"; sourceTree = SOURCE_ROOT; };
 		0498B5D1212D5E47005BD26D /* ZZTWordDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTWordDetailViewController.h; sourceTree = "<group>"; };
@@ -1212,6 +1221,10 @@
 				042D1490218B339F00BE05F6 /* ZZTAuthorHeaderView.m */,
 				049D078F218DA43800F5D141 /* ZZTCommentAirView.h */,
 				049D0790218DA43800F5D141 /* ZZTCommentAirView.m */,
+				0495DC3321916EF900761EE8 /* ZZTStatusCell.h */,
+				0495DC3421916EF900761EE8 /* ZZTStatusCell.m */,
+				0495DC362191A04900761EE8 /* ZZTStatusFooterView.h */,
+				0495DC372191A04900761EE8 /* ZZTStatusFooterView.m */,
 			);
 			name = View;
 			path = "ZiZaiTianProject/classes/Home(首页)/View";
@@ -1353,6 +1366,8 @@
 				0456F15021903E780077739A /* ZZTNewestCommentView.m */,
 				0456F152219041800077739A /* ZZTNavBarTitleView.h */,
 				0456F153219041800077739A /* ZZTNavBarTitleView.m */,
+				0495DC392191DFD700761EE8 /* ZZTCommentOpenCell.h */,
+				0495DC3A2191DFD700761EE8 /* ZZTCommentOpenCell.m */,
 			);
 			path = Read;
 			sourceTree = "<group>";
@@ -2174,6 +2189,7 @@
 				0466839F20F336810095C6BC /* UIImage+Extension.m in Sources */,
 				0466837A20F3096A0095C6BC /* ListView.m in Sources */,
 				04DE149220E46E88009DF030 /* UIBarButtonItem+Item.m in Sources */,
+				0495DC382191A04900761EE8 /* ZZTStatusFooterView.m in Sources */,
 				0466839C20F336590095C6BC /* UIImageView+Extension.m in Sources */,
 				0471A89320F89C8E00ABFF35 /* ZZTReaderViewController.m in Sources */,
 				0434BC86212BF74300AC43E0 /* ZZTRankViewController.m in Sources */,
@@ -2181,6 +2197,7 @@
 				042A0CB9217437B700FC013B /* UIButton+LXMImagePosition.m in Sources */,
 				0471A86520F6E80600ABFF35 /* ZZTWordsOptionsHeadView.m in Sources */,
 				049A99B920E3288400ED27C9 /* ZXDLoginRegisterTextField.m in Sources */,
+				0495DC3521916EF900761EE8 /* ZZTStatusCell.m in Sources */,
 				04DE149A20E48804009DF030 /* ZZTVIPBtView.m in Sources */,
 				0425302F215DC38D00B4DAF9 /* ZZTMulCreationCell.m in Sources */,
 				0471A87820F7536000ABFF35 /* ZZTChapterlistModel.m in Sources */,
@@ -2293,6 +2310,7 @@
 				046683B620F45C7C0095C6BC /* ZZTFirstViewBtn.m in Sources */,
 				04A0C0E82180AB6A00D08F6C /* UITableView+ZFTableViewSnapshot.m in Sources */,
 				F7C04C2D20DF4F8F0055E7A8 /* UIImage+ColorWithImage.m in Sources */,
+				0495DC3B2191DFD700761EE8 /* ZZTCommentOpenCell.m in Sources */,
 				046FF6712101EB25005DED73 /* ZZTCreatPlayViewController.m in Sources */,
 				0471A88620F8596100ABFF35 /* ZZTCircleModel.m in Sources */,
 				0471A84720F59BE600ABFF35 /* ZZTSecondCell.m in Sources */,

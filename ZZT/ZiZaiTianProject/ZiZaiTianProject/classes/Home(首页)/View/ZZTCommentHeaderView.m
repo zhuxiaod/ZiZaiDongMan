@@ -167,6 +167,15 @@ const CGFloat SectionHeaderSomePicturesHeight = 70; //有多张图片时的单�
 
 //    [self.contentView addSubview:self.menuView];
     
+    UILongPressGestureRecognizer * longPressGesture =[[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(cellLongPress)];
+    
+    [self addGestureRecognizer:longPressGesture];
+}
+
+-(void)cellLongPress{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(deleteCommentHeaderView:)]) {
+        [self.delegate deleteCommentHeaderView:self.item];
+    }
 }
 
 -(void)didClickLikeBtn:(ImageLeftBtn *)btn{
@@ -188,7 +197,7 @@ const CGFloat SectionHeaderSomePicturesHeight = 70; //有多张图片时的单�
 }
 
 -(void)tapName:(UITapGestureRecognizer *)gesture{
-    
+  
 }
 
 -(void)clickMoreBtn:(UIButton *)button{

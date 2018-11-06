@@ -10,4 +10,8 @@
 
 @interface ZZTCommentViewController : UIViewController
 
+@property (nonatomic,strong) NSString *chapterId;
+
+@property (nonatomic,strong) NSString *cartoonType;
+
 @end

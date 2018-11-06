@@ -123,6 +123,11 @@
 //判断有没有评论
 @property (nonatomic,assign) BOOL isHasComment;
 
+//当前回复
+@property (nonatomic,strong) ZZTCircleModel *nowReplyModel;
+//判断是评论还是回复
+@property (nonatomic,strong) NSString *isCommentOrReply;
+
 @end
 
 NSString *CartoonContentCellIdentifier = @"CartoonContentCellIdentifier";
@@ -262,6 +267,7 @@ static bool needHide = false;
     
     //初始化 没有人回复
     self.isReply = NO;
+
     
     self.reloadDataCount = 0;
     
@@ -296,6 +302,8 @@ static bool needHide = false;
     
     //显示评论页面
     ZZTCommentViewController *commentView = [[ZZTCommentViewController alloc] init];
+    commentView.chapterId = [NSString stringWithFormat:@"%ld",self.dataModel.id];
+    commentView.cartoonType = self.cartoonModel.type;
     [self presentViewController:commentView animated:YES completion:nil];
 
     [table endRefreshing];
@@ -799,13 +807,17 @@ static bool needHide = false;
     NSDictionary *dict = @{
                            @"chapterId":[NSString stringWithFormat:@"%ld",self.dataModel.id],
                                @"type":self.cartoonModel.type,
-                               @"userId":[NSString stringWithFormat:@"%ld",user.id]
+                               @"userId":[NSString stringWithFormat:@"%ld",user.id],
+                           @"pageNum":@"0",
+                           @"pageSize":@"10",
+                           @"host":@"1"
                            };
     [session POST:[ZZTAPI stringByAppendingString:@"circle/comment"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         self.commentArray = nil;
         NSDictionary *commenDdic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
-        NSMutableArray *array1 = [ZZTCircleModel mj_objectArrayWithKeyValuesArray:commenDdic];
+        NSDictionary *list = commenDdic[@"list"];
+        NSMutableArray *array1 = [ZZTCircleModel mj_objectArrayWithKeyValuesArray:list];
         if(array1.count == 0){
             //没有数据的时候
             [self.commentArray addObject:@"1"];
@@ -822,7 +834,7 @@ static bool needHide = false;
         [self.tableView reloadData];
         dispatch_group_leave(self.group);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
+        dispatch_group_leave(self.group);
     }];
 }
 
@@ -1262,23 +1274,60 @@ static bool needHide = false;
         ZZTUserReplyModel *item = model.replyComment[indexPath.row];
         //回复人
         customer *replyer = item.replyCustomer;
-        //xxx:
-        customer *plyer = item.customer;
-        
-        customer *customer = model.customer;    //初始化字符串
 
-        //回复谁
-        if(replyer.nickName == nil || [replyer.nickName length] <= 0 || [replyer.id isEqualToString:customer.id]){
-            //没有回复人的  p
-            self.replyer = plyer;
-            self.commentId = item.id;
+        UserInfo *user = [Utilities GetNSUserDefaults];
+        //点击自己的回复
+        if([replyer.id isEqualToString:[NSString stringWithFormat:@"%ld",user.id]]){
+            
+            //删除
+            [self deleteReplyActionView:@"2" comentId:item.id];
+
         }else{
             self.replyer = replyer;
             self.commentId = item.id;
+            self.nowReplyModel = model;
+            self.isCommentOrReply = @"2";
+            
+            self.isReply = YES;
+            //设置输入回复信息
+            [self startComment];
         }
-        self.isReply = YES;
-        //设置输入回复信息
-        [self startComment];
+    }
+}
+#pragma mark 删除评论
+-(void)deleteReplyActionView:(NSString *)type comentId:(NSString *)commentId{
+    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:@"是否删除回复" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"删除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        //发送删除请求
+        [self deleteReplyWithType:type commentId:commentId];
+    }];
+    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        NSLog(@"点击了取消");
+    }];
+    
+    [actionSheet addAction:action1];
+    [actionSheet addAction:action2];
+    
+    [self presentViewController:actionSheet animated:YES completion:nil];
+}
+
+-(void)deleteReplyWithType:(NSString *)type commentId:(NSString *)commentId{
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSDictionary *dict = @{
+                           @"type":type,//节是1 cell是2
+                               @"commentId":commentId
+                           };
+    [manager POST:[ZZTAPI stringByAppendingString:@"circle/deleteComment"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [self sendMessageSuccess];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
+}
+-(void)deleteCommentHeaderView:(ZZTCircleModel *)circleItem{
+    UserInfo *user = [Utilities GetNSUserDefaults];
+    if([circleItem.customer.id isEqualToString:[NSString stringWithFormat:@"%ld",user.id]]){
+        [self deleteReplyActionView:@"1" comentId:circleItem.id];
+
     }
 }
 
@@ -1493,6 +1542,12 @@ static bool needHide = false;
     self.commentId = item.id;
     //找到回复人了
     self.isReply = YES;
+    //判断是评论还是回复
+    self.isCommentOrReply = @"1";
+    
+    self.nowReplyModel = item;
+    
+    self.replyer = item.customer;
     
     //弹出键盘
     [self startComment];
@@ -1614,22 +1669,39 @@ static bool needHide = false;
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     UserInfo *user = [Utilities GetNSUserDefaults];
-    [MBProgressHUD showMessage:@"正在发布..." toView:self.view];
-    NSDictionary *dic = @{
-                          @"userId":[NSString stringWithFormat:@"%ld",user.id],
-                              @"parentCommentId":self.commentId,
-                              @"contentId":[NSString stringWithFormat:@"%ld",self.dataModel.id],
+    if(self.isReply){
+        NSDictionary *dict = @{
+                               @"userId":[NSString stringWithFormat:@"%ld",user.id],
+                                   @"toUser":self.replyer.id,
+                                   @"commentId":self.nowReplyModel.id,//节id
+                                   @"replyId":self.commentId,//回复id
+                                   @"replyType":self.isCommentOrReply,
+                                   @"content":self.kTextView.text
+                               };
+        [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/insertReply"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            self.commentId = @"0";
+            [self sendMessageSuccess];
+
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+            
+        }];
+    }else{
+        [MBProgressHUD showMessage:@"正在发布..." toView:self.view];
+        NSDictionary *dic = @{
+                              @"userId":[NSString stringWithFormat:@"%ld",user.id],
+                              @"chapterId":[NSString stringWithFormat:@"%ld",self.dataModel.id],
                               @"type":self.cartoonModel.type,
                               @"content":self.kTextView.text
-                          };
-    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/insertCartoonComment"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
-        [self sendMessageSuccess];
-        //关闭键盘
-        //如果字数小于0 不能发布
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
-    }];
+                              };
+        [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/insertComment"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            [self sendMessageSuccess];
+            //关闭键盘
+            //如果字数小于0 不能发布
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+        }];
+    }
 }
 
 -(void)hideKeyBoard{

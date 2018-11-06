@@ -63,7 +63,10 @@
     }];
     
     [self linkStyles];
+   
 }
+
+
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
@@ -92,7 +95,7 @@
     ZZTUserReplyModel *model = item.replyComment[index];
     //回复人
     customer *replyer = model.replyCustomer;
-    //xxx:
+    //评论人:
     customer *plyer = model.customer;
     //发布者
     customer *customer = item.customer;    //初始化字符串
@@ -100,29 +103,22 @@
     //如果用户名为空 用户名字数小于0 数据ID 相同
     //如果是用户说。那么走这个
     //没有回复其他人 自己和自己说话
-    if(replyer.nickName == nil || [replyer.nickName length] <= 0 || [replyer.id isEqualToString:customer.id]){
-        text = [NSString stringWithFormat:@"%@: %@",plyer.nickName,model.content];
-        self.commentLabel.text = text;
+    if(plyer.nickName == nil || plyer == nil ||[plyer.nickName length] <= 0){
+        text = [NSString stringWithFormat:@"%@: %@",replyer.nickName,model.content];
     }else{
         text = [NSString stringWithFormat:@"%@回复%@: %@",replyer.nickName,plyer.nickName,model.content];
-        self.commentLabel.text = text;
     }
-    
-    //添加url
-    //对文字添加跳转
-
+    self.commentLabel.text = text;
 
     //如果回复人为空 回复人名字少于0 或者回复人ID 为
-    if(replyer.nickName == nil || [replyer.nickName length] <= 0 || [replyer.id isEqualToString:customer.id]){
-        NSRange boldRange0 = NSMakeRange(0, [plyer.nickName length]);//w : xxxx
-
-        [self.commentLabel addLinkToTransitInformation:@{@"user_name":plyer.nickName} withRange:boldRange0];
-    } else {
+    if(plyer.nickName == nil || plyer == nil ||[plyer.nickName length] <= 0){
+        NSRange boldRange0 = NSMakeRange(0, [replyer.nickName length]);//w : xxxx
+        [self.commentLabel addLinkToTransitInformation:@{@"user_name":replyer.nickName} withRange:boldRange0];
+    }else{
         NSRange boldRange0 = NSMakeRange(0, [replyer.nickName length]);//w : xxxx
         NSRange boldRange1 = NSMakeRange([replyer.nickName length] + 2, [plyer.nickName length]);
-        
         [self.commentLabel addLinkToTransitInformation:@{@"user_name":replyer.nickName} withRange:boldRange0];
-
+        
         [self.commentLabel addLinkToTransitInformation:@{@"user_name":plyer.nickName} withRange:boldRange1];
     }
 }

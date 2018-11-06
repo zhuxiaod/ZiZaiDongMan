@@ -34,13 +34,34 @@
     if(_circleModelArray.count > 0){
         for (int i = 0; i < self.circleModelArray.count; i++) {
             ZZTCircleModel *circleModel = self.circleModelArray[i];
-            circleModel.nameLabelHeight = SectionHeaderNameLabelHeight;
+            circleModel.nameLabelHeight = SectionHeaderNameLabelHeight;//20
             
             circleModel.contentLabelHeight = [self calculateStringHeight:circleModel.content];
             
 //            circleModel.imgBgViewHeight = [self getImgBgViewHeight:circleModel];
             
             [self calculateItemHeight:circleModel];
+            
+            [muArray addObject:circleModel];
+        }
+    }
+    return muArray;
+}
+
+-(NSMutableArray *)loadCommentViewDatas{
+    NSMutableArray *muArray = [NSMutableArray array];
+    if(_circleModelArray.count > 0){
+        for (int i = 0; i < self.circleModelArray.count; i++) {
+            
+            ZZTCircleModel *circleModel = self.circleModelArray[i];
+            
+            circleModel.nameLabelHeight = SectionHeaderNameLabelHeight;//20
+            
+            circleModel.contentLabelHeight = [self calculateStringHeight:circleModel.content];
+            
+            circleModel.headerHeight = 8 + 20 + 4 + circleModel.contentLabelHeight + 8;
+            
+            circleModel.isOpenComment = NO;
             
             [muArray addObject:circleModel];
         }
