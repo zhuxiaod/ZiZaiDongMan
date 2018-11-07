@@ -29,6 +29,7 @@
 @property (nonatomic,strong) NSMutableArray *searchSuggestionArray;
 @property (strong, nonatomic) CLLocation *location;
 @property (nonatomic, strong) UIImagePickerController *imagePickerVc;
+@property (nonatomic,strong) ZXDNavBar *navBar;
 
 @end
 NSString *SuggestionView3 = @"SuggestionView";
@@ -44,46 +45,93 @@ NSString *SuggestionView3 = @"SuggestionView";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    //设置导航条的背景图片
-    UIImage *image = [UIImage imageNamed:@"APP架构-作品-顶部渐变条-IOS"];
-    // 设置左边端盖宽度
-    NSInteger leftCapWidth = image.size.width * 0.5;
-    // 设置上边端盖高度
-    NSInteger topCapHeight = image.size.height * 0.5;
-    UIImage *newImage = [image stretchableImageWithLeftCapWidth:leftCapWidth topCapHeight:topCapHeight];
-    [self.navigationController.navigationBar setBackgroundImage:newImage forBarMetrics:UIBarMetricsDefault];
-    
-    UIView *titleScrollView = [[UIView alloc] initWithFrame:CGRectMake(ScreenW/2-100, 0, 200, 50)];
-    
-    UIButton *leftBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
-    [leftBtn addTarget:self action:@selector(clickMenu:) forControlEvents:UIControlEventTouchUpInside];
-    leftBtn.tag = 0;
-    _leftBtn = leftBtn;
-    [leftBtn setTitle:@"世界" forState:UIControlStateNormal];
-    [titleScrollView addSubview:leftBtn];
-    
-    UIButton *rightBtn = [[UIButton alloc] initWithFrame:CGRectMake(titleScrollView.width - 50, 0, 50, 50)];
-    _rightBtn = rightBtn;
-    [rightBtn setTitle:@"关注" forState:UIControlStateNormal];
-    rightBtn.tag = 1;
-    [rightBtn addTarget:self action:@selector(clickMenu:) forControlEvents:UIControlEventTouchUpInside];
-    [titleScrollView addSubview:rightBtn];
-    
-    self.navigationItem.titleView = titleScrollView;
-    
+    //添加子页
     ZZTFindWorldViewController *findWorldVC = [[ZZTFindWorldViewController alloc] init];
     [self addChildViewController:findWorldVC];
     
     ZZTFindAttentionViewController *findVC = [[ZZTFindAttentionViewController alloc] init];
     [self addChildViewController:findVC];
 
-    [self clickMenu:leftBtn];
-    
-    //添加导航搜索
-    [self setupNavigationBar];
-    
     _selectedPhotos = [NSMutableArray array];
     _selectedAssets = [NSMutableArray array];
+    
+    //设置nav
+    [self setupNavbar];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNotification:) name:@"infoNotification" object:nil];
+}
+//渐变导航栏
+-(void)receiveNotification:(NSNotification *)infoNotification {
+    NSDictionary *dic = [infoNotification userInfo];
+    NSString *str = [dic objectForKey:@"navHidden"];
+    CGFloat offsetY = [str floatValue];
+    if (offsetY < 64) {
+        offsetY = 64;
+    }
+    
+    CGFloat alpha = offsetY * 1 / 136.0;   // (200 - 64) / 136.0f
+    if (alpha >= 1) {
+        alpha = 0.99;
+    }
+    if(offsetY == 64){
+        self.navBar.backgroundColor = [UIColor clearColor];
+    }else{
+        self.navBar.backgroundColor = [UIColor colorWithWhite:1 alpha:alpha];
+    }
+    
+}
+-(void)setupNavbar{
+    ZZTNavBarTitleView *titleView = [[ZZTNavBarTitleView alloc] init];
+    titleView.selBtnTextColor = ZZTSubColor;
+    titleView.selBtnBackgroundColor = [UIColor whiteColor];
+    titleView.btnTextColor = [UIColor whiteColor];
+    titleView.btnBackgroundColor = [UIColor clearColor];
+    titleView.backgroundColor = [UIColor colorWithHexString:@"#262626" alpha:0.8];
+    
+    [titleView.leftBtn setTitle:@"世界" forState:UIControlStateNormal];
+    [titleView.rightBtn setTitle:@"关注" forState:UIControlStateNormal];
+    
+    titleView.leftBtn.tag = 0;
+    titleView.rightBtn.tag = 1;
+    
+    [titleView.leftBtn addTarget:self action:@selector(clickMenu:) forControlEvents:UIControlEventTouchUpInside];
+
+    [titleView.rightBtn addTarget:self action:@selector(clickMenu:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self clickMenu:titleView.leftBtn];
+
+    ZXDNavBar *navBar = [[ZXDNavBar alloc] init];
+    _navBar = navBar;
+    navBar.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:navBar];
+    
+    [self.navBar mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.equalTo(self.view);
+        make.top.equalTo(self.view);
+        make.height.equalTo(@(navHeight));
+    }];
+    
+    //返回
+    [navBar.leftButton setImage:[UIImage imageNamed:@"find_home_addMoment"] forState:UIControlStateNormal];
+    navBar.leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 17);
+    [navBar.leftButton addTarget:self action:@selector(addMoment) forControlEvents:UIControlEventTouchUpInside];
+    
+    [navBar.rightButton setImage:[UIImage imageNamed:@"find_home_search"] forState:UIControlStateNormal];
+    navBar.rightButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, -33);
+    [navBar.rightButton addTarget:self action:@selector(search) forControlEvents:UIControlEventTouchUpInside];
+
+    
+    //中间
+    [navBar.mainView addSubview:titleView];
+    
+    [titleView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(navBar.mainView);
+        make.width.mas_equalTo(SCREEN_WIDTH * 0.33);
+        make.height.mas_equalTo(30);
+        make.bottom.equalTo(navBar.mainView).offset(-10);
+    }];
+    
+    navBar.showBottomLabel = NO;
 }
 
 -(void)addMoment{
@@ -116,12 +164,6 @@ NSString *SuggestionView3 = @"SuggestionView";
     [actionSheet addAction:action4];
     
     [self presentViewController:actionSheet animated:YES completion:nil];
-}
-
--(void)setupNavigationBar{
-    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithImage:[UIImage imageNamed:@"search"] highImage:[UIImage imageNamed:@"search"] target:self action:@selector(search)];
-    
-    self.navigationItem.leftBarButtonItem = [UIBarButtonItem itemWithImage:[UIImage imageNamed:@"加号"] highImage:[UIImage imageNamed:@"加号"] target:self action:@selector(addMoment)];
 }
 
 -(void)search{
@@ -192,28 +234,17 @@ NSString *SuggestionView3 = @"SuggestionView";
 }
 
 -(void)clickMenu:(UIButton *)btn{
-    //设置btn的样式
-    if(btn.tag == 0){
-        btn.titleLabel.font = [UIFont systemFontOfSize:16];
-        [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        self.rightBtn.titleLabel.font = [UIFont systemFontOfSize:14];
-        [self.rightBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-    }else if (btn.tag == 1){
-        btn.titleLabel.font = [UIFont systemFontOfSize:16];
-        [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        self.leftBtn.titleLabel.font = [UIFont systemFontOfSize:14];
-        [self.leftBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-
-    }
     // 取出选中的这个控制器
     UIViewController *vc = self.childViewControllers[btn.tag];
     // 设置尺寸位置
-    vc.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 50);
+    vc.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 40);
     // 移除掉当前显示的控制器的view（移除的是view，而不是控制器）
     [self.currentVC.view removeFromSuperview];
     // 把选中的控制器view显示到界面上
     [self.view addSubview:vc.view];
     self.currentVC = vc;
+    //让nav在第一个上面
+    [self.view bringSubviewToFront:self.navBar];
 }
 
 #pragma mark - UIImagePickerController
@@ -414,5 +445,15 @@ NSString *SuggestionView3 = @"SuggestionView";
     }];
     
     [self presentViewController:imagePickerVc animated:YES completion:nil];
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 @end

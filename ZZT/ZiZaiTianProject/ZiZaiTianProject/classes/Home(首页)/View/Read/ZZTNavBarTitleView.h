@@ -18,6 +18,14 @@
 
 @property (nonatomic,copy) void (^rightBtnOnClick)(UIButton *btn);
 
+@property (nonatomic,strong) UIColor *selBtnBackgroundColor;
+
+@property (nonatomic,strong) UIColor *selBtnTextColor;
+
+@property (nonatomic,strong) UIColor *btnBackgroundColor;
+
+@property (nonatomic,strong) UIColor *btnTextColor;
+
 - (void)selectBtn:(UIButton *)btn;
 
 

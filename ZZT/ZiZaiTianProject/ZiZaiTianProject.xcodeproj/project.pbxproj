@@ -127,6 +127,8 @@
 		043B075B20EE187F00ED3F5B /* ZZTShoppingMallCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 043B075920EE187F00ED3F5B /* ZZTShoppingMallCell.m */; };
 		043B075C20EE187F00ED3F5B /* ZZTShoppingMallCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 043B075A20EE187F00ED3F5B /* ZZTShoppingMallCell.xib */; };
 		043B075F20EE2F1E00ED3F5B /* ZZTShoppingBtnModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 043B075E20EE2F1E00ED3F5B /* ZZTShoppingBtnModel.m */; };
+		043D06C62192C4AB00016748 /* ZZTFindBannerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 043D06C52192C4AB00016748 /* ZZTFindBannerView.m */; };
+		043D06C92192F19F00016748 /* ZZTZoneImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 043D06C82192F19F00016748 /* ZZTZoneImageView.m */; };
 		044244D320EA20480044502C /* ZZTUserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 044244D220EA20480044502C /* ZZTUserModel.m */; };
 		044244D620EA3B0B0044502C /* ZZTSignButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 044244D520EA3B0B0044502C /* ZZTSignButton.m */; };
 		0442951A20E5D52300D1AABF /* ZZTBrowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0442951820E5D52300D1AABF /* ZZTBrowViewController.m */; };
@@ -557,6 +559,10 @@
 		043B075A20EE187F00ED3F5B /* ZZTShoppingMallCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ZZTShoppingMallCell.xib; sourceTree = "<group>"; };
 		043B075D20EE2F1E00ED3F5B /* ZZTShoppingBtnModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTShoppingBtnModel.h; sourceTree = "<group>"; };
 		043B075E20EE2F1E00ED3F5B /* ZZTShoppingBtnModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTShoppingBtnModel.m; sourceTree = "<group>"; };
+		043D06C42192C4AB00016748 /* ZZTFindBannerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ZZTFindBannerView.h; path = "ZiZaiTianProject/classes/Home(首页)/View/Read/ZZTFindBannerView.h"; sourceTree = SOURCE_ROOT; };
+		043D06C52192C4AB00016748 /* ZZTFindBannerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ZZTFindBannerView.m; path = "ZiZaiTianProject/classes/Home(首页)/View/Read/ZZTFindBannerView.m"; sourceTree = SOURCE_ROOT; };
+		043D06C72192F19F00016748 /* ZZTZoneImageView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ZZTZoneImageView.h; path = "ZiZaiTianProject/classes/Home(首页)/View/Read/ZZTZoneImageView.h"; sourceTree = SOURCE_ROOT; };
+		043D06C82192F19F00016748 /* ZZTZoneImageView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ZZTZoneImageView.m; path = "ZiZaiTianProject/classes/Home(首页)/View/Read/ZZTZoneImageView.m"; sourceTree = SOURCE_ROOT; };
 		044244D120EA20480044502C /* ZZTUserModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTUserModel.h; sourceTree = "<group>"; };
 		044244D220EA20480044502C /* ZZTUserModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTUserModel.m; sourceTree = "<group>"; };
 		044244D420EA3B0B0044502C /* ZZTSignButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTSignButton.h; sourceTree = "<group>"; };
@@ -1676,6 +1682,10 @@
 				0450E2462135869900AE924B /* ZZTCaiNiXiHuanView.m */,
 				04C39F4B2136493900F4CB4A /* ZZTFindCommentCell.h */,
 				04C39F4C2136493900F4CB4A /* ZZTFindCommentCell.m */,
+				043D06C42192C4AB00016748 /* ZZTFindBannerView.h */,
+				043D06C52192C4AB00016748 /* ZZTFindBannerView.m */,
+				043D06C72192F19F00016748 /* ZZTZoneImageView.h */,
+				043D06C82192F19F00016748 /* ZZTZoneImageView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -2204,6 +2214,7 @@
 				042A0CB62174347200FC013B /* MCButton.m in Sources */,
 				04E9FAC121532CC7005A3986 /* NSString+Extension.m in Sources */,
 				04A0C0F6218168B100D08F6C /* ZZTPhoneNumViewController.m in Sources */,
+				043D06C92192F19F00016748 /* ZZTZoneImageView.m in Sources */,
 				F7C04C1E20DF48FD0055E7A8 /* ZZTFindViewController.m in Sources */,
 				04CF25972105B0AB0026EC8F /* ZZTMaterialKindView.m in Sources */,
 				044244D320EA20480044502C /* ZZTUserModel.m in Sources */,
@@ -2297,6 +2308,7 @@
 				046FF66A2101E029005DED73 /* ZZTCreatCartoonViewController.m in Sources */,
 				04E9FAD32153D28E005A3986 /* UserInfo.m in Sources */,
 				046683BD20F4817D0095C6BC /* ZZTEasyBtnModel.m in Sources */,
+				043D06C62192C4AB00016748 /* ZZTFindBannerView.m in Sources */,
 				0471A86B20F72FB700ABFF35 /* ZZTWordCell.m in Sources */,
 				040A03B120FD8706000FAE13 /* ZZTStoryDetailCell.m in Sources */,
 				047ECEBA212814D3008D1E82 /* ColorInButton.m in Sources */,

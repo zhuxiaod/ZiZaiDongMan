@@ -24,6 +24,8 @@
 
 @property (nonatomic, weak) id <ZZTNewestCommentViewDelegate> adelegate;
 
+@property (nonatomic,strong) NSString *chapterId;
+
 @property (nonatomic,assign) NSInteger dataNum;
 
 - (void)update;

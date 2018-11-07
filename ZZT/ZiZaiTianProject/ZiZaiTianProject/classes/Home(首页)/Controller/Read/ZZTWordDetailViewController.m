@@ -363,6 +363,13 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     ZZTChapterlistModel *model = self.wordList[indexPath.row];
     model.type = self.cartoonDetail.type;
     ZZTWordListCell *cell = [tableView dequeueReusableCellWithIdentifier:zztWordListCell];
+    cell.gotoCommentViewBlock = ^{
+        //前往评论页
+        ZZTCommentViewController *commentView = [[ZZTCommentViewController alloc] init];
+        commentView.chapterId = [NSString stringWithFormat:@"%ld",model.id];
+        commentView.cartoonType = model.type;
+        [self presentViewController:commentView animated:YES completion:nil];
+    };
     cell.selected = UITableViewCellSelectionStyleNone;
     cell.model = model;
     return cell;

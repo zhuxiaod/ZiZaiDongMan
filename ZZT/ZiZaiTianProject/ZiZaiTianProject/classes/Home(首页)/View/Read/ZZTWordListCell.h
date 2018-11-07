@@ -9,12 +9,15 @@
 #import <UIKit/UIKit.h>
 @class ZZTChapterlistModel;
 @class ZZTWordListCell;
+typedef void (^gotoCommentViewBlock) (void);
 
 typedef void (^RtValueBlock) (ZZTWordListCell *cell,ZZTChapterlistModel *model);
 
 @interface ZZTWordListCell : UITableViewCell
 
 @property (nonatomic,copy) RtValueBlock btnBlock;
+
+@property (nonatomic, copy) void (^ gotoCommentViewBlock)(void);
 
 @property (nonatomic,strong) ZZTChapterlistModel *model;
 

@@ -86,17 +86,19 @@
     self.mainView = mainView;
     
     //2个子页
-    ZZTNewestCommentView *newestVC = [[ZZTNewestCommentView alloc] initWithFrame:CGRectMake(0, 0, mainView.width, mainView.height)];
-    newestVC.dataNum = 1;
-    newestVC.backgroundColor = [UIColor redColor];
+    ZZTNewestCommentView *newestVC = [[ZZTNewestCommentView alloc] initWithFrame:CGRectMake(0, 0, mainView.width, mainView.height - 50)];
+    newestVC.chapterId = self.chapterId;//章节id
+    newestVC.dataNum = 1;//最新 最热
+    newestVC.backgroundColor = [UIColor whiteColor];
     newestVC.adelegate = self;
     self.nowTableView = newestVC;
     _newestVC = newestVC;
     
-    ZZTNewestCommentView *hotestVC = [[ZZTNewestCommentView alloc] initWithFrame:CGRectMake(mainView.width, 0, mainView.width, mainView.height)];
+    ZZTNewestCommentView *hotestVC = [[ZZTNewestCommentView alloc] initWithFrame:CGRectMake(mainView.width, 0, mainView.width, mainView.height - 50)];
+    hotestVC.chapterId = self.chapterId;
     hotestVC.dataNum = 2;
     _hotestVC = hotestVC;
-    hotestVC.backgroundColor = [UIColor yellowColor];
+    hotestVC.backgroundColor = [UIColor whiteColor];
 
     [mainView addSubview:newestVC];
     [mainView addSubview:hotestVC];
@@ -112,6 +114,12 @@
     self.isCommentOrReply = @"1";
 
     self.nowReplyModel = model;
+    
+    UserInfo *user = [Utilities GetNSUserDefaults];
+    
+    if([model.customer.id isEqualToString:[NSString stringWithFormat:@"%ld",user.id]]){
+        model.customer.id = @"0";
+    }
     
     self.replyer = model.customer;
     
@@ -218,7 +226,7 @@
         make.bottom.equalTo(navbar.mainView).offset(-10);
     }];
 
-    navbar.showBottomLabel = NO;
+    navbar.showBottomLabel = YES;
 }
 -(void)dismissVC{
     
@@ -333,7 +341,6 @@
     UserInfo *user = [Utilities GetNSUserDefaults];
     if([circleItem.customer.id isEqualToString:[NSString stringWithFormat:@"%ld",user.id]]){
         [self deleteReplyActionView:@"1" comentId:circleItem.id];
-        
     }
 }
 

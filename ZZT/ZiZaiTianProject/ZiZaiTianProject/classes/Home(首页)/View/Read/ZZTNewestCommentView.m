@@ -26,12 +26,24 @@
 @property (nonatomic,assign) NSInteger page_num;
 
 @property (nonatomic,assign) NSInteger size_num;
+//判断是否有评论
+@property (nonatomic,assign) BOOL isHaveComment;
+//记录展开开关
+@property (nonatomic,strong) NSMutableArray *openArray;
 
 @end
+
+static NSString *const airView = @"airView";
 
 @implementation ZZTNewestCommentView
 
 //设置2种数据
+-(NSMutableArray *)openArray{
+    if(!_openArray){
+        _openArray = [NSMutableArray array];
+    }
+    return _openArray;
+}
 
 -(NSMutableArray *)commentArray{
     if(!_commentArray){
@@ -48,6 +60,7 @@
         _page_num = 1;
         
         _size_num = 10;
+        
         self.separatorStyle = UITableViewCellSeparatorStyleNone;
         self.delegate = self;
         self.dataSource = self;
@@ -76,9 +89,15 @@
         self.estimatedSectionFooterHeight = 0;
         self.estimatedSectionHeaderHeight = 0;
         
-   
+        self.showsVerticalScrollIndicator = NO;
+        //有评论的
+        self.isHaveComment = YES;
     }
     return self;
+}
+
+-(void)setChapterId:(NSString *)chapterId{
+    _chapterId = chapterId;
 }
 
 -(void)setDataNum:(NSInteger)dataNum{
@@ -91,7 +110,7 @@
     UserInfo *user = [Utilities GetNSUserDefaults];
     AFHTTPSessionManager *session = [[AFHTTPSessionManager alloc] init];
     NSDictionary *dict = @{
-                           @"chapterId":@"1",
+                           @"chapterId":_chapterId,
                            @"type":@"1",
                            @"userId":[NSString stringWithFormat:@"%ld",user.id],
                            @"pageNum":@"1",
@@ -103,19 +122,26 @@
         NSDictionary *commenDdic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
         NSDictionary *list = commenDdic[@"list"];
+        NSString *totaldic = [commenDdic objectForKey:@"total"];
         NSMutableArray *array1 = [ZZTCircleModel mj_objectArrayWithKeyValuesArray:list];
         if(array1.count == 0){
             //没有数据的时候
             [self.commentArray addObject:@"1"];
+            self.isHaveComment = NO;
         }else{
             //外面的数据
             FriendCircleViewModel *circleViewModel = [[FriendCircleViewModel alloc] init];
             circleViewModel.circleModelArray = array1;
-            self.commentArray = [circleViewModel loadDatas];
+            [circleViewModel loadDatas];
+            self.commentArray = [circleViewModel addOpenDataWith:self.openArray];
+        }
+        if(self.commentArray.count >= [totaldic integerValue]){
+            self.mj_footer.hidden = YES;
+        }else{
+            self.mj_footer.hidden = NO;
         }
         //加工一下评论的数据
         [self fd_reloadDataWithoutInvalidateIndexPathHeightCache];
-        self.mj_footer.hidden = NO;
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
@@ -126,7 +152,7 @@
 //    [self.mj_footer resetNoMoreData];
     AFHTTPSessionManager *session = [[AFHTTPSessionManager alloc] init];
     NSDictionary *dict = @{
-                           @"chapterId":@"1",
+                           @"chapterId":_chapterId,
                            @"type":@"1",
                            @"userId":[NSString stringWithFormat:@"%ld",user.id],
                            @"pageNum":[NSString stringWithFormat:@"%ld",_page_num],
@@ -144,15 +170,19 @@
         if(array1.count == 0){
             //没有数据的时候
             [self.commentArray addObject:@"1"];
+            self.isHaveComment = NO;
         }else{
             //外面的数据
             FriendCircleViewModel *circleViewModel = [[FriendCircleViewModel alloc] init];
             circleViewModel.circleModelArray = array1;
-            NSArray *array = [circleViewModel loadDatas];
+            [circleViewModel loadDatas];
+            NSArray *array = [circleViewModel addOpenDataWith:self.openArray];
+
             [self.commentArray addObjectsFromArray:array];
             if (self.commentArray.count >= total) {
                 //停止刷新
                 [self.mj_footer endRefreshingWithNoMoreData];
+//                [self.mj_footer setHidden:YES];
             }else{
                 self.page_num++;
                 [self.mj_footer endRefreshing];
@@ -169,6 +199,7 @@
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 100;
 }
+
 //cell的高度
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     ZZTCircleModel *model = self.commentArray[indexPath.section];
@@ -187,12 +218,16 @@
 
 //行
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    ZZTCircleModel *model = self.commentArray[section];
-    //如果大于3并且关闭  显示4条 还有一条是展开cell
-    if(model.replyComment.count > 3 && model.isOpenComment == NO){
-        return 4;
+    if(!self.isHaveComment){
+        return 0;
     }else{
-        return model.replyComment.count;
+        ZZTCircleModel *model = self.commentArray[section];
+        //如果大于3并且关闭  显示4条 还有一条是展开cell
+        if(model.replyComment.count > 3 && model.isOpenComment == NO){
+            return 4;
+        }else{
+            return model.replyComment.count;
+        }
     }
 }
 
@@ -203,9 +238,15 @@
         ZZTCommentOpenCell *cell = [tableView dequeueReusableCellWithIdentifier:statusOpenReuseIdentifier];
         cell.cellNum = model.replyComment.count;
         cell.openBtnBlock = ^{
-          model.isOpenComment = YES;
-          [self.commentArray replaceObjectAtIndex:indexPath.section withObject:model];
-          [self reloadData];
+          //记录当前的操作
+            ZZTCircleModel *openModel = [[ZZTCircleModel alloc] init];
+            openModel.id = model.id;
+            openModel.isOpenComment = YES;
+            [self.openArray addObject:openModel];
+            //更新当前的操作
+            model.isOpenComment = YES;
+            [self.commentArray replaceObjectAtIndex:indexPath.section withObject:model];
+            [self reloadData];
         };
         return cell;
     }else{
@@ -229,34 +270,58 @@
 
 //头
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    ZZTCircleModel *model = self.commentArray[section];
-    return model.headerHeight;
+    if(!self.isHaveComment){
+        return 150;
+    }else{
+        ZZTCircleModel *model = self.commentArray[section];
+        return model.headerHeight;
+    }
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    //评论
-    ZZTCircleModel *model = self.commentArray[section];
-    self.statusCell = [[ZZTStatusCell alloc] initWithReuseIdentifier:statusHeaderReuseIdentifier];
-    self.statusCell.delegate = self;
-    self.statusCell.model = model;
-    return _statusCell;
+    if(self.isHaveComment){
+        //评论
+        ZZTCircleModel *model = self.commentArray[section];
+        self.statusCell = [[ZZTStatusCell alloc] initWithReuseIdentifier:statusHeaderReuseIdentifier];
+        self.statusCell.delegate = self;
+        self.statusCell.model = model;
+        return _statusCell;
+    }else{
+        //显示占位图
+        ZZTCommentAirView *airHeaderView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:airView];
+        //如果没有头视图
+        if(!airHeaderView){
+            airHeaderView = [[ZZTCommentAirView alloc] initWithReuseIdentifier:airView];
+        }
+        [self.mj_footer setHidden:YES];
+        return airHeaderView;
+    }
 }
 
 //足
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    return 30;
+    if(!self.isHaveComment){
+        return 0;
+    }else{
+        return 30;
+    }
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
-    static NSString *statusFooterView = @"statusFooterView";
-    ZZTStatusFooterView *footerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:statusFooterView];
-    if(!footerView){
-        footerView = [[ZZTStatusFooterView alloc] initWithReuseIdentifier:statusFooterView];
+    if(self.isHaveComment){
+        static NSString *statusFooterView = @"statusFooterView";
+        ZZTStatusFooterView *footerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:statusFooterView];
+        if(!footerView){
+            footerView = [[ZZTStatusFooterView alloc] initWithReuseIdentifier:statusFooterView];
+        }
+        footerView.delegate = self;
+        ZZTCircleModel *model = self.commentArray[section];
+        footerView.model = model;
+        return footerView;
+    }else{
+        UIView *footerView = [[UIView alloc] init];
+        return footerView;
     }
-    footerView.delegate = self;
-    ZZTCircleModel *model = self.commentArray[section];
-    footerView.model = model;
-    return footerView;
 }
 
 -(void)didClickCommentButton:(ZZTCircleModel *)section{

@@ -49,7 +49,7 @@
     //头像
     _headBtn = [GlobalUI createImageViewbgColor:[UIColor grayColor]];
     //用户名
-    _userName = [GlobalUI createLabelFont:18 titleColor:[UIColor purpleColor] bgColor:[UIColor clearColor]];
+    _userName = [GlobalUI createLabelFont:18 titleColor:ZZTSubColor bgColor:[UIColor clearColor]];
     //vip
     _vipLab = [GlobalUI createButtonWithImg:nil title:@"VIP" titleColor:[UIColor whiteColor]];
     _vipLab.layer.cornerRadius = 2.0f;
@@ -93,7 +93,9 @@
     [self.contentView addSubview:_likeNum];
     [self.contentView addSubview:_commentImg];
     [self.contentView addSubview:_commentNum];
+    
     _groupImgArr = [NSMutableArray array];
+    
     _bottomView = [[UIView alloc] init];
     _bottomView.backgroundColor = [UIColor grayColor];
     [self.contentView addSubview:_bottomView];
@@ -224,7 +226,7 @@
 //时间显示过大了
 + (CGFloat)cellHeightWithStr:(NSString *)str imgs:(NSArray *)imgs{
     CGFloat strH = [str heightWithWidth:CGRectGetWidth([UIScreen mainScreen].bounds) - 40 font:14];
-    CGFloat cellH = strH + 120;
+    CGFloat cellH = strH + 110;
     NSInteger row = imgs.count / 3;
     if (imgs.count) {
         if (imgs.count % 3 !=0) {

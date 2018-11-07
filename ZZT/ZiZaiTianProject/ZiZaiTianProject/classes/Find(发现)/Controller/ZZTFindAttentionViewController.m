@@ -43,7 +43,7 @@ static NSString *CaiNiXiHuanView = @"CaiNiXiHuanView";
     //猜你喜欢
     self.view.backgroundColor = [UIColor redColor];
     
-    UITableView *contentView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, Screen_Height - 49 - 20) style:UITableViewStyleGrouped];
+    UITableView *contentView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, Screen_Height - 49) style:UITableViewStyleGrouped];
     contentView.delegate = self;
     contentView.dataSource = self;
     contentView.separatorStyle = UITableViewCellSeparatorStyleNone;

@@ -15,7 +15,7 @@
 @property (nonatomic,strong) UILabel *pageLab;
 @property (nonatomic,strong) UIImageView *likeImg;
 @property (nonatomic,strong) UILabel *likeNum;
-@property (nonatomic,strong) UIImageView *commentView;
+@property (nonatomic,strong) UIButton *commentView;
 @property (nonatomic,strong) UILabel *commentLab;
 @property (nonatomic,strong) UIView *bottomView;
 @property (nonatomic,strong) UILabel *xuHuaLab;
@@ -62,17 +62,13 @@
     _likeNum = likeNum;
     [self.contentView addSubview:likeNum];
     //评论
-    UIImageView *commentView = [[UIImageView alloc] init];
-//    commentView.backgroundColor = [UIColor yellowColor];
-    _commentView = commentView;
-    [commentView setImage:[UIImage imageNamed:@"作品-作品信息-评论(灰色）"]];
-    [self.contentView addSubview:commentView];
     
-    UILabel *commentLab = [[UILabel alloc] init];
-    [commentLab setTextColor:[UIColor grayColor]];
-//    commentLab.backgroundColor = [UIColor yellowColor];
-    _commentLab = commentLab;
-    [self.contentView addSubview:commentLab];
+    
+//    UILabel *commentLab = [[UILabel alloc] init];
+//    [commentLab setTextColor:[UIColor grayColor]];
+////    commentLab.backgroundColor = [UIColor yellowColor];
+//    _commentLab = commentLab;
+//    [self.contentView addSubview:commentLab];
     
     //底线
     UIView *bottomView = [[UIView alloc] init];
@@ -80,6 +76,12 @@
     [bottomView setBackgroundColor:[UIColor colorWithHexString:@"#F0F1F2"]];
     _bottomView = bottomView;
     [self.contentView addSubview:bottomView];
+}
+
+-(void)goToCommentView{
+    if(_gotoCommentViewBlock){
+        self.gotoCommentViewBlock();
+    }
 }
 
 -(void)layoutSubviews{
@@ -126,20 +128,23 @@
         make.height.mas_equalTo(20);
     }];
     
-    [self.commentLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        //        make.top.equalTo(self).with.offset(10);
-        make.right.equalTo(self).with.offset(-10);
-        make.bottom.equalTo(self.bottomView.mas_top).with.offset(-10);
-        make.height.mas_equalTo(20);
-        make.width.mas_equalTo(50);
-    }];
+//    [self.commentLab mas_makeConstraints:^(MASConstraintMaker *make) {
+//        //        make.top.equalTo(self).with.offset(10);
+//        make.right.equalTo(self).with.offset(-10);
+//        make.bottom.equalTo(self.bottomView.mas_top).with.offset(-10);
+//        make.height.mas_equalTo(20);
+//        make.width.mas_equalTo(50);
+//    }];
     
     [self.commentView mas_makeConstraints:^(MASConstraintMaker *make) {
         //        make.top.equalTo(self).with.offset(10);
-        make.right.equalTo(self.commentLab.mas_left).with.offset(-5);
-        make.bottom.equalTo(self.bottomView.mas_top).with.offset(-11);
-        make.height.mas_equalTo(18);
-        make.width.mas_equalTo(18);
+//        make.right.equalTo(self.commentLab.mas_left).with.offset(-5);
+//        make.bottom.equalTo(self.bottomView.mas_top).with.offset(-11);
+//        make.height.mas_equalTo(18);
+//        make.width.mas_equalTo(18);
+        make.right.equalTo(self.contentView).offset(-8);
+        make.bottom.equalTo(self.contentView).offset(-10);
+        make.height.mas_equalTo(20);
     }];
     
     [self.likeNum mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -188,8 +193,16 @@
         if(model.chapterPage)self.pageLab.text = [NSString stringWithFormat:@"%@画",model.chapterPage];
     }
     self.pageLab.textColor = [UIColor grayColor];
-    self.commentLab.text = model.commentNum;
+    
+    NSString *replayCountText = [NSString makeTextWithCount:model.commentNum.integerValue];
 
+    [self.commentView setTitle:replayCountText forState:UIControlStateNormal];
+    
+    CGFloat replyCountWidth = [replayCountText getTextWidthWithFont:self.commentView.titleLabel.font] + 30;
+    //设置宽度
+    [self.commentView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.width.equalTo(@(replyCountWidth));
+    }];
     [self.likeImg setImage:[UIImage imageNamed:@"正文-点赞-已点赞"]];
 }
 
@@ -216,5 +229,22 @@
 //        self.btnBlock(self,_model);
 //    }
 //}
-
+- (UIButton *)commentView {
+    if (!_commentView) {
+        
+        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        
+        btn.titleLabel.font = [UIFont systemFontOfSize:12];
+        
+        [btn setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
+        [btn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+        [btn setImage:[UIImage imageNamed:@"ic_common_comment_normal_15x15_"] forState:UIControlStateNormal];
+        [btn addTarget:self action:@selector(goToCommentView) forControlEvents:UIControlEventTouchUpInside];
+        [self.contentView addSubview:btn];
+        
+        _commentView = btn;
+    }
+    
+    return _commentView;
+}
 @end

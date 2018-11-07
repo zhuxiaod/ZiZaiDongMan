@@ -48,6 +48,20 @@
     return muArray;
 }
 
+//添加展开数据
+-(NSMutableArray *)addOpenDataWith:(NSMutableArray *)array{
+    for (int i = 0; i < array.count; i++) {
+        ZZTCircleModel *openmodel = array[i];
+        for (int a = 0; a < self.circleModelArray.count; a++) {
+            ZZTCircleModel *circleModel = self.circleModelArray[a];
+            if([openmodel.id isEqualToString:circleModel.id]){
+                circleModel.isOpenComment = openmodel.isOpenComment;
+            }
+        }
+    }
+    return self.circleModelArray;
+}
+
 -(NSMutableArray *)loadCommentViewDatas{
     NSMutableArray *muArray = [NSMutableArray array];
     if(_circleModelArray.count > 0){

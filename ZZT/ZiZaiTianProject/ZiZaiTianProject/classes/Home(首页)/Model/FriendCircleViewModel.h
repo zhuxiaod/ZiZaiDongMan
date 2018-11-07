@@ -17,5 +17,6 @@
 - (NSMutableArray *)loadDatas;
 - (CGFloat)getHeaderHeight:(ZZTCircleModel *)item;
 - (void)calculateItemHeight:(ZZTCircleModel *)item;
+-(NSMutableArray *)addOpenDataWith:(NSMutableArray *)array;
 
 @end

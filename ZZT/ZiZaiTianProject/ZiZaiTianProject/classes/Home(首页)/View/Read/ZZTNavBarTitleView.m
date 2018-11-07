@@ -47,24 +47,35 @@ static CGFloat const MyHeight = 30;
     
     [self.rightBtn addTarget:self action:@selector(selectBtn:) forControlEvents:UIControlEventTouchUpInside];
     
-    [self selectBtn:self.leftBtn];
     
+    self.layer.cornerRadius = MyHeight * 0.5;
+    self.layer.masksToBounds = YES;
+
+    //默认颜色
+    _btnTextColor = [UIColor blackColor];
+    _btnBackgroundColor = [UIColor whiteColor];
+    
+    _selBtnTextColor = ZZTSubColor;
+    _selBtnBackgroundColor = [UIColor clearColor];
+    
+
 }
+
 
 - (void)selectBtn:(UIButton *)btn {
     
-    [btn setBackgroundColor:[UIColor orangeColor]];
-    [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [btn setBackgroundColor:_selBtnBackgroundColor];
+    [btn setTitleColor:_selBtnTextColor forState:UIControlStateNormal];
     
     if (btn == self.rightBtn) {
-        [self.leftBtn setBackgroundColor:[UIColor clearColor]];
-        [self.leftBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.leftBtn setBackgroundColor:_btnBackgroundColor];
+        [self.leftBtn setTitleColor:_btnTextColor forState:UIControlStateNormal];
         if (self.rightBtnOnClick) {
             self.rightBtnOnClick(btn);
         }
     }else {
-        [self.rightBtn setBackgroundColor:[UIColor clearColor]];
-        [self.rightBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.rightBtn setBackgroundColor:_btnBackgroundColor];
+        [self.rightBtn setTitleColor:_btnTextColor forState:UIControlStateNormal];
         if (self.leftBtnOnClick) {
             self.leftBtnOnClick(btn);
         }
@@ -75,7 +86,7 @@ static CGFloat const MyHeight = 30;
     
     UIButton *btn = [UIButton new];
     
-    [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [btn setTitleColor:_btnTextColor forState:UIControlStateNormal];
     btn.titleLabel.font = [UIFont systemFontOfSize:17];
     
     btn.layer.cornerRadius = MyHeight * 0.5;
@@ -89,7 +100,25 @@ static CGFloat const MyHeight = 30;
     
     CGFloat w = self.width * 0.5;
     
-    self.leftBtn.frame  = CGRectMake(0, 0, w, self.height);
-    self.rightBtn.frame = CGRectMake(w, 0, w, self.height);
+    self.leftBtn.frame  = CGRectMake(1, 1, w, self.height - 2);
+    self.rightBtn.frame = CGRectMake(w - 1, 1, w, self.height-2);
+}
+
+-(void)setBtnTextColor:(UIColor *)btnTextColor{
+    _btnTextColor = btnTextColor;
+}
+
+-(void)setBtnBackgroundColor:(UIColor *)btnBackgroundColor{
+    _btnBackgroundColor = btnBackgroundColor;
+    [self selectBtn:self.leftBtn];
+}
+
+-(void)setSelBtnTextColor:(UIColor *)selBtnTextColor{
+    _selBtnTextColor = selBtnTextColor;
+}
+
+-(void)setSelBtnBackgroundColor:(UIColor *)selBtnBackgroundColor{
+    _selBtnBackgroundColor = selBtnBackgroundColor;
+
 }
 @end

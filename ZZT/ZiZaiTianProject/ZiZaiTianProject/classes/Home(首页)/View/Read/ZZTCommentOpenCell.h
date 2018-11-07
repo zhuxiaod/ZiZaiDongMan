@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+
 typedef void (^openBtnBlock) (void);
 
 @interface ZZTCommentOpenCell : UITableViewCell
