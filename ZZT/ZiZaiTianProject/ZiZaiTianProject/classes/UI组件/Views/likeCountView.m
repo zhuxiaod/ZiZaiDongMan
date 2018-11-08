@@ -15,8 +15,8 @@
 
 static NSString * const likeUrl = @"http://api.kuaikanmanhua.com/v1/comics";
 
-static NSString * const normalImageName = @"ic_common_praise_normal_15x15_";
-static NSString * const pressedImageName = @"ic_common_praise_pressed_15x15_";
+static NSString * const normalImageName = @"赞";
+static NSString * const pressedImageName = @"赞_已点";
 
 #define MyWidth 30.0f
 

@@ -10,7 +10,7 @@
 
 @class ZZTMyZoneModel;
 @class ZZTFindCommentCell;
-typedef void (^ReValueBlock) (ZZTFindCommentCell *cell,ZZTMyZoneModel *model,BOOL yesOrNo);
+typedef void (^ReValueBlock) (void);
 
 @interface ZZTFindCommentCell : UITableViewCell
 

@@ -11,13 +11,14 @@
 #import "ZZTFindCommentCell.h"
 #import <XHImageViewer.h>
 #import "ZZTMyZoneModel.h"
+#import "AttentionButton.h"
 
 @interface ZZTFindCommentCell ()<UIGestureRecognizerDelegate>
 
 @property (strong, nonatomic)  UIImageView *headBtn;
 @property (strong, nonatomic)  UILabel *userName;
 @property (strong, nonatomic)  UIButton *vipLab;
-@property (strong, nonatomic)  UIButton *attentionBtn;
+@property (strong, nonatomic)  AttentionButton *attentionBtn;
 @property (strong, nonatomic)  UILabel *contentLab;
 @property (strong, nonatomic)  UIImageView *contentImg;
 @property (strong, nonatomic)  UIImageView *zanImg;
@@ -32,14 +33,17 @@
 @property (nonatomic,assign) BOOL isZan;
 @property (nonatomic,assign) BOOL isAttention;
 
+//评论
+@property (strong, nonatomic) UIButton *replyCountView;
+//点赞
+@property (strong, nonatomic) likeCountView *likeCountView;
 
 @end
 
 @implementation ZZTFindCommentCell
 
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
+-(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
+    if(self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]){
         [self setupUI];
     }
     return self;
@@ -48,30 +52,35 @@
 -(void)setupUI{
     //头像
     _headBtn = [GlobalUI createImageViewbgColor:[UIColor grayColor]];
+    
     //用户名
     _userName = [GlobalUI createLabelFont:18 titleColor:ZZTSubColor bgColor:[UIColor clearColor]];
+    
     //vip
     _vipLab = [GlobalUI createButtonWithImg:nil title:@"VIP" titleColor:[UIColor whiteColor]];
+    [_vipLab setHidden:YES];
     _vipLab.layer.cornerRadius = 2.0f;
     _vipLab.backgroundColor = [UIColor purpleColor];
-    //关注
-    _attentionBtn = [GlobalUI createButtonWithImg:nil title:@"+关注" titleColor:[UIColor whiteColor]];
-    [_attentionBtn addTarget:self action:@selector(attentionBtnChange) forControlEvents:UIControlEventTouchUpInside];
-    _attentionBtn.backgroundColor = [UIColor purpleColor];
     
     //内容
     _contentLab = [GlobalUI createLabelFont:14 titleColor:[UIColor blackColor] bgColor:[UIColor whiteColor]];
-
+    _contentLab.numberOfLines = 0;
+    
     //图片
     _bgImgsView = [[UIView alloc]init];
+
+    //关注
+    _attentionBtn = [[AttentionButton alloc] init];
 
     //时间
     _dataLab = [GlobalUI createLabelFont:14 titleColor:[UIColor grayColor] bgColor:[UIColor whiteColor]];
 
     //点赞
+    
     _zanImg = [GlobalUI createImageViewbgColor:[UIColor whiteColor]];
     _zanImg.image = [UIImage imageNamed:@"zan_icon"];
     _zanImg.userInteractionEnabled = YES;
+    
     //注意测
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapZanBtn:)];
     [_zanImg  addGestureRecognizer:tap];
@@ -103,33 +112,80 @@
 
 - (void)layoutSubviews{
     [super layoutSubviews];
-    _headBtn.frame = CGRectMake(10, 10, 40, 40);
-    _attentionBtn.frame = CGRectMake(SCREEN_WIDTH - 70, _userName.center.y-15, 60, 30);
-    _attentionBtn.layer.cornerRadius = 10.0f;
-    CGFloat contentHeight = [_contentLab.text heightWithWidth:CGRectGetWidth(self.contentView.bounds) - 40 font:14];
-    _contentLab.frame = CGRectMake(10, CGRectGetMaxY(_headBtn.frame) + 10, CGRectGetWidth(self.contentView.bounds) - 20, contentHeight);
+    CGFloat space = 8;
+    CGFloat distance = 4;
+    //头像
+    [_headBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.left.equalTo(self.contentView).offset(space);
+        make.height.width.mas_equalTo(40);
+    }];
+    
+    [_attentionBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.headBtn);
+        make.right.equalTo(self.contentView).offset(-8);
+        make.width.height.mas_equalTo(36);
+    }];
+    
+    //用户名   计算出宽度 然后在写vip
+    [_userName mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.headBtn);
+        make.left.equalTo(self.headBtn.mas_right).offset(distance);
+        make.height.mas_equalTo(20);
+    }];
+    
+    [_vipLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.headBtn);
+        make.left.equalTo(self.userName.mas_right).offset(distance);
+        make.height.width.mas_equalTo(16);
+    }];
+    
+    [_contentLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.headBtn.mas_left);
+        make.right.equalTo(self.attentionBtn.mas_right);
+        make.top.equalTo(self.headBtn.mas_bottom).offset(space);
+//        make.height.mas_equalTo(contentHeight);
+    }];
+    
     NSInteger row = _imgArray.count / 3;// 多少行图片
-    //还有多的 就最加一行  未做  9个以上的话加号
     if (_imgArray.count %3 !=0) {
         ++row;
     }
-    CGFloat bgH = _imgArray.count ? row * imgHeight + (row-1) * 10 :0;
-    _bgImgsView.frame = CGRectMake(10, CGRectGetMaxY(_contentLab.frame) + 10, CGRectGetWidth([UIScreen mainScreen].bounds) - 20, bgH);
-    _dataLab.frame = CGRectMake(10, CGRectGetMaxY(_bgImgsView.frame)+10, 100, 20);
     
-    _commentNum.frame = CGRectMake(SCREEN_WIDTH - 60, CGRectGetMaxY(_bgImgsView.frame)+10 , 50, 20);
-    _commentImg.frame = CGRectMake(SCREEN_WIDTH - 85, CGRectGetMaxY(_bgImgsView.frame)+10, 20, 20);
-    _likeNum.frame = CGRectMake(SCREEN_WIDTH - 140, CGRectGetMaxY(_bgImgsView.frame)+10 , 50, 20);
-    _zanImg.frame = CGRectMake(SCREEN_WIDTH - 165, CGRectGetMaxY(_bgImgsView.frame)+10, 20, 20);
-    _bottomView.frame = CGRectMake(0, self.height - 1, SCREEN_WIDTH, 1);
+    //这里是没有数据的
+    [_bgImgsView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.contentLab.mas_bottom).offset(space);
+        make.right.equalTo(self.attentionBtn.mas_right);
+        make.left.equalTo(self.headBtn.mas_left);
+    }];
+    
+    [_dataLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.headBtn.mas_left);
+        make.top.equalTo(self.bgImgsView.mas_bottom).offset(space);
+        make.height.mas_equalTo(20);
+        make.width.mas_equalTo(100);
+    }];
+    
+    [self.replyCountView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(self.dataLab);
+        make.right.equalTo(self.contentView).offset(-8);
+        make.height.mas_equalTo(20);
+    }];
+    
+    [self.likeCountView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.replyCountView).offset(-2);
+        make.right.equalTo(self.replyCountView.mas_left).offset(-space);
+        make.height.mas_equalTo(20);
+    }];
+//    _commentNum.frame = CGRectMake(SCREEN_WIDTH - 60, CGRectGetMaxY(_bgImgsView.frame)+10 , 50, 20);
+//    _commentImg.frame = CGRectMake(SCREEN_WIDTH - 85, CGRectGetMaxY(_bgImgsView.frame)+10, 20, 20);
+//    _likeNum.frame = CGRectMake(SCREEN_WIDTH - 140, CGRectGetMaxY(_bgImgsView.frame)+10 , 50, 20);
+//    _zanImg.frame = CGRectMake(SCREEN_WIDTH - 165, CGRectGetMaxY(_bgImgsView.frame)+10, 20, 20);
+//    _bottomView.frame = CGRectMake(0, self.height - 1, SCREEN_WIDTH, 1);
 }
 
 - (void)setModel:(ZZTMyZoneModel *)model{
     _model = model;
-    //在这个页面只用使用一个值来记录 是否点赞
-    //如果点赞 显示已点赞
-    //如果没有点赞 显示没有点
-    
+    //重置图片View
     if (_groupImgArr.count) {
         [_groupImgArr enumerateObjectsUsingBlock:^(UIImageView * obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [obj removeFromSuperview];
@@ -148,47 +204,79 @@
         _imgArray = urlArray;
         [self setupImageGroupView];
     }
-
+    
+    NSInteger row = _imgArray.count / 3;// 多少行图片
+    if (_imgArray.count %3 !=0) {
+        ++row;
+    }
+    
+    CGFloat bgH = _imgArray.count ? row * imgHeight + (row-1) * 10 :0;
+    [_bgImgsView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(bgH);
+    }];
+    
+    //更新时间
+    [_dataLab mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.bgImgsView.mas_bottom).offset(8);
+    }];
+    
     _contentLab.text = model.content;
     
     //时间
     _dataLab.text = model.publishtime;
-//    NSLog(@"_dataLab.text:%@",_dataLab.text);
+    
+    //更新内容高度
+    CGFloat contentHeight = [_contentLab.text heightWithWidth:CGRectGetWidth(self.contentView.bounds) - 16 font:14];
+    contentHeight += 10;
+    [_contentLab mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(contentHeight);
+    }];
+
     //先把时间搓换成nstime
     
     [self setNeedsLayout];
     [self layoutIfNeeded];
     
-    [_headBtn sd_setImageWithURL:[NSURL URLWithString:model.headimg] placeholderImage:[UIImage imageNamed:@"peien"]];
+    [_headBtn sd_setImageWithURL:[NSURL URLWithString:[model.qiniu stringByAppendingString:model.headimg]] placeholderImage:[UIImage imageNamed:@"peien"]];
     //名字位置刷新 vip的位置也刷新
     _userName.text = model.nickName;
+    
     CGFloat replyCountWidth = [_userName.text getTextWidthWithFont:self.userName.font];
-    _userName.frame = CGRectMake(CGRectGetMaxX(_headBtn.frame)+10, _headBtn.center.y - 15, replyCountWidth, 30);
-    _vipLab.frame = CGRectMake(CGRectGetMaxX(_userName.frame) + 10, _headBtn.center.y - 7.5, 30, 15);
+    replyCountWidth += 30;
+    [_userName mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.width.mas_equalTo(replyCountWidth);
+    }];
     
-    _likeNum.text = [NSString stringWithFormat:@"%ld",model.praisecount];
-    //判断是否点赞
-    if ([model.ifpraise integerValue] == 0) {
-        //说明没有点赞 显示没有点赞的图片
-        _zanImg.image = [UIImage imageNamed:@"正文-点赞-未点赞(灰色）"];
-    }else{
-        _zanImg.image = [UIImage imageNamed:@"正文-点赞-已点赞"];
-    }
-    _isZan = [model.ifpraise integerValue];
+    //评论
+    NSString *replayCountText = [NSString makeTextWithCount:model.replycount];
     
-    _commentNum.text = [NSString stringWithFormat:@"%ld",model.replycount];
-    _commentImg.image = [UIImage imageNamed:@"作品-作品信息-评论(灰色）"];
+    [self.replyCountView setTitle:replayCountText forState:UIControlStateNormal];
+
+    CGFloat replyWidth = [replayCountText getTextWidthWithFont:self.replyCountView.titleLabel.font] + 30;
+    
+    //设置宽度
+    [self.replyCountView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.width.equalTo(@(replyWidth));
+    }];
+    
+    //评论跳转
+    [self.replyCountView addTarget:self action:@selector(gotoCommentView) forControlEvents:UIControlEventTouchUpInside];
+
+    //点赞
+    self.likeCountView.islike  = [model.ifpraise integerValue];
+    self.likeCountView.requestID = model.userId;
+    self.likeCountView.likeCount = model.praisecount;
     
     //关注
-    if([model.ifConcern integerValue] == 1){
-        //如果关注了
-        [_attentionBtn setTitle:@"已关注" forState:UIControlStateNormal];
-        [_attentionBtn setBackgroundColor:[UIColor grayColor]];
-    }else{
-        [_attentionBtn setTitle:@"+关注" forState:UIControlStateNormal];
-        [_attentionBtn setBackgroundColor:[UIColor purpleColor]];
-    }
-    _isAttention = [model.ifConcern integerValue];
+    _attentionBtn.isAttention = [model.ifConcern integerValue];
+    _attentionBtn.requestID = model.userId;
+}
+
+-(void)gotoCommentView{
+    ZZTCommentViewController *commentView = [[ZZTCommentViewController alloc] init];
+    commentView.chapterId = _model.id;
+    commentView.cartoonType = @"3";
+    [[self myViewController].navigationController presentViewController:commentView animated:YES completion:nil];
 }
 
 - (void)setupImageGroupView{
@@ -237,55 +325,41 @@
     return  cellH;
 }
 
-+(ZZTFindCommentCell *)dynamicCellWithTable:(UITableView *)table{
-    ZZTFindCommentCell * cell = [table dequeueReusableCellWithIdentifier:NSStringFromClass(self)];
-    if (!cell) {
-        cell = [[ZZTFindCommentCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:NSStringFromClass(self)];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//评论
+- (UIButton *)replyCountView {
+    if (!_replyCountView) {
+        
+        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        
+        btn.titleLabel.font = [UIFont systemFontOfSize:12];
+        
+//        [btn setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
+//        [btn setTitleColor:[self.likeCountView titleColorForState:UIControlStateNormal] forState:UIControlStateNormal];
+        [btn setImage:[UIImage imageNamed:@"评论"] forState:UIControlStateNormal];
+//        [btn addTarget:self action:@selector(showCommentVc) forControlEvents:UIControlEventTouchUpInside];
+        [self.contentView addSubview:btn];
+        
+        _replyCountView = btn;
     }
-    return cell;
+    
+    return _replyCountView;
 }
 
-//cell里面只能设置显示的状态
-//不能控制数据
--(void)tapZanBtn:(UIGestureRecognizer *)gesture{
-    //反状态
-    NSInteger zanNum = [_likeNum.text integerValue];
-    UIImage *selZan = [UIImage imageNamed:@"正文-点赞-未点赞(灰色）"];
-    if (_isZan) {
-        _isZan = NO;
-        _zanImg.image = selZan;
-        --zanNum;
-        _likeNum.text = [NSString stringWithFormat:@"%ld",zanNum];
-    }else{
-        _isZan = YES;
-        _zanImg.image = [UIImage imageNamed:@"正文-点赞-已点赞"];
-        ++zanNum;
-        _likeNum.text = [NSString stringWithFormat:@"%ld",zanNum];
+- (likeCountView *)likeCountView {
+    if (!_likeCountView) {
+        likeCountView *lcv = [[likeCountView alloc] init];
+        
+        weakself(self);
+        //发现点赞
+        [lcv setOnClick:^(likeCountView *btn) {
+            
+        }];
+        
+        [self.contentView addSubview:lcv];
+        
+        _likeCountView = lcv;
     }
-    _model.praisecount = zanNum;
-    _model.ifpraise = [NSString stringWithFormat:@"%d",_isZan];
-    if (self.btnBlock) {
-        // 调用block传入参数
-        self.btnBlock(self,_model,YES);
-    }
+    return _likeCountView;
 }
-//关注
--(void)attentionBtnChange{
-    if(_isAttention){
-        _isAttention = NO;
-        [_attentionBtn setTitle:@"+关注" forState:UIControlStateNormal];
-        [_attentionBtn setBackgroundColor:[UIColor purpleColor]];
-    }else{
-        _isAttention = YES;
-        //如果关注了
-        [_attentionBtn setTitle:@"已关注" forState:UIControlStateNormal];
-        [_attentionBtn setBackgroundColor:[UIColor grayColor]];
-    }
-    _model.ifConcern = [NSString stringWithFormat:@"%d",_isZan];
-    if (self.btnBlock) {
-        // 调用block传入参数
-        self.btnBlock(self,_model,NO);
-    }
-}
+
 @end

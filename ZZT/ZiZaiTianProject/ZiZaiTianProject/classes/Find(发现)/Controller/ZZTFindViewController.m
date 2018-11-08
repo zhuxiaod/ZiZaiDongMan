@@ -45,6 +45,8 @@ NSString *SuggestionView3 = @"SuggestionView";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+
     //添加子页
     ZZTFindWorldViewController *findWorldVC = [[ZZTFindWorldViewController alloc] init];
     [self addChildViewController:findWorldVC];
@@ -60,6 +62,7 @@ NSString *SuggestionView3 = @"SuggestionView";
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNotification:) name:@"infoNotification" object:nil];
 }
+//因为那个方法是在
 //渐变导航栏
 -(void)receiveNotification:(NSNotification *)infoNotification {
     NSDictionary *dic = [infoNotification userInfo];
@@ -80,6 +83,7 @@ NSString *SuggestionView3 = @"SuggestionView";
     }
     
 }
+
 -(void)setupNavbar{
     ZZTNavBarTitleView *titleView = [[ZZTNavBarTitleView alloc] init];
     titleView.selBtnTextColor = ZZTSubColor;
@@ -450,6 +454,8 @@ NSString *SuggestionView3 = @"SuggestionView";
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:NO];
+    
+    self.statusBarStyle = UIStatusBarStyleDefault;
 }
 
 - (void)didReceiveMemoryWarning {

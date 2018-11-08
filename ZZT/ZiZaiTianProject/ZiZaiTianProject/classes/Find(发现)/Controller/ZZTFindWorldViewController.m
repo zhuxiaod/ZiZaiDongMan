@@ -13,6 +13,7 @@
 #import <SDCycleScrollView.h>
 #import "ZZTFindBannerView.h"
 #import "ZZTZoneImageView.h"
+#import "ZZTFindAttentionView.h"
 
 @interface ZZTFindWorldViewController ()<UITableViewDelegate,UITableViewDataSource,SDCycleScrollViewDelegate,UICollectionViewDelegate>
 
@@ -21,6 +22,8 @@
 @property (nonatomic,strong) UITableView *contentView;
 
 @property (nonatomic,assign) NSInteger pageNumber;
+//页码size
+@property (nonatomic,assign) NSInteger pageSize;
 
 @property (nonatomic,strong) NSArray *imagesURLStrings;
 
@@ -28,12 +31,25 @@
 
 @property (nonatomic,strong) ZZTZoneImageView *zoneImageView;
 
+@property (nonatomic,strong) ZZTCaiNiXiHuanView *caiNiXiHuanView;
+
+@property (nonatomic,strong) NSArray *CNXHArray;
 
 @end
 
 static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
 
+static NSString *findCommentCell = @"findCommentCell";
+
+
 @implementation ZZTFindWorldViewController
+
+-(NSArray *)CNXHArray{
+    if(!_CNXHArray){
+        _CNXHArray = [NSArray array];
+    }
+    return _CNXHArray;
+}
 
 -(NSArray *)imagesURLStrings{
     if(!_imagesURLStrings){
@@ -58,7 +74,9 @@ static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
     //tableView
     [self setupTableView];
     
-    self.pageNumber = 0;
+    self.pageNumber = 1;
+    
+    self.pageSize = 10;
 //    [self loadData];
     
 //    //banner数据
@@ -68,7 +86,10 @@ static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
     
     [self.contentView.mj_header beginRefreshing];
     
-
+    //猜你喜欢
+    [self loadCaiNiXiHuanData];
+    
+    
 }
 
 
@@ -80,47 +101,90 @@ static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
     contentView.contentInset = UIEdgeInsetsMake(-20, 0, 0, 0);
     _contentView = contentView;
     contentView.backgroundColor = [UIColor whiteColor];
+    contentView.estimatedRowHeight = 0;
+    contentView.estimatedSectionFooterHeight = 0;
+    contentView.estimatedSectionHeaderHeight = 0;
+    
+    [contentView registerClass:[ZZTFindCommentCell class] forCellReuseIdentifier:findCommentCell];
+    
     [self.view addSubview:contentView];
+    
+    [self.contentView.mj_footer setHidden:YES];
 }
 
 -(void)setupMJRefresh{
     self.contentView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         [self loadData];
     }];
+    self.contentView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        [self loadMoreData];
+    }];
 }
-
+//刷新数据
 -(void)loadData{
+    UserInfo *user = [Utilities GetNSUserDefaults];
     //请求世界数据
     NSDictionary *dic = @{
-                          //                          @"pageNum":self.pageNumber,
-                          @"pageNum":[NSString stringWithFormat:@"%ld",self.pageNumber],
-                          @"pageSize":@"12",
-                          //                          @"userId":[[NSUserDefaults standardUserDefaults]objectForKey:@"userId"]
-                          @"userId":@"1",
-                          @"type":@"1"
+                          @"pageNum":@"1",
+                          @"pageSize":[NSString stringWithFormat:@"%ld",self.pageSize],
+                          @"userId":[NSString stringWithFormat:@"%ld",user.id],
+                          @"type":@"1"//1.世界 2.关注
                           };
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/selDiscover"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-        id to = [dic objectForKey:@"total"];
-        NSInteger total = [to integerValue];
-        NSArray *list = [dic objectForKey:@"list"];
-        NSMutableArray *array = [ZZTMyZoneModel mj_objectArrayWithKeyValuesArray:list];
-
-        [self.dataArray addObjectsFromArray:array];
+        
+        NSInteger total = [[NSString stringWithFormat:@"%@",[dic objectForKey:@"total"]] integerValue];
+        
+        NSMutableArray *array = [ZZTMyZoneModel mj_objectArrayWithKeyValuesArray:[dic objectForKey:@"list"]];
+        
+        self.dataArray = array;
         [self.contentView reloadData];
+        
         if(self.dataArray.count >= total){
+//            [self.contentView.mj_footer setHidden:YES];
+            [self.contentView.mj_header endRefreshing];
+        }else{
+            [self.contentView.mj_header endRefreshing];
+        }
+        self.pageSize += 10;
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [self.contentView.mj_footer endRefreshing];
+        [self.contentView.mj_header endRefreshing];
+    }];
+}
+
+-(void)loadMoreData{
+    UserInfo *user = [Utilities GetNSUserDefaults];
+    //请求世界数据
+    NSDictionary *dic = @{
+                          @"pageNum":[NSString stringWithFormat:@"%ld",self.pageNumber],
+                          @"pageSize":@"10",
+                          @"userId":[NSString stringWithFormat:@"%ld",user.id],
+                          @"type":@"1"//1.世界 2.关注
+                          };
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    [manager POST:[ZZTAPI stringByAppendingString:@"circle/selDiscover"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        
+        NSInteger total = [[NSString stringWithFormat:@"%@",[dic objectForKey:@"total"]] integerValue];
+        
+        NSMutableArray *array = [ZZTMyZoneModel mj_objectArrayWithKeyValuesArray:[dic objectForKey:@"list"]];
+        
+        [self.dataArray addObjectsFromArray:array];
+        
+        [self.contentView reloadData];
+        
+        if(self.dataArray.count >= total){
+            //            [self.contentView.mj_footer setHidden:YES];
             [self.contentView.mj_footer endRefreshingWithNoMoreData];
         }else{
             [self.contentView.mj_footer endRefreshing];
         }
-        //page+size
-        self.pageNumber += 12;
-        [self.contentView.mj_header endRefreshing];
+        self.pageSize++;
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [self.contentView.mj_footer endRefreshing];
         [self.contentView.mj_header endRefreshing];
-
     }];
 }
 
@@ -133,40 +197,17 @@ static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
     if(section == 0){
         return 0;
     }else{
+        [self.contentView.mj_footer setHidden:NO];
         return self.dataArray.count;
     }
 }
 
 #pragma mark - 内容设置
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    ZZTFindCommentCell *cell = [ZZTFindCommentCell dynamicCellWithTable:tableView];
-    cell.btnBlock = ^(ZZTFindCommentCell *cell,ZZTMyZoneModel *model,BOOL yesOrNo) {
-        NSIndexPath *indexPath = [tableView indexPathForCell:cell];
-        [self.dataArray replaceObjectAtIndex:indexPath.row withObject:model];
-        if(yesOrNo == YES){
-            //点赞接口
-        }else{
-            //关注接口
-            [self loadAttention:model];
-        }
-    };
+    ZZTFindCommentCell *cell = [tableView dequeueReusableCellWithIdentifier:findCommentCell forIndexPath:indexPath];
     cell.model = self.dataArray[indexPath.row];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
-}
-
--(void)loadAttention:(ZZTMyZoneModel *)model{
-    UserInfo *user = [Utilities GetNSUserDefaults];
-    NSDictionary *dic = @{
-                          @"userId":[NSString stringWithFormat:@"%ld",user.id],
-                          @"authorId":model.userId
-                          };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-    [manager POST:[ZZTAPI stringByAppendingString:@"record/ifUserAtAuthor"]  parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
-    }];
 }
 
 #pragma mark 高度设置
@@ -178,15 +219,20 @@ static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
 
 #pragma mark - headView
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    //作者
-    static NSString *findBannerView = @"findBannerView";
-    self.bannerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:findBannerView];
-    //如果没有头视图
-    if(!_bannerView){
-        _bannerView = [[ZZTFindBannerView alloc] initWithReuseIdentifier:findBannerView];
+    if(section == 0){
+        //作者
+        static NSString *findBannerView = @"findBannerView";
+        self.bannerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:findBannerView];
+        //如果没有头视图
+        if(!_bannerView){
+            _bannerView = [[ZZTFindBannerView alloc] initWithReuseIdentifier:findBannerView];
+        }
+        _bannerView.imageArray = @"1";
+        return _bannerView;
+    }else{
+        UIView *view = [[UIView alloc] init];
+        return view;
     }
-    _bannerView.imageArray = @"1";
-    return _bannerView;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
@@ -198,23 +244,43 @@ static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
-    //作者
-    static NSString *zoneImageView = @"zoneImageView";
-    self.zoneImageView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:zoneImageView];
-    //如果没有头视图
-    if(!_zoneImageView){
-        _zoneImageView = [[ZZTZoneImageView alloc] initWithReuseIdentifier:zoneImageView];
+    if(section == 0){
+        //作者
+        static NSString *zoneImageView = @"zoneImageView";
+        self.zoneImageView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:zoneImageView];
+        //如果没有头视图
+        if(!_zoneImageView){
+            _zoneImageView = [[ZZTZoneImageView alloc] initWithReuseIdentifier:zoneImageView];
+        }
+        _zoneImageView.image = [UIImage imageNamed:@"ziZaiKongJian"];
+        return _zoneImageView;
+    }else{
+        //   //作者
+        static NSString *caiNiXiHuanView = @"caiNiXiHuanView";
+        self.caiNiXiHuanView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:caiNiXiHuanView];
+        //如果没有头视图
+        if(!_caiNiXiHuanView){
+            _caiNiXiHuanView = [[ZZTCaiNiXiHuanView alloc] initWithReuseIdentifier:caiNiXiHuanView];
+        }
+        self.caiNiXiHuanView.dataArray = self.CNXHArray;
+        [self.caiNiXiHuanView.updataBtn addTarget:self action:@selector(loadCaiNiXiHuanData) forControlEvents:UIControlEventTouchUpInside];
+        return _caiNiXiHuanView;
     }
-    _zoneImageView.image = [UIImage imageNamed:@"ziZaiKongJian"];
-    return _zoneImageView;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     if(section == 0){
         return SCREEN_HEIGHT * 0.14;
     }else{
-        return 0;
+        return SCREEN_HEIGHT * 0.34;
     }
+}
+
+-(ZZTCaiNiXiHuanView *)caiNiXiHuanView{
+    if(!_caiNiXiHuanView){
+        _caiNiXiHuanView = [[ZZTCaiNiXiHuanView alloc] initWithFrame:CGRectZero];
+    }
+    return _caiNiXiHuanView;
 }
 
 -(ZZTFindBannerView *)bannerView{
@@ -230,15 +296,32 @@ static NSString *CaiNiXiHuanView1 = @"CaiNiXiHuanView1";
     return _zoneImageView;
 }
 
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
-}
 
+//是否隐藏navBar
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     CGFloat offset = scrollView.contentOffset.y;
     
     //通知
     NSDictionary *dataDic = [NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%f",offset] forKey:@"navHidden"];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"infoNotification" object:nil userInfo:dataDic];
+}
+
+-(void)loadCaiNiXiHuanData{
+    
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    [manager POST:[ZZTAPI stringByAppendingString:@"circle/guessYouLike"] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSMutableArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
+        self.CNXHArray = array;
+        [self.contentView reloadData];
+        [self.contentView.mj_header endRefreshing];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [self.contentView.mj_header endRefreshing];
+    }];
+}
+//刷新NavBar的zhuang'ta
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self scrollViewDidScroll:_contentView];
 }
 @end

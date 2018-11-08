@@ -10,9 +10,11 @@
 
 typedef void (^restartBtnBlock) (UIButton *sender);
 
-@interface ZZTCaiNiXiHuanView : UIView
+@interface ZZTCaiNiXiHuanView : UITableViewHeaderFooterView
 
 @property (nonatomic,copy) restartBtnBlock buttonAction;
+//刷新按钮
+@property (strong, nonatomic) UIButton *updataBtn;
 
 @property (nonatomic,strong) NSArray *dataArray;
 

@@ -57,6 +57,8 @@
 #import "NSDate+Extension.h"
 #import "ToolBtn.h"
 #import "ZZTNavBarTitleView.h"
+#import "ZZTUserHeadView.h"
+#import "likeCountView.h"
 
 //#define imageHost @"http://img.cdn.zztian.cn"
 

@@ -81,7 +81,7 @@ NSString *bannerID = @"MeCell";
     UINavigationBar *nab = [UINavigationBar appearanceWhenContainedInInstancesOfClasses:@[[UIView class]]];
 
     [nab setBackgroundImage:[UIImage createImageWithColor:[UIColor blackColor]] forBarMetrics:UIBarMetricsDefault];
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    self.statusBarStyle = UIStatusBarStyleLightContent;
     [UINavigationBar appearance].translucent=NO;
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     

@@ -441,4 +441,5 @@
 -(void)setCartoonType:(NSString *)cartoonType{
     _cartoonType = cartoonType;
 }
+
 @end

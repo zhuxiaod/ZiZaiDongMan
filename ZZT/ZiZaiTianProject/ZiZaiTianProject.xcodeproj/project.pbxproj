@@ -129,6 +129,10 @@
 		043B075F20EE2F1E00ED3F5B /* ZZTShoppingBtnModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 043B075E20EE2F1E00ED3F5B /* ZZTShoppingBtnModel.m */; };
 		043D06C62192C4AB00016748 /* ZZTFindBannerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 043D06C52192C4AB00016748 /* ZZTFindBannerView.m */; };
 		043D06C92192F19F00016748 /* ZZTZoneImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 043D06C82192F19F00016748 /* ZZTZoneImageView.m */; };
+		043D06CC2193C8E500016748 /* ZZTFindAttentionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 043D06CB2193C8E500016748 /* ZZTFindAttentionView.m */; };
+		043D06CF2193CDFD00016748 /* ZZTUserHeadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 043D06CE2193CDFD00016748 /* ZZTUserHeadView.m */; };
+		043D06D22193D66400016748 /* ZZTFindLikeFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 043D06D12193D66400016748 /* ZZTFindLikeFooterView.m */; };
+		043D06D52194140E00016748 /* AttentionButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 043D06D42194140E00016748 /* AttentionButton.m */; };
 		044244D320EA20480044502C /* ZZTUserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 044244D220EA20480044502C /* ZZTUserModel.m */; };
 		044244D620EA3B0B0044502C /* ZZTSignButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 044244D520EA3B0B0044502C /* ZZTSignButton.m */; };
 		0442951A20E5D52300D1AABF /* ZZTBrowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0442951820E5D52300D1AABF /* ZZTBrowViewController.m */; };
@@ -563,6 +567,14 @@
 		043D06C52192C4AB00016748 /* ZZTFindBannerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ZZTFindBannerView.m; path = "ZiZaiTianProject/classes/Home(首页)/View/Read/ZZTFindBannerView.m"; sourceTree = SOURCE_ROOT; };
 		043D06C72192F19F00016748 /* ZZTZoneImageView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ZZTZoneImageView.h; path = "ZiZaiTianProject/classes/Home(首页)/View/Read/ZZTZoneImageView.h"; sourceTree = SOURCE_ROOT; };
 		043D06C82192F19F00016748 /* ZZTZoneImageView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ZZTZoneImageView.m; path = "ZiZaiTianProject/classes/Home(首页)/View/Read/ZZTZoneImageView.m"; sourceTree = SOURCE_ROOT; };
+		043D06CA2193C8E500016748 /* ZZTFindAttentionView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ZZTFindAttentionView.h; path = "ZiZaiTianProject/classes/Home(首页)/View/Read/ZZTFindAttentionView.h"; sourceTree = SOURCE_ROOT; };
+		043D06CB2193C8E500016748 /* ZZTFindAttentionView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ZZTFindAttentionView.m; path = "ZiZaiTianProject/classes/Home(首页)/View/Read/ZZTFindAttentionView.m"; sourceTree = SOURCE_ROOT; };
+		043D06CD2193CDFD00016748 /* ZZTUserHeadView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ZZTUserHeadView.h; path = "ZiZaiTianProject/classes/Home(首页)/View/Read/ZZTUserHeadView.h"; sourceTree = SOURCE_ROOT; };
+		043D06CE2193CDFD00016748 /* ZZTUserHeadView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ZZTUserHeadView.m; path = "ZiZaiTianProject/classes/Home(首页)/View/Read/ZZTUserHeadView.m"; sourceTree = SOURCE_ROOT; };
+		043D06D02193D66400016748 /* ZZTFindLikeFooterView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ZZTFindLikeFooterView.h; path = "ZiZaiTianProject/classes/Home(首页)/View/Read/ZZTFindLikeFooterView.h"; sourceTree = SOURCE_ROOT; };
+		043D06D12193D66400016748 /* ZZTFindLikeFooterView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ZZTFindLikeFooterView.m; path = "ZiZaiTianProject/classes/Home(首页)/View/Read/ZZTFindLikeFooterView.m"; sourceTree = SOURCE_ROOT; };
+		043D06D32194140E00016748 /* AttentionButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AttentionButton.h; sourceTree = "<group>"; };
+		043D06D42194140E00016748 /* AttentionButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AttentionButton.m; sourceTree = "<group>"; };
 		044244D120EA20480044502C /* ZZTUserModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTUserModel.h; sourceTree = "<group>"; };
 		044244D220EA20480044502C /* ZZTUserModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTUserModel.m; sourceTree = "<group>"; };
 		044244D420EA3B0B0044502C /* ZZTSignButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTSignButton.h; sourceTree = "<group>"; };
@@ -1122,6 +1134,8 @@
 				0466835F20F3096A0095C6BC /* DCPicscrollView */,
 				0466836A20F3096A0095C6BC /* likeCountView.h */,
 				0466836B20F3096A0095C6BC /* likeCountView.m */,
+				043D06D32194140E00016748 /* AttentionButton.h */,
+				043D06D42194140E00016748 /* AttentionButton.m */,
 				0466836C20F3096A0095C6BC /* ListView.h */,
 				0466836D20F3096A0095C6BC /* ListView.m */,
 				0466836E20F3096A0095C6BC /* navBarTitleView.h */,
@@ -1686,6 +1700,12 @@
 				043D06C52192C4AB00016748 /* ZZTFindBannerView.m */,
 				043D06C72192F19F00016748 /* ZZTZoneImageView.h */,
 				043D06C82192F19F00016748 /* ZZTZoneImageView.m */,
+				043D06CA2193C8E500016748 /* ZZTFindAttentionView.h */,
+				043D06CB2193C8E500016748 /* ZZTFindAttentionView.m */,
+				043D06CD2193CDFD00016748 /* ZZTUserHeadView.h */,
+				043D06CE2193CDFD00016748 /* ZZTUserHeadView.m */,
+				043D06D02193D66400016748 /* ZZTFindLikeFooterView.h */,
+				043D06D12193D66400016748 /* ZZTFindLikeFooterView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -2235,6 +2255,7 @@
 				042D1477218AA86400BE05F6 /* TZAssetModel.m in Sources */,
 				04A2C6DF217D6EB6003D62BE /* ZZTNextWordHeaderView.m in Sources */,
 				04D2AFAB213006FB008F6CCB /* ZZTStoryModel.m in Sources */,
+				043D06D52194140E00016748 /* AttentionButton.m in Sources */,
 				043B074D20EDF07400ED3F5B /* ZZTFreeBiModel.m in Sources */,
 				0498B5DE212E6123005BD26D /* ZZTMulWordDetailViewController.m in Sources */,
 				040A03AD20FD8406000FAE13 /* ZZTStoryDetailView.m in Sources */,
@@ -2249,6 +2270,7 @@
 				042769C5214B5CAD00DE238D /* MLIAPManager.m in Sources */,
 				046683C320F49CCB0095C6BC /* ZZTJiuGongGeView.m in Sources */,
 				F7C04C0C20DF3E9E0055E7A8 /* AppDelegate.m in Sources */,
+				043D06D22193D66400016748 /* ZZTFindLikeFooterView.m in Sources */,
 				04A0C09F21803FCD00D08F6C /* ZZTZoneUpLoadViewController.m in Sources */,
 				04E9FACD2153898D005A3986 /* ZZTMyZoneModel.m in Sources */,
 				040FD50E20EF384200004C71 /* ZZTShoppingBtnCell.m in Sources */,
@@ -2280,6 +2302,7 @@
 				047ECF0C212ABCE3008D1E82 /* ZZTBookType.m in Sources */,
 				04DE14AB20E4E691009DF030 /* ZZTCartoonCell.m in Sources */,
 				042D1479218AA86400BE05F6 /* TZImageCropManager.m in Sources */,
+				043D06CC2193C8E500016748 /* ZZTFindAttentionView.m in Sources */,
 				0442951A20E5D52300D1AABF /* ZZTBrowViewController.m in Sources */,
 				042D1481218AA86400BE05F6 /* TZProgressView.m in Sources */,
 				046683C620F4BC990095C6BC /* ZZTCartoonHeaderView.m in Sources */,
@@ -2357,6 +2380,7 @@
 				040D282D2133F044002A3B72 /* ZZTCartoonHistoryCell.m in Sources */,
 				04DE149520E4781C009DF030 /* ZZTVIPMidView.m in Sources */,
 				042D1482218AA86400BE05F6 /* TZVideoPlayerController.m in Sources */,
+				043D06CF2193CDFD00016748 /* ZZTUserHeadView.m in Sources */,
 				042769672147F7B400DE238D /* ZZTRemindView.m in Sources */,
 				04E9FADC2154E0AE005A3986 /* ZZTMyZoneTotalModel.m in Sources */,
 				04A0C0F921816BD900D08F6C /* ZZTUpdataPhoneViewController.m in Sources */,
