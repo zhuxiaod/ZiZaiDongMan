@@ -91,6 +91,7 @@
 #import "ZZTCommentViewController.h"
 #import "ZZTCommentAirView.h"
 #import <SDCycleScrollView.h>
+#import <SDWebImage/UIButton+WebCache.h>
 
 #define BanerHeight SCREEN_HEIGHT * 0.3
 

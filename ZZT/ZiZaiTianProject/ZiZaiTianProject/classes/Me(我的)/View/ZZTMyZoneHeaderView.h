@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ZZTMyZoneHeaderView : UIView
+@interface ZZTMyZoneHeaderView : UITableViewHeaderFooterView
 
 @property (nonatomic,strong) UserInfo *user;
 

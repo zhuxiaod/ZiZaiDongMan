@@ -89,7 +89,7 @@ const CGFloat SectionHeaderSomePicturesHeight = 70; //有多张图片时的单�
     //省略号的样式
     self.contentLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     //宽度
-    self.contentLabel.preferredMaxLayoutWidth = SCREEN_MIN_LENGTH - 3 * SectionHeaderHorizontalSpace - 36;
+    self.contentLabel.preferredMaxLayoutWidth = SCREEN_WIDTH - 3 * SectionHeaderHorizontalSpace - 36;
     //取消点击Lab 进行评论
 //    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickCommentLab:)];
 //    [self.contentLabel addGestureRecognizer:tapGesture];

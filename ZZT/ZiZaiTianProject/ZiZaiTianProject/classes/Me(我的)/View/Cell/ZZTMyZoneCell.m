@@ -20,6 +20,11 @@
 @property (nonatomic,strong) NSArray *imgArray;
 @property (nonatomic,strong) UIView *bottomView;
 
+//评论
+@property (strong, nonatomic) UIButton *replyCountView;
+//点赞
+@property (strong, nonatomic) likeCountView *likeCountView;
+
 @end
 
 @implementation ZZTMyZoneCell
@@ -33,46 +38,81 @@
 }
 
 -(void)setupUI{
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
+
     //时间lab
     _dateLab = [GlobalUI createLabelFont:14 titleColor:[UIColor blackColor] bgColor:[UIColor whiteColor]];
+    
     //内容lab
     _contentLab = [GlobalUI createLabelFont:14 titleColor:[UIColor blackColor] bgColor:[UIColor whiteColor]];
+    _contentLab.numberOfLines = 0;
+    
     //多图
     _bgImgsView = [[UIView alloc]init];
     
     [self.contentView addSubview:_dateLab];
     [self.contentView addSubview:_contentLab];
     [self.contentView addSubview:_bgImgsView];
+    
     _groupImgArr = [NSMutableArray array];
-    //分割线
-    _bottomView = [[UIView alloc] init];
-    _bottomView.backgroundColor = [UIColor grayColor];
-    [self.contentView addSubview:_bottomView];
     
 }
 
 -(void)layoutSubviews{
     [super layoutSubviews];
+    
     _dateLab.frame = CGRectMake(10, 10, 100, 50);
     
-    CGFloat contentHeight = [_contentLab.text heightWithWidth:CGRectGetWidth(self.contentView.bounds) - 40 font:14];
-    _contentLab.frame = CGRectMake(10, CGRectGetMaxY(_dateLab.frame) + 10, CGRectGetWidth(self.contentView.bounds) - 20, contentHeight);
+    [_dateLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.contentView).offset(8);
+        make.left.equalTo(self.contentView).offset(8);
+        make.width.mas_equalTo(100);
+        make.height.mas_equalTo(50);
+    }];
     
-    NSInteger row = _imgArray.count / 3;// 多少行图片
-    //还有多的 就最加一行  未做  9个以上的话加号
-    if (_imgArray.count %3 !=0) {
-        ++row;
-    }
+    [_contentLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.dateLab.mas_bottom).offset(8);
+        make.left.equalTo(self.contentView).offset(8);
+        make.right.equalTo(self.contentView).offset(-8);
+    }];
     
-    // 是否有图片，如果有图片  高度= 图片的总高度 + 中间的间距 ，如果没有 ，高度=0
-    CGFloat bgH = _imgArray.count ? row * imgHeight + (row-1) * 10 :0;
-    _bgImgsView.frame = CGRectMake(10, CGRectGetMaxY(_contentLab.frame) + 10, CGRectGetWidth([UIScreen mainScreen].bounds) - 20, bgH);
-    //分割线
-    _bottomView.frame = CGRectMake(0, CGRectGetMaxY(self.contentView.frame), SCREEN_WIDTH, 1);
+    [_bgImgsView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.contentLab.mas_bottom).offset(8);
+        make.left.equalTo(self.contentLab.mas_left);
+        make.right.equalTo(self.contentLab.mas_right);
+    }];
+    
+    [self.replyCountView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.contentLab.mas_right);
+//        make.top.equalTo(self.bgImgsView.mas_bottom).offset(8);
+        make.height.mas_equalTo(20);
+    }];
+    
+    [self.likeCountView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.replyCountView).offset(-2);
+        make.right.equalTo(self.replyCountView.mas_left).offset(-8);
+        make.height.mas_equalTo(20);
+    }];
+
+  
 }
 
 
 - (void)setModel:(ZZTMyZoneModel *)model{
+    _model = model;
+    
+    [self setNeedsLayout];
+    [self layoutIfNeeded];
+    
+    _contentLab.text = model.content;
+    
+    //更新内容高度
+    CGFloat contentHeight = [_contentLab.text heightWithWidth:CGRectGetWidth(self.contentView.bounds) - 16 font:14];
+    contentHeight += 10;
+    [_contentLab mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(contentHeight);
+    }];
+    
     if (_groupImgArr.count) {
         [_groupImgArr enumerateObjectsUsingBlock:^(UIImageView * obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [obj removeFromSuperview];
@@ -92,16 +132,45 @@
         [self setupImageGroupView];
     }
 
-    _contentLab.text = model.content;
+    //计算图片的高度
+    NSInteger row = _imgArray.count / 3;// 多少行图片
+    
+    if (_imgArray.count %3 !=0) {
+        ++row;
+    }
+    
+    //更新图片View的高度
+    CGFloat bgH = _imgArray.count ? row * imgHeight + (row-1) * 10 :0;
+    
+    [_bgImgsView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(bgH);
+    }];
     
     //时间戳显示
-    NSString *time = [NSString timeWithStr:[NSString stringWithFormat:@"%f",model.publishtime]];
+    NSString *time = [NSString timeWithStr:[NSString stringWithFormat:@"%@",model.publishtime]];
+    
     NSArray *times = [time componentsSeparatedByString:@"-"];
     time = [NSString stringWithFormat:@"%@%@月",times[2],times[1]];
+    
     _dateLab.attributedText = [self getPriceAttribute:time];;
-
-    [self setNeedsLayout];
-    [self layoutIfNeeded];
+    
+    //评论
+    NSString *replayCountText = [NSString makeTextWithCount:model.replycount];
+    
+    [self.replyCountView setTitle:replayCountText forState:UIControlStateNormal];
+    
+    CGFloat replyWidth = [replayCountText getTextWidthWithFont:self.replyCountView.titleLabel.font] + 30;
+    
+    //设置宽度
+    [self.replyCountView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.bgImgsView.mas_bottom).offset(8);
+        make.width.equalTo(@(replyWidth));
+    }];
+    
+    //设置赞
+    self.likeCountView.islike  = [model.ifpraise integerValue];
+    self.likeCountView.requestID = model.userId;
+    self.likeCountView.likeCount = model.praisecount;
 }
 
 //年月混排
@@ -153,7 +222,7 @@
 //时间显示过大了
 + (CGFloat)cellHeightWithStr:(NSString *)str imgs:(NSArray *)imgs{
     CGFloat strH = [str heightWithWidth:CGRectGetWidth([UIScreen mainScreen].bounds) - 40 font:14];
-    CGFloat cellH = strH + 160;
+    CGFloat cellH = strH + 120;
     NSInteger row = imgs.count / 3;
     if (imgs.count) {
         if ( imgs.count % 3 !=0) {
@@ -164,13 +233,40 @@
     return  cellH;
 }
 
-+ (ZZTMyZoneCell *)dynamicCellWithTable:(UITableView *)table{
-    ZZTMyZoneCell * cell = [table dequeueReusableCellWithIdentifier:NSStringFromClass(self)];
-    if (!cell) {
-        cell = [[ZZTMyZoneCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:NSStringFromClass(self)];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+- (likeCountView *)likeCountView {
+    if (!_likeCountView) {
+        likeCountView *lcv = [[likeCountView alloc] init];
+        
+        weakself(self);
+        //发现点赞
+        [lcv setOnClick:^(likeCountView *btn) {
+            
+        }];
+        
+        [self.contentView addSubview:lcv];
+        
+        _likeCountView = lcv;
     }
-    return cell;
+    return _likeCountView;
 }
 
+//评论
+- (UIButton *)replyCountView {
+    if (!_replyCountView) {
+        
+        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        
+        btn.titleLabel.font = [UIFont systemFontOfSize:12];
+        
+        //        [btn setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
+        //        [btn setTitleColor:[self.likeCountView titleColorForState:UIControlStateNormal] forState:UIControlStateNormal];
+        [btn setImage:[UIImage imageNamed:@"评论"] forState:UIControlStateNormal];
+        //        [btn addTarget:self action:@selector(showCommentVc) forControlEvents:UIControlEventTouchUpInside];
+        [self.contentView addSubview:btn];
+        
+        _replyCountView = btn;
+    }
+    
+    return _replyCountView;
+}
 @end

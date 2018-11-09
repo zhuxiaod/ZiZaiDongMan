@@ -39,6 +39,17 @@
     [self addSubview:_viewClick];
 }
 
+-(void)setupUserHeadImg:(NSString *)userImg placeHeadImg:(NSString *)placeHeadImg{
+    _userImg = userImg;
+    _placeHeadImg = placeHeadImg;
+    //
+    [_headFrame setImage:[UIImage imageNamed:placeHeadImg]];
+    [self.headView sd_setImageWithURL:[NSURL URLWithString:userImg]];
+}
+
+-(void)setPlaceHeadImg:(NSString *)placeHeadImg{
+    _placeHeadImg = placeHeadImg;
+}
 
 -(void)setUserImg:(NSString *)userImg{
     _userImg = userImg;

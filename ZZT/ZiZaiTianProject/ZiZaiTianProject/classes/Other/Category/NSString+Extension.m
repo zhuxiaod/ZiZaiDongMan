@@ -204,41 +204,31 @@
 
 +(NSString *)compareCurrentTime:(NSString *)str
 {
-    //把字符串转为NSdate
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    NSDate *timeDate = [dateFormatter dateFromString:str];
+    NSDate *date = [NSDate dateWithTimeIntervalSinceNow:0];//获取当前时间0秒后的时间
+    NSTimeInterval currentTime = [date timeIntervalSince1970];
+    NSTimeInterval createTime = [str floatValue]/1000;
+    NSTimeInterval time = currentTime - createTime;
+    NSInteger small = time / 60;
+    if(small == 0){
+        return [NSString stringWithFormat:@"刚刚"];
+    }
+    if(small < 60){
+        return [NSString stringWithFormat:@"%ld分钟前",small];
+    }
+    NSInteger hours = time / 3600;
+    if(hours < 24){
+        return [NSString stringWithFormat:@"%ld小时前",hours];
+    }
+    NSInteger days = time/3600/24;
+    if(days < 30){
+        return [NSString stringWithFormat:@"%ld天前",days];
+    }
+    NSInteger months = time/3600/24/30;
+    if(months < 12){
+        return [NSString stringWithFormat:@"%ld月前",months];
+    }
+    NSInteger years = time/3600/24/30/12;
     
-    //得到与当前时间差
-    NSTimeInterval timeInterval = [timeDate timeIntervalSinceNow];
-    timeInterval = -timeInterval;
-    //标准时间和北京时间差8个小时
-    // timeInterval = timeInterval - 86060;
-    long temp = 0;
-    NSString *result;
-    if (timeInterval < 60) {
-        result = [NSString stringWithFormat:@"刚刚"];
-    }
-    else if((temp = timeInterval/60) <60){
-        result = [NSString stringWithFormat:@"%ld分钟前",temp];
-    }
-    
-    else if((temp = temp/60) <24){
-        result = [NSString stringWithFormat:@"%ld小时前",temp];
-    }
-    
-    else if((temp = temp/24) <30){
-        result = [NSString stringWithFormat:@"%ld天前",temp];
-    }
-    
-    else if((temp = temp/30) <12){
-        result = [NSString stringWithFormat:@"%ld月前",temp];
-    }
-    else{
-        temp = temp/12;
-        result = [NSString stringWithFormat:@"%ld年前",temp];
-    }
-    
-    return  result;
+    return [NSString stringWithFormat:@"%ld年前",years];
 }
 @end

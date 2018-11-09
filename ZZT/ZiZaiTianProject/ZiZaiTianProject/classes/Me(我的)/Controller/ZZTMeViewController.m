@@ -388,7 +388,7 @@ NSString *bannerID = @"MeCell";
 //    }
 }
 -(void)viewWillDisappear:(BOOL)animated{
-    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
 //    [self.navigationController.navigationBar setTranslucent:NO];
 
 }

@@ -113,7 +113,7 @@ static CGFloat iconSize = 40;
         //省略号的样式
         _contentTextLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         //宽度
-        _contentTextLabel.preferredMaxLayoutWidth = SCREEN_MIN_LENGTH - 8 - 40 - 8;
+        _contentTextLabel.preferredMaxLayoutWidth = SCREEN_WIDTH - 8 - 40 - 8;
 
         [_contentTextLabel sizeToFit];
     

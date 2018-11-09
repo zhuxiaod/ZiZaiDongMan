@@ -45,8 +45,6 @@ NSString *SuggestionView3 = @"SuggestionView";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-
     //添加子页
     ZZTFindWorldViewController *findWorldVC = [[ZZTFindWorldViewController alloc] init];
     [self addChildViewController:findWorldVC];
@@ -454,7 +452,7 @@ NSString *SuggestionView3 = @"SuggestionView";
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:NO];
-    
+    [self.navigationController.navigationBar setAlpha:0];
     self.statusBarStyle = UIStatusBarStyleDefault;
 }
 

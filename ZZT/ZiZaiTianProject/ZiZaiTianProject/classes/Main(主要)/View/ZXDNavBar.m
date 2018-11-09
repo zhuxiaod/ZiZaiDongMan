@@ -23,6 +23,12 @@
         [_mainView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.right.top.bottom.mas_equalTo(0);
         }];
+        //背景图片
+        _backgroundImageView = [[UIImageView alloc] init];
+        [self addSubview:_backgroundImageView];
+        [_backgroundImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.right.top.bottom.mas_equalTo(0);
+        }];
         [_mainView.superview layoutIfNeeded];
     }
     return _mainView;

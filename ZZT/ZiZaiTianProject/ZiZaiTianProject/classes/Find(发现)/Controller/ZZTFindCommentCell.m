@@ -21,11 +21,7 @@
 @property (strong, nonatomic)  AttentionButton *attentionBtn;
 @property (strong, nonatomic)  UILabel *contentLab;
 @property (strong, nonatomic)  UIImageView *contentImg;
-@property (strong, nonatomic)  UIImageView *zanImg;
-@property (strong, nonatomic)  UIImageView *commentImg;
 @property (strong, nonatomic)  UILabel *dataLab;
-@property (strong, nonatomic)  UILabel *likeNum;
-@property (strong, nonatomic)  UILabel *commentNum;
 @property (strong, nonatomic)  UIView *bgImgsView;
 @property (strong, nonatomic)  UIView *bottomView;
 @property (nonatomic,strong) NSMutableArray * groupImgArr;
@@ -52,7 +48,9 @@
 -(void)setupUI{
     //头像
     _headBtn = [GlobalUI createImageViewbgColor:[UIColor grayColor]];
-    
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickHead)];
+    [_headBtn addGestureRecognizer:tapGesture];
+
     //用户名
     _userName = [GlobalUI createLabelFont:18 titleColor:ZZTSubColor bgColor:[UIColor clearColor]];
     
@@ -74,23 +72,8 @@
 
     //时间
     _dataLab = [GlobalUI createLabelFont:14 titleColor:[UIColor grayColor] bgColor:[UIColor whiteColor]];
-
-    //点赞
     
-    _zanImg = [GlobalUI createImageViewbgColor:[UIColor whiteColor]];
-    _zanImg.image = [UIImage imageNamed:@"zan_icon"];
-    _zanImg.userInteractionEnabled = YES;
     
-    //注意测
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapZanBtn:)];
-    [_zanImg  addGestureRecognizer:tap];
-    _likeNum = [GlobalUI createLabelFont:14 titleColor:[UIColor blackColor] bgColor:[UIColor whiteColor]];
-//    [_likeNum  addGestureRecognizer:tap];
-    //评论
-    _commentImg = [GlobalUI createImageViewbgColor:[UIColor whiteColor]];
-    _commentImg.image = [UIImage imageNamed:@"zan_icon"];
-    _commentImg.userInteractionEnabled = YES;
-    _commentNum = [GlobalUI createLabelFont:14 titleColor:[UIColor blackColor] bgColor:[UIColor whiteColor]];
     [self.contentView addSubview:_headBtn];
     [self.contentView addSubview:_userName];
     [self.contentView addSubview:_vipLab];
@@ -98,10 +81,6 @@
     [self.contentView addSubview:_contentLab];
     [self.contentView addSubview:_bgImgsView];
     [self.contentView addSubview:_dataLab];
-    [self.contentView addSubview:_zanImg];
-    [self.contentView addSubview:_likeNum];
-    [self.contentView addSubview:_commentImg];
-    [self.contentView addSubview:_commentNum];
     
     _groupImgArr = [NSMutableArray array];
     
@@ -221,9 +200,8 @@
     }];
     
     _contentLab.text = model.content;
-    
     //时间
-    _dataLab.text = model.publishtime;
+    _dataLab.text = [NSString compareCurrentTime:model.publishtime];
     
     //更新内容高度
     CGFloat contentHeight = [_contentLab.text heightWithWidth:CGRectGetWidth(self.contentView.bounds) - 16 font:14];
@@ -237,7 +215,7 @@
     [self setNeedsLayout];
     [self layoutIfNeeded];
     
-    [_headBtn sd_setImageWithURL:[NSURL URLWithString:[model.qiniu stringByAppendingString:model.headimg]] placeholderImage:[UIImage imageNamed:@"peien"]];
+    [_headBtn sd_setImageWithURL:[NSURL URLWithString:model.headimg] placeholderImage:[UIImage imageNamed:@"peien"]];
     //名字位置刷新 vip的位置也刷新
     _userName.text = model.nickName;
     

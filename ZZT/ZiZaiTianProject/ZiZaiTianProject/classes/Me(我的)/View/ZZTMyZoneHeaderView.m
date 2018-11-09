@@ -9,18 +9,20 @@
 #import "ZZTMyZoneHeaderView.h"
 
 @interface ZZTMyZoneHeaderView ()
-@property (nonatomic,strong)UIImageView *bgImgV;
-@property (nonatomic,strong)UIImageView *headImgV;
-@property (nonatomic,strong)UILabel *label;
-@property (nonatomic,strong)UIView *headBgView;
-@property (nonatomic,strong)UIView *bottomView;
+//背景
+@property (nonatomic,strong) UIButton *backgroundBtn;
+//用户
+@property (nonatomic,strong) ZZTUserHeadView *userHead;
+
+@property (nonatomic,strong) UILabel *userName;
+
 @end
 
 @implementation ZZTMyZoneHeaderView
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
-    if (self = [super initWithFrame:frame]) {
+- (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier{
+    self = [super initWithReuseIdentifier:reuseIdentifier];
+    if (self) {
         [self setup];
     }
     return self;
@@ -28,81 +30,57 @@
 
 -(void)setUser:(UserInfo *)user{
     _user = user;
-    [_bgImgV sd_setImageWithURL:[NSURL URLWithString:user.cover] placeholderImage:[UIImage createImageWithColor:[UIColor blackColor]]];
-    _label.text = user.nickName;
-    [_headImgV sd_setImageWithURL:[NSURL URLWithString:user.headimg]];
+    
+    [self.backgroundBtn sd_setImageWithURL:[NSURL URLWithString:user.cover] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"轻触更换背景"]];
+    
+    [self.userHead setupUserHeadImg:user.headimg placeHeadImg:@"用户头像"];
+    
+    self.userName.text = user.nickName;
+
+    //label宽度    
+    CGFloat nameWidth = [user.nickName getTextWidthWithFont:self.userName.font] + 30;
+    
+    [_userName mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.width.mas_equalTo(nameWidth);
+    }];
 }
 
 -(void)setup{
-    self.backgroundColor = [UIColor whiteColor];
-    UIImageView *bgImgV = [UIImageView new];
-    _bgImgV = bgImgV;
-    bgImgV.contentMode = UIViewContentModeScaleAspectFill;
-    bgImgV.clipsToBounds = YES;
-//    bgImgV.image = [UIImage imageNamed:@"peien"];
+    self.contentView.backgroundColor = [UIColor whiteColor];
     
-    UIView *headBgView = [UIView new];
-    headBgView.backgroundColor = [UIColor whiteColor];
-    _headBgView = headBgView;
-    headBgView.layer.borderWidth = 0.5;
-    headBgView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    _backgroundBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [_backgroundBtn setImage:[UIImage imageNamed:@"轻触更换背景"] forState:UIControlStateNormal];
+//    [_backgroundBtn addTarget:self action:@selector(print) forControlEvents:UIControlEventTouchUpInside];
+    [self.contentView addSubview:_backgroundBtn];
     
-    UIImageView *headImgV = [UIImageView new];
-    _headImgV = headImgV;
-    headImgV.contentMode = UIViewContentModeScaleAspectFill;
-    headImgV.clipsToBounds = YES;
-//    headImgV.image = [UIImage imageNamed:@"peien"];
-    
-    UILabel *label = [UILabel new];
-    _label = label;
-    label.textColor = [UIColor whiteColor];
-    label.textAlignment = NSTextAlignmentRight;
-    label.font = [UIFont systemFontOfSize:19];
-//    label.text = @"雏田";
-    
-    UIView *bottomView = [[UIView alloc] init];
-    _bottomView = bottomView;
-    [bottomView setBackgroundColor:[UIColor blackColor]];
-    [self addSubview:bottomView];
-    
-    [self addSubview:bgImgV];
-    [self addSubview:headBgView];
-    [headBgView addSubview:headImgV];
-    [self addSubview:label];
-    
-  
+    _userHead = [[ZZTUserHeadView alloc] initWithFrame:CGRectZero];
+//    [_userHead.viewClick addTarget:self action:@selector(print) forControlEvents:UIControlEventTouchUpInside];
+    [self.contentView addSubview:_userHead];
+
+    //用户名
+    _userName = [[UILabel alloc] init];
+    [_userName setTextColor:[UIColor whiteColor]];
+    _userName.textAlignment = NSTextAlignmentRight;
+    [self.contentView addSubview:_userName];
 }
 
 -(void)layoutSubviews{
     [super layoutSubviews];
-    [self.bgImgV mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.equalTo(self);
-        make.bottom.equalTo(self).offset(-40);
-        make.top.equalTo(self).offset(-TOPBAR_HEIGHT);
-//        make.top.equalTo(self).offset(-64);
-        make.height.equalTo(@250);
+    [_backgroundBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.right.left.equalTo(self.contentView);
+        make.bottom.equalTo(self.contentView).offset(-10);
     }];
     
-    [self.headBgView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(self).offset(-20);
-        make.right.equalTo(self).offset(-10);
-        make.width.height.equalTo(@75);
+    [_userHead mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(self.contentView.mas_bottom);
+        make.right.equalTo(self.contentView).offset(-20);
+        make.width.height.mas_equalTo(68);
     }];
-    [self.headImgV mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.top.equalTo(self.headBgView).offset(3);
-        make.right.bottom.equalTo(self.headBgView).offset(-3);
-    }];
-    [self.label mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.headBgView.mas_left).offset(-20);
-        make.left.equalTo(self).offset(10);
-        make.bottom.equalTo(self.bgImgV).offset(-7);
-        make.height.equalTo(@25);
-    }];
-    [self.bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self).offset(0);
-        make.left.equalTo(self).offset(0);
-        make.top.equalTo(self.bgImgV.mas_bottom).offset(0);
-        make.height.equalTo(@1);
+    
+    [_userName mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.userHead);
+        make.right.equalTo(self.userHead.mas_left).offset(-4);
+        make.height.mas_equalTo(20);
     }];
 }
 @end

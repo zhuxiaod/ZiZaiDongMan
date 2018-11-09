@@ -28,6 +28,7 @@
 // 标题按钮
 @property (nonatomic, strong) UIButton *centerButton;
 
+@property (nonatomic, strong) UIImageView *backgroundImageView;
 //@property (nonatomic,)
 // 是否显示底部线
 @property (nonatomic, assign) BOOL showBottomLabel;

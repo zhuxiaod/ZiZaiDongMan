@@ -323,5 +323,6 @@ static NSString *findCommentCell = @"findCommentCell";
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self scrollViewDidScroll:_contentView];
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
 }
 @end

@@ -7,11 +7,11 @@
 //
 
 #import "ZZTHomeViewController.h"
-#import "CommonMacro.h"
+//#import "CommonMacro.h"
 #import "ListView.h"
 #import "ZZTReadTableView.h"
 #import "ZZTCycleCell.h"
-#import "ZZTEasyBtnModel.h"
+#import "ZZTEasyBtnModel.h"4
 #import "ZZTCreationTableView.h"
 #import "PYSearchSuggestionViewController.h"
 #import "ZZTCarttonDetailModel.h"
@@ -267,7 +267,7 @@ NSString *SuggestionView = @"SuggestionView";
     //cell 还没有创建故不能在这里搞
     [_ReadView reloadData];
     [self loadBookShelfData];
-    NSLog(@"width:%f",self.view.frame.size.width);
+    NSLog(@"width:%f",SCREEN_WIDTH );
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
 

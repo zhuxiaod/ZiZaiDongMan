@@ -126,7 +126,7 @@
 //}
 
 - (CGFloat)calculateStringHeight:(NSString *)text {
-    return ceil([text contentSizeWithWidth:SCREEN_MIN_LENGTH - SectionHeaderHorizontalSpace * 3 - 36 font:[UIFont systemFontOfSize:SectionHeaderBigFontSize] lineSpacing:SectionHeaderLineSpace].height);
+    return ceil([text contentSizeWithWidth:SCREEN_WIDTH - SectionHeaderHorizontalSpace * 3 - 36 font:[UIFont systemFontOfSize:SectionHeaderBigFontSize] lineSpacing:SectionHeaderLineSpace].height);
 }
 
 - (NSMutableArray *)calculateCellHeight:(ZZTCircleModel *)item {
@@ -152,7 +152,7 @@
         // 8   8  2
         CGFloat height = ceil([text contentSizeWithWidth:326 font:[UIFont systemFontOfSize:15] lineSpacing:SectionHeaderLineSpace].height) + 6;
         
-        NSLog(@"height:%f",SCREEN_MIN_LENGTH - (36 + SectionHeaderHorizontalSpace * 2 + 5) - SectionHeaderHorizontalSpace);
+//        NSLog(@"height:%f",SCREEN_MIN_LENGTH - (36 + SectionHeaderHorizontalSpace * 2 + 5) - SectionHeaderHorizontalSpace);
         NSLog(@"MIN(SCREEN_WIDTH, SCREEN_HEIGHT):%f",(MIN([UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)));
         NSLog(@"width :%f",[UIScreen mainScreen].scale);
         NSLog(@"height :%f",[UIScreen mainScreen].bounds.size.height);

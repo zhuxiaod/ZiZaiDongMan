@@ -12,7 +12,11 @@
 
 @property (nonatomic,strong) NSString *userImg;
 
+@property (nonatomic,strong) NSString *placeHeadImg;
+
+
 @property (nonatomic,strong) UIButton *viewClick;
 
+-(void)setupUserHeadImg:(NSString *)userImg placeHeadImg:(NSString *)placeHeadImg;
 
 @end

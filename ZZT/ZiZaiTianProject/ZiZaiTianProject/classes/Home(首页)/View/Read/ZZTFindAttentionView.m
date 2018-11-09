@@ -17,9 +17,12 @@
 @property (nonatomic,strong) UIImageView *waveView;
 
 @property (nonatomic,strong) ZZTUserHeadView *userHead;
+
+@property (nonatomic,strong) UILabel *userName;
 //头像框
 //头像
 //用户名
+
 @end
 
 @implementation ZZTFindAttentionView
@@ -35,6 +38,7 @@
 -(void)setup{
     _backgroundBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [_backgroundBtn setImage:[UIImage imageNamed:@"用户空间背景"] forState:UIControlStateNormal];
+    [_backgroundBtn addTarget:self action:@selector(print) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:_backgroundBtn];
     
     _waveView = [[UIImageView alloc] init];
@@ -43,7 +47,19 @@
     [self.contentView addSubview:_waveView];
     
     _userHead = [[ZZTUserHeadView alloc] initWithFrame:CGRectZero];
+    [_userHead.viewClick addTarget:self action:@selector(print) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:_userHead];
+    
+    _userName = [[UILabel alloc] init];
+    [_userName setTextColor:[UIColor whiteColor]];
+    _userName.textAlignment = NSTextAlignmentRight;
+    [self.contentView addSubview:_userName];
+}
+
+-(void)print{
+    if(_gotoViewBlock){
+        self.gotoViewBlock();
+    }
 }
 
 -(void)setModel:(UserInfo *)model{
@@ -52,6 +68,14 @@
     [self.backgroundBtn sd_setImageWithURL:[NSURL URLWithString:model.cover] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"用户空间背景"]];
     
     self.userHead.userImg = model.headimg;
+    
+    self.userName.text = model.nickName;
+    //label宽度
+    CGFloat nameWidth = [model.nickName getTextWidthWithFont:self.userName.font] + 30;
+
+    [_userName mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.width.mas_equalTo(nameWidth);
+    }];
 }
 
 -(void)layoutSubviews{
@@ -70,6 +94,12 @@
     [self.waveView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.left.bottom.equalTo(self.contentView);
         make.height.mas_equalTo(36);
+    }];
+    
+    [_userName mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(self.waveView.mas_top).offset(-4);
+        make.right.equalTo(self.userHead.mas_left).offset(-8);
+        make.height.mas_equalTo(20);
     }];
 }
 

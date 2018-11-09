@@ -8,8 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void (^gotoUserViewBlock) (void);
+
 @interface ZZTFindAttentionView : UITableViewHeaderFooterView
 
 @property (nonatomic,strong) UserInfo *model;
+
+@property (nonatomic,copy) gotoUserViewBlock gotoViewBlock;
+
 
 @end

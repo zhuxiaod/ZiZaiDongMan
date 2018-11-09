@@ -27,7 +27,6 @@
 @property(nonatomic, strong)BAKit_DatePicker *tempView;
 
 @property(nonatomic, strong) ZZTMeEditTopView *topView;
-
 //背景图
 @property (nonatomic,strong) NSString *backImg;
 
@@ -38,13 +37,10 @@
 @property (nonatomic,strong) UIImage *headImage;
 //昵称
 @property (nonatomic,strong) NSString *userName;
-
 //性别
 @property (nonatomic,assign) NSString *sex;
-
 //生日
 @property (nonatomic,strong) NSString *birthday;
-
 //签名
 @property (nonatomic,strong) NSString *signature;
 

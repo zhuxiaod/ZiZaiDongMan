@@ -1547,6 +1547,12 @@ static bool needHide = false;
     
     self.nowReplyModel = item;
     
+    UserInfo *user = [Utilities GetNSUserDefaults];
+    
+    if([item.customer.id isEqualToString:[NSString stringWithFormat:@"%ld",user.id]]){
+        item.customer.id = @"0";
+    }
+    
     self.replyer = item.customer;
     
     //弹出键盘

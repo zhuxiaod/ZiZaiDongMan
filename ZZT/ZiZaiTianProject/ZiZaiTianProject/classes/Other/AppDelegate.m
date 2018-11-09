@@ -45,7 +45,6 @@
     
     //1.创建窗口
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    
     //2.设置窗口根控制器
     ZZTTabBarViewController *tabBarVC = [[ZZTTabBarViewController alloc]init];
 //    RTRootNavigationController *tabBarVC = [[RTRootNavigationController alloc]init];
