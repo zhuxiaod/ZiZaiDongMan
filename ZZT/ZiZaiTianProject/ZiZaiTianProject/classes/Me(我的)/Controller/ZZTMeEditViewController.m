@@ -46,6 +46,11 @@
 
 @property (nonatomic,strong) NSMutableDictionary *imgeDict;
 
+@property (nonatomic,strong) UIScrollView *scrollView;
+
+@property (nonatomic,strong) ZXDNavBar *navbar;
+
+
 @end
 
 @implementation ZZTMeEditViewController
@@ -64,37 +69,14 @@
     
     self.navigationItem.title = @"编辑资料";
     
-    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    //设置mainView
+    [self setupMainView];
     
-    [self.view addSubview:scrollView];
     
-    //添加topView
-    ZZTMeEditTopView *topView = [ZZTMeEditTopView ZZTMeEditTopView];
-    _topView = topView;
-    //假如现在有数据  添加进去
-    topView.backImage = self.backImg;
-    topView.headImage = self.headImg;
+    [self setupTopView];
     
-    topView.frame = CGRectMake(0, 0, SCREEN_WIDTH, 300);
-    topView.buttonAction = ^(UIButton *sender) {
-        [self clickBtn:sender];
-    };
-    [scrollView addSubview:topView];
 
-    //添加buttomView
-    __block ZZTMeEditViewController *blockSelf = self;
-    ZZTMeEditButtomView *meButtomView = [ZZTMeEditButtomView ZZTMeEditButtomView];
-    _meButtomView = meButtomView;
-    meButtomView.model = self.model;
-    _meButtomView.TextChange = ^(UITextField *texyField) {
-        [blockSelf textChange:texyField];
-    };
-    meButtomView.frame = CGRectMake(0, 300, SCREEN_WIDTH, 400);
-
-    _meButtomView.BtnInside = ^(TypeButton *btn) {
-        [blockSelf clickPickBtn:btn];
-    };
-    [scrollView addSubview:_meButtomView];
+    [self setupBottomView];
 
     //初始化图像选择控制器
     _picker = [[UIImagePickerController alloc]init];
@@ -106,103 +88,131 @@
     //注册观察键盘的变化
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(transformView:) name:UIKeyboardWillChangeFrameNotification object:nil];
     
-    //保存按钮
-    UIButton *leftbutton = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 40, 20)];
-    [leftbutton setTitle:@"保存" forState:UIControlStateNormal];
-    [leftbutton addTarget:self action:@selector(save) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *rightitem = [[UIBarButtonItem alloc]initWithCustomView:leftbutton];
-    self.navigationItem.rightBarButtonItem = rightitem;
-    
-    //设置scrollView内容距离
-    scrollView.contentSize = CGSizeMake(SCREEN_WIDTH, 700);
+    [self setupNavBar];
+   
 }
 
+-(void)setupNavBar{
+    ZXDNavBar *navbar = [[ZXDNavBar alloc] init];
+    self.navbar = navbar;
+    navbar.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:navbar];
+    
+    [navbar mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.equalTo(self.view);
+        make.top.equalTo(self.view);
+        make.height.equalTo(@(navHeight));
+    }];
+    
+    navbar.showBottomLabel = NO;
+    
+    //设置内容
+    //返回
+    [navbar.leftButton setImage:[UIImage imageNamed:@"返回键"] forState:UIControlStateNormal];
+    navbar.leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 17);
+    [navbar.leftButton addTarget:self action:@selector(dismissVC) forControlEvents:UIControlEventTouchUpInside];
+    
+    //中
+    [navbar.centerButton setTitle:@"编辑个人信息" forState:UIControlStateNormal];
+    [navbar.centerButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    
+    [navbar.rightButton setTitle:@"上传" forState:UIControlStateNormal];
+    [navbar.rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [navbar.rightButton addTarget:self action:@selector(save) forControlEvents:UIControlEventTouchUpInside];
+}
+
+-(void)dismissVC{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)setupMainView{
+    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    scrollView.contentInset = UIEdgeInsetsMake(-20, 0, 0, 0);
+    _scrollView = scrollView;
+    [self.view addSubview:scrollView];
+    
+    scrollView.contentSize = CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT+20);
+}
+
+-(void)setupTopView{
+    //添加topView
+    ZZTMeEditTopView *topView = [ZZTMeEditTopView ZZTMeEditTopView];
+    _topView = topView;
+    //假如现在有数据  添加进去
+    topView.backImage = self.backImg;
+    topView.headImage = self.headImg;
+    
+    topView.frame = CGRectMake(0, 0, SCREEN_WIDTH, 300);
+    topView.buttonAction = ^(UIButton *sender) {
+        [self clickBtn:sender];
+    };
+    [_scrollView addSubview:topView];
+}
+
+-(void)setupBottomView{
+    //添加buttomView
+    __block ZZTMeEditViewController *blockSelf = self;
+    ZZTMeEditButtomView *meButtomView = [ZZTMeEditButtomView ZZTMeEditButtomView];
+    _meButtomView = meButtomView;
+    meButtomView.model = self.model;
+    _meButtomView.TextChange = ^(UITextField *texyField) {
+        [blockSelf textChange:texyField];
+    };
+    meButtomView.frame = CGRectMake(0, 300, SCREEN_WIDTH, 400);
+    
+    _meButtomView.BtnInside = ^(TypeButton *btn) {
+        [blockSelf clickPickBtn:btn];
+    };
+    [_scrollView addSubview:_meButtomView];
+}
 //保存
 -(void)save{
-    NSArray *imgDict = [self.imgeDict allKeys];
-    for (int i = 0; i < imgDict.count; i++) {
-        //文件名
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        formatter.dateFormat = [formatter stringFromDate:[NSDate date]];
-        NSString *imgName = [formatter stringFromDate:[NSDate date]];
-        NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        NSMutableString *randomString = [NSMutableString stringWithCapacity:32];
-        for (NSInteger i = 0; i < 32; i++) {
-            [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random_uniform((uint32_t)letters.length)]];
-        }
-        imgName = [NSString stringWithFormat:@"%@%@.png",imgName,randomString];
-        //写入本地
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-        NSString *filePath = [[paths objectAtIndex:0] stringByAppendingPathComponent:imgName];
-        
-        NSString *imgType = imgDict[i];
-        BOOL result = NO;
-        if([imgType isEqualToString:@"headImg"]){
-            result = [UIImagePNGRepresentation(self.headImage) writeToFile:filePath atomically:YES];
-        }else{
-            result = [UIImagePNGRepresentation(self.backImage) writeToFile:filePath atomically:YES];
-        }
-        
-        if (result == YES) {
-            NSLog(@"保存成功");
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSArray *imgDict = [self.imgeDict allKeys];
+        for (int i = 0; i < imgDict.count; i++) {
+            //文件名
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            formatter.dateFormat = [formatter stringFromDate:[NSDate date]];
+            NSString *imgName = [formatter stringFromDate:[NSDate date]];
+            NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            NSMutableString *randomString = [NSMutableString stringWithCapacity:32];
+            for (NSInteger i = 0; i < 32; i++) {
+                [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random_uniform((uint32_t)letters.length)]];
+            }
+            imgName = [NSString stringWithFormat:@"%@%@.png",imgName,randomString];
+            //写入本地
+            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+            NSString *filePath = [[paths objectAtIndex:0] stringByAppendingPathComponent:imgName];
             
-            AFNHttpTool *tool = [[AFNHttpTool alloc] init];
-            NSString *toke = [tool makeToken:ZZTAccessKey secretKey:ZZTSecretKey];
+            NSString *imgType = imgDict[i];
+            BOOL result = NO;
+            if([imgType isEqualToString:@"headImg"]){
+                result = [UIImagePNGRepresentation(self.headImage) writeToFile:filePath atomically:YES];
+            }else{
+                result = [UIImagePNGRepresentation(self.backImage) writeToFile:filePath atomically:YES];
+            }
             
-            [AFNHttpTool putImagePath:filePath key:imgName token:toke complete:^(id objc) {
-                NSLog(@"%@",objc); //  上传成功并获取七牛云的图片地址
-//                self.headImg = objc;
-                [self.imgeDict setObject:objc forKey:imgType];
-                [self successUp];
-            }];
-            
-        }else{
-            NSLog(@"保存失败");
+            if (result == YES) {
+                NSLog(@"保存成功");
+                
+                AFNHttpTool *tool = [[AFNHttpTool alloc] init];
+                NSString *toke = [tool makeToken:ZZTAccessKey secretKey:ZZTSecretKey];
+                
+                [AFNHttpTool putImagePath:filePath key:imgName token:toke complete:^(id objc) {
+                    NSLog(@"%@",objc); //  上传成功并获取七牛云的图片地址
+                    //                self.headImg = objc;
+                    [self.imgeDict setObject:objc forKey:imgType];
+                    [self successUp];
+                }];
+                
+            }else{
+                NSLog(@"保存失败");
+            }
         }
-    }
-    if(imgDict.count == 0){
-        [self successUp];
-    }
-//    //将七牛云上传头像
-//    if(self.headImage || self.backImage){
-//        //文件名
-//        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-//        formatter.dateFormat = [formatter stringFromDate:[NSDate date]];
-//        NSString *imgName = [formatter stringFromDate:[NSDate date]];
-//        NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-//        NSMutableString *randomString = [NSMutableString stringWithCapacity:32];
-//        for (NSInteger i = 0; i < 32; i++) {
-//            [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random_uniform((uint32_t)letters.length)]];
-//        }
-//        imgName = [NSString stringWithFormat:@"%@%@.png",imgName,randomString];
-//        //写入本地
-//        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-//        NSString *filePath = [[paths objectAtIndex:0] stringByAppendingPathComponent:imgName];
-//
-//        BOOL result = NO;
-//        if(self.headImg)    result = [UIImagePNGRepresentation(self.headImage) writeToFile:filePath atomically:YES];
-//        if(self.backImage)  result = [UIImagePNGRepresentation(self.backImage) writeToFile:filePath atomically:YES];
-//
-//        if (result == YES) {
-//            NSLog(@"保存成功");
-//
-//            AFNHttpTool *tool = [[AFNHttpTool alloc] init];
-//            NSString *toke = [tool makeToken:ZZTAccessKey secretKey:ZZTSecretKey];
-//
-//            [AFNHttpTool putImagePath:filePath key:imgName token:toke complete:^(id objc) {
-//                NSLog(@"%@",objc); //  上传成功并获取七牛云的图片地址
-//                self.headImg = objc;
-//                [self successUp];
-//            }];
-//
-//        }else{
-//            NSLog(@"保存失败");
-//        }
-//    }else{
-////        self.headImg = @"";
-//        [self successUp];
-//    }
-//    //判断不为空
+        if(imgDict.count == 0){
+            [self successUp];
+        }
+    });
 }
 
 -(void)successUp{
@@ -230,7 +240,9 @@
 //    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"login/upUser"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
+        //保存本地
+        //请求一次 拿到数据
+        [self loadUserData];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
@@ -446,7 +458,7 @@
     _model = model;
     //背景图
     self.backImg = model.cover;
-
+    [self.imgeDict setObject:self.backImg forKey:@"backImg"];
     //头像
     self.headImg = model.headimg;
     
@@ -454,9 +466,9 @@
     
     self.signature = model.intro;
     
-    self.sex = model.sex;   //1.男 2.女
+    self.sex = model.sex;
     
-    self.birthday = model.birthday;
+    self.birthday = model.birthday;//1.男 2.女
 }
 
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
@@ -464,4 +476,33 @@
     [_meButtomView.userDetailTF endEditing:YES];
 }
 
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBar.alpha = 0;
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
+}
+
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self save];
+}
+-(void)loadUserData{
+    //通过id 获取数据
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    NSDictionary *paramDict = @{
+                                @"userId":[NSString stringWithFormat:@"%ld",_model.id]
+                                };
+    [manager POST:[ZZTAPI stringByAppendingString:@"login/usersInfo"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        
+        NSArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
+        if(array.count != 0){
+            UserInfo *model = array[0];
+            [Utilities SetNSUserDefaults:model];
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
+}
 @end

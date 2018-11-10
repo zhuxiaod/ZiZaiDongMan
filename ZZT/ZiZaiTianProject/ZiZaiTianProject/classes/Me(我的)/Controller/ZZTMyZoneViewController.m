@@ -22,8 +22,11 @@ static NSString *myZoneCell = @"myZoneCell";
 @interface ZZTMyZoneViewController ()<UITableViewDataSource,UITableViewDelegate>
 
 @property (nonatomic,strong)UITableView * tabelView;
+
 @property (nonatomic,strong)NSMutableArray * dataArray;
+
 @property (nonatomic,strong)NSString *pageNumber;
+
 @property (nonatomic,strong)NSString *pageSize;
 
 @property (nonatomic,assign)NSInteger total;
@@ -31,6 +34,8 @@ static NSString *myZoneCell = @"myZoneCell";
 @property (nonatomic,strong) ZZTMyZoneHeaderView *zoneHeadView;
 
 @property (nonatomic,assign) ZXDNavBar *navbar;
+
+@property (nonatomic,strong) UserInfo *userData;
 
 @end
 
@@ -74,7 +79,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     [self setupMJRefresh];
     
     //上传图片
-    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithTitle:@"上传" target:self action:@selector(pushUploadView) titleColor:[UIColor whiteColor]];
+//    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithTitle:@"上传" target:self action:@selector(pushUploadView) titleColor:[UIColor whiteColor]];
     
     //NavBar
     [self setupNavBar];
@@ -145,6 +150,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
 -(void)setupMJRefresh{
     self.tabelView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         [self loadData];
+        [self loadUserData];
     }];
     self.tabelView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
         [self loadMoreData];
@@ -160,7 +166,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
                           @"pageSize":@"5",
                           //                          @"userId":[[NSUserDefaults standardUserDefaults]objectForKey:@"userId"]
                           //传什么id 显示谁的空间
-                          @"userId":@"12"
+                          @"userId":_userId
                           };
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/selUserRoom"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -198,7 +204,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
                           @"pageSize":self.pageSize,
 //                          @"userId":[[NSUserDefaults standardUserDefaults]objectForKey:@"userId"]
                           //传什么id 显示谁的空间
-                          @"userId":@"12"
+                          @"userId":_userId
                           };
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/selUserRoom"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -215,8 +221,8 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
         [self.tabelView reloadData];
         
         if(self.dataArray.count >= total){
-//            [self.tabelView.mj_footer endRefreshingWithNoMoreData];
-            [self.tabelView.mj_header endRefreshing];
+            [self.tabelView.mj_footer endRefreshingWithNoMoreData];
+//            [self.tabelView.mj_header endRefreshing];
         }else{
             [self.tabelView.mj_header endRefreshing];
         }
@@ -275,8 +281,8 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     if(!_zoneHeadView){
         _zoneHeadView = [[ZZTMyZoneHeaderView alloc] initWithReuseIdentifier:zoneHeadViewIf];
     }
-    UserInfo *user = [Utilities GetNSUserDefaults];
-    self.zoneHeadView.user = user;
+//    UserInfo *user = [Utilities GetNSUserDefaults];
+    self.zoneHeadView.user = self.userData;
     return _zoneHeadView;
 }
 
@@ -286,7 +292,15 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    [self.tabelView.mj_header beginRefreshing];
+    
     self.navigationController.navigationBar.alpha = 0;
+
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
+
+}
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:NO];
 }
 
@@ -313,5 +327,32 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     }else{
         self.navbar.backgroundColor = [UIColor colorWithWhite:0 alpha:alpha];
     }
+}
+-(void)setUserId:(NSString *)userId{
+    _userId = userId;
+    //请求个人资料
+
+    [self loadUserData];
+}
+
+-(void)loadUserData{
+    NSDictionary *paramDict = @{
+                                @"userId":_userId
+                                };
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    [manager POST:[ZZTAPI stringByAppendingString:@"login/usersInfo"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        
+        NSArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
+        if(array.count != 0){
+            UserInfo *model = array[0];
+            self.userData = model;
+            self.zoneHeadView.user = model;
+            [self.tabelView reloadData];
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
 }
 @end

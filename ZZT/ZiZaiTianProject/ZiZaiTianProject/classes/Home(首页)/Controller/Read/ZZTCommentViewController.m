@@ -185,6 +185,12 @@
     
     ZZTNavBarTitleView *titleView = [[ZZTNavBarTitleView alloc] init];
     
+    //样式
+    titleView.selBtnTextColor = [UIColor whiteColor];
+    titleView.selBtnBackgroundColor = [UIColor orangeColor];
+    titleView.btnTextColor = [UIColor blackColor];
+    titleView.btnBackgroundColor = [UIColor whiteColor];
+    
     weakself(self);
     [titleView.leftBtn setTitle:@"最新" forState:UIControlStateNormal];
     [titleView.rightBtn setTitle:@"最热" forState:UIControlStateNormal];
@@ -192,11 +198,13 @@
     titleView.leftBtnOnClick = ^(UIButton *btn){
         [weakSelf.mainView setContentOffset:CGPointZero animated:YES];
         weakSelf.nowTableView = weakSelf.newestVC;
+        [weakSelf.newestVC beginHeaderUpdate];
     };
     
     titleView.rightBtnOnClick = ^(UIButton *btn){
         [weakSelf.mainView setContentOffset:CGPointMake(self.mainView.width, 0) animated:YES];
         weakSelf.nowTableView = weakSelf.hotestVC;
+        [weakSelf.hotestVC beginHeaderUpdate];
     };
     
     //nav
@@ -221,7 +229,7 @@
     
     [titleView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(navbar.mainView);
-        make.width.mas_equalTo(SCREEN_WIDTH * 0.4);
+        make.width.mas_equalTo(SCREEN_WIDTH * 0.42);
         make.height.mas_equalTo(30);
         make.bottom.equalTo(navbar.mainView).offset(-10);
     }];

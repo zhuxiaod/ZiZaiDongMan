@@ -98,10 +98,10 @@ static CGFloat const MyHeight = 30;
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    CGFloat w = self.width * 0.5;
+    CGFloat w = self.width * 0.49;
     
     self.leftBtn.frame  = CGRectMake(1, 1, w, self.height - 2);
-    self.rightBtn.frame = CGRectMake(w - 1, 1, w, self.height-2);
+    self.rightBtn.frame = CGRectMake(w + 2, 1, w, self.height-2);
 }
 
 -(void)setBtnTextColor:(UIColor *)btnTextColor{

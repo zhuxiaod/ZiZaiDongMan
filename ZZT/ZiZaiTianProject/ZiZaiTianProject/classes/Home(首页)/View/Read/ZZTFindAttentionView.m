@@ -37,6 +37,7 @@
 
 -(void)setup{
     _backgroundBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    _backgroundBtn.adjustsImageWhenHighlighted = NO;
     [_backgroundBtn setImage:[UIImage imageNamed:@"用户空间背景"] forState:UIControlStateNormal];
     [_backgroundBtn addTarget:self action:@selector(print) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:_backgroundBtn];
@@ -75,6 +76,10 @@
 
     [_userName mas_updateConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(nameWidth);
+    }];
+    
+    [self.backgroundBtn.imageView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.top.left.right.bottom.equalTo(self.backgroundBtn);
     }];
 }
 

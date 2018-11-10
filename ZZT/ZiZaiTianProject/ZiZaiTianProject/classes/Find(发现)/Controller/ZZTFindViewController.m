@@ -128,7 +128,7 @@ NSString *SuggestionView3 = @"SuggestionView";
     
     [titleView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(navBar.mainView);
-        make.width.mas_equalTo(SCREEN_WIDTH * 0.33);
+        make.width.mas_equalTo(SCREEN_WIDTH * 0.34);
         make.height.mas_equalTo(30);
         make.bottom.equalTo(navBar.mainView).offset(-10);
     }];

@@ -74,6 +74,9 @@ static NSString *findCommentCell = @"findCommentCell";
     contentView.backgroundColor = [UIColor whiteColor];
     contentView.contentInset = UIEdgeInsetsMake(-20, 0, 0, 0);
     contentView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    contentView.estimatedRowHeight = 0;
+    contentView.estimatedSectionFooterHeight = 0;
+    contentView.estimatedSectionHeaderHeight = 0;
     _contentView = contentView;
     [contentView registerClass:[ZZTFindCommentCell class] forCellReuseIdentifier:findCommentCell];
     [self.view addSubview:contentView];
@@ -124,7 +127,6 @@ static NSString *findCommentCell = @"findCommentCell";
 }
 -(void)loadCaiNiXiHuanData{
 
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/guessYouLike"] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
@@ -176,6 +178,7 @@ static NSString *findCommentCell = @"findCommentCell";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    [self.contentView.mj_footer setHidden:NO];
     return self.dataArray.count;
 }
 #pragma mark - 内容设置
@@ -209,6 +212,7 @@ static NSString *findCommentCell = @"findCommentCell";
     self.bannerView.gotoViewBlock = ^{
         //跳转个人页面
         ZZTMyZoneViewController *zoneView = [[ZZTMyZoneViewController alloc] init];
+        zoneView.userId = [NSString stringWithFormat:@"%ld",user.id];
         [weakSelf.navigationController pushViewController:zoneView animated:NO];
     };
     return _bannerView;
@@ -227,6 +231,7 @@ static NSString *findCommentCell = @"findCommentCell";
         _caiNiXiHuanView = [[ZZTCaiNiXiHuanView alloc] initWithReuseIdentifier:caiNiXiHuanView];
     }
     self.caiNiXiHuanView.dataArray = self.CNXHArray;
+  
     [self.caiNiXiHuanView.updataBtn addTarget:self action:@selector(loadCaiNiXiHuanData) forControlEvents:UIControlEventTouchUpInside];
     return _caiNiXiHuanView;
 }
@@ -260,6 +265,7 @@ static NSString *findCommentCell = @"findCommentCell";
 //刷新NavBar的状态
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    [self.contentView.mj_header beginRefreshing];
     [self scrollViewDidScroll:_contentView];
     [self.navigationController setNavigationBarHidden:YES animated:NO];
 

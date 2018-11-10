@@ -30,4 +30,6 @@
 
 - (void)update;
 
+- (void)beginHeaderUpdate;
+
 @end

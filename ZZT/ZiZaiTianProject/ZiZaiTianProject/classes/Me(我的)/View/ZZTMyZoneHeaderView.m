@@ -7,6 +7,7 @@
 //
 
 #import "ZZTMyZoneHeaderView.h"
+#import "ZZTMeEditViewController.h"
 
 @interface ZZTMyZoneHeaderView ()
 //背景
@@ -50,7 +51,7 @@
     
     _backgroundBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [_backgroundBtn setImage:[UIImage imageNamed:@"轻触更换背景"] forState:UIControlStateNormal];
-//    [_backgroundBtn addTarget:self action:@selector(print) forControlEvents:UIControlEventTouchUpInside];
+    [_backgroundBtn addTarget:self action:@selector(updateBackground) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:_backgroundBtn];
     
     _userHead = [[ZZTUserHeadView alloc] initWithFrame:CGRectZero];
@@ -64,11 +65,35 @@
     [self.contentView addSubview:_userName];
 }
 
+-(void)updateBackground{
+    UserInfo *user = [Utilities GetNSUserDefaults];
+    if(_user.id == user.id){
+        //弹出更换视图
+        UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"更换封面" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            //跳转编辑页
+            ZZTMeEditViewController *meEditVC = [[ZZTMeEditViewController alloc] init];
+            meEditVC.model = user;
+            [[self myViewController].navigationController pushViewController:meEditVC animated:YES];
+        }];
+        UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        [actionSheet addAction:action1];
+        [actionSheet addAction:action2];
+        [[self myViewController] presentViewController:actionSheet animated:YES completion:nil];
+    }
+}
+
 -(void)layoutSubviews{
     [super layoutSubviews];
     [_backgroundBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.right.left.equalTo(self.contentView);
         make.bottom.equalTo(self.contentView).offset(-10);
+    }];
+    
+    [_backgroundBtn.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.right.left.bottom.equalTo(self.backgroundBtn);
     }];
     
     [_userHead mas_makeConstraints:^(MASConstraintMaker *make) {

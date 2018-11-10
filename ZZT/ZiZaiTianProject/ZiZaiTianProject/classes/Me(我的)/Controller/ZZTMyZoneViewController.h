@@ -12,4 +12,6 @@
 
 @property (nonatomic,strong) UserInfo *user;
 
+@property (nonatomic,strong) NSString *userId;
+
 @end

@@ -126,7 +126,9 @@ static NSString *const airView = @"airView";
         NSMutableArray *array1 = [ZZTCircleModel mj_objectArrayWithKeyValuesArray:list];
         if(array1.count == 0){
             //没有数据的时候
-            [self.commentArray addObject:@"1"];
+            ZZTCircleModel *airModel = [[ZZTCircleModel alloc] init];
+            NSMutableArray *airArray = [NSMutableArray arrayWithObject:airModel];
+            self.commentArray = airArray;
             self.isHaveComment = NO;
         }else{
             //外面的数据
@@ -134,6 +136,7 @@ static NSString *const airView = @"airView";
             circleViewModel.circleModelArray = array1;
             [circleViewModel loadDatas];
             self.commentArray = [circleViewModel addOpenDataWith:self.openArray];
+            self.isHaveComment = YES;
         }
         if(self.commentArray.count >= [totaldic integerValue]){
             self.mj_footer.hidden = YES;
@@ -141,7 +144,7 @@ static NSString *const airView = @"airView";
             self.mj_footer.hidden = NO;
         }
         //加工一下评论的数据
-        [self fd_reloadDataWithoutInvalidateIndexPathHeightCache];
+        [self reloadData];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
@@ -188,6 +191,7 @@ static NSString *const airView = @"airView";
                 [self.mj_footer endRefreshing];
             }
             self.size_num += 10;
+            self.isHaveComment = YES;
         }
         //加工一下评论的数据
         [self fd_reloadDataWithoutInvalidateIndexPathHeightCache];
@@ -344,5 +348,7 @@ static NSString *const airView = @"airView";
     }
     return _statusCell;
 }
-
+-(void)beginHeaderUpdate{
+    [self.mj_header beginRefreshing];
+}
 @end

@@ -53,6 +53,22 @@ static NSString * const pressedImageName = @"已关注";
         self.onClick(self);
     }
     
+    if(self.isAttention == YES){
+        [UIView animateWithDuration:0.25 animations:^{
+            
+            self.imageView.transform = CGAffineTransformMakeScale(1.5, 1.5);
+            
+        } completion:^(BOOL finished) {
+            
+            [UIView animateWithDuration:0.25 animations:^{
+                self.imageView.transform = CGAffineTransformIdentity;
+                self.userInteractionEnabled = YES;
+            }];
+            
+        }];
+    }
+   
+    
     //发送关注请求
     UserInfo *user = [Utilities GetNSUserDefaults];
     NSDictionary *dic = @{

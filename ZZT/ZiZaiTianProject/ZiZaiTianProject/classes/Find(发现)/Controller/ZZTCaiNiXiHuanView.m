@@ -82,6 +82,7 @@
     //获得数据 几个 6个
     for (int i = 0; i < arrayCount; i++) {
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        btn.tag = i;
         if(_dataArray.count != 0){
             UserInfo *userInfo = self.dataArray[i];
             [btn sd_setImageWithURL:[NSURL URLWithString:userInfo.headimg] forState:UIControlStateNormal];
@@ -90,12 +91,18 @@
         }
         CGFloat x = (btnW + space) * i;
         btn.frame = CGRectMake(x, 2, btnW, btnH);
-//        [btn addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
+        [btn addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
         [self.midView addSubview:btn];
     }
 }
 
 - (void)buttonClick:(UIButton *)button{
+    UserInfo *userInfo = self.dataArray[button.tag];
+    //跳转个人页
+    ZZTMyZoneViewController *zoneView = [[ZZTMyZoneViewController alloc] init];
+    zoneView.userId = [NSString stringWithFormat:@"%ld",userInfo.id];
+    [[self myViewController].navigationController pushViewController:zoneView animated:NO];
+
     // 判断下这个block在控制其中有没有被实现
     if (self.buttonAction) {
         // 调用block传入参数

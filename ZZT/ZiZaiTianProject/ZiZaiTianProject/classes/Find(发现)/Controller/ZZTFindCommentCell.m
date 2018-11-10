@@ -15,7 +15,7 @@
 
 @interface ZZTFindCommentCell ()<UIGestureRecognizerDelegate>
 
-@property (strong, nonatomic)  UIImageView *headBtn;
+@property (strong, nonatomic)  UIButton *headBtn;
 @property (strong, nonatomic)  UILabel *userName;
 @property (strong, nonatomic)  UIButton *vipLab;
 @property (strong, nonatomic)  AttentionButton *attentionBtn;
@@ -47,10 +47,10 @@
 
 -(void)setupUI{
     //头像
-    _headBtn = [GlobalUI createImageViewbgColor:[UIColor grayColor]];
-    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickHead)];
-    [_headBtn addGestureRecognizer:tapGesture];
-
+    _headBtn = [[UIButton alloc] init];
+    [_headBtn addTarget:self action:@selector(clickHead) forControlEvents:UIControlEventTouchUpInside];
+    _headBtn.adjustsImageWhenHighlighted = NO;
+    
     //用户名
     _userName = [GlobalUI createLabelFont:18 titleColor:ZZTSubColor bgColor:[UIColor clearColor]];
     
@@ -87,6 +87,14 @@
     _bottomView = [[UIView alloc] init];
     _bottomView.backgroundColor = [UIColor grayColor];
     [self.contentView addSubview:_bottomView];
+}
+
+-(void)clickHead{
+    //跳转页面
+    ZZTMyZoneViewController *zoneVC = [[ZZTMyZoneViewController alloc] init];
+    //用户id
+    zoneVC.userId = _model.userId;
+    [[self myViewController].navigationController pushViewController:zoneVC animated:YES];
 }
 
 - (void)layoutSubviews{
@@ -215,7 +223,8 @@
     [self setNeedsLayout];
     [self layoutIfNeeded];
     
-    [_headBtn sd_setImageWithURL:[NSURL URLWithString:model.headimg] placeholderImage:[UIImage imageNamed:@"peien"]];
+//    [_headBtn sd_setImageWithURL:[NSURL URLWithString:model.headimg] placeholderImage:[UIImage imageNamed:@"peien"]];
+    [_headBtn sd_setBackgroundImageWithURL:[NSURL URLWithString:model.headimg] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"peien"]];
     //名字位置刷新 vip的位置也刷新
     _userName.text = model.nickName;
     
@@ -272,7 +281,7 @@
         UIImageView * img =[[UIImageView alloc]init];
         [img sd_setImageWithURL:[NSURL URLWithString:_imgArray[i]]];
         //        img.image = [UIImage imageNamed:_imgArray[i]];
-        img.backgroundColor = [UIColor greenColor];
+//        img.backgroundColor = [UIColor greenColor];
         img.frame = CGRectMake(x, y, w, h);
         img.userInteractionEnabled = YES;
         UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(browerImage:)];
@@ -314,7 +323,7 @@
 //        [btn setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
 //        [btn setTitleColor:[self.likeCountView titleColorForState:UIControlStateNormal] forState:UIControlStateNormal];
         [btn setImage:[UIImage imageNamed:@"评论"] forState:UIControlStateNormal];
-//        [btn addTarget:self action:@selector(showCommentVc) forControlEvents:UIControlEventTouchUpInside];
+        [btn addTarget:self action:@selector(showCommentVc) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:btn];
         
         _replyCountView = btn;
@@ -338,6 +347,14 @@
         _likeCountView = lcv;
     }
     return _likeCountView;
+}
+//显示评论页
+-(void)showCommentVc{
+    ZZTCommentViewController *commentVC = [[ZZTCommentViewController alloc] init];
+    commentVC.chapterId = @"1";
+    commentVC.cartoonType = @"2";
+    [[self myViewController].navigationController presentViewController:commentVC animated:YES completion:nil];
+
 }
 
 @end
