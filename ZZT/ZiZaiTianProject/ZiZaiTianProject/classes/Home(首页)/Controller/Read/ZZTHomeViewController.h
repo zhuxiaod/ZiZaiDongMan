@@ -9,7 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "BaseViewController.h"
 
-@interface ZZTHomeViewController : BaseViewController
+@interface ZZTHomeViewController : UIViewController
+
 @property (nonatomic,weak) UIScrollView *mainView;
 
 @end

@@ -277,6 +277,11 @@
 		049A99EA20E394BB00ED27C9 /* ZZTVIPTopView.m in Sources */ = {isa = PBXBuildFile; fileRef = 049A99E820E394BB00ED27C9 /* ZZTVIPTopView.m */; };
 		049A99EB20E394BB00ED27C9 /* ZZTVIPTopView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 049A99E920E394BB00ED27C9 /* ZZTVIPTopView.xib */; };
 		049D0791218DA43800F5D141 /* ZZTCommentAirView.m in Sources */ = {isa = PBXBuildFile; fileRef = 049D0790218DA43800F5D141 /* ZZTCommentAirView.m */; };
+		049D636E21995820008EF62F /* ZZTReadHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 049D636D21995820008EF62F /* ZZTReadHomeViewController.m */; };
+		049D637121995E62008EF62F /* ZZTCollectionCycleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 049D637021995E62008EF62F /* ZZTCollectionCycleView.m */; };
+		049D637421996213008EF62F /* ZZTHomeBtnView.m in Sources */ = {isa = PBXBuildFile; fileRef = 049D637321996213008EF62F /* ZZTHomeBtnView.m */; };
+		049D637721997118008EF62F /* ZZTSectionLabView.m in Sources */ = {isa = PBXBuildFile; fileRef = 049D637621997118008EF62F /* ZZTSectionLabView.m */; };
+		049D637A2199787A008EF62F /* ZZTAirHeaderFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 049D63792199787A008EF62F /* ZZTAirHeaderFooterView.m */; };
 		04A0C09F21803FCD00D08F6C /* ZZTZoneUpLoadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A0C09E21803FCD00D08F6C /* ZZTZoneUpLoadViewController.m */; };
 		04A0C0A221804B8500D08F6C /* LxGridViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A0C0A121804B8500D08F6C /* LxGridViewFlowLayout.m */; };
 		04A0C0A521804C3600D08F6C /* TZTestCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A0C0A321804C3600D08F6C /* TZTestCell.m */; };
@@ -833,6 +838,16 @@
 		049A99E920E394BB00ED27C9 /* ZZTVIPTopView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ZZTVIPTopView.xib; sourceTree = "<group>"; };
 		049D078F218DA43800F5D141 /* ZZTCommentAirView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTCommentAirView.h; sourceTree = "<group>"; };
 		049D0790218DA43800F5D141 /* ZZTCommentAirView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTCommentAirView.m; sourceTree = "<group>"; };
+		049D636C21995820008EF62F /* ZZTReadHomeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTReadHomeViewController.h; sourceTree = "<group>"; };
+		049D636D21995820008EF62F /* ZZTReadHomeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTReadHomeViewController.m; sourceTree = "<group>"; };
+		049D636F21995E62008EF62F /* ZZTCollectionCycleView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTCollectionCycleView.h; sourceTree = "<group>"; };
+		049D637021995E62008EF62F /* ZZTCollectionCycleView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTCollectionCycleView.m; sourceTree = "<group>"; };
+		049D637221996213008EF62F /* ZZTHomeBtnView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTHomeBtnView.h; sourceTree = "<group>"; };
+		049D637321996213008EF62F /* ZZTHomeBtnView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTHomeBtnView.m; sourceTree = "<group>"; };
+		049D637521997118008EF62F /* ZZTSectionLabView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTSectionLabView.h; sourceTree = "<group>"; };
+		049D637621997118008EF62F /* ZZTSectionLabView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTSectionLabView.m; sourceTree = "<group>"; };
+		049D63782199787A008EF62F /* ZZTAirHeaderFooterView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTAirHeaderFooterView.h; sourceTree = "<group>"; };
+		049D63792199787A008EF62F /* ZZTAirHeaderFooterView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTAirHeaderFooterView.m; sourceTree = "<group>"; };
 		04A0C09D21803FCD00D08F6C /* ZZTZoneUpLoadViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTZoneUpLoadViewController.h; sourceTree = "<group>"; };
 		04A0C09E21803FCD00D08F6C /* ZZTZoneUpLoadViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTZoneUpLoadViewController.m; sourceTree = "<group>"; };
 		04A0C0A021804B8500D08F6C /* LxGridViewFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LxGridViewFlowLayout.h; sourceTree = "<group>"; };
@@ -1271,6 +1286,8 @@
 		046FF6602101B5EC005DED73 /* Read */ = {
 			isa = PBXGroup;
 			children = (
+				049D636C21995820008EF62F /* ZZTReadHomeViewController.h */,
+				049D636D21995820008EF62F /* ZZTReadHomeViewController.m */,
 				F7C04C1F20DF49190055E7A8 /* ZZTHomeViewController.h */,
 				F7C04C2020DF49190055E7A8 /* ZZTHomeViewController.m */,
 				0466839720F32F8F0095C6BC /* ZZTReadTableView.h */,
@@ -1388,6 +1405,14 @@
 				0456F153219041800077739A /* ZZTNavBarTitleView.m */,
 				0495DC392191DFD700761EE8 /* ZZTCommentOpenCell.h */,
 				0495DC3A2191DFD700761EE8 /* ZZTCommentOpenCell.m */,
+				049D636F21995E62008EF62F /* ZZTCollectionCycleView.h */,
+				049D637021995E62008EF62F /* ZZTCollectionCycleView.m */,
+				049D637221996213008EF62F /* ZZTHomeBtnView.h */,
+				049D637321996213008EF62F /* ZZTHomeBtnView.m */,
+				049D637521997118008EF62F /* ZZTSectionLabView.h */,
+				049D637621997118008EF62F /* ZZTSectionLabView.m */,
+				049D63782199787A008EF62F /* ZZTAirHeaderFooterView.h */,
+				049D63792199787A008EF62F /* ZZTAirHeaderFooterView.m */,
 			);
 			path = Read;
 			sourceTree = "<group>";
@@ -2244,6 +2269,7 @@
 				04A0C1022181AA8400D08F6C /* ZXDCheckContent.m in Sources */,
 				04E9FACA2153784B005A3986 /* GlobalUI.m in Sources */,
 				0471A85120F5E33300ABFF35 /* ZZTWordsDetailHeadView.m in Sources */,
+				049D637421996213008EF62F /* ZZTHomeBtnView.m in Sources */,
 				F7C04C1B20DF476F0055E7A8 /* ZZTTabBarViewController.m in Sources */,
 				04CCB98E218892620035C40C /* ZZTChapterChooseCell.m in Sources */,
 				0428E8B421796BA500702225 /* MBProgressHUD+XMG.m in Sources */,
@@ -2252,6 +2278,7 @@
 				040FD50B20EF17C100004C71 /* DCNewWelfareLayout.m in Sources */,
 				048C335C20E2540F00F69CE1 /* ZZTCell.m in Sources */,
 				0471A89A20FC312300ABFF35 /* ZZTCartoonContentCell.m in Sources */,
+				049D637721997118008EF62F /* ZZTSectionLabView.m in Sources */,
 				042D1477218AA86400BE05F6 /* TZAssetModel.m in Sources */,
 				04A2C6DF217D6EB6003D62BE /* ZZTNextWordHeaderView.m in Sources */,
 				04D2AFAB213006FB008F6CCB /* ZZTStoryModel.m in Sources */,
@@ -2337,6 +2364,7 @@
 				047ECEBA212814D3008D1E82 /* ColorInButton.m in Sources */,
 				046FF66E2101E0D5005DED73 /* ZZTCreationEntranceModel.m in Sources */,
 				0471A83120F5926A00ABFF35 /* ZZTCreationTableView.m in Sources */,
+				049D637A2199787A008EF62F /* ZZTAirHeaderFooterView.m in Sources */,
 				F7C04C1820DF44260055E7A8 /* UIBarButtonItem+Item.m in Sources */,
 				048C335120E23DBF00F69CE1 /* ZZTMeCell.m in Sources */,
 				048C335820E24E1600F69CE1 /* ZZTSettingCell.m in Sources */,
@@ -2367,6 +2395,7 @@
 				04CF259A2105BB540026EC8F /* ZZTMaterialKindModel.m in Sources */,
 				0471A85920F608A100ABFF35 /* ZZTCarttonDetailModel.m in Sources */,
 				047720F82106CC6000FC97B5 /* ZZTDetailModel.m in Sources */,
+				049D637121995E62008EF62F /* ZZTCollectionCycleView.m in Sources */,
 				047ECF08212A8D6F008D1E82 /* ZZTCreationCartoonTypeViewController.m in Sources */,
 				0466837820F3096A0095C6BC /* NSTimer+Control.m in Sources */,
 				041EE0A020EB497A0012FEDF /* ZZTSettingViewController.m in Sources */,
@@ -2391,6 +2420,7 @@
 				042D148E218B337400BE05F6 /* CommentSectionHeadView.m in Sources */,
 				042D147F218AA86400BE05F6 /* TZPhotoPreviewCell.m in Sources */,
 				040A03BD2100201B000FAE13 /* ZZTMoreViewController.m in Sources */,
+				049D636E21995820008EF62F /* ZZTReadHomeViewController.m in Sources */,
 				046FF6592101797B005DED73 /* MainTabbar.m in Sources */,
 				0466837D20F3096A0095C6BC /* userAuthenticationIcon.m in Sources */,
 				0495D663215F5C8200A10E7B /* ZZTMulPlayCell.m in Sources */,

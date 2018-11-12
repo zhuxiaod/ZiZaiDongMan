@@ -22,6 +22,7 @@
     UINavigationBar *nab = [UINavigationBar appearanceWhenContainedInInstancesOfClasses:@[[UIView class]]];
     NSMutableDictionary *attrs = [NSMutableDictionary dictionary];
     attrs[NSFontAttributeName] = [UIFont boldSystemFontOfSize:20];
+    [nab setBackgroundImage:[UIImage createImageWithColor:[UIColor clearColor]] forBarMetrics:UIBarMetricsDefault];
     [nab setTitleTextAttributes:attrs];
     nab.translucent = NO;
     
@@ -33,7 +34,7 @@
  
 - (void)viewDidLoad {
     [super viewDidLoad];
-     [self.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor], NSFontAttributeName : [UIFont fontWithName:@"Helvetica-Bold" size:17]}];
+     [self.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor clearColor], NSFontAttributeName : [UIFont fontWithName:@"Helvetica-Bold" size:17]}];
     
 
     

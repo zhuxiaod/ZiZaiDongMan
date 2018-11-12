@@ -60,6 +60,7 @@ NSString *SuggestionView3 = @"SuggestionView";
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNotification:) name:@"infoNotification" object:nil];
 }
+
 //因为那个方法是在
 //渐变导航栏
 -(void)receiveNotification:(NSNotification *)infoNotification {

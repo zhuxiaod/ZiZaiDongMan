@@ -13,4 +13,6 @@
 
 @property (nonatomic,strong)ZZTCarttonDetailModel *cartoon;
 
+@property (nonatomic,assign) BOOL isHaveLab;
+
 @end

@@ -25,6 +25,7 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
     [UMCommonLogManager setUpUMCommonLogManager];
     [UMConfigure setLogEnabled:NO];
     //5ba096a35b5a55a35f0001bb
@@ -45,6 +46,8 @@
     
     //1.创建窗口
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    
+    self.window.backgroundColor = [UIColor whiteColor];
     //2.设置窗口根控制器
     ZZTTabBarViewController *tabBarVC = [[ZZTTabBarViewController alloc]init];
 //    RTRootNavigationController *tabBarVC = [[RTRootNavigationController alloc]init];

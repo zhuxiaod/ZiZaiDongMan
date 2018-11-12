@@ -31,4 +31,6 @@
 
 + (instancetype)defaultTitleView;
 
+- (void)selectBtn:(UIButton *)btn;
+
 @end

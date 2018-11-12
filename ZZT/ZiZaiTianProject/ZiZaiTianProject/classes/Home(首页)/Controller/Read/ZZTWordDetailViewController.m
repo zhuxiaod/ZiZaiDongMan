@@ -545,6 +545,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     [super viewWillAppear:animated];
 
     self.navigationController.navigationBar.alpha = 0;
+//    [self.navigationController setNavigationBarHidden:YES animated:NO];
     _navigationFrame = self.navigationController.navigationBar.frame;
 
     [self JiXuYueDuTarget];

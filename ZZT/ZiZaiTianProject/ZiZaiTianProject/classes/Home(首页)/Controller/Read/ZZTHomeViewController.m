@@ -11,22 +11,23 @@
 #import "ListView.h"
 #import "ZZTReadTableView.h"
 #import "ZZTCycleCell.h"
-#import "ZZTEasyBtnModel.h"4
+#import "ZZTEasyBtnModel.h"
 #import "ZZTCreationTableView.h"
 #import "PYSearchSuggestionViewController.h"
 #import "ZZTCarttonDetailModel.h"
 #import "ZZTUpdateViewController.h"
 #import "ZZTCollectView.h"
+#import "ZZTReadHomeViewController.h"
 
 @interface ZZTHomeViewController ()<UIScrollViewDelegate,PYSearchViewControllerDelegate,PYSearchViewControllerDataSource,UITableViewDataSource,UITabBarControllerDelegate,ListViewDelegate>
 
 @property (nonatomic,weak) UIView *customNavBar;
-@property (nonatomic,weak) ListView *listView;
-@property (nonatomic,weak) ZZTReadTableView *ReadView;
+//@property (nonatomic,weak) ListView *listView;
+@property (nonatomic,weak) ZZTReadHomeViewController *ReadView;
 @property (nonatomic,weak) ZZTCreationTableView *CreationView;
 @property (nonatomic,weak) ZZTCollectView *collectView;
 
-@property (nonatomic,weak) ZZTCycleCell * cycleCell;
+@property (nonatomic,weak) ZZTCycleCell *cycleCell;
 //@property (nonatomic,weak) UIScrollView *mainView;
 @property (nonatomic,strong) NSMutableArray *searchSuggestionArray;
 @property (nonatomic,weak) UITableView *suggestionView;
@@ -35,6 +36,11 @@
 @property (nonatomic,strong) NSMutableArray *bookShelfArray;
 @property (nonatomic,strong) NSMutableArray *cartoonArray;
 @property (nonatomic,strong) ZZTRemindView *remindView;
+//导航条
+@property (nonatomic,strong) ZXDNavBar *navBar;
+//titleView
+@property (nonatomic,strong) ZZTNavBarTitleView *titleView;
+
 @end
 NSString *SuggestionView = @"SuggestionView";
 
@@ -63,17 +69,16 @@ NSString *SuggestionView = @"SuggestionView";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self loadBookShelfData];
-    //设置nav样式
-    [self setupNavgationStyle:self.navigationController];
-    //设置Bar
-    [self setupNavBar];
     
+    [self loadBookShelfData];
+    //设置Bar
+    self.fd_prefersNavigationBarHidden = YES;
+
     //设置主视图
     [self setupMainView];
     
     //自定义listView
-    [self setupListView];
+//    [self setupListView];
     
     //设置子页
     [self setupChildView];
@@ -83,57 +88,11 @@ NSString *SuggestionView = @"SuggestionView";
     //设置tabbar点击
     self.tabBarController.delegate = self;
     
-    self.navigationController.fd_prefersNavigationBarHidden = YES;
+    self.navigationController.navigationBar.alpha = 0;
 
-}
+    //设置navBar
+    [self setupNavBar];
 
--(void)loadBookShelfData{
-    UserInfo *user = [Utilities GetNSUserDefaults];
-    NSDictionary *dic = @{
-                          @"userId":[NSString stringWithFormat:@"%ld",user.id]
-                          };
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-    EncryptionTools *tool = [[EncryptionTools alloc]init];
-    [manager POST:[ZZTAPI stringByAppendingString:@"great/userCollect"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [tool decry:responseObject[@"result"]];
-        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
-        //        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
-        self.bookShelfArray = array;
-        [self addCartoonId:array];
-        self.collectView.dataArray = array;
-//        [self.collectionView reloadData];
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
-    }];
-}
-
--(void)addCartoonId:(NSMutableArray *)array{
-    NSMutableArray *cartoonArray = [NSMutableArray array];
-    for (int i = 0; i < array.count; i++) {
-        ZZTCarttonDetailModel *model = array[i];
-        [cartoonArray addObject:model.cartoonId];
-    }
-    self.cartoonArray = cartoonArray;
-}
-
--(void)setupNavgationStyle:(UINavigationController *)nav{
-//    UIImage *image = [UIImage imageNamed:@"APP架构-作品-顶部渐变条-IOS"];
-    UIImage *image = [UIImage createImageWithColor:[UIColor clearColor]];
-//    // 设置左边端盖宽度
-//    NSInteger leftCapWidth = image.size.width * 0.5;
-//    // 设置上边端盖高度
-//    NSInteger topCapHeight = image.size.height * 0.5;
-//    UIImage *newImage = [image stretchableImageWithLeftCapWidth:leftCapWidth topCapHeight:topCapHeight];
-    [nav.navigationBar setBackgroundImage:image forBarMetrics:UIBarMetricsDefault];
-    nav.navigationBar.backgroundColor = [UIColor whiteColor];
-    nav.navigationBar.barTintColor = [UIColor blackColor];
-//    nav.navigationBar.backIndicatorImage.
-}
-
--(void)receiveNotification:(NSNotification *)infoNotification {
-    NSDictionary *dic = [infoNotification userInfo];
-    _str = [dic objectForKey:@"info"];
 }
 
 #pragma mark - 设置主视图
@@ -156,59 +115,16 @@ NSString *SuggestionView = @"SuggestionView";
     self.mainView = mainView;
 }
 
-#pragma mark - 设置ListView
-- (void)setupListView {
-    //设置自动调整滚动视图
-    [self setAutomaticallyAdjustsScrollViewInsets:NO];
-
-//    NSArray *textArray = @[@"创作",@"阅读",@"书柜"];
-    NSArray *textArray = @[@"阅读",@"书柜"];
-    
-    //0.66 默认
-    CGFloat listViewWidth    = self.view.width * 0.5;
-    CGFloat listViewItemSize = (listViewWidth - SPACEING * 2)/textArray.count;
-    
-    ListViewConfiguration *lc = [ListViewConfiguration new];
-    //设置动画
-    lc.hasSelectAnimate = YES;
-    //选择时的颜色
-    lc.labelSelectTextColor = [UIColor blackColor];
-    lc.labelTextColor = [UIColor colorWithRGB:@"131,131,131"];
-    lc.font       = [UIFont systemFontOfSize:14];
-    lc.spaceing   = SPACEING;
-    lc.labelWidth = listViewItemSize;
-    lc.monitorScrollView = self.mainView;
-    
-    ListView *listView = [[ListView alloc] initWithFrame:CGRectMake(0,0,listViewWidth,44) TextArray:textArray Configuration:lc];
-    listView.delegate = self;
-    //重点！！！
-    self.navigationItem.titleView = listView;
-    //全局
-    self.listView = listView;
-}
-
--(void)listView:(ListView *)listView didTapLab:(UILabel *)lab{
-    
-    if([lab.text isEqualToString:@"书柜"]){
-        //书柜
-        self.navigationItem.leftBarButtonItem.customView.hidden = YES;
-        //左边导航条
-        self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithTitle:@"清空" target:self action:@selector(removeAllBook) titleColor:[UIColor blackColor]];
-        
-    }else{
-        //书柜
-        self.navigationItem.leftBarButtonItem.customView.hidden = NO;
-        self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithImage:[UIImage imageNamed:@"read_search"] highImage:[UIImage imageNamed:@"search"] target:self action:@selector(search)];
-    }
-}
-
 #pragma mark - 设置添加滚动子页
 -(void)setupChildView{
     //阅读页
-    ZZTReadTableView *readVC = [[ZZTReadTableView alloc] init];
-    readVC.backgroundColor = [UIColor whiteColor];
+    ZZTReadHomeViewController *readVC = [[ZZTReadHomeViewController alloc] init];
+//    ZZTReadTableView *readVC = [[ZZTReadTableView alloc] init];
+//    readVC.contentInset = UIEdgeInsetsMake(-20, 0, 0, 0);
+//    readVC.backgroundColor = [UIColor whiteColor];
+    [self addChildViewController:readVC];
     self.ReadView = readVC;
-    [self.mainView addSubview:readVC];
+    [self.mainView addSubview:readVC.view];
     
 //    //创作页
 //    ZZTCreationTableView *creationVC = [[ZZTCreationTableView alloc] init];
@@ -246,7 +162,7 @@ NSString *SuggestionView = @"SuggestionView";
 //    [_collectView setFrame:CGRectMake(width * 2, 0, width, height)];
     
     [_collectView setFrame:CGRectMake(width, 0, width, height)];
-    [_ReadView setFrame:CGRectMake(0, 0, width, height)];
+    [_ReadView.view setFrame:CGRectMake(0, 0, width, height)];
 
     //添加视图的时候会刷新一次
     if([_str isEqualToString:@"YES"]){
@@ -265,16 +181,18 @@ NSString *SuggestionView = @"SuggestionView";
     [super viewWillAppear:animated];
     //反正是一个页面一起跑页没什么不好吧
     //cell 还没有创建故不能在这里搞
-    [_ReadView reloadData];
-    [self loadBookShelfData];
+//    [_ReadView reloadData];
+    
+//    [self loadBookShelfData];
+    
     NSLog(@"width:%f",SCREEN_WIDTH );
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
-
-
-
-//    [_collectView reloadData];
-//    [_CreationView reloadData];
+    
+    self.navigationController.navigationBar.alpha = 0;
+    
+//    [self.navigationController setNavigationBarHidden:YES animated:NO];
+    
 }
 //计时器结束
 - (void)viewDidDisappear:(BOOL)animated {
@@ -287,10 +205,68 @@ NSString *SuggestionView = @"SuggestionView";
 #pragma mark - 设置导航条
 -(void)setupNavBar
 {
-    //右边导航条
-    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithImage:[UIImage imageNamed:@"read_search"] highImage:[UIImage imageNamed:@"search"] target:self action:@selector(search)];
-    //左边导航条
-    self.navigationItem.leftBarButtonItem = [UIBarButtonItem itemWithImage:[UIImage imageNamed:@"read_readHistory"] highImage:[UIImage imageNamed:@"time"] target:self action:@selector(history)];
+    //设置新的导航条
+    ZZTNavBarTitleView *titleView = [[ZZTNavBarTitleView alloc] init];
+    _titleView = titleView;
+    titleView.selBtnTextColor = ZZTSubColor;
+    titleView.selBtnBackgroundColor = [UIColor whiteColor];
+    titleView.btnTextColor = [UIColor whiteColor];
+    titleView.btnBackgroundColor = [UIColor clearColor];
+    titleView.backgroundColor = [UIColor colorWithHexString:@"#262626" alpha:0.8];
+    
+    [titleView.leftBtn setTitle:@"书库" forState:UIControlStateNormal];
+    [titleView.rightBtn setTitle:@"书柜" forState:UIControlStateNormal];
+    
+    titleView.leftBtn.tag = 0;
+    titleView.rightBtn.tag = 1;
+    
+    [titleView.leftBtn addTarget:self action:@selector(clickMenu:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [titleView.rightBtn addTarget:self action:@selector(clickMenu:) forControlEvents:UIControlEventTouchUpInside];
+    
+    //跳转不同的页面
+//    [self clickMenu:titleView.leftBtn];
+    
+    ZXDNavBar *navBar = [[ZXDNavBar alloc] init];
+    _navBar = navBar;
+    navBar.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:navBar];
+    
+    [self.navBar mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.equalTo(self.view);
+        make.top.equalTo(self.view);
+        make.height.equalTo(@(navHeight));
+    }];
+    
+    //返回
+    [navBar.leftButton setImage:[UIImage imageNamed:@"Home_readHistory"] forState:UIControlStateNormal];
+    navBar.leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 17);
+//    [navBar.leftButton addTarget:self action:@selector(addMoment) forControlEvents:UIControlEventTouchUpInside];
+    
+    [navBar.rightButton setImage:[UIImage imageNamed:@"Home_search"] forState:UIControlStateNormal];
+    navBar.rightButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, -33);
+    [navBar.rightButton addTarget:self action:@selector(search) forControlEvents:UIControlEventTouchUpInside];
+    
+    
+    //中间
+    [navBar.mainView addSubview:titleView];
+    
+    [titleView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(navBar.mainView);
+        make.width.mas_equalTo(SCREEN_WIDTH * 0.34);
+        make.height.mas_equalTo(30);
+        make.bottom.equalTo(navBar.mainView).offset(-10);
+    }];
+    
+    navBar.showBottomLabel = NO;
+}
+
+-(void)clickMenu:(UIButton *)btn{
+    if(btn.tag == 0){
+        [self.mainView setContentOffset:CGPointMake(0, 0) animated:YES];
+    }else{
+        [self.mainView setContentOffset:CGPointMake(ScreenW, 0) animated:YES];
+    }
 }
 
 //更新
@@ -302,17 +278,22 @@ NSString *SuggestionView = @"SuggestionView";
 
 //滑动展示清空按钮
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-//    NSLog(@"%@:",NSStringFromCGPoint(scrollView.contentOffset));
     if(CGPointEqualToPoint(scrollView.contentOffset, CGPointMake(ScreenW, 0))){
-        //书柜
-        self.navigationItem.leftBarButtonItem.customView.hidden = YES;
-        //左边导航条
-        self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithTitle:@"清空" target:self action:@selector(removeAllBook) titleColor:[UIColor blackColor]];
-        
+        //显示删除
+        self.navBar.leftButton.hidden = YES;
+        self.navBar.rightButton.imageView.image = [UIImage imageNamed:@"Home_removeBook"];
+        [self.navBar.rightButton removeTarget:self action:@selector(search) forControlEvents:UIControlEventTouchUpInside];
+        [self.navBar.rightButton addTarget:self  action:@selector(removeAllBook) forControlEvents:UIControlEventTouchUpInside];
+        [scrollView setContentOffset:CGPointMake(ScreenW, 0)];
+        [self.titleView selectBtn:self.titleView.rightBtn];
     }else{
-        //书柜
+        //显示搜索
+        self.navBar.leftButton.hidden = NO;
         self.navigationItem.leftBarButtonItem.customView.hidden = NO;
-        self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithImage:[UIImage imageNamed:@"read_search"] highImage:[UIImage imageNamed:@"search"] target:self action:@selector(search)];
+        self.navBar.rightButton.imageView.image = [UIImage imageNamed:@"search"];
+        [self.navBar.rightButton removeTarget:self action:@selector(removeAllBook) forControlEvents:UIControlEventTouchUpInside];
+        [self.navBar.rightButton addTarget:self  action:@selector(search) forControlEvents:UIControlEventTouchUpInside];
+        [self.titleView selectBtn:self.titleView.leftBtn];
     }
 }
                                                  
@@ -331,7 +312,6 @@ NSString *SuggestionView = @"SuggestionView";
 }
 
 -(void)loadRemoveBook:(NSString *)string{
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
 
     UserInfo *user = [Utilities GetNSUserDefaults];
@@ -367,7 +347,6 @@ NSString *SuggestionView = @"SuggestionView";
     [searchVC.cancelButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 
     ZZTNavigationViewController *nav = [[ZZTNavigationViewController alloc] initWithRootViewController:searchVC];
-    [self setupNavgationStyle:nav];
     [self presentViewController:nav animated:YES completion:nil];
     _searchVC = searchVC;
 }
@@ -382,7 +361,6 @@ NSString *SuggestionView = @"SuggestionView";
                               @"fuzzy":searchText
                               };
         //添加数据
-//        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
         AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
 
         [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/queryFuzzy"]  parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -421,12 +399,40 @@ NSString *SuggestionView = @"SuggestionView";
     return 40.f;
 }
 
--(void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController{
-    if(tabBarController.selectedIndex == 0 ){
-//        [self setupNavgationStyle];
-    }
+
+
+//加载数据
+-(void)loadBookShelfData{
+    UserInfo *user = [Utilities GetNSUserDefaults];
+    NSDictionary *dic = @{
+                          @"userId":[NSString stringWithFormat:@"%ld",user.id]
+                          };
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    EncryptionTools *tool = [[EncryptionTools alloc]init];
+    [manager POST:[ZZTAPI stringByAppendingString:@"great/userCollect"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dic = [tool decry:responseObject[@"result"]];
+        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
+        //        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
+        self.bookShelfArray = array;
+        [self addCartoonId:array];
+        self.collectView.dataArray = array;
+        //        [self.collectionView reloadData];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
 }
 
+-(void)addCartoonId:(NSMutableArray *)array{
+    NSMutableArray *cartoonArray = [NSMutableArray array];
+    for (int i = 0; i < array.count; i++) {
+        ZZTCarttonDetailModel *model = array[i];
+        [cartoonArray addObject:model.cartoonId];
+    }
+    self.cartoonArray = cartoonArray;
+}
 
-
+-(void)receiveNotification:(NSNotification *)infoNotification {
+    NSDictionary *dic = [infoNotification userInfo];
+    _str = [dic objectForKey:@"info"];
+}
 @end

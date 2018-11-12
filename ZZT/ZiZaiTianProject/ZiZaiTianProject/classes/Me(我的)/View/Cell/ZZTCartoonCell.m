@@ -9,35 +9,79 @@
 #import "ZZTCartoonCell.h"
 @interface ZZTCartoonCell()
 
-@property (weak, nonatomic) IBOutlet UIImageView *image;
-@property (weak, nonatomic) IBOutlet UILabel *cartoonName;
-@property (weak, nonatomic) IBOutlet UIView *kindView;
-@property (weak, nonatomic) IBOutlet UILabel *titleView;
+@property (strong, nonatomic) UIImageView *image;
+
+@property (strong, nonatomic) UILabel *cartoonName;
 
 @end
 
 @implementation ZZTCartoonCell
+
+-(id)initWithFrame:(CGRect)frame{
+    
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self setupUI];
+    }
+    return self;
+}
+
+-(void)setupUI{
+    UIImageView *imageView = [[UIImageView alloc] init];
+    _image = imageView;
+    [self.contentView addSubview:imageView];
+    
+    UILabel *cartoonName = [[UILabel alloc] init];
+    _cartoonName = cartoonName;
+    [self.contentView addSubview:cartoonName];
+}
+
+
+-(void)layoutSubviews{
+    [super layoutSubviews];
+    CGFloat imageH = self.height * 0.8;
+    CGFloat nameH = self.height - imageH;
+    [_image mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.contentView).offset(0);
+        make.right.left.equalTo(self.contentView).offset(0);
+        make.height.mas_equalTo(imageH);
+    }];
+    
+    [_cartoonName mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.image.mas_bottom).offset(4);
+        make.left.equalTo(self.contentView).offset(0);
+        make.right.equalTo(self.contentView).offset(0);
+        make.height.mas_equalTo(nameH);
+    }];
+    
+    self.image.layer.cornerRadius = 12;
+    self.image.layer.masksToBounds = YES;
+    self.image.backgroundColor = [UIColor orangeColor];
+}
+
+-(void)setIsHaveLab:(BOOL)isHaveLab{
+    _isHaveLab = isHaveLab;
+    
+    //计算高度
+    CGFloat cellH = SCREEN_HEIGHT * 0.26;
+    CGFloat airH = cellH - cellH * 0.8 - 20;
+    
+    self.cartoonName.hidden = YES;
+    
+    [_image mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.contentView.mas_bottom).offset(4);
+        make.left.equalTo(self.contentView).offset(0);
+        make.right.equalTo(self.contentView).offset(0);
+        make.bottom.equalTo(self.contentView).offset(0);
+    }];
+}
 
 -(void)setCartoon:(ZZTCarttonDetailModel *)cartoon{
     _cartoon = cartoon;
     
     [self.image sd_setImageWithURL:[NSURL URLWithString:cartoon.cover]];
     
-    NSString *title = [cartoon.bookType stringByReplacingOccurrencesOfString:@"," withString:@" "];
-
-    [self.titleView setText:title];
-    
-    if([cartoon.type isEqualToString:@"1"]){
-        NSString *bookName = [cartoon.bookName stringByAppendingString:@"(漫画)"];
-        NSMutableAttributedString * attriStr = [[NSMutableAttributedString alloc] initWithString:bookName];
-        [attriStr addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#8E82AA"] range:NSMakeRange(attriStr.length - 4,4)];
-        self.cartoonName.attributedText = attriStr;
-    }else if([cartoon.type isEqualToString:@"2"]){
-        NSString *bookName = [cartoon.bookName stringByAppendingString:@"(剧本)"];
-        NSMutableAttributedString * attriStr = [[NSMutableAttributedString alloc] initWithString:bookName];
-        [attriStr addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#779793"] range:NSMakeRange(attriStr.length - 4,4)];
-        self.cartoonName.attributedText = attriStr;
-    }
+    self.cartoonName.text = cartoon.bookName;
 }
 
 @end
