@@ -31,4 +31,5 @@
 -(CGFloat)heightWithWidth:(CGFloat)width font:(CGFloat)font;
 +(NSString *)compareCurrentTime:(NSString *)str;
 
++ (NSMutableAttributedString *)addStrSpace:(NSString *)str;
 @end

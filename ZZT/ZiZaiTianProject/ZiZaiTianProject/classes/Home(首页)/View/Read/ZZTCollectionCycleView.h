@@ -10,6 +10,6 @@
 
 @interface ZZTCollectionCycleView : UICollectionReusableView
 
-@property (nonatomic,strong) NSString *imageArray;
+@property (nonatomic,strong) NSArray *imageArray;
 
 @end

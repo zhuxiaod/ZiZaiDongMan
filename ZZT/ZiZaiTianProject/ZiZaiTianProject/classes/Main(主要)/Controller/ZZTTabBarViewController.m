@@ -52,7 +52,7 @@
     
     [self setupAllTittleButton];
     
-    [[UITabBar appearance] setBarTintColor:[UIColor blackColor]];
+    [[UITabBar appearance] setBarTintColor:[UIColor whiteColor]];
 }
 
 #pragma mark - 添加所有子控制器
@@ -81,20 +81,20 @@
     //2.2设置tabBar上按钮内容 ->由对应的子控制器
     //0:nav
     UINavigationController *nav = self.childViewControllers[0];
-    nav.tabBarItem.title = @"作品";
-    nav.tabBarItem.image = [UIImage imageOriginalWithName:@"read_production"];
-    UIImage *image = [UIImage imageOriginalWithName:@"read_production_select"];
+//    nav.tabBarItem.title = @"作品";
+    nav.tabBarItem.image = [UIImage imageOriginalWithName:@"tabBar_reader"];
+    UIImage *image = [UIImage imageOriginalWithName:@"tabBar_reader_select"];
     nav.tabBarItem.selectedImage = image;
     
     //1:nav1
     UINavigationController *nav1 = self.childViewControllers[1];
-    nav1.tabBarItem.title = @"发现";
-    nav1.tabBarItem.image = [UIImage imageOriginalWithName:@"find_find"];
-    nav1.tabBarItem.selectedImage = [UIImage imageOriginalWithName:@"find_find_select"];
+//    nav1.tabBarItem.title = @"发现";
+    nav1.tabBarItem.image = [UIImage imageOriginalWithName:@"tabbar_find"];
+    nav1.tabBarItem.selectedImage = [UIImage imageOriginalWithName:@"tabbar_find_select"];
     
     //2:nav2
     UINavigationController *nav2 = self.childViewControllers[2];
-    nav2.tabBarItem.title = @"我的";
+//    nav2.tabBarItem.title = @"我的";
     nav2.tabBarItem.image = [UIImage imageOriginalWithName:@"me_me"];
     nav2.tabBarItem.selectedImage = [UIImage imageOriginalWithName:@"me_me_select"];
 }
@@ -116,7 +116,6 @@
         } completion:^(BOOL finished) {
             
         }];
-        
     }
 }
 

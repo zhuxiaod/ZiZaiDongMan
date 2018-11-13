@@ -36,23 +36,22 @@
     //图片
     //图片
     UIImageView *headImg = [[UIImageView alloc] init];
-//    headImg.backgroundColor = [UIColor yellowColor];
+    headImg.layer.cornerRadius = 8;
+    headImg.layer.masksToBounds = YES;
     _headImg = headImg;
     [self.contentView addSubview:headImg];
+    
     //bookname
     UILabel *chapterLab = [[UILabel alloc] init];
-//    chapterLab.backgroundColor = [UIColor yellowColor];
     _chapterLab = chapterLab;
     [self.contentView addSubview:chapterLab];
 
     //页数
     UILabel *pageLab = [[UILabel alloc] init];
-//    pageLab.backgroundColor = [UIColor yellowColor];
     _pageLab = pageLab;
     [self.contentView addSubview:pageLab];
     //赞
     UIImageView *likeImg = [[UIImageView alloc] init];
-//    likeImg.backgroundColor = [UIColor yellowColor];
     _likeImg = likeImg;
     [likeImg setImage:[UIImage imageNamed:@"正文-点赞-已点赞"]];
     [self.contentView addSubview:likeImg];
@@ -61,14 +60,6 @@
     [likeNum setTextColor:[UIColor colorWithHexString:@"#F0F0F0"]];
     _likeNum = likeNum;
     [self.contentView addSubview:likeNum];
-    //评论
-    
-    
-//    UILabel *commentLab = [[UILabel alloc] init];
-//    [commentLab setTextColor:[UIColor grayColor]];
-////    commentLab.backgroundColor = [UIColor yellowColor];
-//    _commentLab = commentLab;
-//    [self.contentView addSubview:commentLab];
     
     //底线
     UIView *bottomView = [[UIView alloc] init];
@@ -94,21 +85,19 @@
         make.height.mas_equalTo(1);
     }];
 
-    
     //如果是漫画
     if([self.model.type isEqualToString:@"1"]){
+        
         [self.headImg mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self).with.offset(10);
             make.left.equalTo(self).with.offset(10);
             make.bottom.equalTo(self.bottomView.mas_top).with.offset(-10);
-            make.width.mas_equalTo(80);
         }];
     }else{
         //表示有
         [self.headImg mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self).with.offset(10);
             make.left.equalTo(self).with.offset(0);
-            //            make.bottom.equalTo(self.bottomView.mas_top).with.offset(-10);
             make.width.mas_equalTo(1);
             make.height.mas_equalTo(1);
         }];
@@ -128,36 +117,20 @@
         make.height.mas_equalTo(20);
     }];
     
-//    [self.commentLab mas_makeConstraints:^(MASConstraintMaker *make) {
-//        //        make.top.equalTo(self).with.offset(10);
-//        make.right.equalTo(self).with.offset(-10);
-//        make.bottom.equalTo(self.bottomView.mas_top).with.offset(-10);
-//        make.height.mas_equalTo(20);
-//        make.width.mas_equalTo(50);
-//    }];
-    
     [self.commentView mas_makeConstraints:^(MASConstraintMaker *make) {
-        //        make.top.equalTo(self).with.offset(10);
-//        make.right.equalTo(self.commentLab.mas_left).with.offset(-5);
-//        make.bottom.equalTo(self.bottomView.mas_top).with.offset(-11);
-//        make.height.mas_equalTo(18);
-//        make.width.mas_equalTo(18);
         make.right.equalTo(self.contentView).offset(-8);
         make.bottom.equalTo(self.contentView).offset(-10);
         make.height.mas_equalTo(20);
     }];
     
     [self.likeNum mas_makeConstraints:^(MASConstraintMaker *make) {
-        //        make.top.equalTo(self).with.offset(10);
         make.right.equalTo(self.commentView.mas_left).with.offset(-5);
-        
         make.bottom.equalTo(self.bottomView.mas_top).with.offset(-10);
         make.height.mas_equalTo(20);
         make.width.mas_equalTo(50);
     }];
     
     [self.likeImg mas_makeConstraints:^(MASConstraintMaker *make) {
-        //        make.top.equalTo(self).with.offset(10);
         make.right.equalTo(self.likeNum.mas_left).with.offset(-5);
         make.bottom.equalTo(self.bottomView.mas_top).with.offset(-11);
         make.height.mas_equalTo(18);
@@ -172,8 +145,17 @@
     if([model.type isEqualToString:@"1"]){
         //漫画
         //名字
-        [self.headImg sd_setImageWithURL:[NSURL URLWithString:model.chapterCover]];
-        [self.chapterLab setText:model.chapterName];
+        [self.headImg sd_setImageWithURL:[NSURL URLWithString:model.chapterCover] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+            //计算image的高度
+            CGFloat proportion = image.size.height / (SCREEN_HEIGHT * 0.25 - 21);
+            NSLog(@"proportion:%f",proportion);
+            CGFloat imageViewW = image.size.width / proportion;
+            NSLog(@"imageViewW:%f",imageViewW);
+            [self.headImg mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.width.mas_equalTo(imageViewW);
+            }];
+        }];
+        [self.chapterLab setAttributedText:[NSString addStrSpace:[NSString stringWithFormat:@"第%@",model.chapterName]]];
     }else{
         //剧本
         [self.chapterLab setText:model.chapterName];
@@ -204,6 +186,8 @@
         make.width.equalTo(@(replyCountWidth));
     }];
     [self.likeImg setImage:[UIImage imageNamed:@"正文-点赞-已点赞"]];
+    
+    
 }
 
 ////点赞和评论跳转

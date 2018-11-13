@@ -10,4 +10,6 @@
 
 @interface ZZTHomeBtnView : UICollectionReusableView
 
+@property (nonatomic,copy) void (^homeBtnClick)(UIButton *btn);
+
 @end

@@ -88,8 +88,6 @@ static NSString *findCommentCell = @"findCommentCell";
     
     //猜你喜欢
     [self loadCaiNiXiHuanData];
-    
-    
 }
 
 

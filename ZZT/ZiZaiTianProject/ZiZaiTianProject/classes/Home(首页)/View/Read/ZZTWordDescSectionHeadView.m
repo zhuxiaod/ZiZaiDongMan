@@ -15,6 +15,8 @@
 
 @property (nonatomic,assign) CGFloat textHeight;
 
+@property (nonatomic,strong) UILabel *wordLabel;
+
 @end
 
 static CGFloat const spaceing = 8;
@@ -69,6 +71,7 @@ static CGFloat const tbSpaceing = 12;
     [self addSubview:bottomView];
     
     UILabel *wordLabel = [UILabel new];
+    _wordLabel = wordLabel;
     wordLabel.text = @"作品简介";
     [self addSubview:wordLabel];
     
@@ -100,7 +103,7 @@ static CGFloat const tbSpaceing = 12;
         make.left.equalTo(self).offset(spaceing);
         make.top.equalTo(topView.mas_bottom).offset(5);
         make.right.equalTo(self).offset(-spaceing);
-        make.height.offset(20);
+        make.height.mas_equalTo(30);
     }];
     
     [descLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -164,25 +167,27 @@ static CGFloat const tbSpaceing = 12;
         
         UIButton *openUpBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         
-        openUpBtn.titleLabel.font = [UIFont systemFontOfSize:10];
+//        openUpBtn.titleLabel.font = [UIFont systemFontOfSize:10];
+//
+//        openUpBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 30, 0, 0);
+//        openUpBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 10);
         
-        openUpBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 30, 0, 0);
-        openUpBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 10);
+//        [openUpBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
         
-        [openUpBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-        
-        [openUpBtn setTitle:@"全部" forState:UIControlStateNormal];
-        [openUpBtn setTitle:@"收起" forState:UIControlStateSelected];
+//        [openUpBtn setTitle:@"全部" forState:UIControlStateNormal];
+//        [openUpBtn setTitle:@"收起" forState:UIControlStateSelected];
+        [openUpBtn setImage:[UIImage imageNamed:@"wordsDetail_open"] forState:UIControlStateNormal];
+        [openUpBtn setImage:[UIImage imageNamed:@"wordsDetail_close"] forState:UIControlStateSelected];
         
         [openUpBtn addTarget:self action:@selector(openOrClose:) forControlEvents:UIControlEventTouchUpInside];
         
         [self addSubview:openUpBtn];
         
         [openUpBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.right.equalTo(self).offset(-tbSpaceing);
-            make.bottom.equalTo(self).offset(-spaceing);
-            make.width.equalTo(@40);
-            make.height.equalTo(@12);
+            make.bottom.equalTo(self.wordLabel.mas_bottom);
+            make.top.equalTo(self.wordLabel.mas_top);
+            make.right.equalTo(self).offset(-8);
+            make.width.height.mas_equalTo(30);
         }];
         _openUpBtn = openUpBtn;
     }

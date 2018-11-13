@@ -10,4 +10,6 @@
 
 @interface ZZTSectionLabView : UICollectionReusableView
 
+@property (nonatomic,strong) NSString *sectionName;
+
 @end

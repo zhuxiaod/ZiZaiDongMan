@@ -231,4 +231,15 @@
     
     return [NSString stringWithFormat:@"%ld年前",years];
 }
+//添加字间距
++(NSMutableAttributedString *)addStrSpace:(NSString *)str{
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:str attributes:@{NSKernAttributeName : @(1.5f)}];
+
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    
+    [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, str.length)];
+    [attributedString addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:18] range:NSMakeRange(0, str.length)];
+    
+    return attributedString;
+}
 @end

@@ -26,6 +26,7 @@
     return self;
 }
 
+
 -(void)setupUI{
     UIImageView *imageView = [[UIImageView alloc] init];
     _image = imageView;
@@ -56,24 +57,7 @@
     
     self.image.layer.cornerRadius = 12;
     self.image.layer.masksToBounds = YES;
-    self.image.backgroundColor = [UIColor orangeColor];
-}
-
--(void)setIsHaveLab:(BOOL)isHaveLab{
-    _isHaveLab = isHaveLab;
-    
-    //计算高度
-    CGFloat cellH = SCREEN_HEIGHT * 0.26;
-    CGFloat airH = cellH - cellH * 0.8 - 20;
-    
-    self.cartoonName.hidden = YES;
-    
-    [_image mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.contentView.mas_bottom).offset(4);
-        make.left.equalTo(self.contentView).offset(0);
-        make.right.equalTo(self.contentView).offset(0);
-        make.bottom.equalTo(self.contentView).offset(0);
-    }];
+//    self.image.backgroundColor = [UIColor orangeColor];
 }
 
 -(void)setCartoon:(ZZTCarttonDetailModel *)cartoon{
@@ -82,6 +66,16 @@
     [self.image sd_setImageWithURL:[NSURL URLWithString:cartoon.cover]];
     
     self.cartoonName.text = cartoon.bookName;
+    
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:self.cartoonName.text attributes:@{NSKernAttributeName : @(1.5f)}];
+
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    
+    [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, self.cartoonName.text.length)];
+    
+    [self.cartoonName setAttributedText:attributedString];
+    
+    self.cartoonName.lineBreakMode = NSLineBreakByTruncatingTail;
 }
 
 @end

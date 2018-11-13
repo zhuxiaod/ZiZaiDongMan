@@ -31,25 +31,31 @@
 }
 
 -(void)setupUI{
-    self.backgroundColor = [UIColor orangeColor];
+    self.backgroundColor = [UIColor whiteColor];
 
     //热门
     UIButton *hotBtn = [[UIButton alloc] init];
-    hotBtn.backgroundColor = [UIColor redColor];
+//    hotBtn.backgroundColor = [UIColor redColor];
+    [hotBtn setImage:[UIImage imageNamed:@"hotIcon"] forState:UIControlStateNormal];
+    [hotBtn addTarget:self action:@selector(btnTarget:) forControlEvents:UIControlEventTouchUpInside];
     _hotBtn = hotBtn;
+    hotBtn.tag = 1;
     [self addSubview:hotBtn];
     
     //热门lab
     UILabel *hotLab = [[UILabel alloc] init];
     hotLab.text = @"热门";
     _hotLab = hotLab;
-    hotLab.backgroundColor = [UIColor blueColor];
+//    hotLab.backgroundColor = [UIColor blueColor];
     hotLab.textAlignment = NSTextAlignmentCenter;
     [self addSubview:hotLab];
     
     //排行
     UIButton *rankBtn = [[UIButton alloc] init];
-    rankBtn.backgroundColor = [UIColor redColor];
+//    rankBtn.backgroundColor = [UIColor redColor];
+    [rankBtn setImage:[UIImage imageNamed:@"rankIcon"] forState:UIControlStateNormal];
+    [rankBtn addTarget:self action:@selector(btnTarget:) forControlEvents:UIControlEventTouchUpInside];
+    rankBtn.tag = 2;
     _rankBtn = rankBtn;
     [self addSubview:rankBtn];
     
@@ -58,13 +64,16 @@
     rankLab.text = @"排行";
     _rankLab = rankLab;
     rankLab.textAlignment = NSTextAlignmentCenter;
-    rankLab.backgroundColor = [UIColor blueColor];
+//    rankLab.backgroundColor = [UIColor blueColor];
     [self addSubview:rankLab];
     
     //分类
     UIButton *classifyBtn = [[UIButton alloc] init];
-    classifyBtn.backgroundColor = [UIColor redColor];
+//    classifyBtn.backgroundColor = [UIColor redColor];
+    [classifyBtn setImage:[UIImage imageNamed:@"classifyIcon"] forState:UIControlStateNormal];
+    [classifyBtn addTarget:self action:@selector(btnTarget:) forControlEvents:UIControlEventTouchUpInside];
     _classifyBtn = classifyBtn;
+    classifyBtn.tag = 3;
     [self addSubview:classifyBtn];
     
     //分类
@@ -72,8 +81,14 @@
     classifyLab.text = @"分类";
     _classifyLab = classifyLab;
     classifyLab.textAlignment = NSTextAlignmentCenter;
-    classifyLab.backgroundColor = [UIColor blueColor];
+//    classifyLab.backgroundColor = [UIColor blueColor];
     [self addSubview:classifyLab];
+}
+
+-(void)btnTarget:(UIButton *)btn{
+    if(self.homeBtnClick){
+        self.homeBtnClick(btn);
+    }
 }
 
 -(void)layoutSubviews{

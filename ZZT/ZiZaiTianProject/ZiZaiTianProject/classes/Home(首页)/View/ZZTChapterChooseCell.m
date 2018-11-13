@@ -35,6 +35,7 @@
     label.font = [UIFont systemFontOfSize:12];
     label.textAlignment = NSTextAlignmentCenter;
     label.layer.borderWidth = 1.0f;
+    label.layer.cornerRadius = 8;
     _label = label;
     [self.contentView addSubview:label];
 }
@@ -54,8 +55,8 @@
 -(void)setIsChangeStyle:(NSNumber *)isChangeStyle{
     _isChangeStyle = isChangeStyle;
     if([isChangeStyle isEqualToNumber:@1]){
-        _label.layer.borderColor = [UIColor blueColor].CGColor;
-        _label.textColor = [UIColor blueColor];
+        _label.layer.borderColor = ZZTSubColor.CGColor;
+        _label.textColor = ZZTSubColor;
     }else{
         _label.layer.borderColor = [UIColor grayColor].CGColor;
         _label.textColor = [UIColor grayColor];

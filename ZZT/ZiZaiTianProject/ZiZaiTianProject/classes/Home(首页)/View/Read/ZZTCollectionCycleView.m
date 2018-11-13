@@ -12,9 +12,18 @@
 
 @property (nonatomic,strong) SDCycleScrollView *cycleScrollView;
 
+@property (nonatomic,strong) NSMutableArray *dataArray;
+
 @end
 
 @implementation ZZTCollectionCycleView
+
+-(NSMutableArray *)dataArray{
+    if(!_dataArray){
+        _dataArray = [NSMutableArray array];
+    }
+    return _dataArray;
+}
 
 - (id)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
@@ -28,20 +37,53 @@
 
 -(void)setupUI{
     // 网络加载图片的轮播器
-    SDCycleScrollView *cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectZero delegate:self placeholderImage:[UIImage createImageWithColor:[UIColor whiteColor]]];
-    _cycleScrollView = cycleScrollView;
-    [self addSubview:cycleScrollView];
+    
 }
 
 -(void)layoutSubviews{
     [super layoutSubviews];
-    [_cycleScrollView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.cycleScrollView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.right.left.bottom.equalTo(self);
     }];
 }
 
--(void)setImageArray:(NSString *)imageArray{
+-(void)setImageArray:(NSArray *)imageArray{
     _imageArray = imageArray;
+    if(imageArray.count != 0){
+        [self.dataArray removeAllObjects];
+        for (int i = 0; i < imageArray.count; i++) {
+            ZZTCarttonDetailModel *md = [imageArray objectAtIndex:i];
+            [self.dataArray addObject:md.cover];
+        }
+    }
+    //数组
+    self.cycleScrollView.imageURLStringsGroup = self.dataArray;
+    self.cycleScrollView.autoScrollTimeInterval = 5.0f;// 自动滚动时间间隔
+}
+
+- (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index{
+    ZZTCarttonDetailModel *md = [self.imageArray objectAtIndex:index];
+    if([md.cartoonType isEqualToString:@"1"]){
+        ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
+        detailVC.isId = YES;
+        detailVC.cartoonDetail = md;
+        detailVC.hidesBottomBarWhenPushed = YES;
+        [[self myViewController].navigationController pushViewController:detailVC animated:YES];
+    }else{
+        ZZTMulWordDetailViewController *detailVC = [[ZZTMulWordDetailViewController alloc]init];
+        detailVC.isId = YES;
+        detailVC.cartoonDetail = md;
+        detailVC.hidesBottomBarWhenPushed = YES;
+        [[self myViewController].navigationController pushViewController:detailVC animated:YES];
+    }
+}
+
+-(SDCycleScrollView *)cycleScrollView{
+    if(!_cycleScrollView){
+        _cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectZero delegate:self placeholderImage:[UIImage createImageWithColor:[UIColor whiteColor]]];
+        [self addSubview:_cycleScrollView];
+    }
+    return _cycleScrollView;
 }
 
 @end

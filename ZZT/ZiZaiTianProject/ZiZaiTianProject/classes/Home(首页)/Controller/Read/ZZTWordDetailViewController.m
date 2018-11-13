@@ -88,7 +88,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     self.view.backgroundColor = [UIColor whiteColor];
     
     //设置挡住tableView白色的view
-    [self setupShieldView];
+//    [self setupShieldView];
     //设置顶部页面
     [self setupTopView];
     //设置底部View
@@ -97,9 +97,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 //    [self loadDetailData];
     
     //自定义navigationBar
-    [self setupNavigationBar];
-    
-
+//    [self setupNavigationBar];
 }
 
 -(void)setupShieldView{
@@ -129,21 +127,6 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     navbar.showBottomLabel = NO;
 }
 
-//-(void)loadDetailData{
-//    UserInfo *user = [Utilities GetNSUserDefaults];
-//    NSDictionary *dic = @{
-//                          @"id":_cartoonDetail.id,
-//                          @"userId":[NSString stringWithFormat:@"%ld",user.id]
-//                          };
-//    [AFNHttpTool POST:[ZZTAPI stringByAppendingString:@"cartoon/particulars"] parameters:dic success:^(id responseObject) {
-//        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-//        NSArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
-//
-//    } failure:^(NSError *error) {
-//
-//    }];
-//}
-
 //设置底部View
 -(void)setupBottomView{
     UIView *bottom = [[UIView alloc] init];
@@ -154,7 +137,8 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     //页码
     UIButton *pageBtn = [[UIButton alloc] init];
     pageBtn.frame = CGRectMake(0, 0, SCREEN_WIDTH/3*2, 50);
-    pageBtn.backgroundColor = [UIColor colorWithHexString:@"#DBDCDD"];
+    pageBtn.backgroundColor = [UIColor colorWithRGB:@"226,226,226"];
+//    pageBtn.alpha = 0.6;
     [pageBtn setTitle:@" " forState:UIControlStateNormal];
     _pageBtn = pageBtn;
     [pageBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -163,7 +147,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     //开始阅读 继续阅读
     UIButton *starRead = [[UIButton alloc] init];
     starRead.frame = CGRectMake(SCREEN_WIDTH/3*2, 0, SCREEN_WIDTH/3, 50);
-    starRead.backgroundColor = [UIColor colorWithHexString:@"#7778B2"];
+    starRead.backgroundColor = ZZTSubColor;
     [starRead addTarget:self action:@selector(starReadTarget:) forControlEvents:UIControlEventTouchUpInside];
     [starRead setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     _starRead = starRead;
@@ -210,18 +194,6 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 //设置数据
 -(void)setCartoonDetail:(ZZTCarttonDetailModel *)cartoonDetail{
     _cartoonDetail = cartoonDetail;
-//    if(self.isId == YES){
-//        //上部分View
-//        [self loadtopData:cartoonDetail.id];
-//       //目录
-////        [self loadListData:cartoonDetail.id];
-//       //评论
-////        [self loadCommentData:cartoonDetail.id];
-//    }else{
-//        [self loadtopData:cartoonDetail.cartoonId];
-//        //目录
-////        [self loadListData:cartoonDetail.cartoonId];
-//    }
 }
 
 //请求该漫画的资料
@@ -288,9 +260,9 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 
 -(void)setupTopView{
     
-    UITableView *contenView = [[UITableView alloc] initWithFrame:CGRectMake(0, -20, self.view.width, self.view.height - 30) style:UITableViewStyleGrouped];
+    UITableView *contenView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 30) style:UITableViewStyleGrouped];
     contenView.backgroundColor = [UIColor clearColor];
-    contenView.contentInset = UIEdgeInsetsMake(TOPBAR_HEIGHT,0,0,0);
+    contenView.contentInset = UIEdgeInsetsMake(-20,0,0,0);
     contenView.delegate = self;
     contenView.dataSource = self;
     contenView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -409,7 +381,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 //高度设置
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if(section == 0){
-        return 190;
+        return SCREEN_HEIGHT * 0.34;
     }else if(section == 1){
         //字符串
         self.descHeadView.desc = self.ctDetail.intro;
@@ -470,11 +442,14 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 
 -(void)chapterChooseView:(ZZTChapterChooseView *)chapterChooseView didItemWithModel:(ZZTChapterChooseModel *)model{
     
-    if(self.isId == YES){
-        [self loadListData:self.cartoonDetail.id pageNum:[NSString stringWithFormat:@"%ld",model.APIPage] isFirst:NO];
-    }else{
-        [self loadListData:self.cartoonDetail.cartoonId pageNum:[NSString stringWithFormat:@"%ld",model.APIPage] isFirst:NO];
-    }
+    dispatch_group_async(self.group, self.q, ^{
+        dispatch_group_enter(self.group);
+        if(self.isId == YES){
+            [self loadListData:self.cartoonDetail.id pageNum:[NSString stringWithFormat:@"%ld",model.APIPage] isFirst:NO];
+        }else{
+            [self loadListData:self.cartoonDetail.cartoonId pageNum:[NSString stringWithFormat:@"%ld",model.APIPage] isFirst:NO];
+        }
+    });
     
 }
 
@@ -508,7 +483,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
                                   };
             AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
             [manager POST:[ZZTAPI stringByAppendingString:@"great/collects"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-                //重新获取信息
+//                //重新获取信息
                 dispatch_group_async(weakSelf.group, weakSelf.q, ^{
                     dispatch_group_enter(weakSelf.group);
                     if(self.isId == YES){
@@ -527,7 +502,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if([self.cartoonDetail.type isEqualToString:@"1"]){
-        return 120;
+        return SCREEN_HEIGHT * 0.25;
     }else{
         return 94;
     }

@@ -18,6 +18,7 @@
 #import "ZZTUpdateViewController.h"
 #import "ZZTCollectView.h"
 #import "ZZTReadHomeViewController.h"
+#import "ZZTCollectHomeViewController.h"
 
 @interface ZZTHomeViewController ()<UIScrollViewDelegate,PYSearchViewControllerDelegate,PYSearchViewControllerDataSource,UITableViewDataSource,UITabBarControllerDelegate,ListViewDelegate>
 
@@ -25,7 +26,7 @@
 //@property (nonatomic,weak) ListView *listView;
 @property (nonatomic,weak) ZZTReadHomeViewController *ReadView;
 @property (nonatomic,weak) ZZTCreationTableView *CreationView;
-@property (nonatomic,weak) ZZTCollectView *collectView;
+@property (nonatomic,weak) ZZTCollectHomeViewController *collectView;
 
 @property (nonatomic,weak) ZZTCycleCell *cycleCell;
 //@property (nonatomic,weak) UIScrollView *mainView;
@@ -70,7 +71,7 @@ NSString *SuggestionView = @"SuggestionView";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self loadBookShelfData];
+//    [self loadBookShelfData];
     //设置Bar
     self.fd_prefersNavigationBarHidden = YES;
 
@@ -136,10 +137,11 @@ NSString *SuggestionView = @"SuggestionView";
     //书柜
     //直接在该页面创建一个collectionView
 ////    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc]init];
-    ZZTCollectView *collectVC = [[ZZTCollectView alloc] init];
-    collectVC.backgroundColor = [UIColor whiteColor];
+    ZZTCollectHomeViewController *collectVC = [[ZZTCollectHomeViewController alloc] init];
+//    collectVC.backgroundColor = [UIColor whiteColor];
     self.collectView = collectVC;
-    [self.mainView addSubview:collectVC];
+    [self addChildViewController:readVC];
+    [self.mainView addSubview:collectVC.view];
     self.automaticallyAdjustsScrollViewInsets = NO;
 }
 
@@ -161,7 +163,7 @@ NSString *SuggestionView = @"SuggestionView";
 //    [_ReadView setFrame:CGRectMake(width, 0, width, height)];
 //    [_collectView setFrame:CGRectMake(width * 2, 0, width, height)];
     
-    [_collectView setFrame:CGRectMake(width, 0, width, height)];
+    [_collectView.view setFrame:CGRectMake(width, 0, width, height)];
     [_ReadView.view setFrame:CGRectMake(0, 0, width, height)];
 
     //添加视图的时候会刷新一次
@@ -320,7 +322,7 @@ NSString *SuggestionView = @"SuggestionView";
                           @"cartoonId":string
                           };
     [manager POST:[ZZTAPI stringByAppendingString:@"great/delCollect"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        [self loadBookShelfData];
+//        [self loadBookShelfData];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
@@ -401,26 +403,26 @@ NSString *SuggestionView = @"SuggestionView";
 
 
 
-//加载数据
--(void)loadBookShelfData{
-    UserInfo *user = [Utilities GetNSUserDefaults];
-    NSDictionary *dic = @{
-                          @"userId":[NSString stringWithFormat:@"%ld",user.id]
-                          };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-    EncryptionTools *tool = [[EncryptionTools alloc]init];
-    [manager POST:[ZZTAPI stringByAppendingString:@"great/userCollect"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [tool decry:responseObject[@"result"]];
-        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
-        //        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
-        self.bookShelfArray = array;
-        [self addCartoonId:array];
-        self.collectView.dataArray = array;
-        //        [self.collectionView reloadData];
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
-    }];
-}
+////加载数据
+//-(void)loadBookShelfData{
+//    UserInfo *user = [Utilities GetNSUserDefaults];
+//    NSDictionary *dic = @{
+//                          @"userId":[NSString stringWithFormat:@"%ld",user.id]
+//                          };
+//    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+//    EncryptionTools *tool = [[EncryptionTools alloc]init];
+//    [manager POST:[ZZTAPI stringByAppendingString:@"great/userCollect"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+//        NSDictionary *dic = [tool decry:responseObject[@"result"]];
+//        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
+//        //        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
+//        self.bookShelfArray = array;
+//        [self addCartoonId:array];
+//        self.collectView.dataArray = array;
+//        //        [self.collectionView reloadData];
+//    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+//
+//    }];
+//}
 
 -(void)addCartoonId:(NSMutableArray *)array{
     NSMutableArray *cartoonArray = [NSMutableArray array];

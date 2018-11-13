@@ -94,6 +94,7 @@
 #import <SDWebImage/UIButton+WebCache.h>
 #import "ZZTMyZoneViewController.h"
 #import "ZZTCommentViewController.h"
+#import "SBStrokeLabel.h"
 
 #define BanerHeight SCREEN_HEIGHT * 0.3
 
