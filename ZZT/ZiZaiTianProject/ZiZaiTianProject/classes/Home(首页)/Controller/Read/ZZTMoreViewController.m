@@ -19,7 +19,9 @@ static const CGFloat MJDuration = 1.0;
 
 @property (nonatomic,strong) UICollectionView *collectionView;
 
-@property (nonatomic,strong)NSString *pageNumber;
+@property (nonatomic,assign) NSInteger pageNumber;
+
+@property (nonatomic,assign) NSInteger pageSize;
 
 @end
 
@@ -37,28 +39,27 @@ NSString *WordCell = @"WordCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.pageNumber = @"0";
+    self.pageNumber = 0;
     
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.pageSize = 10;
     
-    self.navigationItem.title = @"更多推荐";
+    [self addBackBtn];
     
-    self.navigationController.navigationBar.barTintColor = [UIColor blackColor];
-    
+    [self.viewNavBar.centerButton setTitle:@"更多推荐" forState:UIControlStateNormal];
+
     //流水布局
     UICollectionViewFlowLayout *layout = [self setupCollectionViewFlowLayout];
     //创建UICollectionView：黑色
     [self setupCollectionView:layout];
-    
-//    [self loadMoreData];
-    
-    [self setupMJRefresh];
-    
-    NSString *pageNumber = [NSString stringWithFormat:@"0"];
-    
-    [self.collectionView.mj_header beginRefreshing];
 
-    [self setBackItemWithImage:@"blackBack" pressImage:nil];
+    [self loadMoreData];
+    
+    [self.view bringSubviewToFront:self.viewNavBar];
+
+    [self setupMJRefresh];
+
+
+//    [self setBackItemWithImage:@"blackBack" pressImage:nil];
 }
 
 #pragma mark - 创建流水布局
@@ -80,7 +81,7 @@ NSString *WordCell = @"WordCell";
 #pragma mark - 创建CollectionView
 -(void)setupCollectionView:(UICollectionViewFlowLayout *)layout
 {
-    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, Screen_Width, Screen_Height) collectionViewLayout:layout];
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 64, Screen_Width, Screen_Height) collectionViewLayout:layout];
     collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView = collectionView;
     collectionView.dataSource = self;
@@ -92,53 +93,47 @@ NSString *WordCell = @"WordCell";
 
 -(void)setupMJRefresh{
     self.collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-//        [self loadMoreData];
+        [self loadNewData];
     }];
     self.collectionView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
        
         [self loadMoreData];
     }];
 }
+
 -(void)loadNewData{
+    
     NSDictionary *dic = @{
-                          @"pageNum":@"0",
-                          @"pageSize":self.pageNumber,
+                          @"pageNum":@"1",
+                          @"pageSize":[NSString stringWithFormat:@"%ld",self.pageSize],
+                          @"more":@"2"
                           };
-    //    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getRecommendCartoon"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
-        NSInteger total = [[dic objectForKey:@"total"] integerValue];
+        
         self.dataArray = array;
-//        [self.dataArray addObjectsFromArray:array];
         
         // 模拟延迟加载数据，因此2秒后才调用（真实开发中，可以移除这段gcd代码）
         [self.collectionView reloadData];
         
-        if(self.dataArray.count >= total){
-            [self.collectionView.mj_footer endRefreshingWithNoMoreData];
-        }else{
-            [self.collectionView.mj_footer endRefreshing];
-        }
-        
         [self.collectionView.mj_header endRefreshing];
-        
-        self.pageNumber = [NSString stringWithFormat:@"%ld",([self.pageNumber integerValue] + 10)];
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        [self.collectionView.mj_footer endRefreshing];
         
         [self.collectionView.mj_header endRefreshing];
+        
     }];
 }
 
 -(void)loadMoreData{
     NSDictionary *dic = @{
-                          @"pageNum":self.pageNumber,
-                          @"pageSize":@"10"
+                          @"pageNum":[NSString stringWithFormat:@"%ld",self.pageNumber],
+                          @"pageSize":@"10",
+                          @"more":@"2"
                           };
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getRecommendCartoon"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
@@ -155,15 +150,14 @@ NSString *WordCell = @"WordCell";
         }else{
             [self.collectionView.mj_footer endRefreshing];
         }
+
+        self.pageNumber++;
         
-        [self.collectionView.mj_header endRefreshing];
-
-        self.pageNumber = [NSString stringWithFormat:@"%ld",([self.pageNumber integerValue] + 10)];
-
+        self.pageSize += 10;
+        
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [self.collectionView.mj_footer endRefreshing];
         
-        [self.collectionView.mj_header endRefreshing];
     }];
 }
 
@@ -197,4 +191,14 @@ NSString *WordCell = @"WordCell";
         [self.navigationController pushViewController:detailVC animated:YES];
     }
 }
+
+-(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+    return UIEdgeInsetsMake(8, 8, 0, 8);//分别为上、左、下、右
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self.collectionView.mj_header beginRefreshing];
+}
+
 @end

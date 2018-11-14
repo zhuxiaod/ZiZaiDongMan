@@ -253,7 +253,9 @@ static NSString *bigImageCell = @"bigImageCell";
             ZZTMoreFooterView *moreVC = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:moreFooterView forIndexPath:indexPath];;
             moreVC.moreBtnClick = ^{
                 //跳转更多页面
-                
+                ZZTMoreViewController *moreVC = [[ZZTMoreViewController alloc] init];
+                moreVC.hidesBottomBarWhenPushed = YES;
+                [self.navigationController pushViewController:moreVC animated:YES];
             };
             moreVC.updateBtnClick = ^{
                 //更新数据

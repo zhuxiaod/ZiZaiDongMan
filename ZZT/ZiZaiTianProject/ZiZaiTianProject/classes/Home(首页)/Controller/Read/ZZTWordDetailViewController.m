@@ -354,13 +354,14 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     //书模型 cartoonDetail.id
     cartoonDetailVC.cartoonModel = _cartoonDetail;
     //章节
+    model.listTotal = self.chapterChooseView.total;
     cartoonDetailVC.dataModel = model;
     cartoonDetailVC.indexRow = indexPath.row;
     if(self.isHave == YES){
         cartoonDetailVC.testModel = self.model;
     }
     cartoonDetailVC.hidesBottomBarWhenPushed = YES;
-    cartoonDetailVC.isCollect = self.ctDetail.ifCollect;
+    cartoonDetailVC.collectModel = self.ctDetail;
     [self.navigationController pushViewController:cartoonDetailVC animated:YES];
 }
 
@@ -500,6 +501,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     }
     return _wordDetailHeadView;
 }
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if([self.cartoonDetail.type isEqualToString:@"1"]){
         return SCREEN_HEIGHT * 0.25;
@@ -552,9 +554,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    
-//    [self.navigationController setNavigationBarHidden:YES animated:YES ];
-//    self.navigationController.delegate = nil;
+
 }
 
 -(ZZTJiXuYueDuModel *)model{

@@ -9,10 +9,11 @@
 #import <UIKit/UIKit.h>
 
 @class ZZTCircleModel;
+@class ZZTStatusFooterView;
 
 @protocol ZZTStatusFooterViewDelegate <NSObject>
 
-- (void)didClickCommentButton:(ZZTCircleModel *)model;
+- (void)StatusFooterView:(ZZTStatusFooterView *)StatusFooterView didClickCommentButton:(ZZTCircleModel *)model;
 
 @end
 

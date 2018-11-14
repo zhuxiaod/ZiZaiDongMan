@@ -31,7 +31,16 @@
 @property (nonatomic, strong) UIImagePickerController *imagePickerVc;
 @property (nonatomic,strong) ZXDNavBar *navBar;
 
+@property (nonatomic,strong) UIScrollView *mainView;
+
+@property (nonatomic,strong) ZZTFindWorldViewController *findWorldVC;
+
+@property (nonatomic,strong) ZZTFindAttentionViewController *findVC;
+
+@property (nonatomic,strong) ZZTNavBarTitleView *titleView;
+
 @end
+
 NSString *SuggestionView3 = @"SuggestionView";
 
 @implementation ZZTFindViewController
@@ -45,13 +54,13 @@ NSString *SuggestionView3 = @"SuggestionView";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    //添加子页
-    ZZTFindWorldViewController *findWorldVC = [[ZZTFindWorldViewController alloc] init];
-    [self addChildViewController:findWorldVC];
+    //设置主视图
+    [self setupMainView];
     
-    ZZTFindAttentionViewController *findVC = [[ZZTFindAttentionViewController alloc] init];
-    [self addChildViewController:findVC];
-
+    //设置子页
+    [self setupChildView];
+    
+    
     _selectedPhotos = [NSMutableArray array];
     _selectedAssets = [NSMutableArray array];
     
@@ -59,6 +68,64 @@ NSString *SuggestionView3 = @"SuggestionView";
     [self setupNavbar];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNotification:) name:@"infoNotification" object:nil];
+}
+
+#pragma mark - 设置主视图
+- (void)setupMainView {
+    
+    UIScrollView *mainView = [[UIScrollView alloc] init];
+    //1.是否有弹簧效果
+    mainView.bounces = NO;
+    //整页平移是否开启
+    mainView.pagingEnabled = YES;
+    //显示水平滚动条
+    mainView.showsHorizontalScrollIndicator = NO;
+    //显示垂直滚动条
+    mainView.showsVerticalScrollIndicator = NO;
+    
+    mainView.delegate = self;
+    
+    [self.view addSubview:mainView];
+    
+    self.mainView = mainView;
+}
+
+-(void)setupChildView{
+    //添加子页
+    ZZTFindWorldViewController *findWorldVC = [[ZZTFindWorldViewController alloc] init];
+    [self addChildViewController:findWorldVC];
+    _findWorldVC = findWorldVC;
+    [self.mainView addSubview:findWorldVC.view];
+
+    ZZTFindAttentionViewController *findVC = [[ZZTFindAttentionViewController alloc] init];
+    [self addChildViewController:findVC];
+    [self.mainView addSubview:findVC.view];
+    _findVC = findVC;
+    self.automaticallyAdjustsScrollViewInsets = NO;
+}
+
+#pragma mark - 设置滚动视图
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+    
+    CGFloat height = self.view.height  - navHeight +20;
+    CGFloat width  = self.view.width;
+    
+    //主页的位置
+    [self.mainView setFrame:CGRectMake(0,0,width,height)];
+    //    self.mainView.contentSize  = CGSizeMake(width * 3, 0);
+    //    [self.mainView setFrame:CGRectMake(width,0,width,height)];
+    self.mainView.contentSize  = CGSizeMake(width * 2, 0);
+    
+    //提前加载
+    //    [_CreationView setFrame:CGRectMake(0, 0, width, height)];
+    //    [_ReadView setFrame:CGRectMake(width, 0, width, height)];
+    //    [_collectView setFrame:CGRectMake(width * 2, 0, width, height)];
+    
+    [_findVC.view setFrame:CGRectMake(width, 0, width, height)];
+    [_findWorldVC.view setFrame:CGRectMake(0, 0, width, height)];
+    
+    [self.mainView setContentOffset:CGPointMake(0, 0)];
 }
 
 //因为那个方法是在
@@ -90,7 +157,7 @@ NSString *SuggestionView3 = @"SuggestionView";
     titleView.btnTextColor = [UIColor whiteColor];
     titleView.btnBackgroundColor = [UIColor clearColor];
     titleView.backgroundColor = [UIColor colorWithHexString:@"#262626" alpha:0.8];
-    
+    _titleView = titleView;
     [titleView.leftBtn setTitle:@"世界" forState:UIControlStateNormal];
     [titleView.rightBtn setTitle:@"关注" forState:UIControlStateNormal];
     
@@ -238,16 +305,25 @@ NSString *SuggestionView3 = @"SuggestionView";
 
 -(void)clickMenu:(UIButton *)btn{
     // 取出选中的这个控制器
-    UIViewController *vc = self.childViewControllers[btn.tag];
-    // 设置尺寸位置
-    vc.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 40);
-    // 移除掉当前显示的控制器的view（移除的是view，而不是控制器）
-    [self.currentVC.view removeFromSuperview];
-    // 把选中的控制器view显示到界面上
-    [self.view addSubview:vc.view];
-    self.currentVC = vc;
-    //让nav在第一个上面
-    [self.view bringSubviewToFront:self.navBar];
+    if(btn.tag == 0){
+        [self.mainView setContentOffset:CGPointMake(0, 0) animated:YES];
+        [self.titleView selectBtn:btn];
+    }else{
+        [self.mainView setContentOffset:CGPointMake(ScreenW, 0) animated:YES];
+        [self.titleView selectBtn:btn];
+    }
+}
+
+//滑动展示清空按钮
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    if(CGPointEqualToPoint(scrollView.contentOffset, CGPointMake(ScreenW, 0))){
+        //书柜
+        [self.titleView selectBtn:self.titleView.rightBtn];
+
+    }else{
+        //首页
+        [self.titleView selectBtn:self.titleView.leftBtn];
+    }
 }
 
 #pragma mark - UIImagePickerController

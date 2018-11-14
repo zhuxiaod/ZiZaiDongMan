@@ -20,7 +20,7 @@
 @property (nonatomic,strong) ZZTJiXuYueDuModel *testModel;
 @property (nonatomic,assign) NSInteger indexRow;
 
-@property (nonatomic,strong) NSString *isCollect;
+@property (nonatomic,strong) ZZTCarttonDetailModel *collectModel;
 //书
 //@property (nonatomic,strong) NSString *bookNameId;
 

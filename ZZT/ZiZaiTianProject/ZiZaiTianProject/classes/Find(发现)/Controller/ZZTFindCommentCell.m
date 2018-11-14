@@ -354,6 +354,7 @@
     commentVC.chapterId = @"1";
     commentVC.cartoonType = @"2";
     [[self myViewController].navigationController presentViewController:commentVC animated:YES completion:nil];
+    [commentVC hiddenTitleView];
 
 }
 

@@ -33,6 +33,7 @@
 //图片数组
 @property(nonatomic,strong) NSArray *imageArray;
 
+@property (nonatomic,assign) NSInteger indexRow;
 //高度
 @property (nonatomic, strong) NSMutableArray *commentHeightArr;
 @property (nonatomic, assign) CGFloat cellHeight;

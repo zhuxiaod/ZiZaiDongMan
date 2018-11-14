@@ -32,9 +32,10 @@
 #import "ZZTAuthorHeaderView.h"
 #import "ZZTCommentAirView.h"
 #import "ZZTCommentViewController.h"
+#import "ZZTStatusCell.h"
+#import "ZZTStatusFooterView.h"
 
-
-@interface ZZTCartoonDetailViewController ()<UITableViewDelegate,UITableViewDataSource,CircleCellDelegate,ZZTCommentHeaderViewDelegate,UITextViewDelegate,NSURLSessionDataDelegate,ZZTCartoonContentCellDelegate,ZZTStoryDetailCellDelegate>
+@interface ZZTCartoonDetailViewController ()<UITableViewDelegate,UITableViewDataSource,CircleCellDelegate,ZZTCommentHeaderViewDelegate,UITextViewDelegate,NSURLSessionDataDelegate,ZZTCartoonContentCellDelegate,ZZTStoryDetailCellDelegate,ZZTStatusCellDelegate,ZZTStatusFooterViewDelegate>
 
 @property (nonatomic,strong) NSMutableArray *cartoonDetailArray;
 
@@ -84,6 +85,8 @@
 
 @property (nonatomic,strong) UIButton *publishBtn;
 
+@property (nonatomic,strong) ZZTStatusCell *statusCell;
+
 //判断恢复状态
 @property (nonatomic,assign) BOOL isReply;
 //回复者ID(节上的)
@@ -105,7 +108,6 @@
 //电池条
 @property (nonatomic,strong) UIView *statusBar;
 
-@property (nonatomic,strong) UIButton *kLikeBtn;
 //图片地址数组
 @property (nonatomic,strong) NSMutableArray *imageUrlArray;
 //TXTURL
@@ -127,6 +129,8 @@
 @property (nonatomic,strong) ZZTCircleModel *nowReplyModel;
 //判断是评论还是回复
 @property (nonatomic,strong) NSString *isCommentOrReply;
+//章节总数
+@property (nonatomic,assign) NSInteger listTotal;
 
 @end
 
@@ -268,7 +272,6 @@ static bool needHide = false;
     //初始化 没有人回复
     self.isReply = NO;
 
-    
     self.reloadDataCount = 0;
     
     self.tableView.fd_debugLogEnabled = YES;
@@ -280,8 +283,6 @@ static bool needHide = false;
     
     //评论下拉刷新
     [self setupMJRefresh];
-
-    
 }
 
 -(void)setupMJRefresh{
@@ -384,11 +385,11 @@ static bool needHide = false;
     navbar.leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 17);
     
     //中间
-    [navbar.centerButton setTitle:self.dataModel.chapterName forState:UIControlStateNormal];
+    [navbar.centerButton setTitle:[NSString stringWithFormat:@"%@第%@",_cartoonModel.bookName,self.dataModel.chapterName] forState:UIControlStateNormal];
     [navbar.centerButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
 //    [navbar.mainView setBackgroundColor:[UIColor colorWithRGB:@"121,105,212"]];
     
-    [navbar.rightButton setTitle:@"分享" forState:UIControlStateNormal];
+    [navbar.rightButton setImage:[UIImage imageNamed:@"cartoonDetail_header_share"] forState:UIControlStateNormal];
     [navbar.rightButton addTarget:self action:@selector(shareWithSharePanel) forControlEvents:UIControlEventTouchUpInside];
     navbar.showBottomLabel = NO;
 }
@@ -414,11 +415,12 @@ static bool needHide = false;
         make.left.right.equalTo(self.view);
         make.bottom.equalTo(@(0));
     }];
+    
     //输入View
     self.kTextView = [UITextView new];
     _kTextView.backgroundColor = [UIColor whiteColor];
     _kTextView.layer.cornerRadius = 5;
-    _kTextView.text = @"请输入评论";
+    _kTextView.text = @"赶紧评论秀才华~";
     _kTextView.textColor = [UIColor grayColor];
     NSMutableParagraphStyle *paragraphStyle = [NSMutableParagraphStyle new];
     paragraphStyle.lineSpacing = 5;// 字体的行间距
@@ -432,37 +434,25 @@ static bool needHide = false;
     [_kTextView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(@7);
         make.bottom.equalTo(@(-7));
-        make.left.equalTo(@14);
-        make.right.equalTo(@(-90));
+        make.left.equalTo(@7);
+        make.right.equalTo(@(-(SCREEN_WIDTH / 5)));
     }];
     
     //发布按钮
     UIButton *publishBtn = [[UIButton alloc] init];
     [publishBtn setTitle:@"发布" forState:UIControlStateNormal];
-    [publishBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+    [publishBtn setBackgroundColor:ZZTSubColor];
+    [publishBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [_kInputView addSubview:publishBtn];
     [publishBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(@7);
-        make.bottom.equalTo(@(-7));
+        make.top.equalTo(@0);
+        make.bottom.equalTo(@(-0));
         make.left.equalTo(self.kTextView.mas_right).offset(4);
-        make.width.mas_equalTo(50);
+        make.width.mas_equalTo(SCREEN_WIDTH / 5);
     }];
     _publishBtn = publishBtn;
     [publishBtn addTarget:self action:@selector(sendMessage) forControlEvents:UIControlEventTouchUpInside];
     
-    //改
-    //点赞按钮
-    UIButton *kLikeBtn = [[UIButton alloc] init];
-    [kLikeBtn setImage:[UIImage imageNamed:@"正文-点赞-已点赞"] forState:UIControlStateNormal];
-    [_kInputView addSubview:kLikeBtn];
-    [kLikeBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(@10);
-        make.bottom.equalTo(@-10);
-        make.left.equalTo(self.publishBtn.mas_right).offset(4);
-        make.width.mas_equalTo(30);
-    }];
-    [kLikeBtn addTarget:self action:@selector(likeBtnTaget) forControlEvents:UIControlEventTouchUpInside];
-    self.kLikeBtn = kLikeBtn;
 }
 
 -(void)likeBtnTaget{
@@ -580,11 +570,11 @@ static bool needHide = false;
 }
 
 -(void)loadContent{
-//
-//    dispatch_group_async(self.group, self.q, ^{
-//        dispatch_group_enter(self.group);
-//        [self loadContentData];
-//    });
+
+    dispatch_group_async(self.group, self.q, ^{
+        dispatch_group_enter(self.group);
+        [self loadContentData];
+    });
 
     dispatch_group_async(self.group, self.q, ^{
         dispatch_group_enter(self.group);
@@ -935,6 +925,8 @@ static bool needHide = false;
 //需要传1 或者2
 -(void)setDataModel:(ZZTChapterlistModel *)dataModel{
     _dataModel = dataModel; // 你的问题在哪里  是没有数据还是数据错乱
+    //设置总数 方便进行下一页判断
+    self.listTotal = dataModel.listTotal;
 }
 
 -(void)setCartoonModel:(ZZTCarttonDetailModel *)cartoonModel{
@@ -967,20 +959,22 @@ static bool needHide = false;
 #pragma mark UITableViewDataSource 头高
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if(section == 0){
-        return 100;
+        return SCREEN_HEIGHT * 0.14;
     }else if(section == 1){
         //点赞 关注 分享
-        return 100;
+        return SCREEN_HEIGHT * 0.124;
     }else if (section == 2){
         //作者
-        return 100;
+        return SCREEN_HEIGHT * 0.18;
     }else{
         if(_isHasComment){
             //没有评论
-            return 150;
+            return 200;
         }else{
-            ZZTCircleModel *item = self.commentArray[section - 3];
-            return item.headerHeight + 24;
+//            ZZTCircleModel *item = self.commentArray[section - 3];
+//            return item.headerHeight + 24;
+            ZZTCircleModel *model = self.commentArray[section - 3];
+            return model.headerHeight;
         }
     }
 
@@ -1002,7 +996,7 @@ static bool needHide = false;
         if(!likeCollectView){
             likeCollectView = [[ZZTLikeCollectShareHeaderView alloc] initWithReuseIdentifier:likeCollectShareHeaderView];
         }
-        likeCollectView.isCollect = self.isCollect;
+        likeCollectView.collectModel = self.collectModel;
         weakself(self);
         //点赞
         likeCollectView.likeBtnBlock = ^{
@@ -1038,17 +1032,12 @@ static bool needHide = false;
             return airHeaderView;
         }else{
             //评论
-            static NSString *viewIdentfier = @"headView";
-            ZZTCommentHeaderView *headerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:viewIdentfier];
-            //如果没有头视图
-            if(!headerView){
-                headerView = [[ZZTCommentHeaderView alloc] initWithReuseIdentifier:viewIdentfier];
-            }
-            headerView.delegate = self;
             ZZTCircleModel *model = self.commentArray[section - 3];
-            [headerView setContentData:model section:section - 3];
-            [self.tableView.mj_footer setHidden:NO];
-            return headerView;
+            self.statusCell = [[ZZTStatusCell alloc] initWithReuseIdentifier:statusHeaderReuseIdentifier];
+            self.statusCell.delegate = self;
+            model.indexRow = section - 3;
+            self.statusCell.model = model;
+            return _statusCell;
         }
     }
 }
@@ -1076,7 +1065,18 @@ static bool needHide = false;
 
 #pragma mark - FooterView
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
-    if(section == 1){
+    if(section == 0){
+        static NSString *viewIdentfier = @"footerView";
+        SectionFooterView *footerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:viewIdentfier];
+        if(!footerView){
+            footerView = [[SectionFooterView alloc] initWithReuseIdentifier:viewIdentfier];
+            if (!self.headerMuArr) {
+                self.headerMuArr = [NSMutableArray array];
+            }
+            [self.headerMuArr addObject:footerView];
+        }
+        return footerView;
+    }else if(section == 1){
         //上下篇
         static NSString *nextWordViewIdentfier = @"nextWordView";
         _nextWordView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:nextWordViewIdentfier];
@@ -1088,6 +1088,8 @@ static bool needHide = false;
         [_nextWordView.rightBtn setTag:2];
         [_nextWordView.leftBtn addTarget:self action:@selector(nextWordWithBtn:) forControlEvents:UIControlEventTouchUpInside];
         [_nextWordView.leftBtn setTag:1];
+        _nextWordView.listTotal = self.listTotal;
+        _nextWordView.chapterModel = self.dataModel;
         return _nextWordView;
     }else if (section == 2){
         //精彩点评
@@ -1095,17 +1097,20 @@ static bool needHide = false;
         commentHeadView.backgroundColor = [UIColor whiteColor];
         return commentHeadView;
     }else{
-        //评论白尾巴
-        static NSString *viewIdentfier = @"footerView";
-        SectionFooterView *footerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:viewIdentfier];
-        if(!footerView){
-            footerView = [[SectionFooterView alloc] initWithReuseIdentifier:viewIdentfier];
-            if (!self.headerMuArr) {
-                self.headerMuArr = [NSMutableArray array];
+        if(self.isHasComment){
+            UIView *footerView = [[UIView alloc] init];
+            return footerView;
+        }else{
+            static NSString *statusFooterView = @"statusFooterView";
+            ZZTStatusFooterView *footerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:statusFooterView];
+            if(!footerView){
+                footerView = [[ZZTStatusFooterView alloc] initWithReuseIdentifier:statusFooterView];
             }
-            [self.headerMuArr addObject:footerView];
+            footerView.delegate = self;
+            ZZTCircleModel *model = self.commentArray[section - 3];
+            footerView.model = model;
+            return footerView;
         }
-        return footerView;
     }
 }
 
@@ -1119,11 +1124,11 @@ static bool needHide = false;
     if(section == 0){
         return 0;
     }else if (section == 1){
-        return 100;
+        return SCREEN_HEIGHT * 0.12;
     }else if (section == 2){
         return 40;
     }else{
-        return 0;
+        return 30;
     }
 }
 
@@ -1647,7 +1652,7 @@ static bool needHide = false;
 
 - (void)textViewDidBeginEditing:(UITextView *)textView {
 
-    if([textView.text isEqualToString:@"请输入评论"]){
+    if([textView.text isEqualToString:@"赶紧评论秀才华~"]){
         textView.text = @"";
         textView.textColor = [UIColor blackColor];
     }
@@ -1660,7 +1665,7 @@ static bool needHide = false;
 - (void)textViewDidEndEditing:(UITextView *)textView {
     self.isReply = NO;
     if(textView.text.length < 1){
-        textView.text = @"请输入评论";
+        textView.text = @"赶紧评论秀才华~";
         textView.textColor = [UIColor grayColor];
     }
 }
@@ -1974,23 +1979,23 @@ static bool needHide = false;
 -(UITableView *)tableView{
     if(!_tableView){
         //先把漫画显示出来
-        UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT) style:UITableViewStyleGrouped];
-        tableView.delegate = self;
-        tableView.dataSource = self;
-        tableView.contentInset = UIEdgeInsetsMake(0,0,50,0);
-        tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-        tableView.estimatedRowHeight = 0;
-        tableView.estimatedSectionHeaderHeight = 0;
-        tableView.estimatedSectionFooterHeight = 0;
-        tableView.tableFooterView = [UIView new];
-        [tableView registerClass:[ZZTCartoonContentCell class] forCellReuseIdentifier:CartoonContentCellIdentifier];
-        tableView.showsVerticalScrollIndicator = YES;
-        _tableView = tableView;
-        [self.view addSubview:tableView];
+        _tableView= [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT) style:UITableViewStyleGrouped];
+        _tableView.backgroundColor = [UIColor whiteColor];
+        _tableView.delegate = self;
+        _tableView.dataSource = self;
+        _tableView.contentInset = UIEdgeInsetsMake(navHeight - 20,0,50,0);
+        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        _tableView.estimatedRowHeight = 0;
+        _tableView.estimatedSectionHeaderHeight = 0;
+        _tableView.estimatedSectionFooterHeight = 0;
+        _tableView.tableFooterView = [UIView new];
+        [_tableView registerClass:[ZZTCartoonContentCell class] forCellReuseIdentifier:CartoonContentCellIdentifier];
+        _tableView.showsVerticalScrollIndicator = YES;
+        [self.view addSubview:_tableView];
         
         [self loadViewIfNeeded];
         
-        tableView.pagingEnabled = NO;
+        _tableView.pagingEnabled = NO;
         //评论
         //注册cell
         [self.tableView registerClass:[CircleCell class] forCellReuseIdentifier:kCellId];
@@ -2002,6 +2007,7 @@ static bool needHide = false;
     }
     return _tableView;
 }
+
 -(void)headerViewCollect{
     UserInfo *userInfo = [Utilities GetNSUserDefaults];
     NSDictionary *dic = @{
@@ -2015,10 +2021,20 @@ static bool needHide = false;
 
     }];
 }
-//是否收藏
--(void)setIsCollect:(NSString *)isCollect{
-    _isCollect = isCollect;
-    //@"1" 是收藏
+
+- (ZZTStatusCell *)statusCell {
+    if (!_statusCell) {
+        
+        _statusCell = [[ZZTStatusCell alloc] initWithFrame:CGRectZero];
+        _statusCell.backgroundColor = [UIColor clearColor];
+        
+    }
+    return _statusCell;
+}
+
+-(void)StatusFooterView:(ZZTStatusFooterView *)StatusFooterView didClickCommentButton:(ZZTCircleModel *)model{
+//    -(void)didCommentLabelReply:(NSInteger)section{
+        [self didCommentLabelReply:model.indexRow];
 }
 
 @end

@@ -351,8 +351,9 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
             self.zoneHeadView.user = model;
             [self.tabelView reloadData];
         }
+        [self.tabelView.mj_header endRefreshing];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
+        [self.tabelView.mj_header endRefreshing];
     }];
 }
 @end

@@ -7,12 +7,21 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ZXDNavBar.h"
 
 @interface BaseViewController : UIViewController<UINavigationControllerDelegate>
 
 @property (nonatomic) BOOL statusBarHidden;
 
+@property (nonatomic,strong) ZXDNavBar *viewNavBar;
+
 @property (nonatomic) UIStatusBarStyle statusBarStyle;
+
+//如果该页面push
+-(void)addBackBtn;
+
+//隐藏自定义nav 默认显示
+-(void)hiddenViewNavBar;
 
 - (void)setBackItemWithImage:(NSString *)image pressImage:(NSString *)pressImage;
 

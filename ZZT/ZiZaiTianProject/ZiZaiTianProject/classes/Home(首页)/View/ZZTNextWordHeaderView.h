@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "ZXDCartoonFlexoBtn.h"
 #import "ImageLeftBtn.h"
+@class ZZTChapterlistModel;
 
 @class ZZTStoryModel;
 
@@ -30,6 +31,10 @@ typedef void (^centerBtnBlock) (void);
 
 @property (nonatomic,strong) centerBtnBlock block;
 
+//总数
+@property (nonatomic,assign) NSInteger listTotal;
+//当前章节model
+@property (nonatomic,assign) ZZTChapterlistModel *chapterModel;
 
 //@property (nonatomic, copy) void (^ centerBtnBlock)(void);
 

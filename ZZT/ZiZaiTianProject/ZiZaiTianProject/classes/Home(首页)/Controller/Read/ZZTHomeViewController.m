@@ -42,7 +42,10 @@
 //titleView
 @property (nonatomic,strong) ZZTNavBarTitleView *titleView;
 
+@property (nonatomic,strong) UIButton *deleteBtn;
+
 @end
+
 NSString *SuggestionView = @"SuggestionView";
 
 @implementation ZZTHomeViewController
@@ -140,7 +143,7 @@ NSString *SuggestionView = @"SuggestionView";
     ZZTCollectHomeViewController *collectVC = [[ZZTCollectHomeViewController alloc] init];
 //    collectVC.backgroundColor = [UIColor whiteColor];
     self.collectView = collectVC;
-    [self addChildViewController:readVC];
+    [self addChildViewController:collectVC];
     [self.mainView addSubview:collectVC.view];
     self.automaticallyAdjustsScrollViewInsets = NO;
 }
@@ -242,13 +245,29 @@ NSString *SuggestionView = @"SuggestionView";
     
     //返回
     [navBar.leftButton setImage:[UIImage imageNamed:@"Home_readHistory"] forState:UIControlStateNormal];
+    [navBar.leftButton addTarget:self action:@selector(history) forControlEvents:UIControlEventTouchUpInside];
     navBar.leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 17);
-//    [navBar.leftButton addTarget:self action:@selector(addMoment) forControlEvents:UIControlEventTouchUpInside];
-    
+
+    //搜索
     [navBar.rightButton setImage:[UIImage imageNamed:@"Home_search"] forState:UIControlStateNormal];
     navBar.rightButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, -33);
     [navBar.rightButton addTarget:self action:@selector(search) forControlEvents:UIControlEventTouchUpInside];
     
+    //删除
+    UIButton *deleteBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    _deleteBtn = deleteBtn;
+    deleteBtn.hidden = YES;
+    [deleteBtn setImage:[UIImage imageNamed:@"Home_removeBook"] forState:UIControlStateNormal];
+    deleteBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, -33);
+    [deleteBtn addTarget:self action:@selector(showRemindView) forControlEvents:UIControlEventTouchUpInside];
+    [navBar addSubview:deleteBtn];
+    
+    [deleteBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.navBar.rightButton.mas_top);
+        make.right.equalTo(self.navBar.rightButton.mas_right);
+        make.width.mas_equalTo(50);
+        make.height.mas_equalTo(40);
+    }];
     
     //中间
     [navBar.mainView addSubview:titleView];
@@ -263,11 +282,18 @@ NSString *SuggestionView = @"SuggestionView";
     navBar.showBottomLabel = NO;
 }
 
+-(void)showRemindView{
+    [self.collectView showRemindView];
+}
+
 -(void)clickMenu:(UIButton *)btn{
     if(btn.tag == 0){
         [self.mainView setContentOffset:CGPointMake(0, 0) animated:YES];
+        [self showHomeView];
     }else{
+        //点击书柜
         [self.mainView setContentOffset:CGPointMake(ScreenW, 0) animated:YES];
+        [self showDeletBtn];
     }
 }
 
@@ -281,52 +307,31 @@ NSString *SuggestionView = @"SuggestionView";
 //滑动展示清空按钮
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     if(CGPointEqualToPoint(scrollView.contentOffset, CGPointMake(ScreenW, 0))){
-        //显示删除
-        self.navBar.leftButton.hidden = YES;
-        self.navBar.rightButton.imageView.image = [UIImage imageNamed:@"Home_removeBook"];
-        [self.navBar.rightButton removeTarget:self action:@selector(search) forControlEvents:UIControlEventTouchUpInside];
-        [self.navBar.rightButton addTarget:self  action:@selector(removeAllBook) forControlEvents:UIControlEventTouchUpInside];
-        [scrollView setContentOffset:CGPointMake(ScreenW, 0)];
-        [self.titleView selectBtn:self.titleView.rightBtn];
+        //书柜
+        [self showDeletBtn];
+        
     }else{
-        //显示搜索
-        self.navBar.leftButton.hidden = NO;
-        self.navigationItem.leftBarButtonItem.customView.hidden = NO;
-        self.navBar.rightButton.imageView.image = [UIImage imageNamed:@"search"];
-        [self.navBar.rightButton removeTarget:self action:@selector(removeAllBook) forControlEvents:UIControlEventTouchUpInside];
-        [self.navBar.rightButton addTarget:self  action:@selector(search) forControlEvents:UIControlEventTouchUpInside];
-        [self.titleView selectBtn:self.titleView.leftBtn];
+        //首页
+        [self showHomeView];
     }
 }
-                                                 
--(void)removeAllBook{
-    [self.remindView removeFromSuperview];
-    ZZTRemindView *remindView = [[ZZTRemindView alloc] initWithFrame:CGRectMake(ScreenW, 0, ScreenW, ScreenH)];
-    self.remindView = remindView;
-    remindView.viewTitle = @"是否清空?";
-    remindView.btnBlock = ^(UIButton *btn) {
-        NSString *string = [self.cartoonArray componentsJoinedByString:@","];
-        if(self.cartoonArray.count){
-            [self loadRemoveBook:string];
-        }
-    };
-    [self.mainView addSubview:remindView];
+
+-(void)showHomeView{
+    //显示搜索
+    self.navBar.leftButton.hidden = NO;
+    self.navBar.rightButton.hidden = NO;
+    self.deleteBtn.hidden = YES;
+    [self.titleView selectBtn:self.titleView.leftBtn];
 }
 
--(void)loadRemoveBook:(NSString *)string{
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-
-    UserInfo *user = [Utilities GetNSUserDefaults];
-    NSDictionary *dic = @{
-                          @"userId":[NSString stringWithFormat:@"%ld",user.id],
-                          @"cartoonId":string
-                          };
-    [manager POST:[ZZTAPI stringByAppendingString:@"great/delCollect"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-//        [self loadBookShelfData];
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
-    }];
+-(void)showDeletBtn{
+    //显示删除
+    self.navBar.leftButton.hidden = YES;
+    self.navBar.rightButton.hidden = YES;
+    self.deleteBtn.hidden = NO;
+    [self.titleView selectBtn:self.titleView.rightBtn];
 }
+
 
 -(void)dealloc{
     NSLog(@"我走了");
@@ -401,37 +406,6 @@ NSString *SuggestionView = @"SuggestionView";
     return 40.f;
 }
 
-
-
-////加载数据
-//-(void)loadBookShelfData{
-//    UserInfo *user = [Utilities GetNSUserDefaults];
-//    NSDictionary *dic = @{
-//                          @"userId":[NSString stringWithFormat:@"%ld",user.id]
-//                          };
-//    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-//    EncryptionTools *tool = [[EncryptionTools alloc]init];
-//    [manager POST:[ZZTAPI stringByAppendingString:@"great/userCollect"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-//        NSDictionary *dic = [tool decry:responseObject[@"result"]];
-//        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
-//        //        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
-//        self.bookShelfArray = array;
-//        [self addCartoonId:array];
-//        self.collectView.dataArray = array;
-//        //        [self.collectionView reloadData];
-//    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-//
-//    }];
-//}
-
--(void)addCartoonId:(NSMutableArray *)array{
-    NSMutableArray *cartoonArray = [NSMutableArray array];
-    for (int i = 0; i < array.count; i++) {
-        ZZTCarttonDetailModel *model = array[i];
-        [cartoonArray addObject:model.cartoonId];
-    }
-    self.cartoonArray = cartoonArray;
-}
 
 -(void)receiveNotification:(NSNotification *)infoNotification {
     NSDictionary *dic = [infoNotification userInfo];

@@ -33,7 +33,40 @@
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor whiteColor]];
     [self setAutomaticallyAdjustsScrollViewInsets:NO];
+    
+    self.fd_prefersNavigationBarHidden = YES;
+
+    //自己的View
+    [self setupNavbar];
 }
+
+-(void)setupNavbar
+{
+    ZXDNavBar *navBar = [[ZXDNavBar alloc] init];
+    _viewNavBar = navBar;
+    navBar.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:navBar];
+    
+    [_viewNavBar mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.equalTo(self.view);
+        make.top.equalTo(self.view);
+        make.height.equalTo(@(navHeight));
+    }];
+}
+
+-(void)addBackBtn{
+    [_viewNavBar.leftButton setImage:[UIImage imageNamed:@"blackBack"] forState:UIControlStateNormal];
+    [_viewNavBar.leftButton addTarget:self action:@selector(dismissLastView) forControlEvents:UIControlEventTouchUpInside];
+}
+
+-(void)dismissLastView{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)hiddenViewNavBar{
+    _viewNavBar.hidden = YES;
+}
+
 
 - (void)setBackItemWithImage:(NSString *)image pressImage:(NSString *)pressImage {
     

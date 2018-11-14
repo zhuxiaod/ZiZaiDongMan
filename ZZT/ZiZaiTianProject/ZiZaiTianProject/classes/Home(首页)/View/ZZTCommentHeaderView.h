@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @class ZZTCircleModel;
+@class ZZTCommentHeaderView;
 
 extern const CGFloat SectionHeaderHorizontalSpace; //水平方向控件之间的间隙距离
 extern const CGFloat SectionHeaderVerticalSpace; //竖直方向控件之间的间隙距离
@@ -33,7 +34,7 @@ extern const CGFloat SectionHeaderSomePicturesHeight; //有多张图片时的单
 //点击点赞btn
 - (void)didClickLikeButton:(NSInteger)section;
 //点击评论btn
-- (void)didClickCommentButton:(NSInteger)section;
+- (void)commentHeaderView:(ZZTCommentHeaderView *)commentHeaderView didClickCommentButton:(NSInteger)section;
 
 -(void)didCommentLabelReply:(NSInteger)section;
 

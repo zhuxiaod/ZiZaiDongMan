@@ -20,11 +20,17 @@
 
 @property (nonatomic,strong) UIScrollView *scrollView;
 
-@property (nonatomic,strong) NSArray *dataArray;
+@property (nonatomic,strong) NSMutableArray *dataArray;
 
 @property (nonatomic,weak) PYSearchViewController *searchVC;
 
 @property (nonatomic,strong) NSMutableArray *searchSuggestionArray;
+//点谁
+@property (nonatomic,strong) NSString *btnType;
+
+@property (nonatomic,assign) NSInteger pageNumber;
+
+@property (nonatomic,assign) NSInteger pageSize;
 
 @end
 NSString *SuggestionView2 = @"SuggestionView2";
@@ -45,9 +51,9 @@ NSString *SuggestionView2 = @"SuggestionView2";
     return _titles;
 }
 
--(NSArray *)dataArray{
+-(NSMutableArray *)dataArray{
     if(!_dataArray){
-        _dataArray = [NSArray array];
+        _dataArray = [NSMutableArray array];
     }
     return _dataArray;
 }
@@ -61,7 +67,13 @@ NSString *SuggestionView2 = @"SuggestionView2";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.navigationItem.title = @"分类";
+    self.pageNumber = 1;
+    
+    self.pageSize = 10;
+    
+    [self.viewNavBar.centerButton setTitle:@"分类" forState:UIControlStateNormal];
+    
+    [self addBackBtn];
     
     self.view.backgroundColor = [UIColor whiteColor];
     //分类
@@ -74,8 +86,19 @@ NSString *SuggestionView2 = @"SuggestionView2";
     
     [self setupNavBar];
     
-    [self setBackItemWithImage:@"blackBack" pressImage:nil];
+    self.btnType = @"1";
+    
+    [self setupMJRefresh];
+}
 
+-(void)setupMJRefresh{
+    self.collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        [self loadNewData];
+    }];
+    
+    self.collectionView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        [self loadData];
+    }];
 }
 
 -(void)setupCollectionView{
@@ -84,6 +107,7 @@ NSString *SuggestionView2 = @"SuggestionView2";
     
     [self setupCollectionView:layout];
 }
+
 #pragma mark - 创建流水布局
 -(UICollectionViewFlowLayout *)setupCollectionViewFlowLayout{
     
@@ -172,35 +196,89 @@ NSString *SuggestionView2 = @"SuggestionView2";
         if(button == btn){
             [btn setTitleColor:[UIColor colorWithHexString:@"#7B7BE4"] forState:UIControlStateNormal];
             [btn setImage:[UIImage imageNamed:@"排行榜-当前榜单"] forState:UIControlStateNormal];
-            [self loadData:btn];
+            self.btnType = btn.rankType;
+            
+            [self loadData];
+            
         }else{
             [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             [button setImage:nil forState:UIControlStateNormal];
         }
     }
 }
-
--(void)loadData:(RankButton *)btn{
+//加载更多
+-(void)loadData{
     NSDictionary *dic = @{
-                          @"bookType":btn.rankType,
+                          @"bookType":self.btnType,
+                          //众创
+                          @"cartoonType":@"1",
+                          @"pageNum":[NSString stringWithFormat:@"%ld",self.pageNumber],
+                          @"pageSize":@"10"
+                          };
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonlist"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        
+        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
+
+//        NSInteger total = [[dic objectForKey:@"total"] integerValue];
+     
+        
+        [self.dataArray addObjectsFromArray:array];
+        
+        [self.collectionView reloadData];
+        
+//        if(self.dataArray.count >= total){
+//            [self.collectionView.mj_footer endRefreshingWithNoMoreData];
+//        }else{
+            [self.collectionView.mj_footer endRefreshing];
+//        }
+        
+        self.pageNumber++;
+        
+        self.pageSize += 10;
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [self.collectionView.mj_footer endRefreshing];
+
+    }];
+}
+
+-(void)loadNewData{
+    NSDictionary *dic = @{
+                          @"bookType":self.btnType,
                           //众创
                           @"cartoonType":@"1",
                           @"pageNum":@"1",
-                          @"pageSize":@"10"
+                          @"pageSize":[NSString stringWithFormat:@"%ld",self.pageSize]
                           };
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonlist"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
+        
+        
         self.dataArray = array;
+        
         [self.collectionView reloadData];
+        
+        self.pageNumber++;
+        
+        self.pageSize += 10;
+        
+        [self.collectionView.mj_header endRefreshing];
+
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [self.collectionView.mj_header endRefreshing];
         
     }];
 }
+
 -(void)setupScrollView{
-    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 60)];
+    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, navHeight, SCREEN_WIDTH, 60)];
     self.scrollView = scrollView;
     self.scrollView.bounces = YES;
     self.scrollView.showsHorizontalScrollIndicator = NO;
@@ -222,8 +300,8 @@ NSString *SuggestionView2 = @"SuggestionView2";
 #pragma mark - 设置导航条
 -(void)setupNavBar
 {
-    //右边导航条
-    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithImage:[UIImage imageNamed:@"read_search"] highImage:[UIImage imageNamed:@"read_search"] target:self action:@selector(search)];
+//    //右边导航条
+//    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithImage:[UIImage imageNamed:@"read_search"] highImage:[UIImage imageNamed:@"read_search"] target:self action:@selector(search)];
 }
 
 -(void)search{
@@ -294,6 +372,11 @@ NSString *SuggestionView2 = @"SuggestionView2";
 - (CGFloat)searchSuggestionView:(UITableView *)searchSuggestionView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 40.f;
+}
+
+//边距设置:整体边距的优先级，始终高于内部边距的优先级
+-(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+    return UIEdgeInsetsMake(8, 8, 0, 8);//分别为上、左、下、右
 }
 
 @end

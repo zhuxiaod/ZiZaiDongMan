@@ -14,4 +14,6 @@
 
 @property (nonatomic,strong) NSString *cartoonType;
 
+-(void)hiddenTitleView;
+
 @end

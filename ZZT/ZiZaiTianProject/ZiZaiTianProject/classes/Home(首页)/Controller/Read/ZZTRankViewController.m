@@ -22,6 +22,9 @@
 
 @property (nonatomic,assign) NSInteger pageNumber;
 
+@property (nonatomic,assign) NSInteger pageSize;
+
+
 @end
 
 NSString *zztRankCell = @"zztRankCell";
@@ -53,25 +56,58 @@ NSString *zztRankCell = @"zztRankCell";
     //下view
     [self setupTableView];
     
-    self.navigationItem.title = @"排行榜";
+    [self.viewNavBar.centerButton setTitle:@"排行榜" forState:UIControlStateNormal];
     
-    [self setBackItemWithImage:@"blackBack" pressImage:nil];
-
-    self.pageNumber = 0;
+    [self addBackBtn];
+    
+    self.pageNumber = 1;
+    
+    self.pageSize = 10;
     
     [self setupMJRefresh];
-    
-//    [self.tableView.mj_header beginRefreshing];
-//    [self loadData];
+
+    [self.tableView.mj_header beginRefreshing];
 }
 
 -(void)setupMJRefresh{
-//    self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-//        [self loadData];
-//    }];
+    self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        [self loadNewData];
+    }];
     
     self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
         [self loadData];
+    }];
+}
+
+-(void)loadNewData{
+    NSDictionary *dic = @{
+                          //众创
+                          @"pageNum":@"1",
+                          @"pageSize":[NSString stringWithFormat:@"%ld",self.pageSize]
+                          };
+    
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getCartoonRanking"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
+        
+        array = [self addIsHave:array];
+        
+        self.dataArray = array;
+        
+        [self.tableView reloadData];
+        
+        //page+size
+        self.pageNumber++;
+        
+        self.pageSize += 10;
+        [self.tableView.mj_header endRefreshing];
+
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+        [self.tableView.mj_header endRefreshing];
+        
     }];
 }
 
@@ -80,29 +116,33 @@ NSString *zztRankCell = @"zztRankCell";
     NSDictionary *dic = @{
                           //众创
                           @"pageNum":[NSString stringWithFormat:@"%ld",self.pageNumber],
-                          @"pageSize":@"10"
+                          @"pageSize":[NSString stringWithFormat:@"%ld",self.pageSize]
                           };
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getCartoonRanking"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
+        
         id to = [dic objectForKey:@"total"];
         NSInteger total = [to integerValue];
         array = [self addIsHave:array];
+        
         [self.dataArray addObjectsFromArray:array];
+        
         [self.tableView reloadData];
+        
         if(self.dataArray.count >= total){
             [self.tableView.mj_footer endRefreshingWithNoMoreData];
         }else{
             [self.tableView.mj_footer endRefreshing];
         }
         //page+size
-        self.pageNumber += 10;
-//        [self.tableView.mj_header endRefreshing];
+        self.pageNumber++;
+        self.pageSize += 10;
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [self.tableView.mj_footer endRefreshing];
-//        [self.tableView.mj_header endRefreshing];
     }];
 }
 
@@ -116,7 +156,7 @@ NSString *zztRankCell = @"zztRankCell";
 
 -(void)setupTopView{
     //上view
-    UIView *topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 50)];
+    UIView *topView = [[UIView alloc] initWithFrame:CGRectMake(0, navHeight, SCREEN_WIDTH, 50)];
     topView.backgroundColor = [UIColor whiteColor];
     _topView = topView;
     [self.view addSubview:topView];
@@ -182,7 +222,7 @@ NSString *zztRankCell = @"zztRankCell";
 }
 
 -(void)setupTableView{
-    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.topView.height + 10, SCREEN_WIDTH, SCREEN_HEIGHT - self.topView.height +10 - navHeight) style:UITableViewStyleGrouped];
+    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.topView.frame) + 8, SCREEN_WIDTH, SCREEN_HEIGHT - self.topView.height + 10 - navHeight) style:UITableViewStyleGrouped];
     tableView.backgroundColor = [UIColor whiteColor];
     tableView.delegate = self;
     tableView.dataSource = self;
@@ -193,6 +233,7 @@ NSString *zztRankCell = @"zztRankCell";
     [tableView registerNib:[UINib nibWithNibName:@"ZZTRankCell" bundle:nil] forCellReuseIdentifier:zztRankCell];
     tableView.contentInset = UIEdgeInsetsMake(-30, 0, 0, 0);
 }
+
 #pragma mark - 设置组数
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;

@@ -22,7 +22,7 @@
     UIImageView *airImageView = [[UIImageView alloc] init];
     [self.contentView addSubview:airImageView];
     
-    airImageView.image = [UIImage imageNamed:@"空白"];
+    airImageView.image = [UIImage imageNamed:@"airView"];
     
     [airImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.right.left.bottom.equalTo(self.contentView).offset(0);

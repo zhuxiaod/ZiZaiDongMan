@@ -328,11 +328,12 @@ static NSString *const airView = @"airView";
     }
 }
 
--(void)didClickCommentButton:(ZZTCircleModel *)section{
+- (void)StatusFooterView:(ZZTStatusFooterView *)StatusFooterView didClickCommentButton:(ZZTCircleModel *)model{
     if ([_adelegate respondsToSelector:@selector(commentView:sendReply:)]) {
-        [_adelegate commentView:self sendReply:section];
+        [_adelegate commentView:self sendReply:model];
     }
 }
+
 -(void)longPressDeleteReply:(ZZTCircleModel *)model{
     if ([_adelegate respondsToSelector:@selector(longPressDeleteComment:)]) {
         [_adelegate longPressDeleteComment:model];

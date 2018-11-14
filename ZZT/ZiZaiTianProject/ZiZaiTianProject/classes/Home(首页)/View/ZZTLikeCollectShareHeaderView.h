@@ -18,6 +18,7 @@ typedef void (^collectBtnBlock) (void);
 
 @property (nonatomic,strong) ZZTStoryModel *likeModel;
 
+@property (nonatomic,strong) ZZTCarttonDetailModel *collectModel;
 
 @property (nonatomic,strong) UIButton *collectBtn;
 
@@ -27,6 +28,5 @@ typedef void (^collectBtnBlock) (void);
 
 @property (nonatomic, copy) void (^ collectBtnBlock)(void);
 
-@property (nonatomic,strong) NSString *isCollect;
 
 @end

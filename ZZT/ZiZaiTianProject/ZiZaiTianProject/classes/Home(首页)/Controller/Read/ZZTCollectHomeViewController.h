@@ -10,4 +10,11 @@
 
 @interface ZZTCollectHomeViewController : UIViewController
 
+-(void)showDeleteBtn;
+
+-(void)hiddenDeleteBtn;
+
+-(void)showRemindView;
+
+
 @end

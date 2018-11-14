@@ -95,6 +95,10 @@
 #import "ZZTMyZoneViewController.h"
 #import "ZZTCommentViewController.h"
 #import "SBStrokeLabel.h"
+#import "ZXDNavBar.h"
+#import "AttentionButton.h"
+
+
 
 #define BanerHeight SCREEN_HEIGHT * 0.3
 

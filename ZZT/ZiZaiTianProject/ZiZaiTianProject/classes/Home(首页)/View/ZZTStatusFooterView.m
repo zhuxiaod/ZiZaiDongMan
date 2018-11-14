@@ -121,7 +121,7 @@
         
         [btn setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
         [btn setTitleColor:[self.likeCountView titleColorForState:UIControlStateNormal] forState:UIControlStateNormal];
-        [btn setImage:[UIImage imageNamed:@"作品-作品信息-评论(灰色）"] forState:UIControlStateNormal];
+        [btn setImage:[UIImage imageNamed:@"commentImg"] forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(showCommentVc) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:btn];
         
@@ -132,8 +132,8 @@
 }
 
 -(void)showCommentVc{
-    if ([_delegate respondsToSelector:@selector(didClickCommentButton:)]) {
-        [_delegate didClickCommentButton:self.model];
+    if ([_delegate respondsToSelector:@selector(StatusFooterView:didClickCommentButton:)]) {
+        [_delegate StatusFooterView:self didClickCommentButton:self.model];
     }
 }
 @end

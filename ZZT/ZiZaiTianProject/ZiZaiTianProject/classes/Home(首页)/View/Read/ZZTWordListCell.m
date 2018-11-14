@@ -53,7 +53,7 @@
     //赞
     UIImageView *likeImg = [[UIImageView alloc] init];
     _likeImg = likeImg;
-    [likeImg setImage:[UIImage imageNamed:@"正文-点赞-已点赞"]];
+    [likeImg setImage:[UIImage imageNamed:@"catoonDetail_like"]];
     [self.contentView addSubview:likeImg];
     
     UILabel *likeNum = [[UILabel alloc] init];
@@ -123,6 +123,12 @@
         make.height.mas_equalTo(20);
     }];
     
+    [self.commentView.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.commentView.mas_left);
+        make.bottom.equalTo(self.commentView.mas_bottom);
+        make.height.mas_equalTo(20);
+    }];
+    
     [self.likeNum mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.commentView.mas_left).with.offset(-5);
         make.bottom.equalTo(self.bottomView.mas_top).with.offset(-10);
@@ -136,7 +142,6 @@
         make.height.mas_equalTo(18);
         make.width.mas_equalTo(18);
     }];
-    
 }
 
 -(void)setModel:(ZZTChapterlistModel *)model{
@@ -185,7 +190,7 @@
     [self.commentView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.width.equalTo(@(replyCountWidth));
     }];
-    [self.likeImg setImage:[UIImage imageNamed:@"正文-点赞-已点赞"]];
+    [self.likeImg setImage:[UIImage imageNamed:@"catoonDetail_like"]];
     
     
 }
@@ -222,7 +227,7 @@
         
         [btn setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
         [btn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-        [btn setImage:[UIImage imageNamed:@"ic_common_comment_normal_15x15_"] forState:UIControlStateNormal];
+        [btn setImage:[UIImage imageNamed:@"commentImg"] forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(goToCommentView) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:btn];
         

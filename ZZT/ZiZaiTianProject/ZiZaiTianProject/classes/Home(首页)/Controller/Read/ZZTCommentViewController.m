@@ -47,6 +47,8 @@
 //回复人（cell上的）
 @property (nonatomic,strong) customer *replyer;
 
+@property (nonatomic,strong) ZZTNavBarTitleView *titleView;
+
 @end
 
 @implementation ZZTCommentViewController
@@ -184,7 +186,7 @@
 -(void)setupNavigationBar{
     
     ZZTNavBarTitleView *titleView = [[ZZTNavBarTitleView alloc] init];
-    
+    _titleView = titleView;
     //样式
     titleView.selBtnTextColor = [UIColor whiteColor];
     titleView.selBtnBackgroundColor = [UIColor orangeColor];
@@ -271,37 +273,24 @@
     [_kTextView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(@7);
         make.bottom.equalTo(@(-7));
-        make.left.equalTo(@14);
-        make.right.equalTo(@(-90));
+        make.left.equalTo(@7);
+        make.right.equalTo(@(-(SCREEN_WIDTH / 5)));
     }];
     
     //发布按钮
     UIButton *publishBtn = [[UIButton alloc] init];
     [publishBtn setTitle:@"发布" forState:UIControlStateNormal];
-    [publishBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+    [publishBtn setBackgroundColor:ZZTSubColor];
+    [publishBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [_kInputView addSubview:publishBtn];
     [publishBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(@7);
-        make.bottom.equalTo(@(-7));
+        make.top.equalTo(@0);
+        make.bottom.equalTo(@(-0));
         make.left.equalTo(self.kTextView.mas_right).offset(4);
-        make.width.mas_equalTo(50);
+        make.width.mas_equalTo(SCREEN_WIDTH / 5);
     }];
     _publishBtn = publishBtn;
     [publishBtn addTarget:self action:@selector(sendMessage) forControlEvents:UIControlEventTouchUpInside];
-    
-    //改
-    //点赞按钮
-    UIButton *kLikeBtn = [[UIButton alloc] init];
-    [kLikeBtn setImage:[UIImage imageNamed:@"正文-点赞-已点赞"] forState:UIControlStateNormal];
-    [_kInputView addSubview:kLikeBtn];
-    [kLikeBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(@10);
-        make.bottom.equalTo(@-10);
-        make.left.equalTo(self.publishBtn.mas_right).offset(4);
-        make.width.mas_equalTo(30);
-    }];
-//    [kLikeBtn addTarget:self action:@selector(likeBtnTaget) forControlEvents:UIControlEventTouchUpInside];
-    self.kLikeBtn = kLikeBtn;
 }
 
 -(void)sendMessage{
@@ -450,4 +439,7 @@
     _cartoonType = cartoonType;
 }
 
+-(void)hiddenTitleView{
+    self.titleView.hidden = YES;
+}
 @end

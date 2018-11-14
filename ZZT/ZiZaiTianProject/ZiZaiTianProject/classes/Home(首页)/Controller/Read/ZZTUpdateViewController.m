@@ -39,22 +39,24 @@
     [super viewDidLoad];
     
     [self setupTitle];
-    //清空
-    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithTitle:@"清空" target:self action:@selector(removeAllBooks) titleColor:[UIColor blackColor]];
     
     self.automaticallyAdjustsScrollViewInsets = NO;
     
     //流水布局
     UICollectionViewFlowLayout *layout = [self setupCollectionViewFlowLayout];
+    
     //创建UICollectionView：黑色
     [self setupCollectionView:layout];
+    
     //请求书柜
     [self loadBookShelf];
     
-    [self setBackItemWithImage:@"blackBack" pressImage:nil];
+//    [self setBackItemWithImage:@"blackBack" pressImage:nil];
 
     
+    [self.view bringSubviewToFront:self.viewNavBar];
 }
+
 -(void)loadBookShelf{
     UserInfo *user = [Utilities GetNSUserDefaults];
     NSDictionary *dic = @{
@@ -114,7 +116,7 @@
 #pragma mark - 创建CollectionView
 -(void)setupCollectionView:(UICollectionViewFlowLayout *)layout
 {
-    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, Screen_Width, Screen_Height) collectionViewLayout:layout];
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, navHeight, Screen_Width, Screen_Height) collectionViewLayout:layout];
     collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView = collectionView;
     collectionView.dataSource = self;
@@ -153,9 +155,19 @@
         [self.navigationController pushViewController:detailVC animated:YES];
     }
 }
+//边距设置:整体边距的优先级，始终高于内部边距的优先级
+-(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+    return UIEdgeInsetsMake(8, 8, 0, 8);//分别为上、左、下、右
+}
 
 -(void)setupTitle{
-    self.navigationItem.title = @"历史";
+    [self.viewNavBar.centerButton setTitle:@"历史" forState:UIControlStateNormal];
+    
+    [self.viewNavBar.rightButton setTitle:@"清空" forState:UIControlStateNormal];
+    
+    [self.viewNavBar.rightButton addTarget:self action:@selector(removeAllBooks) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self addBackBtn];
 }
 
 

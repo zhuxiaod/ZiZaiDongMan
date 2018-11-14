@@ -129,7 +129,7 @@ static CGFloat iconSize = 40;
         
         UILabel *label = [[UILabel alloc] init];
         
-        label.textColor = [UIColor orangeColor];
+        label.textColor = ZZTSubColor;
         label.font = [UIFont systemFontOfSize:14];
         
         [self.contentView addSubview:label];

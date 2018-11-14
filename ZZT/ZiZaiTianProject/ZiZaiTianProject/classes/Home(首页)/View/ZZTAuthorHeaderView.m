@@ -22,6 +22,8 @@
 @property (nonatomic,strong) UILabel *userIntro;
 
 @property (nonatomic,strong) UILabel *bottomView;
+//关注btn
+@property (nonatomic,strong) AttentionButton *attentionButton;
 
 @end
 
@@ -49,15 +51,14 @@
     
     //头像
     userAuthenticationIcon *userImg = [[userAuthenticationIcon alloc] init];
-//    userImg.backgroundColor = [UIColor redColor];
     _userImg = userImg;
-//    [userImg updateIconWithImageUrl:];
     [self.contentView addSubview:userImg];
     
     //ID
     UILabel *userName = [[UILabel alloc] init];
 //    userName.backgroundColor = [UIColor orangeColor];
     _userName = userName;
+    userName.textColor = ZZTSubColor;
     [self.contentView addSubview:userName];
     
     //介绍
@@ -69,6 +70,10 @@
     userIntro.text = @"测试数据：欢迎大家来看我的新作品，我是朱晓俊哈哈哈哈哈哈哈哈哈哈哈哈啊哈哈哈哈哈哈啊哈哈哈哈哈啊哈哈哈哈哈哈啊哈哈哈哈哈啊哈哈哈哈啊哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈";
     [self.contentView addSubview:userIntro];
     
+    //关注btn
+    _attentionButton = [[AttentionButton alloc] init];
+    [self.contentView addSubview:_attentionButton];
+    
     //底View
     UILabel *bottomView = [[UILabel alloc] init];
     _bottomView = bottomView;
@@ -79,6 +84,8 @@
 -(void)layoutSubviews{
     [super layoutSubviews];
 
+  
+    
     [_commentSectionHeadView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.contentView).offset(0);
         make.right.left.equalTo(self.contentView).offset(0);
@@ -91,6 +98,14 @@
     }];
     
     [self layoutIfNeeded];
+    
+    [_attentionButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.authorDataView).offset(-8);
+        make.centerY.equalTo(self.authorDataView);
+        make.height.width.mas_equalTo(self.authorDataView.height * 0.5);
+    }];
+    
+
     CGFloat userHW = self.authorDataView.height * 0.6;
     [_userImg mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.authorDataView);
@@ -100,17 +115,25 @@
     
     CGFloat userNameH = userHW * 0.6;
     [_userName mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(self.authorDataView);
-        make.left.equalTo(self.userImg.mas_right).offset(4);
-        make.height.mas_equalTo(userNameH);
-        make.width.equalTo(self.authorDataView).multipliedBy(0.26);
+//        make.centerY.equalTo(self.authorDataView);
+//        make.left.equalTo(self.userImg.mas_right).offset(4);
+//        make.height.mas_equalTo(userNameH);
+//        make.width.equalTo(self.authorDataView).multipliedBy(0.26);
+        make.top.equalTo(self.userImg.mas_top);
+        make.left.equalTo(self.userImg.mas_right).offset(8);
+        make.height.mas_equalTo(userHW * 0.4);
+        make.right.equalTo(self.attentionButton.mas_left).offset(-4);
     }];
     
     [_userIntro mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(self.authorDataView);
-        make.left.equalTo(self.userName.mas_right).offset(8);
-        make.height.equalTo(self.authorDataView).multipliedBy(0.54);
-        make.right.equalTo(self.authorDataView.mas_right).offset(-8);
+//        make.centerY.equalTo(self.authorDataView);
+//        make.left.equalTo(self.userName.mas_right).offset(8);
+//        make.height.equalTo(self.authorDataView).multipliedBy(0.54);
+//        make.right.equalTo(self.authorDataView.mas_right).offset(-8);
+        make.bottom.equalTo(self.userImg.mas_bottom);
+        make.left.equalTo(self.userImg.mas_right).offset(8);
+        make.height.mas_equalTo(userHW * 0.6);
+        make.right.equalTo(self.attentionButton.mas_left).offset(-4);
     }];
     
     [_bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -125,7 +148,8 @@
     
     self.userName.text = userModel.nickName;
     
-    //简介
+    //关注
+    _attentionButton.isAttention = NO;
 }
 
 @end

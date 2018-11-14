@@ -9,6 +9,7 @@
 #import "ZZTNextWordHeaderView.h"
 #import "ZXDCartoonFlexoBtn.h"
 #import "ZZTStoryModel.h"
+#import "ZZTChapterlistModel.h"
 
 @interface ZZTNextWordHeaderView ()
 
@@ -35,9 +36,9 @@
     //左
     _leftBtn = [[UIButton alloc] init];
 //    _liftBtn.backgroundColor = [UIColor redColor];
-    [_leftBtn setImage:[UIImage imageNamed:@"后退键"] forState:UIControlStateNormal];
+    [_leftBtn setImage:[UIImage imageNamed:@"lastPage_black"] forState:UIControlStateNormal];
     [_leftBtn setTitle:@"上一页" forState:UIControlStateNormal];
-    [_leftBtn setTitleColor:[UIColor colorWithRGB:@"127,127,127"] forState:UIControlStateNormal];
+    [_leftBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.contentView addSubview:_leftBtn];
     [_leftBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
     [_leftBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 8)];
@@ -45,9 +46,9 @@
     //右
     _rightBtn = [[UIButton alloc] init];
 //    _rightBtn.backgroundColor = [UIColor blueColor];
-    [_rightBtn setImage:[UIImage imageNamed:@"箭头右"] forState:UIControlStateNormal];
+    [_rightBtn setImage:[UIImage imageNamed:@"nextPage_black"] forState:UIControlStateNormal];
     [_rightBtn setTitle:@"下一页" forState:UIControlStateNormal];
-    [_rightBtn setTitleColor:[UIColor colorWithRGB:@"127,127,127"] forState:UIControlStateNormal];
+    [_rightBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.contentView addSubview:_rightBtn];
     [_rightBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 60)];
     [_rightBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 80, 0, 0)];
@@ -94,6 +95,25 @@
     }];
 }
 
+-(void)setListTotal:(NSInteger)listTotal{
+    _listTotal = listTotal;
+}
 
+-(void)setChapterModel:(ZZTChapterlistModel *)chapterModel{
+    _chapterModel = chapterModel;
+    
+    if([chapterModel.chapterId integerValue] - 1 == 0){
+        //上一页变灰 colorWithRGB:
+        [_leftBtn setImage:[UIImage imageNamed:@"lastPage_gray"] forState:UIControlStateNormal];
+        [_leftBtn setTitleColor:[UIColor colorWithRGB:@"127,127,127"] forState:UIControlStateNormal];
+    }
+
+    if([chapterModel.chapterId integerValue] == _listTotal){
+        //下一页变灰
+        [_rightBtn setImage:[UIImage imageNamed:@"nextPage_gray"] forState:UIControlStateNormal];
+        [_rightBtn setTitleColor:[UIColor colorWithRGB:@"127,127,127"] forState:UIControlStateNormal];
+
+    }
+}
 
 @end

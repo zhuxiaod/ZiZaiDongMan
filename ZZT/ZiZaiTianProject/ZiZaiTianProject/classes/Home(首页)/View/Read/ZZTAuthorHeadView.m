@@ -21,7 +21,8 @@
 
 -(void)setUserModel:(UserInfo *)userModel{
     _userModel = userModel;
-    [self.headImg sd_setImageWithURL:[NSURL URLWithString:userModel.headimg] placeholderImage:[UIImage imageNamed:@"peien"]];
+    [self.headImg sd_setImageWithURL:[NSURL URLWithString:userModel.headimg]];
     self.authorName.text = userModel.nickName;
+    [self.authorName setTextColor:ZZTSubColor];
 }
 @end

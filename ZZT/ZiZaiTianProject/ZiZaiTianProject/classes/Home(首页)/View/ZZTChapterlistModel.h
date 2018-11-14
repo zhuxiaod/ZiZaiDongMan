@@ -42,4 +42,6 @@
 
 @property(nonatomic,assign)NSInteger wordNum;
 
+@property(nonatomic,assign)NSInteger listTotal;
+
 @end
