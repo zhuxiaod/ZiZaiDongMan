@@ -112,7 +112,6 @@
         //下一页变灰
         [_rightBtn setImage:[UIImage imageNamed:@"nextPage_gray"] forState:UIControlStateNormal];
         [_rightBtn setTitleColor:[UIColor colorWithRGB:@"127,127,127"] forState:UIControlStateNormal];
-
     }
 }
 

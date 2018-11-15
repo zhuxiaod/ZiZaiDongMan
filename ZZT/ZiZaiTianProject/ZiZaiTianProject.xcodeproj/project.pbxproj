@@ -276,7 +276,6 @@
 		049A99C920E32AF600ED27C9 /* UITextField+ZXDTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 049A99C620E32AF500ED27C9 /* UITextField+ZXDTextField.m */; };
 		049A99CA20E32AF600ED27C9 /* UIView+Frame.m in Sources */ = {isa = PBXBuildFile; fileRef = 049A99C720E32AF500ED27C9 /* UIView+Frame.m */; };
 		049A99D320E32F2F00ED27C9 /* ZZTLoginRegisterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 049A99D120E32F2F00ED27C9 /* ZZTLoginRegisterViewController.m */; };
-		049A99D420E32F2F00ED27C9 /* ZZTLoginRegisterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 049A99D220E32F2F00ED27C9 /* ZZTLoginRegisterViewController.xib */; };
 		049A99DB20E3879700ED27C9 /* ZZTVIPViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 049A99D920E3879700ED27C9 /* ZZTVIPViewController.m */; };
 		049A99EA20E394BB00ED27C9 /* ZZTVIPTopView.m in Sources */ = {isa = PBXBuildFile; fileRef = 049A99E820E394BB00ED27C9 /* ZZTVIPTopView.m */; };
 		049A99EB20E394BB00ED27C9 /* ZZTVIPTopView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 049A99E920E394BB00ED27C9 /* ZZTVIPTopView.xib */; };
@@ -842,7 +841,6 @@
 		049A99C820E32AF600ED27C9 /* UITextField+ZXDTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextField+ZXDTextField.h"; sourceTree = "<group>"; };
 		049A99D020E32F2F00ED27C9 /* ZZTLoginRegisterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTLoginRegisterViewController.h; sourceTree = "<group>"; };
 		049A99D120E32F2F00ED27C9 /* ZZTLoginRegisterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTLoginRegisterViewController.m; sourceTree = "<group>"; };
-		049A99D220E32F2F00ED27C9 /* ZZTLoginRegisterViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ZZTLoginRegisterViewController.xib; sourceTree = "<group>"; };
 		049A99D820E3879700ED27C9 /* ZZTVIPViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTVIPViewController.h; sourceTree = "<group>"; };
 		049A99D920E3879700ED27C9 /* ZZTVIPViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTVIPViewController.m; sourceTree = "<group>"; };
 		049A99E720E394BA00ED27C9 /* ZZTVIPTopView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZTVIPTopView.h; sourceTree = "<group>"; };
@@ -1859,7 +1857,6 @@
 				048C333420E2106200F69CE1 /* ZZTMeViewController.m */,
 				049A99D020E32F2F00ED27C9 /* ZZTLoginRegisterViewController.h */,
 				049A99D120E32F2F00ED27C9 /* ZZTLoginRegisterViewController.m */,
-				049A99D220E32F2F00ED27C9 /* ZZTLoginRegisterViewController.xib */,
 				049A99D820E3879700ED27C9 /* ZZTVIPViewController.h */,
 				049A99D920E3879700ED27C9 /* ZZTVIPViewController.m */,
 				0442951720E5D52300D1AABF /* ZZTBrowViewController.h */,
@@ -2103,7 +2100,6 @@
 				043B074720EDEDBE00ED3F5B /* ZZTWalletCell.xib in Resources */,
 				042D147B218AA86400BE05F6 /* TZImagePickerController.bundle in Resources */,
 				043B075220EDFC6900ED3F5B /* ZZTShoppingButtomCell.xib in Resources */,
-				049A99D420E32F2F00ED27C9 /* ZZTLoginRegisterViewController.xib in Resources */,
 				0498B5F4212ED35E005BD26D /* ZZTXuHuaBtn.xib in Resources */,
 				0471A86C20F72FB700ABFF35 /* ZZTWordCell.xib in Resources */,
 				046683A320F359F00095C6BC /* u=2092279950,3036263238&fm=27&gp=0.jpg in Resources */,

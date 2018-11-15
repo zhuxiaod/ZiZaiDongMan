@@ -45,6 +45,7 @@
     //热门lab
     UILabel *hotLab = [[UILabel alloc] init];
     hotLab.text = @"热门";
+    hotLab.attributedText = [NSString addStrSpace:hotLab.text];
     _hotLab = hotLab;
 //    hotLab.backgroundColor = [UIColor blueColor];
     hotLab.textAlignment = NSTextAlignmentCenter;
@@ -62,6 +63,7 @@
     //排行
     UILabel *rankLab = [[UILabel alloc] init];
     rankLab.text = @"排行";
+    rankLab.attributedText = [NSString addStrSpace:rankLab.text];
     _rankLab = rankLab;
     rankLab.textAlignment = NSTextAlignmentCenter;
 //    rankLab.backgroundColor = [UIColor blueColor];
@@ -79,6 +81,8 @@
     //分类
     UILabel *classifyLab = [[UILabel alloc] init];
     classifyLab.text = @"分类";
+    classifyLab.attributedText = [NSString addStrSpace:classifyLab.text];
+
     _classifyLab = classifyLab;
     classifyLab.textAlignment = NSTextAlignmentCenter;
 //    classifyLab.backgroundColor = [UIColor blueColor];

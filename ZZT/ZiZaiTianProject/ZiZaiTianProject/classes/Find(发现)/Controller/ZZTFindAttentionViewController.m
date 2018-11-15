@@ -210,6 +210,10 @@ static NSString *findCommentCell = @"findCommentCell";
     self.bannerView.model = user;
     weakself(self);
     self.bannerView.gotoViewBlock = ^{
+        if([[UserInfoManager share] hasLogin] == NO){
+            [UserInfoManager needLogin];
+            return;
+        }
         //跳转个人页面
         ZZTMyZoneViewController *zoneView = [[ZZTMyZoneViewController alloc] init];
         zoneView.userId = [NSString stringWithFormat:@"%ld",user.id];

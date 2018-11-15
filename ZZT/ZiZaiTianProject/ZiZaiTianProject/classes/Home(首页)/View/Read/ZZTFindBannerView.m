@@ -44,10 +44,11 @@
         make.height.mas_equalTo(36);
     }];
 }
+
 #pragma mark lazy load
 -(SDCycleScrollView *)cycleScrollView{
     if(!_cycleScrollView){
-        _cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectZero delegate:self placeholderImage:[UIImage createImageWithColor:[UIColor redColor]]];
+        _cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectZero delegate:self placeholderImage:[UIImage createImageWithColor:[UIColor whiteColor]]];
         _cycleScrollView.pageControlAliment = SDCycleScrollViewPageContolAlimentLeft;
         [self.contentView addSubview:_cycleScrollView];
     }

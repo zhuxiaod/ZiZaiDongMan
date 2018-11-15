@@ -67,7 +67,7 @@
     _userIntro = userIntro;
     userIntro.numberOfLines = 2;
     userIntro.font = [UIFont systemFontOfSize:12];
-    userIntro.text = @"测试数据：欢迎大家来看我的新作品，我是朱晓俊哈哈哈哈哈哈哈哈哈哈哈哈啊哈哈哈哈哈哈啊哈哈哈哈哈啊哈哈哈哈哈哈啊哈哈哈哈哈啊哈哈哈哈啊哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈";
+//    userIntro.text = @";
     [self.contentView addSubview:userIntro];
     
     //关注btn
@@ -150,6 +150,8 @@
     
     //关注
     _attentionButton.isAttention = NO;
+    
+    self.attentionButton.userInteractionEnabled = NO;
 }
 
 @end

@@ -275,7 +275,7 @@ static NSString *const airView = @"airView";
 //头
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if(!self.isHaveComment){
-        return 150;
+        return 200;
     }else{
         ZZTCircleModel *model = self.commentArray[section];
         return model.headerHeight;

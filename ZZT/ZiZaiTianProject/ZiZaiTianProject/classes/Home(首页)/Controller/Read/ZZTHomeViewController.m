@@ -50,21 +50,21 @@ NSString *SuggestionView = @"SuggestionView";
 
 @implementation ZZTHomeViewController
 
--(NSMutableArray *)bookShelfArray{
+- (NSMutableArray *)bookShelfArray{
     if(!_bookShelfArray){
         _bookShelfArray = [NSMutableArray array];
     }
     return _bookShelfArray;
 }
 
--(NSMutableArray *)cartoonArray{
+- (NSMutableArray *)cartoonArray{
     if(!_cartoonArray){
         _cartoonArray = [NSMutableArray array];
     }
     return _cartoonArray;
 }
 
--(NSMutableArray *)searchSuggestionArray{
+- (NSMutableArray *)searchSuggestionArray{
     if(!_searchSuggestionArray){
         _searchSuggestionArray = [NSMutableArray array];
     }
@@ -96,6 +96,8 @@ NSString *SuggestionView = @"SuggestionView";
 
     //设置navBar
     [self setupNavBar];
+    
+    [self getLoginStatus];
 
 }
 
@@ -120,7 +122,7 @@ NSString *SuggestionView = @"SuggestionView";
 }
 
 #pragma mark - 设置添加滚动子页
--(void)setupChildView{
+- (void)setupChildView{
     //阅读页
     ZZTReadHomeViewController *readVC = [[ZZTReadHomeViewController alloc] init];
 //    ZZTReadTableView *readVC = [[ZZTReadTableView alloc] init];
@@ -208,7 +210,7 @@ NSString *SuggestionView = @"SuggestionView";
 }
 
 #pragma mark - 设置导航条
--(void)setupNavBar
+- (void)setupNavBar
 {
     //设置新的导航条
     ZZTNavBarTitleView *titleView = [[ZZTNavBarTitleView alloc] init];
@@ -282,11 +284,11 @@ NSString *SuggestionView = @"SuggestionView";
     navBar.showBottomLabel = NO;
 }
 
--(void)showRemindView{
+- (void)showRemindView{
     [self.collectView showRemindView];
 }
 
--(void)clickMenu:(UIButton *)btn{
+- (void)clickMenu:(UIButton *)btn{
     if(btn.tag == 0){
         [self.mainView setContentOffset:CGPointMake(0, 0) animated:YES];
         [self showHomeView];
@@ -298,10 +300,14 @@ NSString *SuggestionView = @"SuggestionView";
 }
 
 //更新
--(void)history{
-    ZZTUpdateViewController *updateVC = [[ZZTUpdateViewController alloc] init];
-    updateVC.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:updateVC animated:YES];
+- (void)history{
+    if([[UserInfoManager share] hasLogin] == YES){
+        ZZTUpdateViewController *updateVC = [[ZZTUpdateViewController alloc] init];
+        updateVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:updateVC animated:YES];
+    }else{
+        [UserInfoManager needLogin];
+    }
 }
 
 //滑动展示清空按钮
@@ -316,7 +322,7 @@ NSString *SuggestionView = @"SuggestionView";
     }
 }
 
--(void)showHomeView{
+- (void)showHomeView{
     //显示搜索
     self.navBar.leftButton.hidden = NO;
     self.navBar.rightButton.hidden = NO;
@@ -324,20 +330,22 @@ NSString *SuggestionView = @"SuggestionView";
     [self.titleView selectBtn:self.titleView.leftBtn];
 }
 
--(void)showDeletBtn{
+- (void)showDeletBtn{
     //显示删除
     self.navBar.leftButton.hidden = YES;
     self.navBar.rightButton.hidden = YES;
     self.deleteBtn.hidden = NO;
     [self.titleView selectBtn:self.titleView.rightBtn];
+    
+    [self.collectView loadData];
 }
 
 
--(void)dealloc{
+- (void)dealloc{
     NSLog(@"我走了");
 }
 
--(void)search{
+- (void)search{
 
     //设置热词
     NSArray *hotSeaches = @[@"妖神记", @"大霹雳", @"镖人", @"偷星九月天"];
@@ -381,15 +389,15 @@ NSString *SuggestionView = @"SuggestionView";
 
     }
 }
--(NSInteger)numberOfSectionsInSearchSuggestionView:(UITableView *)searchSuggestionView{
+- (NSInteger)numberOfSectionsInSearchSuggestionView:(UITableView *)searchSuggestionView{
     return 1;
 }
 
--(NSInteger)searchSuggestionView:(UITableView *)searchSuggestionView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)searchSuggestionView:(UITableView *)searchSuggestionView numberOfRowsInSection:(NSInteger)section{
     return self.searchSuggestionArray.count;
 }
 
--(UITableViewCell *)searchSuggestionView:(UITableView *)searchSuggestionView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)searchSuggestionView:(UITableView *)searchSuggestionView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [searchSuggestionView dequeueReusableCellWithIdentifier:SuggestionView];
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:SuggestionView];
@@ -407,8 +415,15 @@ NSString *SuggestionView = @"SuggestionView";
 }
 
 
--(void)receiveNotification:(NSNotification *)infoNotification {
+- (void)receiveNotification:(NSNotification *)infoNotification {
     NSDictionary *dic = [infoNotification userInfo];
     _str = [dic objectForKey:@"info"];
 }
+
+- (void)getLoginStatus{
+    UserInfo *user = [Utilities GetNSUserDefaults];
+    [[UserInfoManager share] saveUserInfoWithData:user];
+//    [UserInfoManager needLogin];
+}
+
 @end

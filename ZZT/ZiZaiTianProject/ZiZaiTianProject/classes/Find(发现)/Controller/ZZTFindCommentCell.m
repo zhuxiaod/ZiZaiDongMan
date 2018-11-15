@@ -85,7 +85,7 @@
     _groupImgArr = [NSMutableArray array];
     
     _bottomView = [[UIView alloc] init];
-    _bottomView.backgroundColor = [UIColor grayColor];
+    _bottomView.backgroundColor = [UIColor colorWithRGB:@"239,239,239"];
     [self.contentView addSubview:_bottomView];
 }
 
@@ -163,11 +163,11 @@
         make.right.equalTo(self.replyCountView.mas_left).offset(-space);
         make.height.mas_equalTo(20);
     }];
-//    _commentNum.frame = CGRectMake(SCREEN_WIDTH - 60, CGRectGetMaxY(_bgImgsView.frame)+10 , 50, 20);
-//    _commentImg.frame = CGRectMake(SCREEN_WIDTH - 85, CGRectGetMaxY(_bgImgsView.frame)+10, 20, 20);
-//    _likeNum.frame = CGRectMake(SCREEN_WIDTH - 140, CGRectGetMaxY(_bgImgsView.frame)+10 , 50, 20);
-//    _zanImg.frame = CGRectMake(SCREEN_WIDTH - 165, CGRectGetMaxY(_bgImgsView.frame)+10, 20, 20);
-//    _bottomView.frame = CGRectMake(0, self.height - 1, SCREEN_WIDTH, 1);
+    
+    [_bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.left.bottom.equalTo(self.contentView);
+        make.height.mas_equalTo(1);
+    }];
 }
 
 - (void)setModel:(ZZTMyZoneModel *)model{
@@ -350,6 +350,10 @@
 }
 //显示评论页
 -(void)showCommentVc{
+    if([[UserInfoManager share] hasLogin] == NO){
+        [UserInfoManager needLogin];
+        return;
+    }
     ZZTCommentViewController *commentVC = [[ZZTCommentViewController alloc] init];
     commentVC.chapterId = @"1";
     commentVC.cartoonType = @"2";

@@ -41,19 +41,22 @@
 -(void)layoutSubviews{
     [super layoutSubviews];
     CGFloat imageH = self.height * 0.8;
-    CGFloat nameH = self.height - imageH;
-    [_image mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.contentView).offset(0);
-        make.right.left.equalTo(self.contentView).offset(0);
-        make.height.mas_equalTo(imageH);
-    }];
+    CGFloat nameH = 20;
     
     [_cartoonName mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.image.mas_bottom).offset(4);
+        make.bottom.equalTo(self.contentView).offset(0);
         make.left.equalTo(self.contentView).offset(0);
         make.right.equalTo(self.contentView).offset(0);
         make.height.mas_equalTo(nameH);
     }];
+    
+    [_image mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.contentView).offset(0);
+        make.right.left.equalTo(self.contentView).offset(0);
+        make.bottom.equalTo(self.cartoonName.mas_top).offset(-4);
+    }];
+    
+   
     
     self.image.layer.cornerRadius = 12;
     self.image.layer.masksToBounds = YES;
@@ -63,7 +66,9 @@
 -(void)setCartoon:(ZZTCarttonDetailModel *)cartoon{
     _cartoon = cartoon;
     
-    [self.image sd_setImageWithURL:[NSURL URLWithString:cartoon.cover]];
+    [self.image sd_setImageWithURL:[NSURL URLWithString:cartoon.cover] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+        NSLog(@"imageW:%f imageH:%f",image.size.width,image.size.height);
+    }];
     
     self.cartoonName.text = cartoon.bookName;
     

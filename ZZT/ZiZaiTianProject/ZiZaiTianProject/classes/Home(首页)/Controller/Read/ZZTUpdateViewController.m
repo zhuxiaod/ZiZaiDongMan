@@ -48,8 +48,7 @@
     //创建UICollectionView：黑色
     [self setupCollectionView:layout];
     
-    //请求书柜
-    [self loadBookShelf];
+   
     
 //    [self setBackItemWithImage:@"blackBack" pressImage:nil];
 
@@ -57,12 +56,18 @@
     [self.view bringSubviewToFront:self.viewNavBar];
 }
 
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    //请求书柜
+    [self loadBookShelf];
+}
+
 -(void)loadBookShelf{
-    UserInfo *user = [Utilities GetNSUserDefaults];
+    
     NSDictionary *dic = @{
-                          @"userId":[NSString stringWithFormat:@"%ld",user.id]
+                          @"userId":[UserInfoManager share].ID
                           };
-//    record/ selBrowsehistory
+
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"record/selBrowsehistory"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
@@ -103,7 +108,7 @@
     
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     //修改尺寸(控制)
-    layout.itemSize = CGSizeMake(SCREEN_WIDTH/3 - 10,200);
+    layout.itemSize = CGSizeMake((SCREEN_WIDTH - 36) / 3 , SCREEN_HEIGHT * 0.24 + 24);
     
     layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     //行距

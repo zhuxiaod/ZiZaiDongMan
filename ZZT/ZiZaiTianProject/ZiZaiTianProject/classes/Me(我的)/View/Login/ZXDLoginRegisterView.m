@@ -18,7 +18,9 @@
 @property (weak, nonatomic) IBOutlet ZXDLoginRegisterTextField *phoneNumber1;
 
 @property (weak, nonatomic) IBOutlet ZXDLoginRegisterTextField *phoneNumber2;
+
 @property (weak, nonatomic) IBOutlet ZXDLoginRegisterTextField *verificationFild;
+@property (weak, nonatomic) IBOutlet UIButton *verificationBtn;
 
 @end
 
@@ -35,6 +37,7 @@
         self.LogBtnClick(sender);
     }
 }
+
 //验证码
 - (IBAction)getVerification:(UIButton *)sender {
     if (self.buttonAction) {
@@ -67,6 +70,10 @@
     self.phoneNumber1.keyboardType = UIKeyboardTypeNumberPad;
     _phoneNumber = _phoneNumber1;
     _verification = _verificationFild;
+    
+    self.verificationBtn.layer.borderWidth = 1.0f;
+    self.verificationBtn.layer.borderColor = [UIColor colorWithRGB:@"215,216,217"].CGColor;
+    self.verificationBtn.layer.cornerRadius = 10;
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {

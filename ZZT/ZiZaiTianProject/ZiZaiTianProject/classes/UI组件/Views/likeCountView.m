@@ -107,7 +107,10 @@ static NSString * const pressedImageName = @"catoonDetail_like_select";
 }
 
 - (void)like {
-    
+    if([[UserInfoManager share] hasLogin] == NO){
+        [UserInfoManager needLogin];
+        return;
+    }
     self.userInteractionEnabled = NO;
     
     self.islike = !self.islike;

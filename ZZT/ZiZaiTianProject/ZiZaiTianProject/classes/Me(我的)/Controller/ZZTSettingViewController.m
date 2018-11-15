@@ -230,10 +230,10 @@ NSString *ExitCell = @"ExitCell";
 
         }else if(indexPath.row == 4){
             //退出账号
-            UserInfo *user = [[UserInfo alloc] init];
-            user.userId = @"";
-            [Utilities SetNSUserDefaults:user];
-            NSLog(@"user:%@",user);
+            [[UserInfoManager share] logoutUserInfo];
+            //            UserInfo *user = [[UserInfo alloc] init];
+//            user.userId = @"";
+//            [Utilities SetNSUserDefaults:user];
 //            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 //            [defaults setObject:@"" forKey:@"userId"];
 //            [defaults synchronize];

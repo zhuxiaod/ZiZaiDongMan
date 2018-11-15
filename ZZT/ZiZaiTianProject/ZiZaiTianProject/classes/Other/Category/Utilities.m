@@ -14,6 +14,7 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:data forKey:@"user"];
     [defaults synchronize];
+    [[UserInfoManager share] saveUserInfoWithData:userInfo];
 }
 
 +(UserInfo *)GetNSUserDefaults{

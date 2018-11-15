@@ -14,6 +14,7 @@
 @property (nonatomic,strong) NSMutableArray *array1;
 @property (nonatomic,strong) NSMutableArray *array2;
 @property (weak, nonatomic) IBOutlet UILabel *titleView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageW;
 
 @end
 
@@ -37,7 +38,14 @@
     
     _dataModel = dataModel;
     
+    CGFloat imageW = SCREEN_WIDTH * 0.28;
+    
+    self.imageW.constant = imageW;
+    
     [_cartoonImg sd_setImageWithURL:[NSURL URLWithString:dataModel.cover]];
+    
+    _cartoonImg.layer.cornerRadius = 10;
+    _cartoonImg.layer.masksToBounds = YES;
     
     [_cartoonName setText:dataModel.bookName];
     
@@ -46,17 +54,21 @@
     [_titleView setFont:[UIFont systemFontOfSize:14]];
     [_titleView setTextColor:[UIColor colorWithHexString:@"#949596"]];
     
-    if([dataModel.type isEqualToString:@"1"]){
-        NSString *bookName = [dataModel.bookName stringByAppendingString:@"(漫画)"];
-        NSMutableAttributedString * attriStr = [[NSMutableAttributedString alloc] initWithString:bookName];
-        [attriStr addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:NSMakeRange(attriStr.length - 4,4)];
-        self.cartoonName.attributedText = attriStr;
-    }else if([dataModel.type isEqualToString:@"2"]){
-        NSString *bookName = [dataModel.bookName stringByAppendingString:@"(剧本)"];
-        NSMutableAttributedString * attriStr = [[NSMutableAttributedString alloc] initWithString:bookName];
-        [attriStr addAttribute:NSForegroundColorAttributeName value:[UIColor greenColor] range:NSMakeRange(attriStr.length - 4,4)];
-        self.cartoonName.attributedText = attriStr;
-    }
+
+    self.cartoonName.text = dataModel.bookName;
+
+//
+//    if([dataModel.type isEqualToString:@"1"]){
+//        NSString *bookName = [dataModel.bookName stringByAppendingString:@"(漫画)"];
+//        NSMutableAttributedString * attriStr = [[NSMutableAttributedString alloc] initWithString:bookName];
+//        [attriStr addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:NSMakeRange(attriStr.length - 4,4)];
+//        self.cartoonName.attributedText = attriStr;
+//    }else if([dataModel.type isEqualToString:@"2"]){
+//        NSString *bookName = [dataModel.bookName stringByAppendingString:@"(剧本)"];
+//        NSMutableAttributedString * attriStr = [[NSMutableAttributedString alloc] initWithString:bookName];
+//        [attriStr addAttribute:NSForegroundColorAttributeName value:[UIColor greenColor] range:NSMakeRange(attriStr.length - 4,4)];
+//        self.cartoonName.attributedText = attriStr;
+//    }
 }
 -(void)setIsHave:(BOOL)isHave{
     _isHave = isHave;

@@ -98,6 +98,8 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     
     //自定义navigationBar
 //    [self setupNavigationBar];
+    
+    [self hiddenViewNavBar];
 }
 
 -(void)setupShieldView{
@@ -260,7 +262,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 
 -(void)setupTopView{
     
-    UITableView *contenView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 30) style:UITableViewStyleGrouped];
+    UITableView *contenView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 50) style:UITableViewStyleGrouped];
     contenView.backgroundColor = [UIColor clearColor];
     contenView.contentInset = UIEdgeInsetsMake(-20,0,0,0);
     contenView.delegate = self;
@@ -284,6 +286,10 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 }
 
 -(void)shareWithSharePanel{
+    if([[UserInfoManager share] hasLogin] == NO){
+        [UserInfoManager needLogin];
+        return;
+    }
     __weak typeof(self) ws = self;
     [UMSocialUIManager showShareMenuViewInWindowWithPlatformSelectionBlock:^(UMSocialPlatformType platformType, NSDictionary *userInfo) {
         [ws shareTextToPlatform:platformType];
@@ -366,8 +372,12 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 }
 
 -(void)loadAttention:(ZZTChapterlistModel *)model{
+    if([[UserInfoManager share] hasLogin] == NO){
+        [UserInfoManager needLogin];
+        return;
+    }
     NSDictionary *dic = @{
-                          @"userId":@"1",
+                          @"userId":[UserInfoManager share].ID,
                           @"authorId":model.userId
                           };
 //    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
@@ -477,6 +487,10 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
         //收藏业务
         weakself(self);
         _wordDetailHeadView.buttonAction = ^(ZZTCarttonDetailModel *detailModel) {
+            if([[UserInfoManager share] hasLogin] == NO){
+                [UserInfoManager needLogin];
+                return;
+            }
             UserInfo *userInfo = [Utilities GetNSUserDefaults];
             NSDictionary *dic = @{
                                   @"cartoonId":detailModel.id,

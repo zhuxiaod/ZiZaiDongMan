@@ -35,6 +35,8 @@
 
 @property (nonatomic,strong) NSString *ifCollect;
 
+@property (weak, nonatomic) IBOutlet SBStrokeLabel *collectLab;
+
 @end
 
 @implementation ZZTWordsDetailHeadView
@@ -53,6 +55,10 @@ static NSString * const offsetKeyPath = @"contentOffset";
 
 -(void)setDetailModel:(ZZTCarttonDetailModel *)detailModel{
     _detailModel = detailModel;
+    
+    self.collectLab.strokeColor = [UIColor blackColor];
+    self.collectLab.strokeWidth = 1;
+    
     //书名
     self.bookName.text = detailModel.bookName;
     self.bookName.strokeColor = [UIColor blackColor];
@@ -82,7 +88,7 @@ static NSString * const offsetKeyPath = @"contentOffset";
     self.ifCollect = detailModel.ifCollect;
     
     //背景
-    [self.bookCover sd_setImageWithURL:[NSURL URLWithString:detailModel.cover]];
+    [self.bookCover sd_setImageWithURL:[NSURL URLWithString:detailModel.lbCover]];
     
     //title
     NSArray *titleArray = [detailModel.bookType componentsSeparatedByString:@","];
@@ -128,9 +134,6 @@ static NSString * const offsetKeyPath = @"contentOffset";
 - (IBAction)back:(UIButton *)sender {
     [[self findResponderWithClass:[UINavigationController class]] popViewControllerAnimated:YES];
 }
-
-
-
 
 //懒加载
 - (ZZTWordsDetailViewController *)myVc {

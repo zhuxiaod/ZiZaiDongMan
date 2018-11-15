@@ -19,8 +19,14 @@
 
 @property (nonatomic,copy)   NSString *avatar_url;      //头像
 
-@property (nonatomic,strong) NSNumber *ID;              //ID
+@property (nonatomic,strong) NSString *ID;              //ID
 
 @property (nonatomic,copy)   NSString *nickname;        //昵称
+
+- (void)saveUserInfoWithData:(UserInfo *)user;
+
+- (void)logoutUserInfo;
+
++ (BOOL)needLogin;
 
 @end

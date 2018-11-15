@@ -34,6 +34,7 @@
 #import "ZZTCommentViewController.h"
 #import "ZZTStatusCell.h"
 #import "ZZTStatusFooterView.h"
+#import "ZZTStoryModel.h"
 
 @interface ZZTCartoonDetailViewController ()<UITableViewDelegate,UITableViewDataSource,CircleCellDelegate,ZZTCommentHeaderViewDelegate,UITextViewDelegate,NSURLSessionDataDelegate,ZZTCartoonContentCellDelegate,ZZTStoryDetailCellDelegate,ZZTStatusCellDelegate,ZZTStatusFooterViewDelegate>
 
@@ -299,6 +300,12 @@ static bool needHide = false;
 }
 
 - (void)pullUpToReloadMoreData:(MJRefreshBackNormalFooter *)table{
+    //没有登录
+    if([[UserInfoManager share] hasLogin] == NO){
+        [UserInfoManager needLogin];
+        [table endRefreshing];
+        return;
+    }
     NSLog(@"--- 上拉");
     
     //显示评论页面
@@ -312,6 +319,10 @@ static bool needHide = false;
 }
 //下拉评论接口
 - (void)loadMoreCommentData{
+    if([[UserInfoManager share] hasLogin] == NO){
+        [UserInfoManager needLogin];
+        return;
+    }
     UserInfo *user = [Utilities GetNSUserDefaults];
     AFHTTPSessionManager *session = [[AFHTTPSessionManager alloc] init];
     NSDictionary *commentDict = @{
@@ -456,6 +467,10 @@ static bool needHide = false;
 }
 
 -(void)likeBtnTaget{
+    if([[UserInfoManager share] hasLogin] == NO){
+        [UserInfoManager needLogin];
+        return;
+    }
     [MBProgressHUD showSuccess:@"点赞成功" toView:self.view];
     dispatch_group_async(self.group, self.q, ^{
         dispatch_group_enter(self.group);
@@ -586,10 +601,10 @@ static bool needHide = false;
         [self loadLikeData];
     });
 
-    dispatch_group_async(self.group, self.q, ^{
-        dispatch_group_enter(self.group);
-        [self loadUpDownBtnData];
-    });
+//    dispatch_group_async(self.group, self.q, ^{
+//        dispatch_group_enter(self.group);
+//        [self loadUpDownBtnData];
+//    });
     
     dispatch_group_notify(self.group, dispatch_get_main_queue(), ^{
 
@@ -663,11 +678,12 @@ static bool needHide = false;
             self.author = self.chapterModel.autherData;
             dispatch_group_leave(self.group);
             [self reloadCellWithIndex];
+
             
         }else{
             
             NSDictionary *paramDict = @{
-                                        @"userId":@"0",
+                                        @"userId":@"13",
                                         @"id":[NSString stringWithFormat:@"%ld",_dataModel.id],
                                         @"pageNum":@"0",
                                         @"pageSize":@"200"
@@ -689,6 +705,7 @@ static bool needHide = false;
                 }
                 dispatch_group_leave(self.group);
                 [self reloadCellWithIndex];
+
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                 dispatch_group_leave(self.group);
             }];
@@ -740,6 +757,7 @@ static bool needHide = false;
 }
 
 -(void)loadLikeData{
+
     UserInfo *user = [Utilities GetNSUserDefaults];
     AFHTTPSessionManager *session = [[AFHTTPSessionManager alloc] init];
     NSDictionary *likeDict = @{
@@ -749,8 +767,8 @@ static bool needHide = false;
                                };
     [session POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterPraise"] parameters:likeDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-        ZZTStoryModel *model = [ZZTStoryModel mj_objectWithKeyValues:dic];
-        self.likeCollectView.likeModel = model;
+        self.likeModel = [ZZTStoryModel mj_objectWithKeyValues:dic];
+        self.likeCollectView.likeModel = self.likeModel;
         [self.tableView reloadData];
         dispatch_group_leave(self.group);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -762,42 +780,11 @@ static bool needHide = false;
     _isHasComment = NO;
     UserInfo *user = [Utilities GetNSUserDefaults];
     AFHTTPSessionManager *session = [[AFHTTPSessionManager alloc] init];
-//    NSDictionary *commentDict = @{
-//                                  @"itemId":[NSString stringWithFormat:@"%ld",self.dataModel.id],
-//                                  @"type":self.cartoonModel.type,
-//                                  @"pageNum":[NSString stringWithFormat:@"%ld",self.updataCommentPage],//刷新评论信息  每次下拉一次 这里就要改变一次
-//                                  @"pageSize":@"10",
-//                                  @"userId":[NSString stringWithFormat:@"%ld",user.id]
-//                                  };
-//    [session POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonComment"] parameters:commentDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-//        self.commentArray = nil;
-//        NSDictionary *commenDdic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-//        //这里有问题 应该是转成数组 然后把对象取出
-//        NSMutableArray *array1 = [ZZTCircleModel mj_objectArrayWithKeyValuesArray:commenDdic];
-//        if(array1.count == 0){
-//            //没有数据的时候
-//            [self.commentArray addObject:@"1"];
-//            self.isHasComment = YES;
-////            [self.tableView.mj_footer endRefreshingWithNoMoreData];
-//        }else{
-//            //外面的数据
-//            FriendCircleViewModel *circleViewModel = [[FriendCircleViewModel alloc] init];
-//            circleViewModel.circleModelArray = array1;
-//            self.commentArray = [circleViewModel loadDatas];
-////            [self.tableView.mj_footer endRefreshing];
-//        }
-//        //加工一下评论的数据
-//        [self.tableView reloadData];
-//        dispatch_group_leave(self.group);
-//    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-//        dispatch_group_leave(self.group);//很重要,不能少
-////        [self.tableView.mj_footer endRefreshing];
-//
-//    }];
+
     NSDictionary *dict = @{
                            @"chapterId":[NSString stringWithFormat:@"%ld",self.dataModel.id],
-                               @"type":self.cartoonModel.type,
-                               @"userId":[NSString stringWithFormat:@"%ld",user.id],
+                           @"type":self.cartoonModel.type,
+                           @"userId":[NSString stringWithFormat:@"%ld",user.id],
                            @"pageNum":@"0",
                            @"pageSize":@"10",
                            @"host":@"1"
@@ -1009,6 +996,7 @@ static bool needHide = false;
         //分享
         [likeCollectView.shareBtn addTarget:self action:@selector(shareWithSharePanel) forControlEvents:UIControlEventTouchUpInside];
         _likeCollectView = likeCollectView;
+        self.likeCollectView.likeModel = self.likeModel;
         return _likeCollectView;
     }else if (section == 2){
         //作者
@@ -1041,27 +1029,6 @@ static bool needHide = false;
         }
     }
 }
-
-//-(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
-//    if(section == 1){
-//        static NSString *nextWordViewIdentfier = @"nextWordView";
-//        ZZTNextWordHeaderView *nextWordView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:nextWordViewIdentfier];
-////        [nextWordView.rightBtn addTarget:self action:@selector(nextWordWithBtn:) forControlEvents:UIControlEventTouchUpInside];
-////        [nextWordView.rightBtn setTag:2];
-////        [nextWordView.liftBtn addTarget:self action:@selector(nextWordWithBtn:) forControlEvents:UIControlEventTouchUpInside];
-////        [nextWordView.liftBtn setTag:1];
-////        nextWordView.block = ^{
-////            [self headerViewLike];
-////        };
-//        //如果没有头视图
-//        if(!nextWordView){
-//            nextWordView = [[ZZTNextWordHeaderView alloc] initWithReuseIdentifier:nextWordViewIdentfier];
-//        }
-//        self.nextWordView = nextWordView;
-//    }else{
-//        return nil;
-//    }
-//}
 
 #pragma mark - FooterView
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
@@ -1199,7 +1166,10 @@ static bool needHide = false;
 
 //点赞
 -(void)headerViewLike{
-    
+    if([[UserInfoManager share] hasLogin] == NO){
+        [UserInfoManager needLogin];
+        return;
+    }
     UserInfo *user = [Utilities GetNSUserDefaults];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     NSDictionary *dic = @{
@@ -1273,6 +1243,11 @@ static bool needHide = false;
             [self hideOrShowBottomView:needHide];
         }
     }else{
+        //没有登录
+        if([[UserInfoManager share] hasLogin] == NO){
+            [UserInfoManager needLogin];
+            return;
+        }
         //点击了评论cell  获取这条cell的信息
         ZZTCircleModel *model = self.commentArray[indexPath.section - 3];
         //第几条回复
@@ -1317,6 +1292,10 @@ static bool needHide = false;
 }
 
 -(void)deleteReplyWithType:(NSString *)type commentId:(NSString *)commentId{
+    if([[UserInfoManager share] hasLogin] == NO){
+        [UserInfoManager needLogin];
+        return;
+    }
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     NSDictionary *dict = @{
                            @"type":type,//节是1 cell是2
@@ -1565,6 +1544,10 @@ static bool needHide = false;
 }
 
 -(void)didClickLikeButton:(NSInteger)section{
+    if([[UserInfoManager share] hasLogin] == NO){
+        [UserInfoManager needLogin];
+        return;
+    }
     UserInfo *user = [Utilities GetNSUserDefaults];
     ZZTCircleModel *item = self.commentArray[section];
     NSDictionary *dic = @{
@@ -1672,7 +1655,10 @@ static bool needHide = false;
 
 #pragma mark 评论发布
 -(void)sendMessage{
-    
+    if([[UserInfoManager share] hasLogin] == NO){
+        [UserInfoManager needLogin];
+        return;
+    }
     if (_kTextView.text.length == 0 || [_kTextView.text isEqualToString:@"请输入评论"]) {
         [MBProgressHUD showError:@"请输入评论再发布"];
         return;
@@ -1757,6 +1743,10 @@ static bool needHide = false;
 }
 
 -(void)shareWithSharePanel{
+    if([[UserInfoManager share] hasLogin] == NO){
+        [UserInfoManager needLogin];
+        return;
+    }
 //    UIImage *imageView = [[TJLongImgCut manager] screenShotForTableView:self.tableView screenRect:UIEdgeInsetsMake(0, 0, 88, 40) imageKB:1024 * 10];//获取图片小于等于1M
 //    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 //    NSString *path = [paths objectAtIndex:0];
@@ -2009,6 +1999,11 @@ static bool needHide = false;
 }
 
 -(void)headerViewCollect{
+    //没有登录
+    if([[UserInfoManager share] hasLogin] == NO){
+        [UserInfoManager needLogin];
+        return;
+    }
     UserInfo *userInfo = [Utilities GetNSUserDefaults];
     NSDictionary *dic = @{
                           @"cartoonId":_cartoonModel.id,
@@ -2033,8 +2028,11 @@ static bool needHide = false;
 }
 
 -(void)StatusFooterView:(ZZTStatusFooterView *)StatusFooterView didClickCommentButton:(ZZTCircleModel *)model{
-//    -(void)didCommentLabelReply:(NSInteger)section{
-        [self didCommentLabelReply:model.indexRow];
+    if([[UserInfoManager share] hasLogin] == NO){
+        [UserInfoManager needLogin];
+        return;
+    }
+    [self didCommentLabelReply:model.indexRow];
 }
 
 @end

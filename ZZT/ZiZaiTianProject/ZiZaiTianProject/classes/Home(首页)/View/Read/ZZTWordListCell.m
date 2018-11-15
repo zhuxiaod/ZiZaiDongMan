@@ -50,6 +50,7 @@
     UILabel *pageLab = [[UILabel alloc] init];
     _pageLab = pageLab;
     [self.contentView addSubview:pageLab];
+    
     //赞
     UIImageView *likeImg = [[UIImageView alloc] init];
     _likeImg = likeImg;

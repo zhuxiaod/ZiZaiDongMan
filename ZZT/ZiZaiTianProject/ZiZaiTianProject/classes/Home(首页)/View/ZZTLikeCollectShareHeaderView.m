@@ -110,6 +110,10 @@
 }
 
 -(void)collectTarget:(UIButton *)btn{
+    if([[UserInfoManager share] hasLogin] == NO){
+        [UserInfoManager needLogin];
+        return;
+    }
     if([self.isCollect isEqualToString:@"0"]){
         self.isCollect = @"1";
         self.collectNum++;
@@ -127,6 +131,10 @@
 }
 
 -(void)likeTarget:(UIButton *)btn{
+    if([[UserInfoManager share] hasLogin] == NO){
+        [UserInfoManager needLogin];
+        return;
+    }
     if([self.isLike isEqualToString:@"0"]){
         //没有点赞
         self.isLike = @"1";
@@ -206,7 +214,6 @@
         self.likeBtn.selected = YES;
     }
     self.likeLab.text = [NSString stringWithFormat:@"赞 %ld",likeModel.praiseNum];
-
 }
 
 -(void)setCollectModel:(ZZTCarttonDetailModel *)collectModel{
@@ -221,4 +228,5 @@
     }
     self.collectLab.text = [NSString stringWithFormat:@"收藏 %ld",collectModel.collectNum];
 }
+
 @end

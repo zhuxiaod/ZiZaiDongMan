@@ -29,6 +29,68 @@
     return instance;
 }
 
+//取数据 只能取关于接口的
+- (void)saveUserInfoWithData:(UserInfo *)user{
+    /*
+     id
+     headimg
+     nikeName
+     sex 1
+     */
+    if([user.userId isEqualToString:@""]){
+        self.hasLogin = NO;
+    }else{
+        self.hasLogin = YES;
+    }
+    
+    self.ID = [NSString stringWithFormat:@"%ld",user.id];
+    
+    self.avatar_url = user.headimg;
+    
+    self.nickname = user.nickName;
+}
+
+//登出用户
+- (void)logoutUserInfo{
+    
+    self.hasLogin = NO;
+    
+    self.ID = nil;
+    
+    self.avatar_url = nil;
+    
+    self.nickname = nil;
+    
+    UserInfo *user = [[UserInfo alloc] init];
+    
+    user.userId = @"";
+    
+    [Utilities SetNSUserDefaults:user];
+}
+
+//需要登录
++ (BOOL)needLogin {
+    return [[UserInfoManager share] needLogin];
+}
+
+//是否需要登录 用一个值来判断
+- (BOOL)needLogin{
+    UserInfo *user = [Utilities GetNSUserDefaults];
+    if (self.hasLogin == NO || [user.userId isEqualToString:@""] || [user.userId isEqualToString:@"0"]) {
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"未登录" message:@"是否登录" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
+//        [alert show];
+        [ZZTLoginRegisterViewController show];
+        return YES;
+    }
+    return NO;
+}
+
+//如果是点第一个 确认登录 展示登录页面
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {
+        [ZZTLoginRegisterViewController show];
+    }
+}
 //+ (void)autoLogin {
 //    [[UserInfoManager share] autoLogin];
 //}
@@ -56,4 +118,5 @@
 //    }];
 //
 //}
+
 @end

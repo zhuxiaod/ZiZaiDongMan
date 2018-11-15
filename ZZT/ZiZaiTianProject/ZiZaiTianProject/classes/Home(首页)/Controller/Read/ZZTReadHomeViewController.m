@@ -274,16 +274,18 @@ static NSString *bigImageCell = @"bigImageCell";
 //执行的 headerView 代理 返回 headerView 的高度
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
     if(section == 0){
-        return CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT * 0.36);
+        return CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT * 0.28125);
     }else{
-        return CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT * 0.06);
+        return CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT * 0.052);
     }
 }
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section {
     if(section == 0){
-        return CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT * 0.144);
+        //btn 
+        return CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT * 0.13);
     }else if (section == 1){
-        return CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT * 0.084);
+        //
+        return CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT * 0.074);
     }else{
         return CGSizeZero;
     }
@@ -292,19 +294,19 @@ static NSString *bigImageCell = @"bigImageCell";
 
 //边距设置:整体边距的优先级，始终高于内部边距的优先级
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    return UIEdgeInsetsMake(8, 8, 0, 8);//分别为上、左、下、右
+    return UIEdgeInsetsMake(0, 8, 8, 8);//分别为上、左、下、右
 }
 
 //item
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
     if(indexPath.section == 1){
         if(indexPath.row == 3){
-            return CGSizeMake(SCREEN_WIDTH - 16, SCREEN_HEIGHT * 0.32);
+            return CGSizeMake(SCREEN_WIDTH - 16, SCREEN_HEIGHT * 0.27);
         }else{
-            return CGSizeMake((SCREEN_WIDTH - 36) / 3 , SCREEN_HEIGHT * 0.3);
+            return CGSizeMake((SCREEN_WIDTH - 36) / 3 , SCREEN_HEIGHT * 0.24 + 24);
         }
     }else if(indexPath.section == 2){
-        return CGSizeMake((SCREEN_WIDTH - 36) / 3 , SCREEN_HEIGHT * 0.3);
+        return CGSizeMake((SCREEN_WIDTH - 36) / 3 , SCREEN_HEIGHT * 0.24 + 24);
     }else{
         return CGSizeZero;
     }

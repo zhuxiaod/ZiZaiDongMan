@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ZZTLoginRegisterViewController : UIViewController
+@interface ZZTLoginRegisterViewController : BaseViewController
+
++ (void)show;
 
 @end

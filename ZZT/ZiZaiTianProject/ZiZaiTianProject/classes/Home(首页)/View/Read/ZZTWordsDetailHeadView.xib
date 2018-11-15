@@ -64,7 +64,7 @@
                         <constraint firstAttribute="height" constant="30" id="eWS-Ui-Yu5"/>
                     </constraints>
                 </view>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="收 藏" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="enI-aa-1lr">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="收 藏" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="enI-aa-1lr" customClass="SBStrokeLabel">
                     <rect key="frame" x="327" y="156.5" width="32.5" height="17"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="17" id="1YE-NJ-lsV"/>
@@ -122,6 +122,7 @@
                 <outlet property="bookCover" destination="7N2-6n-Rme" id="Fde-xS-B4d"/>
                 <outlet property="bookName" destination="vME-aj-pW7" id="Vfd-cT-pRF"/>
                 <outlet property="collectBtn" destination="IGF-CC-6pV" id="gyJ-KQ-WCy"/>
+                <outlet property="collectLab" destination="enI-aa-1lr" id="hSQ-NV-wU7"/>
                 <outlet property="likeLab" destination="e6a-zy-cJ7" id="7hB-r4-QBC"/>
                 <outlet property="shareBtn" destination="D5l-VJ-Otb" id="G3L-gN-f0P"/>
                 <outlet property="titileViewW" destination="aJl-fn-j7P" id="MMB-yR-YAB"/>

@@ -85,18 +85,22 @@
     nav.tabBarItem.image = [UIImage imageOriginalWithName:@"tabBar_reader"];
     UIImage *image = [UIImage imageOriginalWithName:@"tabBar_reader_select"];
     nav.tabBarItem.selectedImage = image;
+    nav.tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
     
     //1:nav1
     UINavigationController *nav1 = self.childViewControllers[1];
 //    nav1.tabBarItem.title = @"发现";
     nav1.tabBarItem.image = [UIImage imageOriginalWithName:@"tabbar_find"];
     nav1.tabBarItem.selectedImage = [UIImage imageOriginalWithName:@"tabbar_find_select"];
-    
+    nav1.tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
+
     //2:nav2
     UINavigationController *nav2 = self.childViewControllers[2];
 //    nav2.tabBarItem.title = @"我的";
     nav2.tabBarItem.image = [UIImage imageOriginalWithName:@"me_me"];
     nav2.tabBarItem.selectedImage = [UIImage imageOriginalWithName:@"me_me_select"];
+    nav2.tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
+
 }
 
 - (void)setHidesBottomBar:(BOOL)hidesBottomBar {

@@ -16,7 +16,7 @@
 
 @property (nonatomic,strong) UIView *statusContentView;
 
-@property (nonatomic,strong) UIImageView *userAuthenticationIcon;
+@property (nonatomic,strong) UIButton *userAuthenticationIcon;
 
 @property (nonatomic,strong) UILabel *userNameLabel;
 
@@ -42,7 +42,7 @@ static CGFloat iconSize = 40;
 //更新数据
 - (void)updateUIWithModel:(ZZTCircleModel *)model {
     customer *customer = model.customer;
-    [self.userAuthenticationIcon sd_setImageWithURL:[NSURL URLWithString:customer.headimg] placeholderImage:[UIImage imageNamed:@"我的-头像框"]];
+    [self.userAuthenticationIcon sd_setBackgroundImageWithURL:[NSURL URLWithString:customer.headimg] forState:UIControlStateNormal];
     
     self.userNameLabel.text = customer.nickName;
     
@@ -136,26 +136,32 @@ static CGFloat iconSize = 40;
         
         _userNameLabel = label;
         
-        
     }
     return _userNameLabel;
 }
 
 //头像
-- (UIImageView *)userAuthenticationIcon {
+- (UIButton *)userAuthenticationIcon {
     if (!_userAuthenticationIcon) {
         
-        UIImageView *headImg = [UIImageView new];
+        UIButton *headImg = [UIButton new];
         
-        headImg.contentMode = UIViewContentModeScaleAspectFill;
-        
-        headImg.clipsToBounds = YES;
+        [headImg addTarget:self action:@selector(gotoZone) forControlEvents:UIControlEventTouchUpInside];
         
         _userAuthenticationIcon = headImg;
         
         [self.contentView addSubview:headImg];
     }
     return _userAuthenticationIcon;
+}
+
+//前往空间
+-(void)gotoZone{
+    ZZTMyZoneViewController *zoneVC = [[ZZTMyZoneViewController alloc] init];
+    //用户id
+    customer *customer = _model.customer;
+    zoneVC.userId = customer.id;
+    [[self myViewController].navigationController pushViewController:zoneVC animated:YES];
 }
 
 //前往作者页

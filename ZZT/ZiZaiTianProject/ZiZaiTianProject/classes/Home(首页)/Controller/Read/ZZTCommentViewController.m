@@ -294,6 +294,10 @@
 }
 
 -(void)sendMessage{
+    if([[UserInfoManager share] hasLogin] == NO){
+        [UserInfoManager needLogin];
+        return;
+    }
     if (_kTextView.text.length == 0 || [_kTextView.text isEqualToString:@"请输入评论"]) {
         [MBProgressHUD showError:@"请输入评论再发布"];
         return;

@@ -47,7 +47,7 @@
     [self setupCollectionView:layout];
     
     //读取数据
-    [self loadBookShelfData];
+//    [self loadBookShelfData];
     
     //显示删除
     [self setupDeleteBtn];
@@ -157,7 +157,9 @@
 //}
 
 -(void)showRemindView{
-    
+    if([[UserInfoManager share] hasLogin] == NO){
+        return;
+    }
     [self.remindView removeFromSuperview];
     ZZTRemindView *remindView = [[ZZTRemindView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
     self.remindView = remindView;
@@ -184,6 +186,7 @@
 }
 
 -(void)loadRemoveBook:(NSString *)string{
+  
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     
     UserInfo *user = [Utilities GetNSUserDefaults];
@@ -197,8 +200,19 @@
         
     }];
 }
+
+-(void)loadData{
+    if([[UserInfoManager share] hasLogin] == YES){
+        [self loadBookShelfData];
+    }else{
+        [UserInfoManager needLogin];
+    }
+}
+
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self loadBookShelfData];
+    if([[UserInfoManager share] hasLogin] == YES){
+        [self loadBookShelfData];
+    }
 }
 @end
