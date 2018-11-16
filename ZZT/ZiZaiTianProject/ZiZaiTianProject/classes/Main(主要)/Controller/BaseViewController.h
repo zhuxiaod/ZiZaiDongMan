@@ -25,6 +25,8 @@
 
 - (void)setBackItemWithImage:(NSString *)image pressImage:(NSString *)pressImage;
 
-- (void)hideNavBar:(BOOL)ishide;
+- (void)hideViewNavBar:(BOOL)ishide;
+
+-(void)setupNavigationBarHidden:(BOOL)isHidden;
 
 @end

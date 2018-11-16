@@ -392,7 +392,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 //高度设置
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if(section == 0){
-        return SCREEN_HEIGHT * 0.34;
+        return SCREEN_HEIGHT * 0.28125;
     }else if(section == 1){
         //字符串
         self.descHeadView.desc = self.ctDetail.intro;

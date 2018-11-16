@@ -30,14 +30,9 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setupUI];
         self.contentView.backgroundColor = [UIColor redColor];
     }
     return self;
-}
-
--(void)setupUI{
-    
 }
 
 -(void)layoutSubviews{

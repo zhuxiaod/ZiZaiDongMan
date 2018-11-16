@@ -93,6 +93,7 @@
             make.top.equalTo(self).with.offset(10);
             make.left.equalTo(self).with.offset(10);
             make.bottom.equalTo(self.bottomView.mas_top).with.offset(-10);
+            make.height.mas_equalTo(100);
         }];
     }else{
         //表示有
@@ -124,11 +125,11 @@
         make.height.mas_equalTo(20);
     }];
     
-    [self.commentView.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.commentView.mas_left);
-        make.bottom.equalTo(self.commentView.mas_bottom);
-        make.height.mas_equalTo(20);
-    }];
+//    [self.commentView.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.equalTo(self.commentView.mas_left);
+//        make.bottom.equalTo(self.commentView.mas_bottom);
+//        make.height.mas_equalTo(20);
+//    }];
     
     [self.likeNum mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.commentView.mas_left).with.offset(-5);
@@ -140,8 +141,8 @@
     [self.likeImg mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.likeNum.mas_left).with.offset(-5);
         make.bottom.equalTo(self.bottomView.mas_top).with.offset(-11);
-        make.height.mas_equalTo(18);
-        make.width.mas_equalTo(18);
+        make.height.mas_equalTo(16);
+        make.width.mas_equalTo(16);
     }];
 }
 
@@ -154,9 +155,9 @@
         [self.headImg sd_setImageWithURL:[NSURL URLWithString:model.chapterCover] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
             //计算image的高度
             CGFloat proportion = image.size.height / (SCREEN_HEIGHT * 0.25 - 21);
-            NSLog(@"proportion:%f",proportion);
+//            NSLog(@"proportion:%f",proportion);
             CGFloat imageViewW = image.size.width / proportion;
-            NSLog(@"imageViewW:%f",imageViewW);
+//            NSLog(@"imageViewW:%f",imageViewW);
             [self.headImg mas_updateConstraints:^(MASConstraintMaker *make) {
                 make.width.mas_equalTo(imageViewW);
             }];
@@ -219,6 +220,7 @@
 //        self.btnBlock(self,_model);
 //    }
 //}
+
 - (UIButton *)commentView {
     if (!_commentView) {
         

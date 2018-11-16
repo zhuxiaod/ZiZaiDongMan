@@ -56,6 +56,9 @@
     
     _groupImgArr = [NSMutableArray array];
     
+    _bottomView = [[UIView alloc] init];
+    _bottomView.backgroundColor = [UIColor colorWithRGB:@"239,239,239"];
+    [self.contentView addSubview:_bottomView];
 }
 
 -(void)layoutSubviews{
@@ -94,7 +97,10 @@
         make.height.mas_equalTo(20);
     }];
 
-  
+    [self.bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.left.bottom.equalTo(self.contentView);
+        make.height.mas_equalTo(1);
+    }];
 }
 
 

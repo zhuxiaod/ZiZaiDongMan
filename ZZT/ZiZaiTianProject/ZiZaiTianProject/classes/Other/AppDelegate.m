@@ -47,7 +47,7 @@
     //1.创建窗口
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     
-    self.window.backgroundColor = [UIColor whiteColor];
+    self.window.backgroundColor = [UIColor blackColor];
     //2.设置窗口根控制器
     ZZTTabBarViewController *tabBarVC = [[ZZTTabBarViewController alloc]init];
 //    RTRootNavigationController *tabBarVC = [[RTRootNavigationController alloc]init];
@@ -66,6 +66,10 @@
     [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_Sina appKey:@"2702055855" appSecret:@"3c88b3d25a1cdbcc0d5807a010c9b908" redirectURL:@"https://sns.whalecloud.com/sina2/callback"];
     //取
     [UserInfoContext sharedUserInfoContext].userInfo = [Utilities GetNSUserDefaults];
+    
+    // 启动图片延时: 1秒
+//    [NSThread sleepForTimeInterval:2];
+    
     return YES;
 }
 

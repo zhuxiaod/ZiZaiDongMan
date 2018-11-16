@@ -20,7 +20,10 @@
 @property (weak, nonatomic) IBOutlet ZXDLoginRegisterTextField *phoneNumber2;
 
 @property (weak, nonatomic) IBOutlet ZXDLoginRegisterTextField *verificationFild;
-@property (weak, nonatomic) IBOutlet UIButton *verificationBtn;
+
+@property (weak, nonatomic) IBOutlet UIView *accountView;
+
+@property (weak, nonatomic) IBOutlet UIView *passwordView;
 
 @end
 
@@ -62,6 +65,10 @@
     // 让按钮背景图片不要被拉伸
     [_loginRegisterButton setBackgroundImage:image forState:UIControlStateNormal];
     
+    _loginRegisterButton.layer.cornerRadius = 8;
+    _loginRegisterButton.layer.borderWidth = 1;
+    _loginRegisterButton.layer.borderColor = [UIColor colorWithRGB:@"85,86,157"].CGColor;
+    
     //tag
     _verificationButton.tag = 0;
     _loginRegisterButton.tag = 1;
@@ -71,9 +78,30 @@
     _phoneNumber = _phoneNumber1;
     _verification = _verificationFild;
     
+    //验证
     self.verificationBtn.layer.borderWidth = 1.0f;
-    self.verificationBtn.layer.borderColor = [UIColor colorWithRGB:@"215,216,217"].CGColor;
-    self.verificationBtn.layer.cornerRadius = 10;
+    self.verificationBtn.layer.borderColor = ZZTSubColor.CGColor;
+    self.verificationBtn.layer.cornerRadius = 8;
+    [self.verificationBtn setTitleColor:ZZTSubColor forState:UIControlStateNormal];
+    [self.verificationBtn setBackgroundColor:[UIColor whiteColor]];
+
+    [_verificationBtn setTitle:@"发送验证码" forState:UIControlStateNormal];
+    [_verificationBtn addTarget:self action:@selector(codeBtnVerification) forControlEvents:UIControlEventTouchUpInside];
+    
+    //账号栏
+    _accountView.layer.cornerRadius = 8;
+    _accountView.layer.borderColor = [UIColor colorWithRGB:@"223,223,223"].CGColor;
+    _accountView.layer.borderWidth = 1.0f;
+    
+    //密码栏
+    _passwordView.layer.cornerRadius = 8;
+    _passwordView.layer.borderColor = [UIColor colorWithRGB:@"223,223,223"].CGColor;
+    _passwordView.layer.borderWidth = 1.0f;
+}
+
+-(void)codeBtnVerification{
+    NSLog(@"Ok");
+    [_verificationBtn timeFailBeginFrom:60];
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {

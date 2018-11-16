@@ -140,7 +140,6 @@ static NSString *findCommentCell = @"findCommentCell";
         [self.contentView reloadData];
         
         if(self.dataArray.count >= total){
-//            [self.contentView.mj_footer setHidden:YES];
             [self.contentView.mj_header endRefreshing];
         }else{
             [self.contentView.mj_header endRefreshing];
@@ -237,7 +236,7 @@ static NSString *findCommentCell = @"findCommentCell";
     if(section == 0){
         return SCREEN_HEIGHT * 0.36;
     }else{
-        return 0;
+        return 0.1f;
     }
 }
 
@@ -268,7 +267,7 @@ static NSString *findCommentCell = @"findCommentCell";
 
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     if(section == 0){
-        return SCREEN_HEIGHT * 0.14;
+        return SCREEN_HEIGHT * 0.125;
     }else{
         return SCREEN_HEIGHT * 0.34;
     }

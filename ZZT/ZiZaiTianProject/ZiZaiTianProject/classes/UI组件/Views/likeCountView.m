@@ -56,6 +56,7 @@ static NSString * const pressedImageName = @"catoonDetail_like_select";
     
     self.titleLabel.font = [UIFont systemFontOfSize:12];
     self.islike = false;
+    
 }
 
 - (void)setIslike:(BOOL)islike {
@@ -80,29 +81,29 @@ static NSString * const pressedImageName = @"catoonDetail_like_select";
 - (void)setLikeCount:(NSInteger)likeCount {
     _likeCount = likeCount;
     
-    CGFloat width = MyWidth;
+//    CGFloat width = MyWidth;
+//
+//    if (likeCount < 1) {
+//
+////       [self setTitle:nil forState:UIControlStateNormal];
+//
+//    }else {
     
-    if (likeCount < 1) {
-        
-       [self setTitle:nil forState:UIControlStateNormal];
-        
-    }else {
-        
         NSString *title = [NSString makeTextWithCount:likeCount];
         
         [self setTitle:title forState:UIControlStateNormal];
         
-        width = [title getTextWidthWithFont:self.titleLabel.font] + MyWidth;
+//        width = [title getTextWidthWithFont:self.titleLabel.font] + MyWidth;
 
-    }
-    
-    if (self.translatesAutoresizingMaskIntoConstraints) {
-        [self setWidth:width];
-    }else {
-        [self mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.width.equalTo(@(width));
-        }];
-    }
+//    }
+//
+//    if (self.translatesAutoresizingMaskIntoConstraints) {
+//        [self setWidth:width];
+//    }else {
+//        [self mas_updateConstraints:^(MASConstraintMaker *make) {
+//            make.width.equalTo(@(width));
+//        }];
+//    }
     
 }
 

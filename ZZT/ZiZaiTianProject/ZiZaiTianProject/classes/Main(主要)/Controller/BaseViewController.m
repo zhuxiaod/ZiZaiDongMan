@@ -36,37 +36,29 @@
     
     self.fd_prefersNavigationBarHidden = YES;
 
-    //自己的View
-    [self setupNavbar];
+
 }
 
--(void)setupNavbar
-{
-    ZXDNavBar *navBar = [[ZXDNavBar alloc] init];
-    _viewNavBar = navBar;
-    navBar.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:navBar];
-    
-    [_viewNavBar mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.equalTo(self.view);
-        make.top.equalTo(self.view);
-        make.height.equalTo(@(navHeight));
-    }];
+-(void)setupNavigationBarHidden:(BOOL)isHidden{
+    self.fd_prefersNavigationBarHidden = isHidden;
 }
 
 -(void)addBackBtn{
-    [_viewNavBar.leftButton setImage:[UIImage imageNamed:@"blackBack"] forState:UIControlStateNormal];
-    [_viewNavBar.leftButton addTarget:self action:@selector(dismissLastView) forControlEvents:UIControlEventTouchUpInside];
+    [self.viewNavBar.leftButton setImage:[UIImage imageNamed:@"blackBack"] forState:UIControlStateNormal];
+    [self.viewNavBar.leftButton addTarget:self action:@selector(dismissLastView) forControlEvents:UIControlEventTouchUpInside];
 }
 
 -(void)dismissLastView{
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (void)hideViewNavBar:(BOOL)ishide{
+    _viewNavBar.hidden = ishide;
+}
+
 -(void)hiddenViewNavBar{
     _viewNavBar.hidden = YES;
 }
-
 
 - (void)setBackItemWithImage:(NSString *)image pressImage:(NSString *)pressImage {
     
@@ -148,6 +140,22 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
 //    [MobClick endLogPageView:NSStringFromClass([self class])];
+}
+
+-(ZXDNavBar *)viewNavBar{
+    if(!_viewNavBar){
+        ZXDNavBar *navBar = [[ZXDNavBar alloc] init];
+        _viewNavBar = navBar;
+        navBar.backgroundColor = [UIColor clearColor];
+        [self.view addSubview:navBar];
+        
+        [_viewNavBar mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.right.equalTo(self.view);
+            make.top.equalTo(self.view);
+            make.height.equalTo(@(navHeight));
+        }];
+    }
+    return _viewNavBar;
 }
 
 @end

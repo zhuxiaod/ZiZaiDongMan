@@ -16,9 +16,8 @@
 
 @interface ZZTLoginRegisterViewController ()
 
-//@property (weak, nonatomic) IBOutlet UIView *midView;
-//@property (weak, nonatomic) IBOutlet NSLayoutConstraint *midCons;
-@property (nonatomic,strong) ZXDLoginRegisterView *loginView ;
+@property (nonatomic,strong) ZXDLoginRegisterView *loginView;
+
 @property (nonatomic,strong) NSString *platformId;
 
 @property (nonatomic,strong) UIImageView *logoIcon;
@@ -26,6 +25,7 @@
 @property (nonatomic,strong) UILabel *logoName;
 
 @property (nonatomic,strong) UIView *mindView;
+
 
 @end
 
@@ -35,34 +35,28 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor whiteColor];
-    
-    //登录view
-    ZXDLoginRegisterView *loginView = [ZXDLoginRegisterView loginView];
-    _loginView = loginView;
-//    [self.midView addSubview:loginView];
-    
-    //获取验证码
-    loginView.buttonAction = ^(UIButton *sender) {
-        [self verificationButtonClick:sender];
-    };
-    //登录
-    loginView.LogBtnClick = ^(UIButton *sender) {
-        [self loginButtonClick:sender];
-    };
 
-    self.viewNavBar.backgroundColor = [UIColor colorWithRGB:@"53,51,55"];
-    
-    [self.viewNavBar.centerButton setTitle:@"登录" forState:UIControlStateNormal];
-    [self.viewNavBar.centerButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    
-    [self addBackBtn];
-    
-    [self.viewNavBar.leftButton setImage:[UIImage imageNamed:@"loginBackBtn"] forState:UIControlStateNormal];
-    
+
+
+    [self setupLogoView];
+
+    //下面是键盘
+    [self setupkeyboard];
+
+    //其他登录方式
+    [self loginOtheroWays];
+//
+    //设置navbar
+    [self setupNavbar];
+
+}
+
+-(void)setupLogoView{
     //图标
     UIImageView *logoIcon = [[UIImageView alloc] init];
     logoIcon.image = [UIImage imageNamed:@"ICON-head_portrait"];
     [self.view addSubview:logoIcon];
+    _logoIcon = logoIcon;
     
     [logoIcon mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.view.mas_top).offset(120);
@@ -72,6 +66,7 @@
     
     //名字
     UILabel *logoName = [[UILabel alloc] init];
+    _logoName = logoName;
     logoName.text = @"自在动漫";
     logoName.attributedText = [NSString addStrSpace:logoName.text];
     [self.view addSubview:logoName];
@@ -81,31 +76,64 @@
         make.centerX.equalTo(logoIcon);
         make.height.mas_equalTo(20);
     }];
+}
+
+-(void)setupNavbar{
     
-    //下面是键盘
+    self.viewNavBar.backgroundColor = [UIColor colorWithRGB:@"53,51,55"];
+    
+    [self.viewNavBar.centerButton setTitle:@"登录" forState:UIControlStateNormal];
+    
+    [self.viewNavBar.centerButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    
+    [self addBackBtn];
+    
+    [self.viewNavBar.leftButton setImage:[UIImage imageNamed:@"loginBackBtn"] forState:UIControlStateNormal];
+    
+}
+
+-(void)setupkeyboard{
+    
+    //登录view
+    ZXDLoginRegisterView *loginView = [ZXDLoginRegisterView loginView];
+    _loginView = loginView;
+    
+    //获取验证码
+    loginView.buttonAction = ^(UIButton *sender) {
+        [self verificationButtonClick:sender];
+    };
+    //登录
+    loginView.LogBtnClick = ^(UIButton *sender) {
+        [self loginButtonClick:sender];
+    };
+    
+    
     UIView *mindView = [[UIView alloc] init];
     [self.view addSubview:mindView];
     [mindView addSubview:loginView];
     
     [mindView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(logoName.mas_bottom).offset(60);
-        make.centerX.equalTo(logoIcon);
+        make.top.equalTo(self.logoName.mas_bottom).offset(10);
+        make.centerX.equalTo(self.logoIcon);
         make.width.mas_equalTo(SCREEN_WIDTH);
         make.height.mas_equalTo(220);
     }];
-
-    [loginView mas_makeConstraints:^(MASConstraintMaker *make) {
+    
+    [self.loginView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(mindView.mas_top);
         make.right.equalTo(mindView.mas_right);
         make.left.equalTo(mindView.mas_left);
         make.bottom.equalTo(mindView.mas_bottom);
     }];
     
-    //其他登录方式
-    UIView *bottomView = [[UIView alloc] init];
-//    bottomView.backgroundColor = [UIColor yellowColor];
-    [self.view addSubview:bottomView];
+}
 
+-(void)loginOtheroWays{
+
+    UIView *bottomView = [[UIView alloc] init];
+
+    [self.view addSubview:bottomView];
+    
     [bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(self.view).offset(0);
         make.height.mas_equalTo(150);
@@ -152,7 +180,7 @@
     [bottomView addSubview:QQLoginBtn];
     
     [QQLoginBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(bottomView).offset(-100);
+        make.centerX.equalTo(bottomView).offset(-50);
         make.centerY.equalTo(bottomView);
         make.height.width.mas_equalTo(bottomView.height * 0.6);
     }];
@@ -163,11 +191,10 @@
     [bottomView addSubview:WCLoginBtn];
     
     [WCLoginBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(bottomView).offset(100);
+        make.centerX.equalTo(bottomView).offset(50);
         make.centerY.equalTo(bottomView);
         make.height.width.mas_equalTo(bottomView.height * 0.6);
     }];
-    
 }
 
 //获取验证码
@@ -187,7 +214,6 @@
         
     }];
 
-    NSLog(@"%@",self.loginView.phoneNumber);
 }
 
 -(void)loginButtonClick:(UIButton *)button{
@@ -199,6 +225,7 @@
 
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"login/loginApp"]  parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
         [self loginAfterLoadUserDataWith:responseObject];
 
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -319,7 +346,6 @@
     UserInfo *user = array[0];
     //存
     [Utilities SetNSUserDefaults:user];
-
 
     //关闭页面
     [self dismissViewControllerAnimated:YES completion:^{

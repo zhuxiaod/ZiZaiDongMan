@@ -51,6 +51,7 @@
         }];
     } return _leftButton;
 }
+
 - (UIButton *)leftTwoButton{
     if (!_leftTwoButton) {
         // 左边第二个按钮
@@ -81,7 +82,7 @@
         self.rightButton = rightButton;
         [_rightButton addTarget:self action:@selector(clickRightButton) forControlEvents:UIControlEventTouchUpInside];
         [self.rightButton mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.right.mas_equalTo(-5);
+            make.right.mas_equalTo(0);
             make.width.mas_equalTo(50);
             make.height.mas_equalTo(40);
             make.centerY.mas_equalTo(self.leftButton);

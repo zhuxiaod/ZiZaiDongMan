@@ -51,6 +51,8 @@
     
     //显示删除
     [self setupDeleteBtn];
+    
+    [self hiddenViewNavBar];
 }
 
 -(void)setupDeleteBtn{
@@ -215,4 +217,10 @@
         [self loadBookShelfData];
     }
 }
+
+//边距设置:整体边距的优先级，始终高于内部边距的优先级
+-(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+    return UIEdgeInsetsMake(0, 8, 8, 8);//分别为上、左、下、右
+}
+
 @end

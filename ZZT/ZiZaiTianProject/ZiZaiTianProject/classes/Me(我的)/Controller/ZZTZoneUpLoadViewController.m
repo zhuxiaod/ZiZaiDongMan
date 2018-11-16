@@ -83,6 +83,7 @@
     //照片View
     [self setupImageView];
     
+    
 //    _selectedPhotos = [NSMutableArray array];
 //
 //    _selectedAssets = [NSMutableArray array];
@@ -102,14 +103,18 @@
     _collectionView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
     
     [self.scrollView addSubview:_collectionView];
-
+    
     [_collectionView registerClass:[TZTestCell class] forCellWithReuseIdentifier:@"TZTestCell"];
+    
+    [self.view layoutIfNeeded];
+    
+    CGFloat collectionViewW = ((self.view.width - 32) - 2 * _margin - 4) / 3 - _margin;
     
     [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.textView.mas_bottom).offset(10);
-        make.right.equalTo(self.textView);
-        make.left.equalTo(self.textView);
-        make.height.mas_equalTo(200);
+        make.left.equalTo(self.view).offset(16);
+        make.right.equalTo(self.view).offset(-16);
+        make.height.mas_equalTo(collectionViewW * 3);
     }];
 }
 
@@ -126,7 +131,9 @@
     textView.typingAttributes = attributes;
     textView.returnKeyType = UIReturnKeySend;
     textView.delegate = self;
-    self.textView = textView;
+    
+    _textView = textView;
+    
     [self.scrollView addSubview:textView];
     
     [textView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -136,7 +143,6 @@
         make.height.mas_equalTo(140);
     }];
 }
-
 -(void)setupScrollView{
     UIScrollView *scrollView = [[UIScrollView alloc] init];
     self.scrollView = scrollView;
@@ -153,7 +159,7 @@
 
 -(void)setupNavigationBar{
     ZXDNavBar *navbar = [[ZXDNavBar alloc]init];
-    self.navbar = navbar;
+    _navbar = navbar;
     [navbar setBackgroundColor:[UIColor whiteColor]];
     [navbar setShowBottomLabel:NO];
     [self.view addSubview:navbar];
@@ -272,7 +278,7 @@
     //间距 4
     _margin = 4;
     //item宽高
-    _itemWH = (self.collectionView.width - 2 * _margin - 4) / 3 - _margin;
+    _itemWH = ((self.view.width - 32) - 2 * _margin - 4) / 3 - _margin;
     NSLog(@"111%f",_itemWH);
     //设置宽高
     _layout.itemSize = CGSizeMake(_itemWH, _itemWH);
@@ -309,7 +315,7 @@
 #pragma mark UICollectionView
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     //如果选择照片的数量 大于  最大数量
-    if (_selectedPhotos.count >= 99) {
+    if (_selectedPhotos.count >= 9) {
         return _selectedPhotos.count;
     }
     //有一个加号

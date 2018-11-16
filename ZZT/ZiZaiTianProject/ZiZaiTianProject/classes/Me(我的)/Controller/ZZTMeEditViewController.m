@@ -10,7 +10,7 @@
 #import "ZZTMeEditTopView.h"
 #import "ZZTMeEditButtomView.h"
 #import "TypeButton.h"
-@interface ZZTMeEditViewController ()<UINavigationControllerDelegate,UIImagePickerControllerDelegate>
+@interface ZZTMeEditViewController ()<UINavigationControllerDelegate,UIImagePickerControllerDelegate,TZImagePickerControllerDelegate>
 
 @property (nonatomic,assign) NSInteger btnTag;
 
@@ -89,6 +89,8 @@
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(transformView:) name:UIKeyboardWillChangeFrameNotification object:nil];
     
     [self setupNavBar];
+    
+    [self hiddenViewNavBar];
    
 }
 
@@ -165,6 +167,7 @@
     };
     [_scrollView addSubview:_meButtomView];
 }
+
 //保存
 -(void)save{
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -312,6 +315,77 @@
     //选择完成图片或者点击取消按钮都是通过代理来操作我们所需要的逻辑过程
 //    _picker.delegate = self;
     [self.navigationController presentViewController:_picker animated:YES completion:nil];
+    
+//    TZImagePickerController *imagePickerVc = [[TZImagePickerController alloc] initWithMaxImagesCount:1 columnNumber:4 delegate:self pushPhotoPickerVc:YES];
+//    // imagePickerVc.navigationBar.translucent = NO;
+//    
+//    imagePickerVc.naviBgColor = [UIColor grayColor];
+//    
+//#pragma mark - 五类个性化设置，这些参数都可以不传，此时会走默认设置
+//    imagePickerVc.isSelectOriginalPhoto = YES;
+//    
+//    
+//    imagePickerVc.allowTakePicture = YES; // 在内部显示拍照按钮
+//    
+//    [imagePickerVc setUiImagePickerControllerSettingBlock:^(UIImagePickerController *imagePickerController) {
+//        imagePickerController.videoQuality = UIImagePickerControllerQualityTypeHigh;
+//    }];
+//    
+//    //主题颜色
+//    imagePickerVc.iconThemeColor = [UIColor colorWithRed:31 / 255.0 green:185 / 255.0 blue:34 / 255.0 alpha:1.0];
+//    //显示照片不能选择图层
+//    imagePickerVc.showPhotoCannotSelectLayer = YES;
+//    //    无法选择图层颜色
+//    imagePickerVc.cannotSelectLayerColor = [[UIColor whiteColor] colorWithAlphaComponent:0.8];
+//    //设置照片选择器页面UI配置块
+//    [imagePickerVc setPhotoPickerPageUIConfigBlock:^(UICollectionView *collectionView, UIView *bottomToolBar, UIButton *previewButton, UIButton *originalPhotoButton, UILabel *originalPhotoLabel, UIButton *doneButton, UIImageView *numberImageView, UILabel *numberLabel, UIView *divideLine) {
+//        [doneButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+//    }];
+//    
+//    // 3. 设置是否可以选择视频/图片/原图
+//    imagePickerVc.allowPickingVideo = NO;
+//    imagePickerVc.allowPickingImage = YES;
+//    imagePickerVc.allowPickingOriginalPhoto = YES;
+//    imagePickerVc.allowPickingGif = NO;
+//    imagePickerVc.allowPickingMultipleVideo = NO; // 是否可以多选视频
+//    
+//    // 4. 照片排列按修改时间升序
+//    imagePickerVc.sortAscendingByModificationDate = YES;
+//    
+//    /// 5. 单选模式,maxImagesCount为1时才生效
+//    imagePickerVc.showSelectBtn = NO;
+//    imagePickerVc.allowCrop = NO;
+//    imagePickerVc.needCircleCrop = NO;
+//    // 设置竖屏下的裁剪尺寸
+//    NSInteger left = 30;
+//    NSInteger widthHeight = self.view.width - 2 * left;
+//    NSInteger top = (self.view.height - widthHeight) / 2;
+//    imagePickerVc.cropRect = CGRectMake(left, top, widthHeight, widthHeight);
+//    
+//    imagePickerVc.statusBarStyle = UIStatusBarStyleLightContent;
+//    
+//    // 设置是否显示图片序号
+//    imagePickerVc.showSelectedIndex = YES;
+//    
+//    // 你可以通过block或者代理，来得到用户选择的照片.
+//    [imagePickerVc setDidFinishPickingPhotosHandle:^(NSArray<UIImage *> *photos, NSArray *assets, BOOL isSelectOriginalPhoto) {
+//        
+//        UIButton *button = (UIButton *)[self.view viewWithTag:self.btnTag];
+//        UIImage *resultImage = [photos objectAtIndex:0];
+//        //改变后的图片 记录 加了什么
+//        if(self.btnTag == 1){
+//            self.backImage = resultImage;
+//            [self.imgeDict setObject:resultImage forKey:@"backImg"];
+//        }else{
+//            self.headImage = resultImage;
+//            [self.imgeDict setObject:resultImage forKey:@"headImg"];
+//        }
+//        button.imageView.image = resultImage;
+//        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+//    }];
+//    
+//    [self presentViewController:imagePickerVc animated:YES completion:nil];
+
 }
 
 //调用相机
@@ -486,6 +560,7 @@
     [super viewWillAppear:animated];
     [self save];
 }
+
 -(void)loadUserData{
     //通过id 获取数据
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
@@ -505,4 +580,5 @@
         
     }];
 }
+
 @end

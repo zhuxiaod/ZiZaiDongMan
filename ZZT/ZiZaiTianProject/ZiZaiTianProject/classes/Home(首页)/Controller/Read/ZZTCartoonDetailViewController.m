@@ -956,7 +956,7 @@ static bool needHide = false;
     }else{
         if(_isHasComment){
             //没有评论
-            return 200;
+            return SCREEN_HEIGHT * 0.31;
         }else{
 //            ZZTCircleModel *item = self.commentArray[section - 3];
 //            return item.headerHeight + 24;

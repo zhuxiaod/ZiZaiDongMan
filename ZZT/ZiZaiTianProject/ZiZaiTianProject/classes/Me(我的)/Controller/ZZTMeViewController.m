@@ -121,8 +121,8 @@ NSString *bannerID = @"MeCell";
     };
     top.loginAction = ^(UIButton *btn) {
         //弹出登录页面
-        ZZTLoginRegisterViewController *loginView = [[ZZTLoginRegisterViewController alloc] init];
-        [self presentViewController:loginView animated:YES completion:nil];
+//        ZZTLoginRegisterViewController *loginView = [[ZZTLoginRegisterViewController alloc] init];
+        [ZZTLoginRegisterViewController show];
     };
     
     [self.view addSubview:_tableView];

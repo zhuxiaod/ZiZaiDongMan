@@ -248,11 +248,11 @@ NSString *SuggestionView = @"SuggestionView";
     //返回
     [navBar.leftButton setImage:[UIImage imageNamed:@"Home_readHistory"] forState:UIControlStateNormal];
     [navBar.leftButton addTarget:self action:@selector(history) forControlEvents:UIControlEventTouchUpInside];
-    navBar.leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 17);
+//    navBar.leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 17);
 
     //搜索
     [navBar.rightButton setImage:[UIImage imageNamed:@"Home_search"] forState:UIControlStateNormal];
-    navBar.rightButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, -33);
+//    navBar.rightButton.imageEdgeInsets = UIEdgeInsetsMake(0, -17, 0, 0);
     [navBar.rightButton addTarget:self action:@selector(search) forControlEvents:UIControlEventTouchUpInside];
     
     //删除
@@ -260,7 +260,7 @@ NSString *SuggestionView = @"SuggestionView";
     _deleteBtn = deleteBtn;
     deleteBtn.hidden = YES;
     [deleteBtn setImage:[UIImage imageNamed:@"Home_removeBook"] forState:UIControlStateNormal];
-    deleteBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, -33);
+//    deleteBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, -33);
     [deleteBtn addTarget:self action:@selector(showRemindView) forControlEvents:UIControlEventTouchUpInside];
     [navBar addSubview:deleteBtn];
     

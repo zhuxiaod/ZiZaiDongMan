@@ -21,6 +21,7 @@ typedef void(^LogBtnClick)(UIButton * sender);
 
 @property (nonatomic,strong)UITextField *verification;
 
+@property (weak, nonatomic) IBOutlet GGVerifyCodeViewBtn *verificationBtn;
 
 @property (nonatomic,copy) ButtonClick buttonAction;
 

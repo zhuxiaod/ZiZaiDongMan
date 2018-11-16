@@ -24,6 +24,7 @@
 -(void)awakeFromNib{
     _imageBtn.tag = 1;
     [_imageBtn addTarget:self action:@selector(clickBrn:) forControlEvents:UIControlEventTouchUpInside];
+    
     _headBtn.tag = 2;
     [_headBtn addTarget:self action:@selector(clickBrn:) forControlEvents:UIControlEventTouchUpInside];
 }
@@ -32,12 +33,20 @@
     _backImage = backImage;
     [self.backImageView sd_setImageWithURL:[NSURL URLWithString:backImage]];
     [self.imageBtn setTitle:@"" forState:UIControlStateNormal];
+    
+    [self.backImageView setContentMode:UIViewContentModeScaleAspectFill];
+    
+    self.backImageView.clipsToBounds = YES;
 }
 
 
 -(void)setHeadImage:(NSString *)headImage{
     _headImage = headImage;
     [self.headView sd_setImageWithURL:[NSURL URLWithString:headImage]];
+    
+    [self.headView setContentMode:UIViewContentModeScaleAspectFill];
+    
+    self.headView.clipsToBounds = YES;
 }
 
 -(void)clickBrn:(UIButton *)btn{

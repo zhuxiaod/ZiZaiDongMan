@@ -13,4 +13,6 @@
 @property (strong,nonatomic) UIColor *strokeColor;
 @property (assign,nonatomic) CGFloat strokeWidth;
 
+-(void)labOutline;
+
 @end

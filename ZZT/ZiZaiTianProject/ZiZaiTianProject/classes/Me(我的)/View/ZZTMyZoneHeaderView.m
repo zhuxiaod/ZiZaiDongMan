@@ -15,7 +15,7 @@
 //用户
 @property (nonatomic,strong) ZZTUserHeadView *userHead;
 
-@property (nonatomic,strong) UILabel *userName;
+@property (nonatomic,strong) SBStrokeLabel *userName;
 
 @end
 
@@ -34,9 +34,16 @@
     
     [self.backgroundBtn sd_setImageWithURL:[NSURL URLWithString:user.cover] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"轻触更换背景"]];
     
+    [self.backgroundBtn.imageView  setContentMode:UIViewContentModeScaleAspectFill];
+    
+    self.backgroundBtn.imageView .clipsToBounds = YES;
+    
     [self.userHead setupUserHeadImg:user.headimg placeHeadImg:@"用户头像"];
+ 
     
     self.userName.text = user.nickName;
+    
+    [self.userName labOutline];
 
     //label宽度    
     CGFloat nameWidth = [user.nickName getTextWidthWithFont:self.userName.font] + 30;
@@ -59,7 +66,7 @@
     [self.contentView addSubview:_userHead];
 
     //用户名
-    _userName = [[UILabel alloc] init];
+    _userName = [[SBStrokeLabel alloc] init];
     [_userName setTextColor:[UIColor whiteColor]];
     _userName.textAlignment = NSTextAlignmentRight;
     [self.contentView addSubview:_userName];

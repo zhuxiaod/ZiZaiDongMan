@@ -48,6 +48,11 @@
 -(void)setupUI{
     //头像
     _headBtn = [[UIButton alloc] init];
+    
+    [_headBtn.imageView  setContentMode:UIViewContentModeScaleAspectFill];
+    
+    _headBtn.imageView .clipsToBounds = YES;
+    
     [_headBtn addTarget:self action:@selector(clickHead) forControlEvents:UIControlEventTouchUpInside];
     _headBtn.adjustsImageWhenHighlighted = NO;
     
@@ -72,7 +77,6 @@
 
     //时间
     _dataLab = [GlobalUI createLabelFont:14 titleColor:[UIColor grayColor] bgColor:[UIColor whiteColor]];
-    
     
     [self.contentView addSubview:_headBtn];
     [self.contentView addSubview:_userName];
@@ -159,7 +163,7 @@
     }];
     
     [self.likeCountView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(self.replyCountView).offset(-2);
+        make.centerY.equalTo(self.replyCountView);
         make.right.equalTo(self.replyCountView.mas_left).offset(-space);
         make.height.mas_equalTo(20);
     }];
@@ -223,7 +227,6 @@
     [self setNeedsLayout];
     [self layoutIfNeeded];
     
-//    [_headBtn sd_setImageWithURL:[NSURL URLWithString:model.headimg] placeholderImage:[UIImage imageNamed:@"peien"]];
     [_headBtn sd_setBackgroundImageWithURL:[NSURL URLWithString:model.headimg] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"peien"]];
     //名字位置刷新 vip的位置也刷新
     _userName.text = model.nickName;
@@ -237,13 +240,27 @@
     //评论
     NSString *replayCountText = [NSString makeTextWithCount:model.replycount];
     
+    CGFloat replyWidth = 70;
+
     [self.replyCountView setTitle:replayCountText forState:UIControlStateNormal];
 
-    CGFloat replyWidth = [replayCountText getTextWidthWithFont:self.replyCountView.titleLabel.font] + 30;
-    
     //设置宽度
     [self.replyCountView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.width.equalTo(@(replyWidth));
+    }];
+    
+    [self.replyCountView.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.replyCountView.mas_top).offset(1);
+        make.left.equalTo(self.replyCountView.mas_left).offset(2);
+        make.bottom.equalTo(self.replyCountView.mas_bottom).offset(-1);
+        make.width.mas_equalTo(18);
+    }];
+    
+    [self.replyCountView.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.replyCountView.imageView.mas_top);
+        make.left.equalTo(self.replyCountView.imageView.mas_right).offset(4);
+        make.bottom.equalTo(self.replyCountView.mas_bottom);
+        make.width.mas_equalTo(replyWidth - 22);
     }];
     
     //评论跳转
@@ -253,6 +270,28 @@
     self.likeCountView.islike  = [model.ifpraise integerValue];
     self.likeCountView.requestID = model.userId;
     self.likeCountView.likeCount = model.praisecount;
+//    self.likeCountView.likeCount = 10000;
+
+    [self.likeCountView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.width.mas_equalTo(replyWidth);
+    }];
+    
+    [self.likeCountView.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.likeCountView.mas_top).offset(1);
+        make.left.equalTo(self.likeCountView.mas_left).offset(2);
+        make.bottom.equalTo(self.likeCountView.mas_bottom).offset(-1);
+        make.width.mas_equalTo(18);
+    }];
+    
+    [self.likeCountView.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.likeCountView.imageView.mas_top);
+        make.left.equalTo(self.likeCountView.imageView.mas_right).offset(4);
+        make.bottom.equalTo(self.likeCountView.mas_bottom);
+        make.width.mas_equalTo(replyWidth - 22);
+    }];
+    
+    
+  
     
     //关注
     _attentionBtn.isAttention = [model.ifConcern integerValue];
@@ -275,18 +314,29 @@
         
         int row = i / 3;
         int loc = i % 3;
+        
         CGFloat x = (edge + w) * loc ;
         CGFloat y = (edge + h) * row;
         
         UIImageView * img =[[UIImageView alloc]init];
+        
+        [img setContentMode:UIViewContentModeScaleAspectFill];
+        
+        img.clipsToBounds = YES;
+        
         [img sd_setImageWithURL:[NSURL URLWithString:_imgArray[i]]];
         //        img.image = [UIImage imageNamed:_imgArray[i]];
 //        img.backgroundColor = [UIColor greenColor];
         img.frame = CGRectMake(x, y, w, h);
+        
         img.userInteractionEnabled = YES;
+        
         UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(browerImage:)];
+        
         [img addGestureRecognizer:tap];
+        
         [_bgImgsView addSubview:img];
+        
         [_groupImgArr addObject:img];
     }
 }
@@ -320,9 +370,9 @@
         
         btn.titleLabel.font = [UIFont systemFontOfSize:12];
         
-//        [btn setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
-//        [btn setTitleColor:[self.likeCountView titleColorForState:UIControlStateNormal] forState:UIControlStateNormal];
-        [btn setImage:[UIImage imageNamed:@"评论"] forState:UIControlStateNormal];
+        [btn setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
+        [btn setTitleColor:[self.likeCountView titleColorForState:UIControlStateNormal] forState:UIControlStateNormal];
+        [btn setImage:[UIImage imageNamed:@"wordDetail_comment"] forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(showCommentVc) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:btn];
         
@@ -339,7 +389,8 @@
         weakself(self);
         //发现点赞
         [lcv setOnClick:^(likeCountView *btn) {
-            
+            //用户点赞
+            [self userLikeTarget];
         }];
         
         [self.contentView addSubview:lcv];
@@ -348,6 +399,7 @@
     }
     return _likeCountView;
 }
+
 //显示评论页
 -(void)showCommentVc{
     if([[UserInfoManager share] hasLogin] == NO){
@@ -359,7 +411,18 @@
     commentVC.cartoonType = @"2";
     [[self myViewController].navigationController presentViewController:commentVC animated:YES completion:nil];
     [commentVC hiddenTitleView];
-
 }
 
+-(void)userLikeTarget{
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    NSDictionary *dict = @{
+                           @"typeId":_model.id,
+                           @"userId":[UserInfoManager share].ID
+                           };
+    [manager POST:[ZZTAPI stringByAppendingString:@"great/praises"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
+}
 @end

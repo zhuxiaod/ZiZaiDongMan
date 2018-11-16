@@ -59,7 +59,9 @@
 - (void)timeFailBeginFrom:(NSInteger)timeCount
 {
     self.count = timeCount;
+    
     self.enabled = NO;
+    
     // 加1个定时器
     self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timeDown) userInfo: nil repeats:YES];
     
@@ -71,14 +73,18 @@
 {
     if (self.count != 1){
         
-        self.count -=1;
+        self.count -= 1;
+        
         self.enabled = NO;
+        
         [self setTitle:[NSString stringWithFormat:@"剩余%ld秒", self.count] forState:UIControlStateNormal];
     
     } else {
     
         self.enabled = YES;
+        
         [self setTitle:@"获取验证码" forState:UIControlStateNormal];
+        
         [self.timer invalidate];
     }
     

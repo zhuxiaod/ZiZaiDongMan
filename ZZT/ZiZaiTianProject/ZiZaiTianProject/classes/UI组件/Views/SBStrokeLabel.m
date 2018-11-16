@@ -39,6 +39,10 @@
 -(void)setStrokeWidth:(CGFloat)strokeWidth{
     _strokeWidth = strokeWidth;
 }
-    
+
+-(void)labOutline{
+    _strokeWidth = 1.0f;
+    _strokeColor = [UIColor blackColor];
+}
 
 @end

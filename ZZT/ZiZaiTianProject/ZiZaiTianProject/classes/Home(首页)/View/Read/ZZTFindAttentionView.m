@@ -18,7 +18,7 @@
 
 @property (nonatomic,strong) ZZTUserHeadView *userHead;
 
-@property (nonatomic,strong) UILabel *userName;
+@property (nonatomic,strong) SBStrokeLabel *userName;
 //头像框
 //头像
 //用户名
@@ -51,7 +51,7 @@
     [_userHead.viewClick addTarget:self action:@selector(print) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:_userHead];
     
-    _userName = [[UILabel alloc] init];
+    _userName = [[SBStrokeLabel alloc] init];
     [_userName setTextColor:[UIColor whiteColor]];
     _userName.textAlignment = NSTextAlignmentRight;
     [self.contentView addSubview:_userName];
@@ -68,9 +68,15 @@
     
     [self.backgroundBtn sd_setImageWithURL:[NSURL URLWithString:model.cover] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"用户空间背景"]];
     
+    [self.backgroundBtn.imageView  setContentMode:UIViewContentModeScaleAspectFill];
+    
+    self.backgroundBtn.imageView.clipsToBounds = YES;
+    
     self.userHead.userImg = model.headimg;
     
     self.userName.text = model.nickName;
+    
+    [self.userName labOutline];
     //label宽度
     CGFloat nameWidth = [model.nickName getTextWidthWithFont:self.userName.font] + 30;
 

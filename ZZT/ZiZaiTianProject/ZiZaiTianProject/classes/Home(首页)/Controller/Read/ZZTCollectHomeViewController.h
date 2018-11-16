@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ZZTCollectHomeViewController : UIViewController
+@interface ZZTCollectHomeViewController : BaseViewController
 
 -(void)showDeleteBtn;
 

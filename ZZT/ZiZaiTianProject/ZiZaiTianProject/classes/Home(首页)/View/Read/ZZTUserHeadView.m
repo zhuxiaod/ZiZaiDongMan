@@ -33,6 +33,11 @@
     [self addSubview:_headFrame];
     
     _headView = [[UIImageView alloc] init];
+    
+    [_headView setContentMode:UIViewContentModeScaleAspectFill];
+    
+    _headView.clipsToBounds = YES;
+    
     [self addSubview:_headView];
     
     _viewClick = [[UIButton alloc] init];

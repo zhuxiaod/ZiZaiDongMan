@@ -279,6 +279,7 @@ static NSString *bigImageCell = @"bigImageCell";
         return CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT * 0.052);
     }
 }
+
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section {
     if(section == 0){
         //btn 
@@ -289,7 +290,6 @@ static NSString *bigImageCell = @"bigImageCell";
     }else{
         return CGSizeZero;
     }
-    
 }
 
 //边距设置:整体边距的优先级，始终高于内部边距的优先级

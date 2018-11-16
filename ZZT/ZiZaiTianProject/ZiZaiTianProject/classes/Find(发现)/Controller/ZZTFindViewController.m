@@ -151,6 +151,7 @@ NSString *SuggestionView3 = @"SuggestionView";
 }
 
 -(void)setupNavbar{
+    
     ZZTNavBarTitleView *titleView = [[ZZTNavBarTitleView alloc] init];
     titleView.selBtnTextColor = ZZTSubColor;
     titleView.selBtnBackgroundColor = [UIColor whiteColor];
@@ -183,11 +184,11 @@ NSString *SuggestionView3 = @"SuggestionView";
     
     //返回
     [navBar.leftButton setImage:[UIImage imageNamed:@"find_home_addMoment"] forState:UIControlStateNormal];
-    navBar.leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 17);
+//    navBar.leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 17);
     [navBar.leftButton addTarget:self action:@selector(addMoment) forControlEvents:UIControlEventTouchUpInside];
     
     [navBar.rightButton setImage:[UIImage imageNamed:@"find_home_search"] forState:UIControlStateNormal];
-    navBar.rightButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, -33);
+//    navBar.rightButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, -33);
     [navBar.rightButton addTarget:self action:@selector(search) forControlEvents:UIControlEventTouchUpInside];
 
     
@@ -390,61 +391,9 @@ NSString *SuggestionView3 = @"SuggestionView";
     }
 }
 
-//创建一个图片选择控制器
-- (UIImagePickerController *)imagePickerVc {
-    if (_imagePickerVc == nil) {
-        _imagePickerVc = [[UIImagePickerController alloc] init];
-        _imagePickerVc.delegate = self;
-        // set appearance / 改变相册选择页的导航栏外观
-        _imagePickerVc.navigationBar.barTintColor = self.navigationController.navigationBar.barTintColor;
-        _imagePickerVc.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
-        UIBarButtonItem *tzBarItem, *BarItem;
-        if (@available(iOS 9, *)) {
-            tzBarItem = [UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[TZImagePickerController class]]];
-            BarItem = [UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[UIImagePickerController class]]];
-        } else {
-            tzBarItem = [UIBarButtonItem appearanceWhenContainedIn:[TZImagePickerController class], nil];
-            BarItem = [UIBarButtonItem appearanceWhenContainedIn:[UIImagePickerController class], nil];
-        }
-        NSDictionary *titleTextAttributes = [tzBarItem titleTextAttributesForState:UIControlStateNormal];
-        [BarItem setTitleTextAttributes:titleTextAttributes forState:UIControlStateNormal];
-    }
-    return _imagePickerVc;
-}
-
-//相机返回代理
-- (void)imagePickerController:(UIImagePickerController*)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    [picker dismissViewControllerAnimated:YES completion:^{
-        ZZTZoneUpLoadViewController *uploadVC = [[ZZTZoneUpLoadViewController alloc] init];
-        NSString *type = [info objectForKey:UIImagePickerControllerMediaType];
-        
-        TZImagePickerController *tzImagePickerVc = [[TZImagePickerController alloc] initWithMaxImagesCount:1 delegate:self];
-        [tzImagePickerVc showProgressHUD];
-        if ([type isEqualToString:@"public.image"]) {
-            UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
-            // save photo and get asset / 保存图片，获取到asset
-            [[TZImageManager manager] savePhotoWithImage:image location:self.location completion:^(PHAsset *asset, NSError *error){
-                [tzImagePickerVc hideProgressHUD];
-                if (error) {
-                    NSLog(@"图片保存失败 %@",error);
-                } else {
-                    TZAssetModel *assetModel = [[TZImageManager manager] createModelWithAsset:asset];
-                  
-//                    [self refreshCollectionViewWithAddedAsset:assetModel.asset image:image];
-                    uploadVC.addAssets = assetModel.asset;
-                    uploadVC.addPhotos = image;
-                }
-            }];
-        }
-        
-        [self presentViewController:uploadVC animated:YES completion:nil];
-    }];
-}
-
 - (void)refreshCollectionViewWithAddedAsset:(PHAsset *)asset image:(UIImage *)image {
     [_selectedAssets addObject:asset];
     [_selectedPhotos addObject:image];
-//    [_collectionView reloadData];
     
     if ([asset isKindOfClass:[PHAsset class]]) {
         PHAsset *phAsset = asset;
@@ -460,6 +409,8 @@ NSString *SuggestionView3 = @"SuggestionView";
     //最大选择数     最大显示照片
     TZImagePickerController *imagePickerVc = [[TZImagePickerController alloc] initWithMaxImagesCount:9 columnNumber:4 delegate:self pushPhotoPickerVc:YES];
     // imagePickerVc.navigationBar.translucent = NO;
+    
+    imagePickerVc.naviBgColor = [UIColor grayColor];
     
 #pragma mark - 五类个性化设置，这些参数都可以不传，此时会走默认设置
     imagePickerVc.isSelectOriginalPhoto = YES;
@@ -535,6 +486,12 @@ NSString *SuggestionView3 = @"SuggestionView";
     [self.navigationController setNavigationBarHidden:YES animated:NO];
     [self.navigationController.navigationBar setAlpha:0];
     self.statusBarStyle = UIStatusBarStyleDefault;
+}
+
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+//    [self setupNavigationBarHidden:NO];
+//    [self.navigationController setNavigationBarHidden:NO animated:NO];
 }
 
 - (void)didReceiveMemoryWarning {
