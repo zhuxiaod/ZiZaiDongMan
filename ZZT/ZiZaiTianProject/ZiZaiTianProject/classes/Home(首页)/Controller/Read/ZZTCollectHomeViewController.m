@@ -213,9 +213,7 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    if([[UserInfoManager share] hasLogin] == YES){
-        [self loadBookShelfData];
-    }
+    [self loadBookShelfData];
 }
 
 //边距设置:整体边距的优先级，始终高于内部边距的优先级

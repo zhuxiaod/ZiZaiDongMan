@@ -47,7 +47,7 @@
     //1.创建窗口
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     
-    self.window.backgroundColor = [UIColor blackColor];
+    self.window.backgroundColor = [UIColor whiteColor];
     //2.设置窗口根控制器
     ZZTTabBarViewController *tabBarVC = [[ZZTTabBarViewController alloc]init];
 //    RTRootNavigationController *tabBarVC = [[RTRootNavigationController alloc]init];
@@ -68,7 +68,7 @@
     [UserInfoContext sharedUserInfoContext].userInfo = [Utilities GetNSUserDefaults];
     
     // 启动图片延时: 1秒
-//    [NSThread sleepForTimeInterval:2];
+    [NSThread sleepForTimeInterval:2];
     
     return YES;
 }

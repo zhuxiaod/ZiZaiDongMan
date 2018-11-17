@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ZZTUserAgreementViewController : UIViewController
+@interface ZZTUserAgreementViewController : BaseViewController
 
 @end

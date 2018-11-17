@@ -37,7 +37,7 @@
      nikeName
      sex 1
      */
-    if([user.userId isEqualToString:@""]){
+    if([user.userId isEqualToString:@""] || user == nil){
         self.hasLogin = NO;
     }else{
         self.hasLogin = YES;

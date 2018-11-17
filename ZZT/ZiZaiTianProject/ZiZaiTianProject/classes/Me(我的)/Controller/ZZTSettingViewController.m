@@ -79,11 +79,15 @@ NSString *ExitCell = @"ExitCell";
     [self titleData];
 
     self.userData = [Utilities GetNSUserDefaults];
+    
+    [self addBackBtn];
+    
+    [self.viewNavBar.centerButton setTitle:@"设置" forState:UIControlStateNormal];
 }
 #pragma mark - tableView
 -(void)setupTableView{
     
-    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT) style:UITableViewStyleGrouped];
+    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, navHeight, SCREEN_WIDTH, SCREEN_HEIGHT) style:UITableViewStyleGrouped];
     [self.view addSubview:_tableView];
     
     _tableView.dataSource = self;
@@ -129,6 +133,7 @@ NSString *ExitCell = @"ExitCell";
         return self.array3.count + 1;
     }
 }
+
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if(indexPath.section == 0){

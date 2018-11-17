@@ -27,6 +27,12 @@
                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="peien" translatesAutoresizingMaskIntoConstraints="NO" id="13l-MC-fEI">
                             <rect key="frame" x="3" y="3" width="66" height="66"/>
                         </imageView>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EdI-G6-snW">
+                            <rect key="frame" x="0.0" y="0.0" width="72" height="72"/>
+                            <connections>
+                                <action selector="gotoAutherView:" destination="iN0-l3-epB" eventType="touchUpInside" id="Ah1-Sz-ADw"/>
+                            </connections>
+                        </button>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
@@ -38,7 +44,11 @@
                         <constraint firstAttribute="width" secondItem="Z2t-Yg-dfL" secondAttribute="height" multiplier="12:12" id="WhQ-EX-jOc"/>
                         <constraint firstAttribute="bottom" secondItem="13l-MC-fEI" secondAttribute="bottom" constant="3" id="bZc-be-5SB"/>
                         <constraint firstItem="gQ4-Yn-UnF" firstAttribute="leading" secondItem="Z2t-Yg-dfL" secondAttribute="leading" id="dG4-58-3WO"/>
+                        <constraint firstAttribute="bottom" secondItem="EdI-G6-snW" secondAttribute="bottom" id="e3F-l0-7KV"/>
                         <constraint firstAttribute="trailing" secondItem="gQ4-Yn-UnF" secondAttribute="trailing" id="nnB-xM-8dl"/>
+                        <constraint firstItem="EdI-G6-snW" firstAttribute="top" secondItem="Z2t-Yg-dfL" secondAttribute="top" id="oPu-q2-UGZ"/>
+                        <constraint firstItem="EdI-G6-snW" firstAttribute="leading" secondItem="Z2t-Yg-dfL" secondAttribute="leading" id="sH7-WA-5Gx"/>
+                        <constraint firstAttribute="trailing" secondItem="EdI-G6-snW" secondAttribute="trailing" id="uXc-MQ-jFJ"/>
                     </constraints>
                 </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vWQ-m3-Mgi">

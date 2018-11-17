@@ -207,7 +207,7 @@
         UIImageView * img =[[UIImageView alloc]init];
         [img sd_setImageWithURL:[NSURL URLWithString:_imgArray[i]]];
 //        img.image = [UIImage imageNamed:_imgArray[i]];
-        img.backgroundColor = [UIColor greenColor];
+        img.backgroundColor = [UIColor whiteColor];
         img.frame = CGRectMake(x, y, w, h);
         img.userInteractionEnabled = YES;
         UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(browerImage:)];

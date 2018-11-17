@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ZZTMyZoneViewController : UIViewController
+@interface ZZTMyZoneViewController : BaseViewController
 
 @property (nonatomic,strong) UserInfo *user;
 

@@ -50,7 +50,6 @@
 
 @property (nonatomic,strong) ZXDNavBar *navbar;
 
-
 @end
 
 @implementation ZZTMeEditViewController
@@ -90,7 +89,7 @@
     
     [self setupNavBar];
     
-    [self hiddenViewNavBar];
+//    [self hiddenViewNavBar];
    
 }
 
@@ -124,7 +123,9 @@
 }
 
 -(void)dismissVC{
+    
     [self dismissViewControllerAnimated:YES completion:nil];
+
 }
 
 -(void)setupMainView{
@@ -240,7 +241,6 @@
                           @"headimg":self.headImg,//空
                           @"cover":self.backImg
                           };
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"login/upUser"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         //保存本地
@@ -299,6 +299,8 @@
         [self.imgeDict setObject:resultImage forKey:@"headImg"];
     }
     [button setImage:[resultImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
+    [button.imageView setContentMode:UIViewContentModeScaleAspectFill];
+    button.imageView.clipsToBounds = YES;
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -449,7 +451,6 @@
 
     //获取键盘位置变化前后纵坐标Y的变化值
     CGFloat deltaY=endRect.origin.y-beginRect.origin.y;
-//    NSLog(@"看看这个变化的Y值:%f",deltaY);
 
     //在0.25s内完成self.view的Frame的变化，等于是给self.view添加一个向上移动deltaY的动画
     [UIView animateWithDuration:0.25f animations:^{
@@ -552,8 +553,8 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    self.navigationController.navigationBar.alpha = 0;
-    [self.navigationController setNavigationBarHidden:YES animated:NO];
+//    self.navigationController.navigationBar.alpha = 0;
+//    [self.navigationController setNavigationBarHidden:YES animated:NO];
 }
 
 -(void)viewWillDisappear:(BOOL)animated{

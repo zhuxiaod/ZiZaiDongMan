@@ -23,16 +23,20 @@
     self.view.backgroundColor = [UIColor whiteColor];
     self.navigationItem.title = _viewTitle;
     
+    [self addBackBtn];
+    
+    [self.viewNavBar.centerButton setTitle:@"绑定手机号" forState:UIControlStateNormal];
+    
     //请先验证你的手机号
     UIView *phoneView = [[UIView alloc] init];
-    phoneView.backgroundColor = [UIColor grayColor];
+    phoneView.backgroundColor = [UIColor whiteColor];
     phoneView.layer.cornerRadius = 6.0f;
     [self.view addSubview:phoneView];
     
     [phoneView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.view.mas_top).offset(16);
-        make.right.equalTo(self.view).offset(-16);
-        make.left.equalTo(self.view).offset(16);
+        make.top.equalTo(self.viewNavBar.mas_bottom).offset(16);
+        make.right.equalTo(self.viewNavBar).offset(-16);
+        make.left.equalTo(self.viewNavBar).offset(16);
         make.height.mas_equalTo(30);
     }];
     
@@ -58,7 +62,7 @@
     //验证码
     //验证码View
     UIView *codeView = [[UIView alloc] init];
-    codeView.backgroundColor = [UIColor grayColor];
+    codeView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:codeView];
     
     [codeView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -104,7 +108,7 @@
     UIButton *nextBtn = [[UIButton alloc] init];
     [nextBtn setTitle:@"提交" forState:UIControlStateNormal];
     [self.view addSubview:nextBtn];
-    [nextBtn setBackgroundColor:[UIColor yellowColor]];
+    [nextBtn setBackgroundColor:ZZTSubColor];
     nextBtn.layer.cornerRadius = 10.0f;
     nextBtn.enabled = NO;
     

@@ -35,8 +35,6 @@
     [self setAutomaticallyAdjustsScrollViewInsets:NO];
     
     self.fd_prefersNavigationBarHidden = YES;
-
-
 }
 
 -(void)setupNavigationBarHidden:(BOOL)isHidden{
@@ -124,8 +122,9 @@
 - (void)viewWillAppear:(BOOL)animated {
     
     [self.navigationController setNavigationBarHidden:YES animated:NO];
-    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithWhite:0.95 alpha:1]];
-    
+//    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithWhite:0.95 alpha:1]];
+
+    [self.navigationController.navigationBar setBarTintColor:[UIColor whiteColor]];
     [self.navigationController.navigationBar
      setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor darkGrayColor]}];
     

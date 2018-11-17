@@ -74,16 +74,16 @@ NSString *bannerID = @"MeCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor colorWithHexString:@"#474764"];
+    self.view.backgroundColor = [UIColor colorWithRGB:@"200,206,226"];
 //    [self.navigationController.navigationBar setBackgroundImage:[UIImage createImageWithColor:[UIColor whiteColor]] forBarMetrics:UIBarMetricsCompact];
 
 //    self.rr_navHidden = YES;
-    UINavigationBar *nab = [UINavigationBar appearanceWhenContainedInInstancesOfClasses:@[[UIView class]]];
-
-    [nab setBackgroundImage:[UIImage createImageWithColor:[UIColor blackColor]] forBarMetrics:UIBarMetricsDefault];
-    self.statusBarStyle = UIStatusBarStyleLightContent;
-    [UINavigationBar appearance].translucent=NO;
-    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+//    UINavigationBar *nab = [UINavigationBar appearanceWhenContainedInInstancesOfClasses:@[[UIView class]]];
+//
+//    [nab setBackgroundImage:[UIImage createImageWithColor:[UIColor blackColor]] forBarMetrics:UIBarMetricsDefault];
+//    self.statusBarStyle = UIStatusBarStyleLightContent;
+//    [UINavigationBar appearance].translucent=NO;
+//    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     
     //请求数据
 //    [self getData];
@@ -290,14 +290,23 @@ NSString *bannerID = @"MeCell";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 0) {
+        if([[UserInfoManager share] hasLogin] == NO){
+            [UserInfoManager needLogin];
+            return;
+        }
         //我的空间
         ZZTMyZoneViewController *myZoneView = [[ZZTMyZoneViewController alloc] init];
+        myZoneView.userId = [UserInfoManager share].ID;
         myZoneView.user = self.userData;
         myZoneView.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:myZoneView animated:YES];
     }else if (indexPath.section == 1){
         if(indexPath.row == 0){
             //书柜
+            if([[UserInfoManager share] hasLogin] == NO){
+                [UserInfoManager needLogin];
+                return;
+            }
             ZZTCartoonViewController *bookVC = [[ZZTCartoonViewController alloc] init];
             bookVC.hidesBottomBarWhenPushed = YES;
             bookVC.viewTitle = @"书柜";
@@ -306,6 +315,10 @@ NSString *bannerID = @"MeCell";
             [self.navigationController pushViewController:bookVC animated:YES];
         }else if(indexPath.row == 1){
             //关注
+            if([[UserInfoManager share] hasLogin] == NO){
+                [UserInfoManager needLogin];
+                return;
+            }
             ZZTMeAttentionViewController *meAttentionVC = [[ZZTMeAttentionViewController alloc] init];
             meAttentionVC.hidesBottomBarWhenPushed = YES;
             //            meAttentionVC.user = self.userData;

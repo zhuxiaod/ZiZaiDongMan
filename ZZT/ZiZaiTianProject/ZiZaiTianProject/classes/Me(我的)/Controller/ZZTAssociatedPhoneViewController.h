@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ZZTAssociatedPhoneViewController : UIViewController
+@interface ZZTAssociatedPhoneViewController : BaseViewController
 
 @property (nonatomic,strong) NSString *viewTitle;
 

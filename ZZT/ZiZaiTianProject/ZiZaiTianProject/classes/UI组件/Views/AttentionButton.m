@@ -45,6 +45,11 @@ static NSString * const pressedImageName = @"已关注";
 
 
 - (void)like {
+    
+    if([[UserInfoManager share] hasLogin] == NO){
+        [UserInfoManager needLogin];
+        return;
+    }
     //设置相反状态
     self.isAttention = !self.isAttention;
     
@@ -67,7 +72,6 @@ static NSString * const pressedImageName = @"已关注";
             
         }];
     }
-   
     
     //发送关注请求
     UserInfo *user = [Utilities GetNSUserDefaults];

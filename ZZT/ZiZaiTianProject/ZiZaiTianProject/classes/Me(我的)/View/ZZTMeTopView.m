@@ -45,8 +45,6 @@
         } else {
             self.ZBLab.text = [NSString stringWithFormat:@"%zdZ币", userModel.zzbNum];
         }
-        
-        
     }else{
         //设置空白数据
         [self.headImage setImage:[UIImage createImageWithColor:[UIColor clearColor]]];

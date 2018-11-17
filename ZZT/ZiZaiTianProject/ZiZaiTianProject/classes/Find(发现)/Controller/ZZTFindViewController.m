@@ -256,9 +256,10 @@ NSString *SuggestionView3 = @"SuggestionView";
     [searchVC.cancelButton setTitle:@"取消" forState:UIControlStateNormal];
     [searchVC.cancelButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:searchVC];
-    Utilities *tool = [[Utilities alloc] init];
-    [tool setupNavgationStyle:nav];
+//    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:searchVC];
+//    Utilities *tool = [[Utilities alloc] init];
+//    [tool setupNavgationStyle:nav];
+    ZZTNavigationViewController *nav = [[ZZTNavigationViewController alloc] initWithRootViewController:searchVC];
     [self presentViewController:nav animated:YES completion:nil];
     _searchVC = searchVC;
 }
@@ -497,5 +498,58 @@ NSString *SuggestionView3 = @"SuggestionView";
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+//创建一个图片选择控制器
+- (UIImagePickerController *)imagePickerVc {
+    if (_imagePickerVc == nil) {
+        _imagePickerVc = [[UIImagePickerController alloc] init];
+        _imagePickerVc.delegate = self;
+        // set appearance / 改变相册选择页的导航栏外观
+        _imagePickerVc.navigationBar.barTintColor = self.navigationController.navigationBar.barTintColor;
+        _imagePickerVc.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
+        UIBarButtonItem *tzBarItem, *BarItem;
+        if (@available(iOS 9, *)) {
+            tzBarItem = [UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[TZImagePickerController class]]];
+            BarItem = [UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[UIImagePickerController class]]];
+        } else {
+            tzBarItem = [UIBarButtonItem appearanceWhenContainedIn:[TZImagePickerController class], nil];
+            BarItem = [UIBarButtonItem appearanceWhenContainedIn:[UIImagePickerController class], nil];
+        }
+        NSDictionary *titleTextAttributes = [tzBarItem titleTextAttributesForState:UIControlStateNormal];
+        [BarItem setTitleTextAttributes:titleTextAttributes forState:UIControlStateNormal];
+    }
+    return _imagePickerVc;
+}
+
+//相机返回代理
+- (void)imagePickerController:(UIImagePickerController*)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    [picker dismissViewControllerAnimated:YES completion:^{
+        ZZTZoneUpLoadViewController *uploadVC = [[ZZTZoneUpLoadViewController alloc] init];
+        NSString *type = [info objectForKey:UIImagePickerControllerMediaType];
+        
+        TZImagePickerController *tzImagePickerVc = [[TZImagePickerController alloc] initWithMaxImagesCount:1 delegate:self];
+        [tzImagePickerVc showProgressHUD];
+        if ([type isEqualToString:@"public.image"]) {
+            UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
+            // save photo and get asset / 保存图片，获取到asset
+            [[TZImageManager manager] savePhotoWithImage:image location:self.location completion:^(PHAsset *asset, NSError *error){
+                [tzImagePickerVc hideProgressHUD];
+                if (error) {
+                    NSLog(@"图片保存失败 %@",error);
+                } else {
+                    TZAssetModel *assetModel = [[TZImageManager manager] createModelWithAsset:asset];
+                    
+                    //                    [self refreshCollectionViewWithAddedAsset:assetModel.asset image:image];
+                    uploadVC.addAssets = assetModel.asset;
+                    uploadVC.addPhotos = image;
+                }
+            }];
+        }
+        
+        [self presentViewController:uploadVC animated:YES completion:nil];
+    }];
+//    [picker dismissViewControllerAnimated:YES completion:^{
+    
+//    }];
 }
 @end

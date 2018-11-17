@@ -73,6 +73,11 @@ static NSString *AttentionCell = @"AttentionCell";
     [self setupMJRefresh];
     
     [self.collectionView.mj_header beginRefreshing];
+    
+    [self addBackBtn];
+    
+    [self.viewNavBar.centerButton setTitle:@"关注" forState:UIControlStateNormal];
+    
 }
 
 -(void)setupMJRefresh{
@@ -123,7 +128,7 @@ static NSString *AttentionCell = @"AttentionCell";
 #pragma mark - 创建CollectionView
 -(void)setupCollectionView:(UICollectionViewFlowLayout *)layout
 {
-    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, Screen_Width, Screen_Height) collectionViewLayout:layout];
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, navHeight, Screen_Width, Screen_Height) collectionViewLayout:layout];
     collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView = collectionView;
     [self.view addSubview:self.collectionView];

@@ -53,6 +53,10 @@ static NSString *zztCartoonHistoryCell = @"zztCartoonHistoryCell";
     [self setupTableView];
     
     [self loadData];
+    
+    [self addBackBtn];
+    
+    [self.viewNavBar.centerButton setTitle:@"浏览历史" forState:UIControlStateNormal];
 }
 
 -(void)setupTableView{

@@ -34,9 +34,9 @@
     
     [self.backgroundBtn sd_setImageWithURL:[NSURL URLWithString:user.cover] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"轻触更换背景"]];
     
-    [self.backgroundBtn.imageView  setContentMode:UIViewContentModeScaleAspectFill];
+    [self.backgroundBtn.imageView setContentMode:UIViewContentModeScaleAspectFill];
     
-    self.backgroundBtn.imageView .clipsToBounds = YES;
+    self.backgroundBtn.imageView.clipsToBounds = YES;
     
     [self.userHead setupUserHeadImg:user.headimg placeHeadImg:@"用户头像"];
  
@@ -59,6 +59,9 @@
     _backgroundBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [_backgroundBtn setImage:[UIImage imageNamed:@"轻触更换背景"] forState:UIControlStateNormal];
     [_backgroundBtn addTarget:self action:@selector(updateBackground) forControlEvents:UIControlEventTouchUpInside];
+    [self.backgroundBtn.imageView setContentMode:UIViewContentModeScaleAspectFill];
+    
+    self.backgroundBtn.imageView.clipsToBounds = YES;
     [self.contentView addSubview:_backgroundBtn];
     
     _userHead = [[ZZTUserHeadView alloc] initWithFrame:CGRectZero];

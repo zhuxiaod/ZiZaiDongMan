@@ -44,7 +44,6 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
 
 @implementation ZZTMyZoneViewController
 
-
 /*
  两种情况
  1.为根视图时  影藏navBar
@@ -109,7 +108,6 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     //中
     [navbar.centerButton setTitle:@"空间" forState:UIControlStateNormal];
     [navbar.centerButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    
 }
 
 -(void)dismissVC{
@@ -127,8 +125,6 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     [_tabelView registerClass:[ZZTMEXuHuaCell class] forCellReuseIdentifier:zztMEXuHuaCell];
     self.tabelView.separatorStyle = UITableViewCellEditingStyleNone;     //让tableview不显示分割线
     self.automaticallyAdjustsScrollViewInsets = NO;
-    
-//    self.tabelView.mj_footer.hidden = YES;
     
     _tabelView.estimatedRowHeight = 0;
     _tabelView.estimatedSectionFooterHeight = 0;
@@ -148,14 +144,16 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
 }
 
 -(void)setupMJRefresh{
+    
     self.tabelView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         [self loadData];
         [self loadUserData];
     }];
+    
     self.tabelView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
         [self loadMoreData];
     }];
-//    [self.tabelView.mj_footer beginRefreshing];
+    
 }
 
 -(void)loadMoreData{
@@ -184,7 +182,6 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
         
         if(self.dataArray.count >= total){
             [self.tabelView.mj_footer endRefreshingWithNoMoreData];
-//            [self.tabelView.mj_footer endRefreshing];
         }else{
             [self.tabelView.mj_footer endRefreshing];
             //page+size
@@ -251,20 +248,10 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
 }
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:myZoneCell];
-//        if(indexPath.row == 0){
-//            ZZTMEXuHuaCell *cell = [tableView dequeueReusableCellWithIdentifier:zztMEXuHuaCell];
-//            cell.buttonAction = ^(UIButton *sender) {
-//                [self startCreate];
-//            };
-//            return cell;
-//        }else{
-
     ZZTMyZoneCell * cell = [tableView dequeueReusableCellWithIdentifier:myZoneCell forIndexPath:indexPath];
     cell.model = _dataArray[indexPath.row];
     return cell;
-//        }
-//    return cell;
+
 }
 
 -(void)startCreate{
@@ -292,13 +279,14 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    
     [self.tabelView.mj_header beginRefreshing];
     
     self.navigationController.navigationBar.alpha = 0;
 
     [self.navigationController setNavigationBarHidden:YES animated:NO];
-
 }
+
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:NO];
@@ -328,6 +316,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
         self.navbar.backgroundColor = [UIColor colorWithWhite:0 alpha:alpha];
     }
 }
+
 -(void)setUserId:(NSString *)userId{
     _userId = userId;
     //请求个人资料

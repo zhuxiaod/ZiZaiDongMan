@@ -17,10 +17,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
+    
     self.navigationController.title = @"用户协议";
     
+    [self addBackBtn];
+    
+    [self.viewNavBar.centerButton setTitle:@"用户协议" forState:UIControlStateNormal];
+    
     //设置TextView
-    UITextView *textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    UITextView *textView = [[UITextView alloc] initWithFrame:CGRectMake(0, navHeight, SCREEN_WIDTH, SCREEN_HEIGHT)];
     textView.editable = NO;
     textView.font = [UIFont fontWithName:@"Arial" size:18.0];
     textView.textColor = [UIColor blackColor];

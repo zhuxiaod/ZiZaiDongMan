@@ -400,7 +400,7 @@ static bool needHide = false;
     [navbar.centerButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
 //    [navbar.mainView setBackgroundColor:[UIColor colorWithRGB:@"121,105,212"]];
     
-    [navbar.rightButton setImage:[UIImage imageNamed:@"cartoonDetail_header_share"] forState:UIControlStateNormal];
+    [navbar.rightButton setImage:[UIImage imageNamed:@"cartoonDetail_share"] forState:UIControlStateNormal];
     [navbar.rightButton addTarget:self action:@selector(shareWithSharePanel) forControlEvents:UIControlEventTouchUpInside];
     navbar.showBottomLabel = NO;
 }
@@ -1450,6 +1450,7 @@ static bool needHide = false;
     NSString *path = JiXuYueDuAPI;
     [NSKeyedArchiver archiveRootObject:arrayDict toFile:path];
 }
+
 //继续阅读本地文件
 -(void)setTestModel:(ZZTJiXuYueDuModel *)testModel{
     _testModel = testModel;
@@ -1484,7 +1485,7 @@ static bool needHide = false;
     //到顶部显示
     if(scrollView.contentOffset.y <= 64){
         needHide = NO;
-    }else if (scrollView.contentOffset.y >= sectionRect.origin.y){
+    }else if (scrollView.contentOffset.y >= sectionRect.origin.y - SCREEN_HEIGHT / 2){
         needHide = NO;
     }else{
         needHide = YES;

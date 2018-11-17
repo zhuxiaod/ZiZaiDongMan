@@ -25,4 +25,11 @@
     self.authorName.text = userModel.nickName;
     [self.authorName setTextColor:ZZTSubColor];
 }
+
+- (IBAction)gotoAutherView:(UIButton *)sender{
+    ZZTMyZoneViewController *zoneView = [[ZZTMyZoneViewController alloc] init];
+    zoneView.userId = [NSString stringWithFormat:@"%ld",_userModel.id];
+    [[self myViewController].navigationController pushViewController:zoneView animated:NO];
+}
+
 @end

@@ -78,6 +78,7 @@ static NSString *circleCell = @"circleCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     self.view.backgroundColor = [UIColor whiteColor];
     //流水布局
     UICollectionViewFlowLayout *layout = [self setupCollectionViewFlowLayout];
@@ -91,11 +92,18 @@ static NSString *circleCell = @"circleCell";
     self.navigationItem.title = self.viewTitle;
     
     self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithTitle:@"清空" target:self action:@selector(removeAllBook) titleColor:[UIColor whiteColor]];
+    
+    [self addBackBtn];
+    
+    [self.viewNavBar.centerButton setTitle:@"书柜" forState:UIControlStateNormal];
+    
+    [self.viewNavBar.rightButton setTitle:@"清空" forState:UIControlStateNormal];
+    [self.viewNavBar.rightButton addTarget:self action:@selector(removeAllBook) forControlEvents:UIControlEventTouchUpInside];
 }
 
 -(void)removeAllBook{
     [self.remindView removeFromSuperview];
-    ZZTRemindView *remindView = [[ZZTRemindView alloc] initWithFrame:CGRectMake(0, -64, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    ZZTRemindView *remindView = [[ZZTRemindView alloc] initWithFrame:CGRectMake(0, navHeight, SCREEN_WIDTH, SCREEN_HEIGHT)];
     remindView.viewTitle = @"是否清空?";
     self.remindView = remindView;
     remindView.btnBlock = ^(UIButton *btn) {
@@ -105,6 +113,11 @@ static NSString *circleCell = @"circleCell";
         }
     };
     [self.view addSubview:remindView];
+}
+
+//边距设置:整体边距的优先级，始终高于内部边距的优先级
+-(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+    return UIEdgeInsetsMake(8, 8, 8, 8);//分别为上、左、下、右
 }
 
 -(void)loadRemoveBook:(NSString *)string{
@@ -179,7 +192,7 @@ static NSString *circleCell = @"circleCell";
     //修改尺寸(控制)
     layout.itemSize = CGSizeMake(SCREEN_WIDTH/3 - 10,200);
     
-    layout.scrollDirection = UICollectionViewScrollDirectionVertical;
+//    layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     //行距
     layout.minimumLineSpacing = 0;
     layout.minimumInteritemSpacing = 5;
@@ -190,7 +203,7 @@ static NSString *circleCell = @"circleCell";
 #pragma mark - 创建CollectionView
 -(void)setupCollectionView:(UICollectionViewFlowLayout *)layout
 {
-    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, Screen_Width, Screen_Height) collectionViewLayout:layout];
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, navHeight, Screen_Width, Screen_Height) collectionViewLayout:layout];
     collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView = collectionView;
     [self.view addSubview:self.collectionView];

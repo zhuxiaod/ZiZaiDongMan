@@ -44,6 +44,7 @@
     [self.manBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.manBtn addTarget:self action:@selector(textFieldDidBegin:) forControlEvents:UIControlEventTouchUpInside];
     self.manBtn.tag = 1;
+
     
     //女
     [self.womanBtn setImage:[UIImage imageNamed:@"编辑资料-图标-未选"] forState:UIControlStateNormal];
