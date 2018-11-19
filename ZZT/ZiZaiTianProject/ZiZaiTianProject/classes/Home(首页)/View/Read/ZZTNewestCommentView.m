@@ -72,17 +72,8 @@ static NSString *const airView = @"airView";
         [self registerClass:[ZZTCommentOpenCell class] forCellReuseIdentifier:statusOpenReuseIdentifier];
 
         [self registerClass:[ZZTStatusCell class] forHeaderFooterViewReuseIdentifier:statusHeaderReuseIdentifier];
-        //上拉更新
-        MJRefreshNormalHeader *header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(update)];
         
-        [header.arrowView setImage:[UIImage imageNamed:@"ic_pull_refresh_arrow_22x22_"]];
-        //下拉
-        MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreDate)];
-        
-        self.mj_header = header;
-        
-        self.mj_footer = footer;
-        
+     
         self.mj_footer.hidden = YES;
         
         self.estimatedRowHeight = 0;
@@ -92,18 +83,89 @@ static NSString *const airView = @"airView";
         self.showsVerticalScrollIndicator = NO;
         //有评论的
         self.isHaveComment = YES;
+
     }
     return self;
 }
 
+-(void)setupMJRefresh{
+    //上拉更新
+    MJRefreshNormalHeader *header;
+    MJRefreshAutoNormalFooter *footer;
+    if(_isFind == YES){
+        header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadFindData)];
+        
+        [header.arrowView setImage:[UIImage imageNamed:@"ic_pull_refresh_arrow_22x22_"]];
+
+
+    }else{
+        header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(update)];
+        
+        [header.arrowView setImage:[UIImage imageNamed:@"ic_pull_refresh_arrow_22x22_"]];
+        //下拉
+        footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreDate)];
+    }
+
+    self.mj_header = header;
+    
+    self.mj_footer = footer;
+}
+/*
+    这个view主要是为了 显示不同的数据
+ */
 -(void)setChapterId:(NSString *)chapterId{
     _chapterId = chapterId;
+    if(_isFind == YES){
+        [self loadFindData];
+        [self setupMJRefresh];
+    }
 }
 
 -(void)setDataNum:(NSInteger)dataNum{
     _dataNum = dataNum;
-    [self update];
-    _page_num++;
+    if(_isFind == NO){
+        [self update];
+        _page_num++;
+        [self setupMJRefresh];
+    }
+}
+
+//发现世界评论
+-(void)loadFindData{
+    AFHTTPSessionManager *session = [[AFHTTPSessionManager alloc] init];
+    
+    NSDictionary *dict = @{
+                           @"itemId":_chapterId,
+                               @"type":@"1",
+                               @"userId":[UserInfoManager share].ID,
+                                @"pageNum":@"1",
+                               @"pageSize":@"10"
+                           };
+    [session POST:[ZZTAPI stringByAppendingString:@"circle/comment"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [self.mj_header endRefreshing];
+        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSMutableArray *array1 = [ZZTCircleModel mj_objectArrayWithKeyValuesArray:dic];
+        if(array1.count == 0){
+            //没有数据的时候
+            ZZTCircleModel *airModel = [[ZZTCircleModel alloc] init];
+            NSMutableArray *airArray = [NSMutableArray arrayWithObject:airModel];
+            self.commentArray = airArray;
+            self.isHaveComment = NO;
+        }else{
+            //外面的数据
+            FriendCircleViewModel *circleViewModel = [[FriendCircleViewModel alloc] init];
+            circleViewModel.circleModelArray = array1;
+            [circleViewModel loadDatas];
+            self.commentArray = [circleViewModel addOpenDataWith:self.openArray];
+            ZZTCircleModel *model = self.commentArray[0];
+            model.isOpenComment = YES;
+            self.isHaveComment = YES;
+        }
+        self.mj_footer.hidden = YES;
+        [self reloadData];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [self.mj_header endRefreshing];
+    }];
 }
 //请求数据
 - (void)update{
@@ -117,7 +179,7 @@ static NSString *const airView = @"airView";
                            @"pageSize":[NSString stringWithFormat:@"%ld",self.size_num],
                            @"host":[NSString stringWithFormat:@"%ld",_dataNum]
                            };
-    [session POST:[ZZTAPI stringByAppendingString:@"circle/comment"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [session POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonComment"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [self.mj_header endRefreshing];
         NSDictionary *commenDdic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
@@ -137,6 +199,7 @@ static NSString *const airView = @"airView";
             [circleViewModel loadDatas];
             self.commentArray = [circleViewModel addOpenDataWith:self.openArray];
             self.isHaveComment = YES;
+            
         }
         if(self.commentArray.count >= [totaldic integerValue]){
             self.mj_footer.hidden = YES;
@@ -162,7 +225,7 @@ static NSString *const airView = @"airView";
                            @"pageSize":@"10",
                            @"host":[NSString stringWithFormat:@"%ld",_dataNum]
                            };
-    [session POST:[ZZTAPI stringByAppendingString:@"circle/comment"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [session POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonComment"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *commenDdic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
         NSDictionary *list = commenDdic[@"list"];
@@ -270,6 +333,7 @@ static NSString *const airView = @"airView";
     if ([_adelegate respondsToSelector:@selector(commentView:sendCellReply:indexRow:)]) {
         [_adelegate commentView:self sendCellReply:model indexRow:indexPath.row];
     }
+    
 }
 
 //头
@@ -352,4 +416,9 @@ static NSString *const airView = @"airView";
 -(void)beginHeaderUpdate{
     [self.mj_header beginRefreshing];
 }
+
+-(void)setIsFind:(BOOL)isFind{
+    _isFind = isFind;
+}
+
 @end

@@ -8,7 +8,41 @@
 
 #import <Foundation/Foundation.h>
 
-@interface ZZTChapterlistModel : NSObject
+@interface ZZTChapterlistModel : NSObject<NSCoding>{
+    NSInteger id;
+    
+    NSString *chapterId;
+    
+    NSString *cartoonId;
+    
+    NSString *chapterCover;
+    
+    NSString *chapterName;
+    
+    NSString *userId;
+    
+    NSString *commentNum;
+    
+    NSInteger praiseNum;
+    
+    NSDate *createdate;
+    
+    NSInteger ifrelease;
+    
+    NSString *chapterPage;
+    
+    NSString *type;
+    
+    NSString *nickName;
+    
+    NSString *headimg;
+    
+    NSString *xuhuaNum;
+    
+    NSInteger wordNum;
+    
+    NSInteger listTotal;
+}
 
 @property(nonatomic,assign)NSInteger id;
 

@@ -18,6 +18,8 @@
 
 -(void)longPressDeleteComment:(ZZTCircleModel *)circleItem;
 
+-(void)reloadDataCommentView:(UITableView *)commentView;
+
 @end
 
 @interface ZZTNewestCommentView : UITableView
@@ -28,8 +30,12 @@
 
 @property (nonatomic,assign) NSInteger dataNum;
 
+@property (nonatomic,assign) BOOL isFind;
+
 - (void)update;
 
 - (void)beginHeaderUpdate;
+
+-(void)loadFindData;
 
 @end

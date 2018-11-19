@@ -137,6 +137,7 @@ static NSString *findCommentCell = @"findCommentCell";
         NSMutableArray *array = [ZZTMyZoneModel mj_objectArrayWithKeyValuesArray:[dic objectForKey:@"list"]];
         
         self.dataArray = array;
+        
         [self.contentView reloadData];
         
         if(self.dataArray.count >= total){

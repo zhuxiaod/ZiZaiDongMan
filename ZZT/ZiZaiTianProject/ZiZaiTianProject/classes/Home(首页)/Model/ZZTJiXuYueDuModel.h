@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class ZZTChapterlistModel;
+
 @interface ZZTJiXuYueDuModel : NSObject<NSCoding>{
     NSString *bookName;
 //    NSInteger lastChapterId;
@@ -15,6 +17,7 @@
     NSMutableArray *chapterArray;
     NSString *arrayIndex;
     NSString *chapterListRow;
+    ZZTChapterlistModel *lastReadData;
 }
 //书名
 @property (nonatomic,strong) NSString *bookName;
@@ -26,6 +29,7 @@
 @property (nonatomic,strong) NSString *chapterListRow;
 
 @property (nonatomic,strong) NSString *arrayIndex;
-
+//最后一次读的书
+@property (nonatomic,strong) ZZTChapterlistModel *lastReadData;
 
 @end

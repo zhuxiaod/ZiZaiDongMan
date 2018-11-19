@@ -49,6 +49,12 @@
 
 @property (nonatomic,assign) dispatch_queue_t q;
 
+@property (nonatomic,assign) BOOL isFirstOpen;
+//开始阅读
+@property (nonatomic,strong) ZZTChapterlistModel *startReadData;
+//继续阅读
+@property (nonatomic,strong) ZZTChapterlistModel *lastReadData;
+
 @end
 
 NSString *zztWordListCell = @"zztWordListCell";
@@ -84,6 +90,8 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     self.fd_prefersNavigationBarHidden = YES;
     
     self.isHave = NO;
+    //判断是不是第一次打开
+    self.isFirstOpen = YES;
 
     self.view.backgroundColor = [UIColor whiteColor];
     
@@ -174,15 +182,19 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     ZZTCartoonDetailViewController *cartoonDetailVC = [[ZZTCartoonDetailViewController alloc] init];
     //如果没有阅读过
     if([startBtn.titleLabel.text isEqualToString:@"开始阅读"] && self.wordList.count > 0){
-        model = self.wordList[0];
+        //此书第一章节的数据
+        model = self.startReadData;
         cartoonDetailVC.indexRow = 0;
         cartoonDetailVC.dataModel = model;
     }else if([startBtn.titleLabel.text isEqualToString:@"继续阅读"] && self.wordList.count > 0){
         //阅读过
-        model = self.wordList[[self.model.chapterListRow integerValue]];
+        //要一个数据 能代替这里的
+//        model = self.wordList[[self.model.chapterListRow integerValue]];
         cartoonDetailVC.indexRow = [self.model.chapterListRow integerValue];
-        cartoonDetailVC.dataModel = model;
+//        cartoonDetailVC.dataModel = model;
+        cartoonDetailVC.dataModel = self.lastReadData;
         cartoonDetailVC.testModel = self.model;
+//        cartoonDetailVC.lastReadModel = self.lastReadData;
     }
     cartoonDetailVC.hidesBottomBarWhenPushed = YES;
     cartoonDetailVC.cartoonModel = _cartoonDetail;
@@ -236,21 +248,28 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     EncryptionTools *tool = [[EncryptionTools alloc]init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterlist"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
         NSDictionary *dic2 = [tool decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
         NSMutableArray *array = [ZZTChapterlistModel mj_objectArrayWithKeyValuesArray:dic2[@"list"]];
         self.wordList = array;
+        
         //总共的数量
         NSNumber *totalData = dic2[@"total"];
         self.chapterChooseView.total = [totalData integerValue];
+        
+        //列表大于1 第一次
         if(array.count > 0 && isFirst == YES){
             ZZTChapterlistModel *model = array[0];
+            //没有历史
             if(self.isHave == NO){
                 if([self.cartoonDetail.type isEqualToString:@"1"]){
                     [self.pageBtn setTitle:[NSString stringWithFormat:@"%@画",model.chapterPage] forState:UIControlStateNormal];
                 }else{
                     [self.pageBtn setTitle:[NSString stringWithFormat:@"%@",model.chapterName] forState:UIControlStateNormal];
                 }
+                //将开始阅读的内容 储存起来
+                self.startReadData = model;
             }
         }
         [self.contentView reloadData];
@@ -539,6 +558,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 //    [self.navigationController setNavigationBarHidden:YES animated:NO];
     _navigationFrame = self.navigationController.navigationBar.frame;
 
+    //一进来就开始判断
     [self JiXuYueDuTarget];
 
     //请求数据
@@ -579,6 +599,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 }
 
 -(void)JiXuYueDuTarget{
+    //拿到本地历史数据
     NSMutableArray *arrayDict = [NSKeyedUnarchiver unarchiveObjectWithFile:JiXuYueDuAPI];
     if (arrayDict == nil) {
         arrayDict = [NSMutableArray array];
@@ -588,8 +609,11 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
         //看这个数组里面的模型是否有这本书
         ZZTJiXuYueDuModel *model = arrayDict[i];
         if([model.bookId isEqualToString:self.cartoonDetail.id]){
+            //有这本书
             self.isHave = YES;
             self.model = model;
+            //设置继续阅读
+            self.lastReadData = model.lastReadData;
             break;
         }
     }

@@ -14,6 +14,7 @@
 @property(nonatomic,strong) NSString *id;
 @property(nonatomic,strong) NSString *parentCommentId;
 @property(nonatomic,strong) NSString *customerId;
+@property(nonatomic,strong) NSString *chapterId;
 
 @property(nonatomic,assign) NSInteger state;
 @property(nonatomic,assign) NSInteger type;

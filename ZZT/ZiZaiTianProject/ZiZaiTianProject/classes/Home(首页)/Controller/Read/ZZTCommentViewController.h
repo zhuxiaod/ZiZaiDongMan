@@ -14,6 +14,9 @@
 
 @property (nonatomic,strong) NSString *cartoonType;
 
+//世界评论页
+@property (nonatomic,assign) BOOL isFind;
+
 -(void)hiddenTitleView;
 
 @end

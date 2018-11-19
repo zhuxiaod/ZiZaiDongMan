@@ -299,10 +299,16 @@
 }
 
 -(void)gotoCommentView{
+    if([[UserInfoManager share] hasLogin] == NO){
+        [UserInfoManager needLogin];
+        return;
+    }
     ZZTCommentViewController *commentView = [[ZZTCommentViewController alloc] init];
+    commentView.isFind = YES;
     commentView.chapterId = _model.id;
     commentView.cartoonType = @"3";
     [[self myViewController].navigationController presentViewController:commentView animated:YES completion:nil];
+    [commentView hiddenTitleView];
 }
 
 - (void)setupImageGroupView{
@@ -373,7 +379,7 @@
         [btn setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
         [btn setTitleColor:[self.likeCountView titleColorForState:UIControlStateNormal] forState:UIControlStateNormal];
         [btn setImage:[UIImage imageNamed:@"wordDetail_comment"] forState:UIControlStateNormal];
-        [btn addTarget:self action:@selector(showCommentVc) forControlEvents:UIControlEventTouchUpInside];
+//        [btn addTarget:self action:@selector(showCommentVc) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:btn];
         
         _replyCountView = btn;
@@ -400,18 +406,18 @@
     return _likeCountView;
 }
 
-//显示评论页
--(void)showCommentVc{
-    if([[UserInfoManager share] hasLogin] == NO){
-        [UserInfoManager needLogin];
-        return;
-    }
-    ZZTCommentViewController *commentVC = [[ZZTCommentViewController alloc] init];
-    commentVC.chapterId = @"1";
-    commentVC.cartoonType = @"2";
-    [[self myViewController].navigationController presentViewController:commentVC animated:YES completion:nil];
-    [commentVC hiddenTitleView];
-}
+////显示评论页
+//-(void)showCommentVc{
+//    if([[UserInfoManager share] hasLogin] == NO){
+//        [UserInfoManager needLogin];
+//        return;
+//    }
+//    ZZTCommentViewController *commentVC = [[ZZTCommentViewController alloc] init];
+//    commentVC.chapterId = @"1";
+//    commentVC.cartoonType = @"2";
+//    [[self myViewController].navigationController presentViewController:commentVC animated:YES completion:nil];
+//    [commentVC hiddenTitleView];
+//}
 
 -(void)userLikeTarget{
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];

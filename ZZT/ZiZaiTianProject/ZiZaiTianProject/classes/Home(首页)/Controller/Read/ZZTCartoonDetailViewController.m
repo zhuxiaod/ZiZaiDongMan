@@ -757,13 +757,12 @@ static bool needHide = false;
 }
 
 -(void)loadLikeData{
-
+    
     UserInfo *user = [Utilities GetNSUserDefaults];
     AFHTTPSessionManager *session = [[AFHTTPSessionManager alloc] init];
     NSDictionary *likeDict = @{
                                @"chapterId":self.dataModel.chapterId,
                                @"userId":[NSString stringWithFormat:@"%ld",user.id]
-//                               @"userId":@"1"
                                };
     [session POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterPraise"] parameters:likeDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
@@ -789,7 +788,7 @@ static bool needHide = false;
                            @"pageSize":@"10",
                            @"host":@"1"
                            };
-    [session POST:[ZZTAPI stringByAppendingString:@"circle/comment"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [session POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonComment"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         self.commentArray = nil;
         NSDictionary *commenDdic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
@@ -909,13 +908,12 @@ static bool needHide = false;
 //    }];
 //}
 
-//需要传1 或者2
+
 -(void)setDataModel:(ZZTChapterlistModel *)dataModel{
     _dataModel = dataModel; // 你的问题在哪里  是没有数据还是数据错乱
     //设置总数 方便进行下一页判断
     self.listTotal = dataModel.listTotal;
 }
-
 -(void)setCartoonModel:(ZZTCarttonDetailModel *)cartoonModel{
     _cartoonModel = cartoonModel;
 }
@@ -1371,6 +1369,7 @@ static bool needHide = false;
     
     [self continueReading];
 }
+
 //继续浏览
 -(void)continueReading{
     //继续阅读业务
@@ -1397,10 +1396,12 @@ static bool needHide = false;
     if([self.cartoonModel.type isEqualToString:@"1"]){
         
         chapterModel = [ZZTChapterModel initCarttonChapter:self.dataModel.id chapterName:self.dataModel.chapterName autherData:self.author chapterPage:self.dataModel.chapterPage chapterIndex:self.indexRow readPoint:self.readPoint imageUrlArray:self.imageUrlArray imageHeightCache:self.imageCellHeightCache];
+        
     }else{
 
         chapterModel = [ZZTChapterModel initTxtChapter:self.dataModel.id chapterName:self.dataModel.chapterName autherData:self.author chapterPage:self.dataModel.chapterPage chapterIndex:self.indexRow readPoint:self.readPoint TxTContent:self.TXTURL TXTFileName:self.fileName storyModel:self.stroyModel];
     }
+    
     
     //先看有没有这篇文章
     BOOL isHave = NO;
@@ -1416,6 +1417,8 @@ static bool needHide = false;
         }
     }
     
+   
+
     //如果有 就修改
     if(isHave == YES){
         //取出这本书
@@ -1440,12 +1443,20 @@ static bool needHide = false;
             readModel.arrayIndex = [NSString stringWithFormat:@"%ld",readModel.chapterArray.count];
             [readModel.chapterArray addObject:chapterModel];
         }
+        
+        readModel.lastReadData = self.dataModel;
+
         readModel.chapterListRow = [NSString stringWithFormat:@"%ld",self.indexRow];
         [arrayDict replaceObjectAtIndex:arrayIndex withObject:readModel];
     }else{
+        
+        model.lastReadData = self.dataModel;
+
         [model.chapterArray addObject:chapterModel];
         [arrayDict addObject:model];
     }
+ 
+
     //存
     NSString *path = JiXuYueDuAPI;
     [NSKeyedArchiver archiveRootObject:arrayDict toFile:path];
@@ -1458,6 +1469,7 @@ static bool needHide = false;
         self.isJXYD = YES;//是否继续阅读
         self.model = testModel;
         if(self.model.chapterArray.count > 0){
+            //通过比对id 得到当前这本书的历史数据
             for (int i = 0; i < self.model.chapterArray.count; i++) {
                 ZZTChapterModel *chapterModel = testModel.chapterArray[i];
                 if(chapterModel.chapterId == self.dataModel.id){
@@ -1470,6 +1482,8 @@ static bool needHide = false;
         self.isJXYD = NO;
     }
 }
+
+
 
 -(ZZTJiXuYueDuModel *)model{
     if(!_model){
@@ -1916,6 +1930,7 @@ static bool needHide = false;
     }
     return indexPaths;
 }
+
 //获取下行的数据索引
 - (NSArray *)tableView:(UITableView *)tableView nextIndexPathCount:(NSInteger)count fromIndexPath:(NSIndexPath *)indexPath
 {

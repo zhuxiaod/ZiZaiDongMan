@@ -150,6 +150,7 @@ NSString *zztComment = @"zztComment";
 //目录
 -(void)loadListData:(NSString *)ID{
     weakself(self);
+    
     NSDictionary *paramDict = @{
                                 @"cartoonId":ID
                                 };

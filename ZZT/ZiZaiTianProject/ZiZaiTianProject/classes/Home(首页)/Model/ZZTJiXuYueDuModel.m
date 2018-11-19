@@ -15,6 +15,7 @@
 @synthesize bookId;
 @synthesize arrayIndex;
 @synthesize chapterListRow;
+@synthesize lastReadData;
 
 -(NSMutableArray *)chapterArray{
     if(!chapterArray){
