@@ -17,6 +17,8 @@
 
 @property (nonatomic) UIStatusBarStyle statusBarStyle;
 
+@property (nonatomic,assign) BOOL viewNavBarHidden;
+
 //如果该页面push
 -(void)addBackBtn;
 

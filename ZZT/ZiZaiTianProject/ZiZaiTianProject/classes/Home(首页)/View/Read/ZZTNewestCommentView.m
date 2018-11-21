@@ -93,9 +93,11 @@ static NSString *const airView = @"airView";
     MJRefreshNormalHeader *header;
     MJRefreshAutoNormalFooter *footer;
     if(_isFind == YES){
-        header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadFindData)];
+        header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewFindData)];
         
         [header.arrowView setImage:[UIImage imageNamed:@"ic_pull_refresh_arrow_22x22_"]];
+        
+        footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreFindData)];
 
 
     }else{
@@ -116,7 +118,7 @@ static NSString *const airView = @"airView";
 -(void)setChapterId:(NSString *)chapterId{
     _chapterId = chapterId;
     if(_isFind == YES){
-        [self loadFindData];
+        [self loadNewFindData];
         [self setupMJRefresh];
     }
 }
@@ -131,7 +133,7 @@ static NSString *const airView = @"airView";
 }
 
 //发现世界评论
--(void)loadFindData{
+-(void)loadNewFindData{
     AFHTTPSessionManager *session = [[AFHTTPSessionManager alloc] init];
     
     NSDictionary *dict = @{
@@ -139,12 +141,14 @@ static NSString *const airView = @"airView";
                                @"type":@"1",
                                @"userId":[UserInfoManager share].ID,
                                 @"pageNum":@"1",
-                               @"pageSize":@"10"
+                               @"pageSize":[NSString stringWithFormat:@"%ld",self.size_num],
                            };
     [session POST:[ZZTAPI stringByAppendingString:@"circle/comment"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [self.mj_header endRefreshing];
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-        NSMutableArray *array1 = [ZZTCircleModel mj_objectArrayWithKeyValuesArray:dic];
+        NSDictionary *list = dic[@"list"];
+        NSString *totaldic = [dic objectForKey:@"total"];
+        NSMutableArray *array1 = [ZZTCircleModel mj_objectArrayWithKeyValuesArray:list];
         if(array1.count == 0){
             //没有数据的时候
             ZZTCircleModel *airModel = [[ZZTCircleModel alloc] init];
@@ -161,7 +165,60 @@ static NSString *const airView = @"airView";
             model.isOpenComment = YES;
             self.isHaveComment = YES;
         }
-        self.mj_footer.hidden = YES;
+        if(self.commentArray.count >= [totaldic integerValue]){
+            self.mj_footer.hidden = YES;
+        }else{
+            self.mj_footer.hidden = NO;
+        }
+        [self reloadData];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [self.mj_header endRefreshing];
+    }];
+}
+
+-(void)loadMoreFindData{
+    AFHTTPSessionManager *session = [[AFHTTPSessionManager alloc] init];
+    
+    NSDictionary *dict = @{
+                           @"itemId":_chapterId,
+                           @"type":@"1",
+                           @"userId":[UserInfoManager share].ID,
+                           @"pageNum":[NSString stringWithFormat:@"%ld",_page_num],
+                           @"pageSize":@"10",
+                           };
+    [session POST:[ZZTAPI stringByAppendingString:@"circle/comment"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [self.mj_header endRefreshing];
+        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *list = dic[@"list"];
+        NSString *total = [dic objectForKey:@"total"];
+        NSMutableArray *array1 = [ZZTCircleModel mj_objectArrayWithKeyValuesArray:list];
+        if(array1.count == 0){
+            //没有数据的时候
+            ZZTCircleModel *airModel = [[ZZTCircleModel alloc] init];
+            NSMutableArray *airArray = [NSMutableArray arrayWithObject:airModel];
+            self.commentArray = airArray;
+            self.isHaveComment = NO;
+        }else{
+            //外面的数据
+            FriendCircleViewModel *circleViewModel = [[FriendCircleViewModel alloc] init];
+            circleViewModel.circleModelArray = array1;
+            [circleViewModel loadDatas];
+            ZZTCircleModel *model = self.commentArray[0];
+            model.isOpenComment = YES;
+            self.isHaveComment = YES;
+            [self.commentArray addObjectsFromArray:[circleViewModel addOpenDataWith:self.openArray]];
+            if (self.commentArray.count >= [total integerValue]) {
+                //停止刷新
+                [self.mj_footer endRefreshingWithNoMoreData];
+                //                [self.mj_footer setHidden:YES];
+            }else{
+                self.page_num++;
+                [self.mj_footer endRefreshing];
+            }
+            self.size_num += 10;
+            self.isHaveComment = YES;
+        }
+
         [self reloadData];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [self.mj_header endRefreshing];
@@ -199,7 +256,6 @@ static NSString *const airView = @"airView";
             [circleViewModel loadDatas];
             self.commentArray = [circleViewModel addOpenDataWith:self.openArray];
             self.isHaveComment = YES;
-            
         }
         if(self.commentArray.count >= [totaldic integerValue]){
             self.mj_footer.hidden = YES;
@@ -333,7 +389,6 @@ static NSString *const airView = @"airView";
     if ([_adelegate respondsToSelector:@selector(commentView:sendCellReply:indexRow:)]) {
         [_adelegate commentView:self sendCellReply:model indexRow:indexPath.row];
     }
-    
 }
 
 //头

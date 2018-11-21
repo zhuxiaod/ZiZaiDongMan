@@ -90,6 +90,7 @@ static NSString *bigImageCell = @"bigImageCell";
 -(void)setupMJRefresh{
     self.collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         [self loadBookData];
+        [self loadBannerData];
     }];
 }
 
@@ -111,7 +112,7 @@ static NSString *bigImageCell = @"bigImageCell";
 -(void)loadBookData{
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     NSDictionary *dict = @{
-                           @"pageNum":[NSString stringWithFormat:@"%ld",self.pageNum],
+                           @"pageNum":[NSString stringWithFormat:@"%ld",(long)self.pageNum],
                            @"pageSize":@"7",
                            @"more":@"1"
                            };
@@ -274,7 +275,7 @@ static NSString *bigImageCell = @"bigImageCell";
 //执行的 headerView 代理 返回 headerView 的高度
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
     if(section == 0){
-        return CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT * 0.28125);
+        return CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT * 0.3385);
     }else{
         return CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT * 0.052);
     }

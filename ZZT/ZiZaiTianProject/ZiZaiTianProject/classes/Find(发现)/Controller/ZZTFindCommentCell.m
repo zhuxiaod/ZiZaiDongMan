@@ -38,6 +38,23 @@
 
 @implementation ZZTFindCommentCell
 
++ (instancetype)cellWithTableView:(UITableView *)tableView{
+    static NSString *ID = @"findCommentCell";
+    //1.判断是否存在可重用cell
+    ZZTFindCommentCell * cell = [tableView dequeueReusableCellWithIdentifier:ID];
+    if (!cell) {
+        //2.为nib文件注册并指定可重用标识
+        [tableView registerNib:[UINib nibWithNibName:@"ZZTFindCommentCell" bundle:nil] forCellReuseIdentifier:ID];
+        [tableView registerClass:[ZZTFindCommentCell class] forCellReuseIdentifier:ID];
+        //3.重新获取cell
+        cell = [tableView dequeueReusableCellWithIdentifier:ID];
+    }
+    //不要选中状态
+    cell.selectionStyle=UITableViewCellSelectionStyleNone;
+    //4.返回cell
+    return cell;
+}
+
 -(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
     if(self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]){
         [self setupUI];
@@ -289,10 +306,7 @@
         make.bottom.equalTo(self.likeCountView.mas_bottom);
         make.width.mas_equalTo(replyWidth - 22);
     }];
-    
-    
-  
-    
+
     //关注
     _attentionBtn.isAttention = [model.ifConcern integerValue];
     _attentionBtn.requestID = model.userId;

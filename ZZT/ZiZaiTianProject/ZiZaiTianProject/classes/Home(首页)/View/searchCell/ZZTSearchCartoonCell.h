@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+@class ZZTCarttonDetailModel;
+
 @interface ZZTSearchCartoonCell : UITableViewCell
+
+@property (nonatomic,strong) ZZTCarttonDetailModel *model;
+
++ (instancetype)cellWithTableView:(UITableView *)tableView;
 
 @end

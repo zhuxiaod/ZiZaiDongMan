@@ -29,6 +29,12 @@
     return instance;
 }
 
+-(UserInfo *)userData{
+    if(!_userData){
+        _userData = [Utilities GetNSUserDefaults];
+    }
+    return _userData;
+}
 //取数据 只能取关于接口的
 - (void)saveUserInfoWithData:(UserInfo *)user{
     /*
@@ -66,6 +72,8 @@
     user.userId = @"";
     
     [Utilities SetNSUserDefaults:user];
+    //更新状态
+    _userData = nil;
 }
 
 //需要登录

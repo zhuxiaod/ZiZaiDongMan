@@ -14,6 +14,7 @@
 #import "UIImage+ZZTimage.h"
 //#import "BaseModel.h"
 #import "MainTabbar.h"
+#import "ZZTMeHomeViewController.h"
 
 @interface ZZTTabBarViewController ()
 
@@ -70,9 +71,13 @@
     [self addChildViewController:nac2];
     
     //我的
-    ZZTMeViewController *meVC = [[ZZTMeViewController alloc] init];
+    ZZTMeHomeViewController *meVC = [[ZZTMeHomeViewController alloc] init];
     ZZTNavigationViewController *nac3 = [[ZZTNavigationViewController alloc] initWithRootViewController:meVC];
     [self addChildViewController:nac3];
+    
+//    ZZTMeViewController *meVC = [[ZZTMeViewController alloc] init];
+//    ZZTNavigationViewController *nac3 = [[ZZTNavigationViewController alloc] initWithRootViewController:meVC];
+//    [self addChildViewController:nac3];
 }
 
 //设置所有button上的内容

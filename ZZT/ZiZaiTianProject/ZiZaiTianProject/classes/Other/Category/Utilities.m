@@ -45,14 +45,14 @@
 }
 
 + (NSArray *)GetArrayWithPathComponent:(NSString *)path{
-    NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)lastObject];
+    NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)lastObject];
     NSString *fileName = [docDir stringByAppendingPathComponent:path];
     NSArray *models = [NSArray arrayWithContentsOfFile:fileName];
     return models;
 }
 
 + (NSString *)fileWithPathComponent:(NSString *)path{
-    NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)lastObject];
+    NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)lastObject];
     NSString *fileName = [docDir stringByAppendingPathComponent:path];
     return fileName;
 }

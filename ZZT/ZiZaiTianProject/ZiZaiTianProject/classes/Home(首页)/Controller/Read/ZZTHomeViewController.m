@@ -19,6 +19,15 @@
 #import "ZZTCollectView.h"
 #import "ZZTReadHomeViewController.h"
 #import "ZZTCollectHomeViewController.h"
+#import "ZZTCartoonHeaderView.h"
+
+//search
+#import "ZZTSearchCartoonCell.h"
+#import "ZZTSearchZoneCell.h"
+#import "ZZTFindCommentCell.h"
+#import "ZXDSearchViewController.h"
+
+static NSString *findCommentCell = @"findCommentCell";
 
 @interface ZZTHomeViewController ()<UIScrollViewDelegate,PYSearchViewControllerDelegate,PYSearchViewControllerDataSource,UITableViewDataSource,UITabBarControllerDelegate,ListViewDelegate>
 
@@ -346,24 +355,8 @@ NSString *SuggestionView = @"SuggestionView";
 }
 
 - (void)search{
-
-    //设置热词
-    NSArray *hotSeaches = @[@"妖神记", @"大霹雳", @"镖人", @"偷星九月天"];
-
-    PYSearchViewController *searchVC = [PYSearchViewController searchViewControllerWithHotSearches:hotSeaches searchBarPlaceholder:@"搜索作品名、作者名、社区内容" didSearchBlock:^(PYSearchViewController *searchViewController, UISearchBar *searchBar, NSString *searchText) {
-        
-    }];
-    searchVC.hotSearchTitle = @"热门搜索";
-    searchVC.delegate = self;
-    searchVC.dataSource = self;
-
-    //set cancelButton
-    [searchVC.cancelButton setTitle:@"取消" forState:UIControlStateNormal];
-    [searchVC.cancelButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-
-    ZZTNavigationViewController *nav = [[ZZTNavigationViewController alloc] initWithRootViewController:searchVC];
-    [self presentViewController:nav animated:YES completion:nil];
-    _searchVC = searchVC;
+    ZXDSearchViewController *searchVC = [[ZXDSearchViewController alloc] init];
+    [self.navigationController pushViewController:searchVC animated:NO];
 }
 
 //搜索文字已经改变
@@ -386,34 +379,77 @@ NSString *SuggestionView = @"SuggestionView";
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             
         }];
-
     }
 }
+//搜索结果多少节
 - (NSInteger)numberOfSectionsInSearchSuggestionView:(UITableView *)searchSuggestionView{
-    return 1;
+    return 3;
 }
-
+//多少行
 - (NSInteger)searchSuggestionView:(UITableView *)searchSuggestionView numberOfRowsInSection:(NSInteger)section{
     return self.searchSuggestionArray.count;
 }
 
+//每行显示什么
 - (UITableViewCell *)searchSuggestionView:(UITableView *)searchSuggestionView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [searchSuggestionView dequeueReusableCellWithIdentifier:SuggestionView];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:SuggestionView];
+    if(indexPath.section == 0){
+        ZZTSearchCartoonCell *cell = [ZZTSearchCartoonCell cellWithTableView:searchSuggestionView];
+        ZZTCarttonDetailModel *model = self.searchSuggestionArray[indexPath.row];
+        cell.model = model;
+        return cell;
+    }else if (indexPath.section == 1){
+        ZZTSearchZoneCell *cell = [ZZTSearchZoneCell cellWithTableView:searchSuggestionView];
+        return cell;
+    }else{
+        ZZTFindCommentCell *cell = [ZZTFindCommentCell cellWithTableView:searchSuggestionView];
+//        cell.model = self.dataArray[indexPath.row];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        return cell;
     }
-    if(self.searchSuggestionArray.count > 0){
-        ZZTCarttonDetailModel *str = self.searchSuggestionArray[indexPath.row];
-        cell.textLabel.text = str.bookName;
-    }
-    return cell;
 }
 
+//高度
 - (CGFloat)searchSuggestionView:(UITableView *)searchSuggestionView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 40.f;
+    if(indexPath.section == 0){
+        return SCREEN_HEIGHT * 0.22;
+    }else if(indexPath.section == 1){
+        return SCREEN_HEIGHT * 0.142;
+    }else{
+        return 100;
+//        ZZTMyZoneModel *model = _dataArray[indexPath.row];
+//        NSArray *imgs = [model.contentImg componentsSeparatedByString:@","];
+//        return  [ZZTFindCommentCell cellHeightWithStr:model.content imgs:imgs];
+    }
 }
 
+- (UIView *)searchSuggestionView:(UITableView *)searchSuggestionView viewForHeaderInSection:(NSInteger)section{
+    NSString *title;
+    if(section == 0){
+        title = @"相关漫画";
+    }else if (section == 1){
+        title = @"相关空间";
+    }else{
+        title = @"相关帖子";
+    }
+    ZZTCartoonHeaderView *head = [[ZZTCartoonHeaderView alloc] init];
+    head.title = title;
+    return head;
+}
+
+-(CGFloat)searchSuggestionView:(UITableView *)searchSuggestionView heightForHeaderInSection:(NSInteger)section{
+    return 50;
+}
+
+- (UIView *)searchSuggestionView:(UITableView *)searchSuggestionView viewForFooterInSection:(NSInteger)section{
+    UIView *footerView = [[UIView alloc] init];
+    footerView.backgroundColor = [UIColor colorWithRGB:@"230,230,230"];
+    return footerView;
+}
+
+- (CGFloat)searchSuggestionView:(UITableView *)searchSuggestionView heightForFooterInSection:(NSInteger)section{
+    return 4;
+}
 
 - (void)receiveNotification:(NSNotification *)infoNotification {
     NSDictionary *dic = [infoNotification userInfo];

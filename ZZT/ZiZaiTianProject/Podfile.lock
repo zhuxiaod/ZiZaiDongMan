@@ -41,6 +41,9 @@ PODS:
   - "UIColor+SKYExtension (0.0.1)"
   - "UITableView+FDTemplateLayoutCell (1.6)"
   - XHImageViewer (0.1.2)
+  - YYImage (1.0.4):
+    - YYImage/Core (= 1.0.4)
+  - YYImage/Core (1.0.4)
 
 DEPENDENCIES:
   - AFNetworking
@@ -64,6 +67,7 @@ DEPENDENCIES:
   - "UIColor+SKYExtension"
   - "UITableView+FDTemplateLayoutCell"
   - XHImageViewer
+  - YYImage
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -89,6 +93,7 @@ SPEC REPOS:
     - "UIColor+SKYExtension"
     - "UITableView+FDTemplateLayoutCell"
     - XHImageViewer
+    - YYImage
 
 SPEC CHECKSUMS:
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
@@ -113,7 +118,8 @@ SPEC CHECKSUMS:
   "UIColor+SKYExtension": 9e1d1a8f67df4673fd2d71d9dd6aad9687b4b437
   "UITableView+FDTemplateLayoutCell": 5c949b4a5059c404b442926c0e80f81d10a2d66f
   XHImageViewer: 7b275d2aa829e56761c30303b9d51cae086a90b9
+  YYImage: 1e1b62a9997399593e4b9c4ecfbbabbf1d3f3b54
 
-PODFILE CHECKSUM: 8dc588f83c0e2cbff6a1fc383bfaa3714c001baa
+PODFILE CHECKSUM: 559fecc15b2fc6284c3d987e31d2796ff77a6d95
 
 COCOAPODS: 1.5.3

@@ -58,6 +58,11 @@
     _viewNavBar.hidden = YES;
 }
 
+-(void)setViewNavBarHidden:(BOOL)viewNavBarHidden{
+    _viewNavBarHidden = viewNavBarHidden;
+    [self hideViewNavBar:viewNavBarHidden];
+}
+
 - (void)setBackItemWithImage:(NSString *)image pressImage:(NSString *)pressImage {
     
     UIBarButtonItem *back = [UIBarButtonItem barButtonItemWithImage:image pressImage:pressImage target:self action:@selector(back)];

@@ -10,7 +10,9 @@
 #import "ZZTMeEditTopView.h"
 #import "ZZTMeEditButtomView.h"
 #import "TypeButton.h"
-@interface ZZTMeEditViewController ()<UINavigationControllerDelegate,UIImagePickerControllerDelegate,TZImagePickerControllerDelegate>
+#import "ZZTMePersonalView.h"
+
+@interface ZZTMeEditViewController ()<UINavigationControllerDelegate,UIImagePickerControllerDelegate,TZImagePickerControllerDelegate,UITableViewDataSource,UITableViewDelegate>
 
 @property (nonatomic,assign) NSInteger btnTag;
 
@@ -50,6 +52,17 @@
 
 @property (nonatomic,strong) ZXDNavBar *navbar;
 
+
+@property(nonatomic,strong) UITableView *tableView;
+
+@property (nonatomic,strong) NSArray *sectionOne;
+
+@property (nonatomic,strong) NSArray *sectionTwo;
+
+@property (nonatomic,strong) NSArray *sectionThree;
+
+@property (nonatomic,strong) SBPersonalSettingCell *cell;
+
 @end
 
 @implementation ZZTMeEditViewController
@@ -63,32 +76,39 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    self.view.backgroundColor = [UIColor whiteColor];
-    
-    self.navigationItem.title = @"编辑资料";
+    [self.viewNavBar.centerButton setTitle:@"个人信息" forState:UIControlStateNormal];
+    [self.viewNavBar.rightButton setTitle:@"上传" forState:UIControlStateNormal];
+    //左边
+    [self addBackBtn];
     
     //设置mainView
     [self setupMainView];
     
+    self.sectionOne = @[@"昵称",@"账号",@"空间二维码"];
     
-    [self setupTopView];
+    self.sectionTwo = @[@"性别",@"年龄"];
     
+    self.sectionThree = @[@"个性签名"];
 
-    [self setupBottomView];
 
-    //初始化图像选择控制器
-    _picker = [[UIImagePickerController alloc]init];
-    _picker.allowsEditing = YES;  //重点是这两句
-
-    //遵守代理
-    _picker.delegate =self;
-
-    //注册观察键盘的变化
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(transformView:) name:UIKeyboardWillChangeFrameNotification object:nil];
     
-    [self setupNavBar];
-    
+//    [self setupTopView];
+//
+//
+//    [self setupBottomView];
+//
+//    //初始化图像选择控制器
+//    _picker = [[UIImagePickerController alloc]init];
+//    _picker.allowsEditing = YES;  //重点是这两句
+//
+//    //遵守代理
+//    _picker.delegate =self;
+//
+//    //注册观察键盘的变化
+//    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(transformView:) name:UIKeyboardWillChangeFrameNotification object:nil];
+//
+//    [self setupNavBar];
+//
 //    [self hiddenViewNavBar];
    
 }
@@ -129,13 +149,81 @@
 }
 
 -(void)setupMainView{
-    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
-    scrollView.contentInset = UIEdgeInsetsMake(-20, 0, 0, 0);
-    _scrollView = scrollView;
-    [self.view addSubview:scrollView];
+    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, navHeight , SCREEN_WIDTH, SCREEN_HEIGHT - navHeight) style:UITableViewStyleGrouped];
+    _tableView.backgroundColor = [UIColor whiteColor];
+    _tableView.contentInset = UIEdgeInsetsMake(-20, 0, 0, 0);
+    _tableView.sectionHeaderHeight = 0;
+    _tableView.sectionFooterHeight = 0;
+    _tableView.dataSource = self;
+    _tableView.delegate = self;
+    self.tableView.separatorStyle = UITableViewCellEditingStyleNone;
+    //让tableview不显示分割线
+    //隐藏滚动条
+    _tableView.showsVerticalScrollIndicator = NO;
     
-    scrollView.contentSize = CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT+20);
+    //添加头视图
+    ZZTMePersonalView *personalView = [ZZTMePersonalView mePersonalView];
+    personalView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT * 0.36);
+    _tableView.tableHeaderView = personalView;
 }
+
+#pragma mark - tableView
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 3;
+}
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    if(section == 0){
+        return self.sectionOne.count;
+    }else if(section == 1){
+        return self.sectionTwo.count;
+    }else{
+        return self.sectionThree.count;
+    }
+}
+
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if(indexPath.section == 0){
+        NSString *personalCellOne = @"personalCellOne";
+        SBPersonalSettingCell *cell = [tableView dequeueReusableCellWithIdentifier:personalCellOne forIndexPath:indexPath];
+        if (!cell) {
+            cell = [[SBPersonalSettingCell alloc] initWithStyle:0 reuseIdentifier:personalCellOne];
+        }
+        cell.nameLabel.text = [self.sectionOne objectAtIndex:indexPath.row];
+        if(indexPath.row == 0){
+            //用户名
+        }else if (indexPath.row == 1){
+            //账号
+        }else{
+            //二维码
+        }
+        return cell;
+    }else if (indexPath.section == 1){
+        NSString *personalCellTwo = @"personalCellTwo";
+        SBPersonalSettingCell *cell = [tableView dequeueReusableCellWithIdentifier:personalCellTwo forIndexPath:indexPath];
+        if (!cell) {
+            cell = [[SBPersonalSettingCell alloc] initWithStyle:0 reuseIdentifier:personalCellTwo];
+        }
+        cell.nameLabel.text = [self.sectionTwo objectAtIndex:indexPath.row];
+        cell.rightTextLabel.text = @"请选择";
+        return cell;
+    }else{
+        NSString *personalCellThree = @"personalCellThree";
+        SBPersonalSettingCell *cell = [tableView dequeueReusableCellWithIdentifier:personalCellThree forIndexPath:indexPath];
+        if (!cell) {
+            cell = [[SBPersonalSettingCell alloc] initWithStyle:0 reuseIdentifier:personalCellThree];
+        }
+        cell.nameLabel.text = [self.sectionTwo objectAtIndex:indexPath.row];
+            //个性签名
+        return cell;
+    }
+}
+
+
+
 
 -(void)setupTopView{
     //添加topView

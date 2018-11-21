@@ -83,11 +83,11 @@ static NSString * const pressedImageName = @"catoonDetail_like_select";
     
 //    CGFloat width = MyWidth;
 //
-//    if (likeCount < 1) {
+    if (likeCount < 1) {
 //
-////       [self setTitle:nil forState:UIControlStateNormal];
+       [self setTitle:@"0" forState:UIControlStateNormal];
 //
-//    }else {
+    }else {
     
         NSString *title = [NSString makeTextWithCount:likeCount];
         
@@ -95,7 +95,7 @@ static NSString * const pressedImageName = @"catoonDetail_like_select";
         
 //        width = [title getTextWidthWithFont:self.titleLabel.font] + MyWidth;
 
-//    }
+    }
 //
 //    if (self.translatesAutoresizingMaskIntoConstraints) {
 //        [self setWidth:width];

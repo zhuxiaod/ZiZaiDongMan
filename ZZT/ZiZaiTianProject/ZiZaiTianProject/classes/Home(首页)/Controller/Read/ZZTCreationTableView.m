@@ -147,11 +147,7 @@ static NSString *caiNiXiHuan = @"caiNiXiHuan";
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     NSString *title = @"为您推荐";
     ZZTCartoonHeaderView *head = [[ZZTCartoonHeaderView alloc] init];
-    head.moreOnClick = ^{
-        ZZTMoreViewController *moreVC = [[ZZTMoreViewController alloc] init];
-        moreVC.hidesBottomBarWhenPushed = YES;
-        [[self myViewController].navigationController pushViewController:moreVC animated:YES];
-    };
+    head.backgroundColor = [UIColor yellowColor];
     head.title = title;
     return head;
 }

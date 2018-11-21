@@ -36,6 +36,6 @@
 
 - (void)beginHeaderUpdate;
 
--(void)loadFindData;
+-(void)loadNewFindData;
 
 @end

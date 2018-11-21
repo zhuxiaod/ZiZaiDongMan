@@ -247,7 +247,7 @@
             NSDictionary *dict = @{
                                    @"userId":[NSString stringWithFormat:@"%ld",user.id],
                                    @"toUser":self.replyer.id,
-                                   @"commentId":self.nowReplyModel.chapterId,//节id
+                                   @"commentId":self.nowReplyModel.id,//节id
                                    @"replyId":self.commentId,//回复id
                                    @"replyType":self.isCommentOrReply,
                                    @"content":self.kTextView.text
@@ -261,7 +261,7 @@
         }else{
             NSDictionary *dict = @{
                                    @"userId":[UserInfoManager share].ID,
-                                   @"topicId":self.nowReplyModel.chapterId,//空间id
+                                   @"topicId":_chapterId,//空间id
                                    @"type":@"1",//漫画
                                    @"content":self.kTextView.text//评论内容
                                    };
@@ -392,11 +392,22 @@
 //删除回复接口
 -(void)deleteReplyWithType:(NSString *)type commentId:(NSString *)commentId{
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    NSDictionary *dict = @{
-                           @"type":type,//节是1 cell是2
-                           @"commentId":commentId
-                           };
-    [manager POST:[ZZTAPI stringByAppendingString:@"circle/deleteComment"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    NSString *api;
+    NSDictionary *dict;
+    if(_isFind == YES){
+        dict = @{
+                 @"type":type,//节是1 cell是2
+                 @"commentId":commentId
+                 };
+        api = @"circle/deleteSpaceComment";
+    }else{
+        dict = @{
+               @"type":type,//节是1 cell是2
+               @"commentId":commentId
+               };
+        api = @"circle/deleteComment";
+    }
+    [manager POST:[ZZTAPI stringByAppendingString:api] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [self sendSuccess];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
@@ -406,7 +417,7 @@
 -(void)sendSuccess{
     ZZTNewestCommentView *newestView = (ZZTNewestCommentView *)self.nowTableView;
     if(_isFind == YES){
-        [newestView loadFindData];
+        [newestView loadNewFindData];
     }else{
         [newestView update];
     }
@@ -515,6 +526,6 @@
 
 -(void)reloadDataCommentView:(UITableView *)commentView{
     ZZTNewestCommentView *view = (ZZTNewestCommentView *)commentView;
-    [view loadFindData];
+    [view loadNewFindData];
 }
 @end

@@ -10,6 +10,11 @@
 
 @interface ZZTUserHeadView : UIView
 
+@property (nonatomic,strong) UIImageView *headView;
+
+@property (nonatomic,strong) UIImageView *headFrame;
+
+
 @property (nonatomic,strong) NSString *userImg;
 
 @property (nonatomic,strong) NSString *placeHeadImg;

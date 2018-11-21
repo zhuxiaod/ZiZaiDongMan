@@ -24,6 +24,10 @@
 #import "ZZTMeAttentionViewController.h"
 #import "ZZTLoginRegisterViewController.h"
 #import "ZZTMyZoneViewController.h"
+#import "ZZTUserAgreementViewController.h"
+#import "ZZTAboutUsViewController.h"
+#import "ZZTFeedBackViewController.h"
+
 
 @interface ZZTMeViewController ()<UITableViewDataSource,UITableViewDelegate,ZZTSignInViewDelegate>
 
@@ -75,15 +79,6 @@ NSString *bannerID = @"MeCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor colorWithRGB:@"200,206,226"];
-//    [self.navigationController.navigationBar setBackgroundImage:[UIImage createImageWithColor:[UIColor whiteColor]] forBarMetrics:UIBarMetricsCompact];
-
-//    self.rr_navHidden = YES;
-//    UINavigationBar *nab = [UINavigationBar appearanceWhenContainedInInstancesOfClasses:@[[UIView class]]];
-//
-//    [nab setBackgroundImage:[UIImage createImageWithColor:[UIColor blackColor]] forBarMetrics:UIBarMetricsDefault];
-//    self.statusBarStyle = UIStatusBarStyleLightContent;
-//    [UINavigationBar appearance].translucent=NO;
-//    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     
     //请求数据
 //    [self getData];
@@ -96,18 +91,21 @@ NSString *bannerID = @"MeCell";
 #pragma mark - 设置tableView
 -(void)setupTab
 {
-    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 20 , self.view.bounds.size.width, self.view.bounds.size.height) style:UITableViewStyleGrouped];
-    _tableView.sectionHeaderHeight = 10;
+    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0 , self.view.bounds.size.width, self.view.bounds.size.height) style:UITableViewStyleGrouped];
+    _tableView.backgroundColor = [UIColor whiteColor];
+    _tableView.contentInset = UIEdgeInsetsMake(-20, 0, 0, 0);
+    _tableView.sectionHeaderHeight = 0;
     _tableView.sectionFooterHeight = 0;
     _tableView.dataSource = self;
     _tableView.delegate = self;
-
+    self.tableView.separatorStyle = UITableViewCellEditingStyleNone;     //让tableview不显示分割线
+//    [self.tableView       setSeparatorStyle:UITableViewCellSeparatorStyleSingleLineEtched];
     //隐藏滚动条
     _tableView.showsVerticalScrollIndicator = NO;
     
     //添加头视图
     ZZTMeTopView *top = [ZZTMeTopView meTopView];
-    top.frame = CGRectMake(0, 0, ScreenW, 120);
+    top.frame = CGRectMake(0, 0, ScreenW, SCREEN_HEIGHT * 0.36);
     _tableView.tableHeaderView = top;
     _topView = top;
     top.buttonAction = ^(UIButton *sender) {
@@ -121,7 +119,6 @@ NSString *bannerID = @"MeCell";
     };
     top.loginAction = ^(UIButton *btn) {
         //弹出登录页面
-//        ZZTLoginRegisterViewController *loginView = [[ZZTLoginRegisterViewController alloc] init];
         [ZZTLoginRegisterViewController show];
     };
     
@@ -143,24 +140,13 @@ NSString *bannerID = @"MeCell";
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-//    if(section == 0){
-//        return 1;
-//    }else if (section == 1){
-//        return 0;
-//    }else if (section == 2){
-//        return 0;
-//    }else if (section == 3){
-////        return 4;
-//        return 3;
-//    }else{
-//        return 1;
-//    }
+
     if(section == 0){
-        return 1;
-    }else if(section == 1){
         return 3;
+    }else if(section == 1){
+        return 2;
     }else{
-        return 1;
+        return 2;
     }
 }
 
@@ -169,57 +155,45 @@ NSString *bannerID = @"MeCell";
     ZZTMeCell *cell = [tableView dequeueReusableCellWithIdentifier:bannerID];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
+    cell.accessoryType = UITableViewCellAccessoryNone; //显示最右边的箭头
+    
+    UIView *bottomView = [[UIView alloc] init];
+    bottomView.backgroundColor = [UIColor colorWithRGB:@"232,232,232"];
+    [cell.contentView addSubview:bottomView];
+    [bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(cell.contentView.mas_bottom).offset(-1);
+        make.height.mas_equalTo(1);
+        make.right.equalTo(cell.contentView.mas_right);
+        make.left.equalTo(cell.contentView.mas_left);
+    }];
+    
     if(indexPath.section == 0){
-        cell.textLabel.text = @"我的空间";
+        if(indexPath.row == 0){
+            cell.textLabel.text = @"我的书柜";
+        }else if (indexPath.row == 1){
+            cell.textLabel.text = @"浏览历史";
+        }else{
+            cell.textLabel.text = @"我的关注";
+            [bottomView removeFromSuperview];
+        }
         return cell;
     }else if(indexPath.section == 1){
         if (indexPath.row == 0){
-            cell.textLabel.text = @"书柜";
-        }else if(indexPath.row == 1){
-            cell.textLabel.text = @"关注";
-        }else if(indexPath.row == 2){
-            cell.textLabel.text = @"浏览历史";
+            cell.textLabel.text = @"问题反馈";
+        }else{
+            cell.textLabel.text = @"关于我们";
+            [bottomView removeFromSuperview];
         }
         return cell;
     }else{
-        cell.textLabel.text = @"设置";
+        if (indexPath.row == 0){
+            cell.textLabel.text = @"用户协议";
+        }else{
+            cell.textLabel.text = @"设置";
+            [bottomView removeFromSuperview];
+        }
         return cell;
     }
-    
-//    if (indexPath.section == 0) {
-//        cell.textLabel.text = @"我的空间";
-//        return cell;
-//    }else if(indexPath.section == 1){
-//        if (indexPath.row == 0) {
-//            cell.textLabel.text = @"VIP";
-//        }else if (indexPath.row ==1){
-//            cell.textLabel.text = @"钱包";
-//        }
-//        return cell;
-//    }else if(indexPath.section == 2){
-//        if (indexPath.row == 0) {
-//            cell.textLabel.text = @"自在商城";
-//        }else if (indexPath.row ==1){
-//            cell.textLabel.text = @"积分兑换";
-//        }
-//        return cell;
-//    }else if(indexPath.section == 3){
-////        if (indexPath.row == 0) {
-////            cell.textLabel.text = @"参与作品";
-////        }else
-//        if (indexPath.row == 0){
-//            cell.textLabel.text = @"书柜";
-//        }else if(indexPath.row == 1){
-//            cell.textLabel.text = @"关注";
-//        }else if(indexPath.row == 2){
-//            cell.textLabel.text = @"浏览历史";
-//        }
-//        return cell;
-//    }else{
-//        cell.textLabel.text = @"设置";
-//        return cell;
-//    }
-//    return cell;
 }
 
 #pragma mark - 请求数据
@@ -227,10 +201,7 @@ NSString *bannerID = @"MeCell";
 {
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:YES];
-//    [self.navigationController.navigationBar setBackgroundImage:[UIImage createImageWithColor:[UIColor clearColor]] forBarMetrics:UIBarMetricsCompact];
-//    [self.navigationController.navigationBar setShadowImage:[UIImage createImageWithColor:[UIColor clearColor]]];
-//    [self.navigationController.navigationBar setTranslucent:YES];
-    
+
     //隐藏Bar
     //加载用户信息
     UserInfo *userInfo = [Utilities GetNSUserDefaults];
@@ -242,6 +213,7 @@ NSString *bannerID = @"MeCell";
         [self loadUserData:userInfo.id];
     }
 }
+
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
 }
@@ -290,17 +262,6 @@ NSString *bannerID = @"MeCell";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 0) {
-        if([[UserInfoManager share] hasLogin] == NO){
-            [UserInfoManager needLogin];
-            return;
-        }
-        //我的空间
-        ZZTMyZoneViewController *myZoneView = [[ZZTMyZoneViewController alloc] init];
-        myZoneView.userId = [UserInfoManager share].ID;
-        myZoneView.user = self.userData;
-        myZoneView.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:myZoneView animated:YES];
-    }else if (indexPath.section == 1){
         if(indexPath.row == 0){
             //书柜
             if([[UserInfoManager share] hasLogin] == NO){
@@ -314,6 +275,11 @@ NSString *bannerID = @"MeCell";
             //            bookVC.user = self.userData;
             [self.navigationController pushViewController:bookVC animated:YES];
         }else if(indexPath.row == 1){
+            //浏览历史
+            ZZTHistoryViewController *historyVC = [[ZZTHistoryViewController alloc] init];
+            historyVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:historyVC animated:YES];
+        }else{
             //关注
             if([[UserInfoManager share] hasLogin] == NO){
                 [UserInfoManager needLogin];
@@ -323,17 +289,31 @@ NSString *bannerID = @"MeCell";
             meAttentionVC.hidesBottomBarWhenPushed = YES;
             //            meAttentionVC.user = self.userData;
             [self.navigationController pushViewController:meAttentionVC animated:YES];
-        }else if(indexPath.row == 2){
-            //浏览历史
-            ZZTHistoryViewController *historyVC = [[ZZTHistoryViewController alloc] init];
-            historyVC.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:historyVC animated:YES];
+        }
+    }else if (indexPath.section == 1){
+        if(indexPath.row == 0){
+            //问题反馈
+            ZZTFeedBackViewController *feedBackVC = [[ZZTFeedBackViewController alloc] init];
+            feedBackVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:feedBackVC animated:YES];
+        }else{
+            //关于我们
+            ZZTAboutUsViewController *aboutUsVC = [[ZZTAboutUsViewController alloc] init];
+            aboutUsVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:aboutUsVC animated:YES];
         }
     }else{
-        //设置
-        ZZTSettingViewController *settingVC = [[ZZTSettingViewController alloc] init];
-        settingVC.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:settingVC animated:YES];
+        if(indexPath.row == 0){
+            //用户协议
+            ZZTUserAgreementViewController *userAgreementVC = [[ZZTUserAgreementViewController alloc] init];
+            userAgreementVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:userAgreementVC animated:YES];
+        }else{
+            //设置
+            ZZTSettingViewController *settingVC = [[ZZTSettingViewController alloc] init];
+            settingVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:settingVC animated:YES];
+        }
     }
     
 //    else if (indexPath.section == 1){
@@ -399,6 +379,20 @@ NSString *bannerID = @"MeCell";
 //        settingVC.hidesBottomBarWhenPushed = YES;
 //        [self.navigationController pushViewController:settingVC animated:YES];
 //    }
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(nonnull NSIndexPath *)indexPath{
+    return SCREEN_HEIGHT * 0.078;
+}
+
+-(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+    UIView *footerView = [[UIView alloc] init];
+    footerView.backgroundColor = [UIColor colorWithRGB:@"232,232,232"];
+    return footerView;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+    return 4;
 }
 -(void)viewWillDisappear:(BOOL)animated{
     [self.navigationController setNavigationBarHidden:YES animated:YES];

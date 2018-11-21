@@ -10,16 +10,14 @@
 #import "ZZTSignInViewController.h"
 
 @interface ZZTMeTopView ()
+@property (weak, nonatomic) IBOutlet UIButton *backgroundBtn;
 
-@property (weak, nonatomic) IBOutlet UIImageView *headImage;
-@property (weak, nonatomic) IBOutlet UILabel *userName;
-@property (weak, nonatomic) IBOutlet UIButton *VIPBtn;
-@property (weak, nonatomic) IBOutlet UILabel *ZBLab;
-@property (weak, nonatomic) IBOutlet UILabel *jiFenLab;
-@property (weak, nonatomic) IBOutlet UIButton *signInBtn;
-@property (weak, nonatomic) IBOutlet UILabel *fansNum;
-@property (weak, nonatomic) IBOutlet UILabel *followNum;
-@property (weak, nonatomic) IBOutlet UIButton *headBtn;
+@property (weak, nonatomic) IBOutlet ZZTUserHeadView *userHead;
+
+@property (weak, nonatomic) IBOutlet UIButton *userName;
+
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *userNameW;
 
 @end
 
@@ -27,31 +25,21 @@
 
 -(void)setUserModel:(UserInfo *)userModel{
     _userModel = userModel;
-    if(userModel.isLogin == YES){
-        [self.headImage sd_setImageWithURL:[NSURL URLWithString:userModel.headimg]];
-        [self.userName setText:userModel.nickName];
-        if([userModel.userType isEqualToString:@"1"]){
-            self.VIPBtn.hidden = YES;
-        }
-        
-        // 订阅数
-        if (userModel.integralNum >= 10000) {
-            self.jiFenLab.text = [NSString stringWithFormat:@"%.1fw积分", userModel.integralNum / 10000.0];
-        } else {
-            self.jiFenLab.text = [NSString stringWithFormat:@"%zd积分", userModel.integralNum];
-        }
-        if (userModel.zzbNum >= 10000) {
-            self.ZBLab.text = [NSString stringWithFormat:@"%.1fwZ币", userModel.zzbNum / 10000.0];
-        } else {
-            self.ZBLab.text = [NSString stringWithFormat:@"%zdZ币", userModel.zzbNum];
-        }
+    
+    [self.backgroundBtn sd_setImageWithURL:[NSURL URLWithString:userModel.cover] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"Me_homeBackground"]];
+    
+    [self.userHead setupUserHeadImg:userModel.headimg placeHeadImg:@"Me_topView_headImage"];
+    
+    //得到字的宽度 + 20距离
+    if(userModel.nickName == nil){
+        [self.userName setTitle:@"我要登录" forState:UIControlStateNormal];
     }else{
-        //设置空白数据
-        [self.headImage setImage:[UIImage createImageWithColor:[UIColor clearColor]]];
-        [self.userName setText:@"未登录"];
-        self.VIPBtn.hidden = YES;
-        [self.jiFenLab setText:@""];
+        [self.userName setTitle:userModel.nickName forState:UIControlStateNormal];
     }
+    
+    CGFloat replyCountWidth = [_userName.titleLabel.text getTextWidthWithFont:self.userName.titleLabel.font];
+    replyCountWidth += 20;
+    self.userNameW.constant = replyCountWidth;
 }
 
 +(instancetype)meTopView{
@@ -61,14 +49,28 @@
 - (void)awakeFromNib
 {
     [super awakeFromNib];
-    //样式和事件
-    [_headBtn addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
-    [_VIPBtn addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
-//    [_signInBtn addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
-    _VIPBtn.layer.cornerRadius = 10.0f;
-    _signInBtn.layer.cornerRadius = 10.0f;
-    _headBtn.tag = 0;
-    [_headBtn addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.backgroundBtn.imageView setImage:[UIImage imageNamed:@"Me_homeBackground"]];
+
+    [self.backgroundBtn.imageView setContentMode:UIViewContentModeScaleAspectFill];
+    
+    self.backgroundBtn.imageView.clipsToBounds = YES;
+    
+    [self.backgroundBtn.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.backgroundBtn.mas_top);
+        make.right.equalTo(self.backgroundBtn.mas_right);
+        make.left.equalTo(self.backgroundBtn.mas_left);
+        make.bottom.equalTo(self.backgroundBtn.mas_bottom);
+    }];
+    
+    self.userName.layer.cornerRadius = 10;
+    
+    self.userName.layer.masksToBounds = YES;
+    
+    //name手势
+    [self.userName addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.userHead.viewClick addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)buttonClick:(UIButton *)button{
@@ -82,16 +84,16 @@
     }
 }
 
-//跳转签到界面
-- (IBAction)pushSignInView:(id)sender {
-    //登录了才能签到
-    if(self.userModel.isLogin == YES){
-        ZZTSignInViewController *signInVC = [[ZZTSignInViewController alloc] init];
-        signInVC.hidesBottomBarWhenPushed = YES;
-        [[self myViewController].navigationController pushViewController:signInVC animated:YES];
-    }else{
-        self.loginAction(sender);
-    }
-}
+////跳转签到界面
+//- (IBAction)pushSignInView:(id)sender {
+//    //登录了才能签到
+//    if(self.userModel.isLogin == YES){
+//        ZZTSignInViewController *signInVC = [[ZZTSignInViewController alloc] init];
+//        signInVC.hidesBottomBarWhenPushed = YES;
+//        [[self myViewController].navigationController pushViewController:signInVC animated:YES];
+//    }else{
+//        self.loginAction(sender);
+//    }
+//}
 
 @end

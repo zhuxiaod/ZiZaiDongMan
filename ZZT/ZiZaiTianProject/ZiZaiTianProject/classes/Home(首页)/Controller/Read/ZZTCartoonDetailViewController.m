@@ -1808,7 +1808,7 @@ static bool needHide = false;
     }
     
     UIImage *image = [UIImage verticalImageFromArray:screenshots];
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString *path = [paths objectAtIndex:0];
     NSString *filePath = [path stringByAppendingPathComponent:@"image.png"];
     NSLog(@"filePath%@",filePath);
@@ -1839,7 +1839,7 @@ static bool needHide = false;
     }
     UIGraphicsEndImageContext();
     
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString *path = [paths objectAtIndex:0];
     NSString *filePath = [path stringByAppendingPathComponent:@"cellImage.png"];
     NSLog(@"filePath%@",filePath);

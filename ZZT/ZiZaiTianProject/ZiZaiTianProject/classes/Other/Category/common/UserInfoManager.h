@@ -23,6 +23,8 @@
 
 @property (nonatomic,copy)   NSString *nickname;        //昵称
 
+@property (nonatomic,strong) UserInfo *userData;
+
 - (void)saveUserInfoWithData:(UserInfo *)user;
 
 - (void)logoutUserInfo;

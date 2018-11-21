@@ -10,9 +10,7 @@
 
 @interface ZZTUserHeadView ()
 
-@property (nonatomic,strong) UIImageView *headFrame;
 
-@property (nonatomic,strong) UIImageView *headView;
 
 @end
 
@@ -25,6 +23,30 @@
         [self setupUI];
     }
     return self;
+}
+
+-(UIImageView *)headFrame{
+    if(!_headFrame){
+        _headFrame = [[UIImageView alloc] init];
+        [self addSubview:_headFrame];
+    }
+    return _headFrame;
+}
+
+-(UIImageView *)headView{
+    if(!_headView){
+        _headView = [[UIImageView alloc] init];
+        [self addSubview:_headView];
+    }
+    return _headView;
+}
+
+-(UIButton *)viewClick{
+    if(!_viewClick){
+        _viewClick = [[UIButton alloc] init];
+        [self addSubview:_viewClick];
+    }
+    return _viewClick;
 }
 
 -(void)setupUI{
@@ -48,7 +70,7 @@
     _userImg = userImg;
     _placeHeadImg = placeHeadImg;
     //
-    [_headFrame setImage:[UIImage imageNamed:placeHeadImg]];
+    [self.headFrame setImage:[UIImage imageNamed:placeHeadImg]];
     [self.headView sd_setImageWithURL:[NSURL URLWithString:userImg]];
 }
 

@@ -37,6 +37,8 @@ static NSString *myZoneCell = @"myZoneCell";
 
 @property (nonatomic,strong) UserInfo *userData;
 
+@property (nonatomic,strong) UIImageView *underLineView;
+
 @end
 
 
@@ -71,10 +73,11 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     [self setupContentView];
     
     //数据源
-    [self loadData];
 
     //cell 1 编辑 跳编辑器
     //cell 2 时间 内容 图片
+//    [self loadUserData];
+//    [self loadData];
     [self setupMJRefresh];
     
     //上传图片
@@ -82,32 +85,41 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     
     //NavBar
     [self setupNavBar];
+    
+    [self setupUnderLineView];
+}
+
+-(void)setupUnderLineView{
+    //禁止滑动
+    //潜水图
+    UIImageView *underLineView = [[UIImageView alloc] init];
+    [underLineView setImage:[UIImage imageNamed:@"me_zone_underLine"]];
+    underLineView.contentMode = UIViewContentModeScaleAspectFill;
+    _underLineView = underLineView;
+    [self.view addSubview:underLineView];
+    
+    [underLineView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.view.mas_top).offset(SCREEN_HEIGHT * 0.46);
+        make.right.left.bottom.equalTo(self.view);
+    }];
+    underLineView.hidden = YES;
 }
 
 -(void)setupNavBar{
     
-    ZXDNavBar *navbar = [[ZXDNavBar alloc] init];
-    self.navbar = navbar;
-    navbar.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:navbar];
-    
-    [navbar mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.equalTo(self.view);
-        make.top.equalTo(self.view);
-        make.height.equalTo(@(navHeight));
-    }];
-    
-    navbar.showBottomLabel = NO;
-    
-    //设置内容
+    self.viewNavBar.showBottomLabel = NO;
+
     //返回
-    [navbar.leftButton setImage:[UIImage imageNamed:@"返回键"] forState:UIControlStateNormal];
-    navbar.leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 17);
-    [navbar.leftButton addTarget:self action:@selector(dismissVC) forControlEvents:UIControlEventTouchUpInside];
+    [self.viewNavBar.leftButton setImage:[UIImage imageNamed:@"返回键"] forState:UIControlStateNormal];
+    self.viewNavBar.leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 17);
+    [self.viewNavBar.leftButton addTarget:self action:@selector(dismissVC) forControlEvents:UIControlEventTouchUpInside];
 
     //中
-    [navbar.centerButton setTitle:@"空间" forState:UIControlStateNormal];
-    [navbar.centerButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.viewNavBar.centerButton setTitle:@"空间" forState:UIControlStateNormal];
+    [self.viewNavBar.centerButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    if(self.viewNavBarHidden == YES){
+        self.viewNavBar.hidden = YES;
+    }
 }
 
 -(void)dismissVC{
@@ -194,6 +206,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
 }
 
 -(void)loadData{
+
     //请求世界数据
     NSDictionary *dic = @{
                           @"pageNum":@"1",
@@ -270,6 +283,14 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     }
 //    UserInfo *user = [Utilities GetNSUserDefaults];
     self.zoneHeadView.user = self.userData;
+    if(self.userData == nil){
+        //添加一张图片
+        self.underLineView.hidden = NO;
+        self.tabelView.scrollEnabled = NO;
+    }else{
+        self.underLineView.hidden = YES;
+        self.tabelView.scrollEnabled = YES;
+    }
     return _zoneHeadView;
 }
 
@@ -320,8 +341,9 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
 -(void)setUserId:(NSString *)userId{
     _userId = userId;
     //请求个人资料
-
-    [self loadUserData];
+//    if(userId == nil)userId = @"";
+   
+    [self.tabelView.mj_header beginRefreshing];
 }
 
 -(void)loadUserData{
@@ -339,6 +361,8 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
             self.userData = model;
             self.zoneHeadView.user = model;
             [self.tabelView reloadData];
+        }else{
+            self.userData = nil;
         }
         [self.tabelView.mj_header endRefreshing];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

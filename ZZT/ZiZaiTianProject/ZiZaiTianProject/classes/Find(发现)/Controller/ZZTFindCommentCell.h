@@ -22,4 +22,6 @@ typedef void (^ReValueBlock) (void);
 
 + (ZZTFindCommentCell *)dynamicCellWithTable:(UITableView *)table;
 
++ (instancetype)cellWithTableView:(UITableView *)tableView;
+
 @end

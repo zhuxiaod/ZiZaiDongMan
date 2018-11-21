@@ -317,6 +317,7 @@ static NSString *findCommentCell = @"findCommentCell";
         [self.contentView.mj_header endRefreshing];
     }];
 }
+
 //刷新NavBar的zhuang'ta
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];

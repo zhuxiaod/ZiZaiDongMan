@@ -40,7 +40,6 @@
     
     [self.userHead setupUserHeadImg:user.headimg placeHeadImg:@"用户头像"];
  
-    
     self.userName.text = user.nickName;
     
     [self.userName labOutline];

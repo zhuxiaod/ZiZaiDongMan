@@ -1,4 +1,5 @@
 target 'ZiZaiTianProject' do
+pod 'YYImage'
 pod 'MJExtension'
 pod 'AFNetworking'
 pod 'CDDPagerController'

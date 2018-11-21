@@ -8,6 +8,8 @@
 
 #import "PYSearchViewController.h"
 
-@interface ZXDSearchViewController : PYSearchViewController
+@interface ZXDSearchViewController : UIViewController
+
++(void)initView;
 
 @end
