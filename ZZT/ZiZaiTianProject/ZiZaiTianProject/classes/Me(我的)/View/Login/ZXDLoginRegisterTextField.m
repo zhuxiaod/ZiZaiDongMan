@@ -12,7 +12,8 @@
 // 默认的占位文字颜色
 #define XMGPlaceholderDefaultColor [UIColor grayColor]
 // 聚焦的占位文字颜色
-#define XMGPlaceholderFocusColor [UIColor whiteColor]
+#define XMGPlaceholderFocusColor [UIColor blackColor]
+
 
 @implementation ZXDLoginRegisterTextField
 
@@ -29,7 +30,7 @@
 //文本框聚焦时调用(弹出当前文本框对应的键盘时调用)
 -(BOOL)becomeFirstResponder
 {
-    self.placeholderColor = XMGPlaceholderFocusColor;\
+    self.placeholderColor = XMGPlaceholderFocusColor;
     return [super becomeFirstResponder];
 }
 

@@ -321,6 +321,7 @@ static NSString *findCommentCell = @"findCommentCell";
 //刷新NavBar的zhuang'ta
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    [_contentView.mj_header beginRefreshing];
     [self scrollViewDidScroll:_contentView];
     [self.navigationController setNavigationBarHidden:YES animated:NO];
     

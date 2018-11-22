@@ -32,4 +32,10 @@
 +(NSString *)compareCurrentTime:(NSString *)str;
 
 + (NSMutableAttributedString *)addStrSpace:(NSString *)str;
+
+//获得当前时间
++(NSString*)getCurrentTimes;
+//获得图片名字
++(NSString *)getImageName;
+
 @end

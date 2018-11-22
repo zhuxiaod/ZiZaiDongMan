@@ -242,4 +242,38 @@
     
     return attributedString;
 }
+
+//获得当前时间
++(NSString*)getCurrentTimes{
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    
+    // ----------设置你想要的格式,hh与HH的区别:分别表示12小时制,24小时制
+    
+    [formatter setDateFormat:@"YYYYMMddHHmmss"];
+    
+    //现在时间,你可以输出来看下是什么格式
+    
+    NSDate *datenow = [NSDate date];
+    
+    //----------将nsdate按formatter格式转成nsstring
+    
+    NSString *currentTimeString = [formatter stringFromDate:datenow];
+    
+    NSLog(@"currentTimeString =  %@",currentTimeString);
+    
+    return currentTimeString;
+    
+}
+
++(NSString *)getImageName{
+    NSString *currentData = [NSString getCurrentTimes];
+    //生成随机数
+    int a = arc4random() % 100000;
+    NSString *str = [NSString stringWithFormat:@"%06d", a];
+    //凭拼接
+    NSString *imageName = [currentData stringByAppendingString:str];
+    return imageName;
+}
+
 @end

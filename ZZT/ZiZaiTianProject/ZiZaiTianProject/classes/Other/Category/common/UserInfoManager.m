@@ -35,6 +35,7 @@
     }
     return _userData;
 }
+
 //取数据 只能取关于接口的
 - (void)saveUserInfoWithData:(UserInfo *)user{
     /*
@@ -50,10 +51,16 @@
     }
     
     self.ID = [NSString stringWithFormat:@"%ld",user.id];
-    
+
     self.avatar_url = user.headimg;
     
     self.nickname = user.nickName;
+    
+    self.phone = user.phone;
+    
+    self.intro = user.intro;
+    
+    _birthday = user.birthday;
 }
 
 //登出用户
@@ -67,9 +74,17 @@
     
     self.nickname = nil;
     
+    self.phone = @"";
+    
+    self.intro = @"";
+    
+    _birthday = @"";
+    
     UserInfo *user = [[UserInfo alloc] init];
     
     user.userId = @"";
+    
+    user.id = 0;
     
     [Utilities SetNSUserDefaults:user];
     //更新状态
@@ -98,6 +113,20 @@
     if (buttonIndex == 1) {
         [ZZTLoginRegisterViewController show];
     }
+}
+
+-(void)setSex:(NSString *)sex{
+    _sex = sex;
+    UserInfo *user = [Utilities GetNSUserDefaults];
+    user.sex = sex;
+    [Utilities SetNSUserDefaults:user];
+}
+
+-(void)setBirthday:(NSString *)birthday{
+    _birthday = birthday;
+    UserInfo *user = [Utilities GetNSUserDefaults];
+    user.birthday = birthday;
+    [Utilities SetNSUserDefaults:user];
 }
 //+ (void)autoLogin {
 //    [[UserInfoManager share] autoLogin];

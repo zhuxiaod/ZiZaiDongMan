@@ -60,7 +60,6 @@ NSString *SuggestionView3 = @"SuggestionView";
     //设置子页
     [self setupChildView];
     
-    
     _selectedPhotos = [NSMutableArray array];
     _selectedAssets = [NSMutableArray array];
     

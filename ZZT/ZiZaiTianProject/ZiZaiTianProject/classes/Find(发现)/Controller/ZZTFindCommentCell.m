@@ -310,6 +310,11 @@
     //关注
     _attentionBtn.isAttention = [model.ifConcern integerValue];
     _attentionBtn.requestID = model.userId;
+    UserInfo *user = [Utilities GetNSUserDefaults];
+    //如果是自己发的 隐藏关注
+    if([model.userId isEqualToString:[NSString stringWithFormat:@"%ld",user.id]]){
+        _attentionBtn.hidden = YES;
+    }
 }
 
 -(void)gotoCommentView{

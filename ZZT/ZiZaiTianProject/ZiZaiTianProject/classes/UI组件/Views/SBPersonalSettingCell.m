@@ -8,6 +8,10 @@
 
 #import "SBPersonalSettingCell.h"
 
+@interface SBPersonalSettingCell ()<UITextFieldDelegate>
+
+@end
+
 @implementation SBPersonalSettingCell
 
 - (UIView *)mainView{
@@ -47,6 +51,7 @@
         [_nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.mas_equalTo(12);
             make.centerY.mas_equalTo(self.mainView);
+            make.width.mas_equalTo(100);
         }];
     }
     return _nameLabel;
@@ -66,6 +71,32 @@
         }];
     }
     return _rightTextLabel;
+}
+
+-(UITextField *)textField{
+    if(!_textField){
+        _textField = [UITextField new];
+        _textField.textColor = [UIColor colorWithHexString:@"#999999"];
+        _textField.textAlignment = NSTextAlignmentRight;
+        _textField.delegate = self;
+        [self.mainView addSubview:_textField];
+        [_textField mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(self.nameLabel.mas_right).with.offset(20);
+            make.right.mas_equalTo(self.arrowImageView.mas_left).with.offset(-10);
+            make.centerY.mas_equalTo(self.mainView);
+        }];
+    }
+    return _textField;
+}
+- (BOOL)textField:(UITextField*)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString*)string {
+    NSString *blank = [[string componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] componentsJoinedByString:@""];
+    if(![string isEqualToString:blank]) {
+        return NO;
+    }
+    if(self.textFieldChange){
+        self.textFieldChange(textField.tag);
+    }
+    return YES;
 }
 
 - (UIImageView *)bottomLine{
@@ -110,4 +141,12 @@
     self.topLine.hidden = !showTopLine;
 }
 
+-(void)setShowTextField:(BOOL)showTextField{
+    if(showTextField){
+        //展示文本框 隐藏lab
+        self.rightTextLabel.hidden = YES;
+    }else{
+        self.textField.hidden = YES;
+    }
+}
 @end

@@ -23,13 +23,9 @@ static inline NSTimeInterval getDefaultTimeStamp(NSNumber *timeStamp) {
 
 @implementation DateManager
 
-
-
 - (NSInteger)currentWeek {
     return [[self.calender_CN components:NSCalendarUnitWeekday fromDate:self.currentDate] weekday];
 }
-
-
 
 - (NSDate *)dateByTodayAddingDays: (NSInteger)dDays
 {

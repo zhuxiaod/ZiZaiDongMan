@@ -205,6 +205,8 @@
         CGFloat y = (edge + h) * row;
         
         UIImageView * img =[[UIImageView alloc]init];
+        img.contentMode = UIViewContentModeScaleAspectFill;
+        img.layer.masksToBounds = YES;
         [img sd_setImageWithURL:[NSURL URLWithString:_imgArray[i]]];
 //        img.image = [UIImage imageNamed:_imgArray[i]];
         img.backgroundColor = [UIColor whiteColor];

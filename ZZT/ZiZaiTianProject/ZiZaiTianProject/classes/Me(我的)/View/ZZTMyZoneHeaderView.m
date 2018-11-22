@@ -34,10 +34,6 @@
     
     [self.backgroundBtn sd_setImageWithURL:[NSURL URLWithString:user.cover] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"轻触更换背景"]];
     
-    [self.backgroundBtn.imageView setContentMode:UIViewContentModeScaleAspectFill];
-    
-    self.backgroundBtn.imageView.clipsToBounds = YES;
-    
     [self.userHead setupUserHeadImg:user.headimg placeHeadImg:@"用户头像"];
  
     self.userName.text = user.nickName;
@@ -76,6 +72,10 @@
 
 -(void)updateBackground{
     UserInfo *user = [Utilities GetNSUserDefaults];
+    if([[UserInfoManager share] hasLogin] == NO){
+        [UserInfoManager needLogin];
+        return;
+    }
     if(_user.id == user.id){
         //弹出更换视图
         UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];

@@ -63,9 +63,19 @@
 
 @property (nonatomic,strong) SBPersonalSettingCell *cell;
 
+/** 选择性别提示 */
+@property (nonatomic, strong) UIActionSheet     *sexActionSheet;
+@property (nonatomic, strong) UITextField       *emailField;
+@property (nonatomic, strong) UITextView        *signTextView;
+@property (nonatomic, strong) UILabel           *placeText;
+
 @end
 
 @implementation ZZTMeEditViewController
+
+static NSString *personalCellOne = @"personalCellOne";
+static NSString *personalCellTwo = @"personalCellTwo";
+static NSString *personalCellThree = @"personalCellThree";
 
 -(NSMutableDictionary *)imgeDict{
     if(!_imgeDict){
@@ -74,36 +84,61 @@
     return _imgeDict;
 }
 
+-(NSArray *)sectionOne{
+    if(!_sectionOne){
+        _sectionOne = [NSArray array];
+    }
+    return _sectionOne;
+}
+
+-(NSArray *)sectionTwo{
+    if(!_sectionTwo){
+        _sectionTwo = [NSArray array];
+    }
+    return _sectionTwo;
+}
+
+-(NSArray *)sectionThree{
+    if(!_sectionThree){
+        _sectionThree = [NSArray array];
+    }
+    return _sectionThree;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.viewNavBar.centerButton setTitle:@"个人信息" forState:UIControlStateNormal];
     [self.viewNavBar.rightButton setTitle:@"上传" forState:UIControlStateNormal];
+    [self.viewNavBar.rightButton addTarget:self action:@selector(successUp) forControlEvents:UIControlEventTouchUpInside];
+
     //左边
     [self addBackBtn];
     
-    //设置mainView
-    [self setupMainView];
     
-    self.sectionOne = @[@"昵称",@"账号",@"空间二维码"];
+    self.sectionOne = @[@"昵称",@"账号"];
     
     self.sectionTwo = @[@"性别",@"年龄"];
     
     self.sectionThree = @[@"个性签名"];
+    
+    //设置mainView
+    [self setupMainView];
+
 
 
     
-//    [self setupTopView];
+    [self setupTopView];
 //
 //
 //    [self setupBottomView];
 //
-//    //初始化图像选择控制器
-//    _picker = [[UIImagePickerController alloc]init];
-//    _picker.allowsEditing = YES;  //重点是这两句
-//
-//    //遵守代理
-//    _picker.delegate =self;
-//
+    //初始化图像选择控制器
+    _picker = [[UIImagePickerController alloc]init];
+    _picker.allowsEditing = YES;  //重点是这两句
+    
+    //遵守代理
+    _picker.delegate =self;
+
 //    //注册观察键盘的变化
 //    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(transformView:) name:UIKeyboardWillChangeFrameNotification object:nil];
 //
@@ -151,20 +186,21 @@
 -(void)setupMainView{
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, navHeight , SCREEN_WIDTH, SCREEN_HEIGHT - navHeight) style:UITableViewStyleGrouped];
     _tableView.backgroundColor = [UIColor whiteColor];
-    _tableView.contentInset = UIEdgeInsetsMake(-20, 0, 0, 0);
-    _tableView.sectionHeaderHeight = 0;
-    _tableView.sectionFooterHeight = 0;
+    _tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+//    _tableView.sectionHeaderHeight = 0;
+//    _tableView.sectionFooterHeight = 0;
     _tableView.dataSource = self;
     _tableView.delegate = self;
     self.tableView.separatorStyle = UITableViewCellEditingStyleNone;
     //让tableview不显示分割线
     //隐藏滚动条
     _tableView.showsVerticalScrollIndicator = NO;
+    [self.view addSubview:_tableView];
     
-    //添加头视图
-    ZZTMePersonalView *personalView = [ZZTMePersonalView mePersonalView];
-    personalView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT * 0.36);
-    _tableView.tableHeaderView = personalView;
+    [_tableView registerClass:[SBPersonalSettingCell class] forCellReuseIdentifier:personalCellOne];
+    [_tableView registerClass:[SBPersonalSettingCell class] forCellReuseIdentifier:personalCellTwo];
+    [_tableView registerClass:[SBPersonalSettingCell class] forCellReuseIdentifier:personalCellThree];
+
 }
 
 #pragma mark - tableView
@@ -184,46 +220,111 @@
     }
 }
 
+
+
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    UserInfo *user = [Utilities GetNSUserDefaults];
     if(indexPath.section == 0){
-        NSString *personalCellOne = @"personalCellOne";
-        SBPersonalSettingCell *cell = [tableView dequeueReusableCellWithIdentifier:personalCellOne forIndexPath:indexPath];
+        SBPersonalSettingCell *cell = [tableView dequeueReusableCellWithIdentifier:personalCellOne];
         if (!cell) {
             cell = [[SBPersonalSettingCell alloc] initWithStyle:0 reuseIdentifier:personalCellOne];
         }
         cell.nameLabel.text = [self.sectionOne objectAtIndex:indexPath.row];
         if(indexPath.row == 0){
             //用户名
-        }else if (indexPath.row == 1){
-            //账号
+            cell.showTextField = YES;
+            cell.textField.text = user.nickName;
+            cell.textField.tag = 99;
+            cell.textFieldChange = ^(NSInteger tag) {
+                [self textFieldChange:tag];
+            };
+            cell.showBottomLine = YES;
         }else{
-            //二维码
+            //账号
+            cell.showTextField = NO;
+            cell.rightTextLabel.text = user.phone;
         }
         return cell;
     }else if (indexPath.section == 1){
-        NSString *personalCellTwo = @"personalCellTwo";
-        SBPersonalSettingCell *cell = [tableView dequeueReusableCellWithIdentifier:personalCellTwo forIndexPath:indexPath];
+        SBPersonalSettingCell *cell = [tableView dequeueReusableCellWithIdentifier:personalCellTwo];
         if (!cell) {
             cell = [[SBPersonalSettingCell alloc] initWithStyle:0 reuseIdentifier:personalCellTwo];
         }
         cell.nameLabel.text = [self.sectionTwo objectAtIndex:indexPath.row];
-        cell.rightTextLabel.text = @"请选择";
+        if(indexPath.row == 0){
+            if([user.sex isEqualToString:@"1"]){
+                cell.rightTextLabel.text = @"男";
+            }else{
+                cell.rightTextLabel.text = @"女";
+            }
+            cell.showBottomLine = YES;
+        }else{
+            cell.rightTextLabel.text = self.birthday;
+        }
         return cell;
     }else{
-        NSString *personalCellThree = @"personalCellThree";
-        SBPersonalSettingCell *cell = [tableView dequeueReusableCellWithIdentifier:personalCellThree forIndexPath:indexPath];
+        SBPersonalSettingCell *cell = [tableView dequeueReusableCellWithIdentifier:personalCellThree];
         if (!cell) {
             cell = [[SBPersonalSettingCell alloc] initWithStyle:0 reuseIdentifier:personalCellThree];
         }
-        cell.nameLabel.text = [self.sectionTwo objectAtIndex:indexPath.row];
-            //个性签名
+        cell.nameLabel.text = [self.sectionThree objectAtIndex:indexPath.row];
+        //个性签名
+        cell.showTextField = YES;
+        cell.textField.text = user.intro;
+        cell.textField.tag = 100;
+        cell.textFieldChange = ^(NSInteger tag) {
+            [self textFieldChange:tag];
+        };
         return cell;
     }
 }
 
+-(void)textFieldChange:(NSInteger)tag{
+    if(tag == 99){
+        //更新userName
+        UITextField *textView = (UITextField *)[self.view viewWithTag:tag];
+        self.userName = textView.text;
+        NSLog(@"textView:%@",textView.text);
+    }else{
+        UITextField *textView = (UITextField *)[self.view viewWithTag:tag];
+        //更新个人签名数据
+        self.signature = textView.text;
+    }
+}
 
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    if(indexPath.section == 1){
+        if(indexPath.row == 0){
+            //性别
+            NSLog(@"性别");
+            //选择性别
+            [self callSexActionSheet];
+        }else{
+            //年龄
+            NSLog(@"年龄");
+            [self setupBirthday];
+        }
+    }
+}
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 50;
+}
 
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    return Screen_Height * 0.36;
+}
+
+-(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+    UIView *footerView = [[UIView alloc] init];
+    footerView.backgroundColor = [UIColor colorWithRGB:@"231,231,231"];
+    return footerView;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+    return 4;
+}
 
 -(void)setupTopView{
     //添加topView
@@ -233,77 +334,64 @@
     topView.backImage = self.backImg;
     topView.headImage = self.headImg;
     
-    topView.frame = CGRectMake(0, 0, SCREEN_WIDTH, 300);
+   
     topView.buttonAction = ^(UIButton *sender) {
         [self clickBtn:sender];
     };
-    [_scrollView addSubview:topView];
+    _tableView.tableHeaderView = topView;
 }
 
--(void)setupBottomView{
-    //添加buttomView
-    __block ZZTMeEditViewController *blockSelf = self;
-    ZZTMeEditButtomView *meButtomView = [ZZTMeEditButtomView ZZTMeEditButtomView];
-    _meButtomView = meButtomView;
-    meButtomView.model = self.model;
-    _meButtomView.TextChange = ^(UITextField *texyField) {
-        [blockSelf textChange:texyField];
-    };
-    meButtomView.frame = CGRectMake(0, 300, SCREEN_WIDTH, 400);
-    
-    _meButtomView.BtnInside = ^(TypeButton *btn) {
-        [blockSelf clickPickBtn:btn];
-    };
-    [_scrollView addSubview:_meButtomView];
-}
+//-(void)setupBottomView{
+//    //添加buttomView
+//    __block ZZTMeEditViewController *blockSelf = self;
+//    ZZTMeEditButtomView *meButtomView = [ZZTMeEditButtomView ZZTMeEditButtomView];
+//    _meButtomView = meButtomView;
+//    meButtomView.model = self.model;
+//    _meButtomView.TextChange = ^(UITextField *texyField) {
+//        [blockSelf textChange:texyField];
+//    };
+//    meButtomView.frame = CGRectMake(0, 300, SCREEN_WIDTH, 400);
+//
+//    _meButtomView.BtnInside = ^(TypeButton *btn) {
+//        [blockSelf clickPickBtn:btn];
+//    };
+//    [_scrollView addSubview:_meButtomView];
+//}
 
 //保存
--(void)save{
+-(void)saveWithImgType:(NSString *)imgType{
+    //传字典 知道刚才点的是哪一张 知道是哪一张上传
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSArray *imgDict = [self.imgeDict allKeys];
-        for (int i = 0; i < imgDict.count; i++) {
-            //文件名
-            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-            formatter.dateFormat = [formatter stringFromDate:[NSDate date]];
-            NSString *imgName = [formatter stringFromDate:[NSDate date]];
-            NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            NSMutableString *randomString = [NSMutableString stringWithCapacity:32];
-            for (NSInteger i = 0; i < 32; i++) {
-                [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random_uniform((uint32_t)letters.length)]];
-            }
-            imgName = [NSString stringWithFormat:@"%@%@.png",imgName,randomString];
-            //写入本地
-            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-            NSString *filePath = [[paths objectAtIndex:0] stringByAppendingPathComponent:imgName];
-            
-            NSString *imgType = imgDict[i];
-            BOOL result = NO;
-            if([imgType isEqualToString:@"headImg"]){
-                result = [UIImagePNGRepresentation(self.headImage) writeToFile:filePath atomically:YES];
-            }else{
-                result = [UIImagePNGRepresentation(self.backImage) writeToFile:filePath atomically:YES];
-            }
-            
-            if (result == YES) {
-                NSLog(@"保存成功");
-                
-                AFNHttpTool *tool = [[AFNHttpTool alloc] init];
-                NSString *toke = [tool makeToken:ZZTAccessKey secretKey:ZZTSecretKey];
-                
-                [AFNHttpTool putImagePath:filePath key:imgName token:toke complete:^(id objc) {
-                    NSLog(@"%@",objc); //  上传成功并获取七牛云的图片地址
-                    //                self.headImg = objc;
-                    [self.imgeDict setObject:objc forKey:imgType];
-                    [self successUp];
-                }];
-                
-            }else{
-                NSLog(@"保存失败");
-            }
+        NSString *imageName = [NSString getCurrentTimes];
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+        NSString *filePath = [[paths objectAtIndex:0] stringByAppendingPathComponent:imageName];
+        //判断是上传什么的
+        BOOL result = NO;
+        if([imgType isEqualToString:@"headImg"]){
+            result = [UIImagePNGRepresentation(self.headImage) writeToFile:filePath atomically:YES];
+        }else{
+            result = [UIImagePNGRepresentation(self.backImage) writeToFile:filePath atomically:YES];
         }
-        if(imgDict.count == 0){
-            [self successUp];
+
+        if (result == YES) {
+            NSLog(@"保存成功");
+
+            AFNHttpTool *tool = [[AFNHttpTool alloc] init];
+            NSString *toke = [tool makeToken:ZZTAccessKey secretKey:ZZTSecretKey];
+
+            [AFNHttpTool putImagePath:filePath key:imageName token:toke complete:^(id objc) {
+//                NSLog(@"111%@",objc); //  上传成功并获取七牛云的图片地址
+                self.headImg = objc;
+                [self.imgeDict setObject:objc forKey:imgType];
+            }];
+
+        }else{
+            NSLog(@"保存失败");
         }
+//        }
+//        if(imgDict.count == 0){
+//            [self successUp];
+//        }
     });
 }
 
@@ -319,12 +407,22 @@
         }
     }
     
+
+    //判断有无前缀 有前缀的 把前缀取消
+    if([[self.headImg substringToIndex:4]isEqualToString:@"http"]){
+        self.headImg = [self.headImg substringFromIndex:25];
+    }
+    
+    if([[self.backImg substringToIndex:4]isEqualToString:@"http"]){
+        self.backImg = [self.backImg substringFromIndex:25];
+    }
+
     UserInfo *user = [Utilities GetNSUserDefaults];
     NSDictionary *dic = @{
                           @"userId":[NSString stringWithFormat:@"%ld",user.id],
                           @"nickName":self.userName,
                           @"intro":self.signature,//空
-                          @"sex":self.sex,
+                          @"sex":self.sex,//
                           @"birthday":self.birthday,//空
                           @"headimg":self.headImg,//空
                           @"cover":self.backImg
@@ -334,6 +432,7 @@
         //保存本地
         //请求一次 拿到数据
         [self loadUserData];
+        [self dismissViewControllerAnimated:YES completion:nil];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
@@ -356,7 +455,7 @@
         [self pickView2:btn];
         //生日
     }else if(btn.tag == 3){
-        [self pickView4:btn];
+//        [self pickView4:btn];
     }else if(btn.tag == 4){
         [self pickView2:btn];
     }
@@ -373,19 +472,26 @@
     }
 }
 
-#pragma mark - 相册代理
+#pragma mark - 相册回调
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
     NSLog(@"%@",info);
     UIButton *button = (UIButton *)[self.view viewWithTag:_btnTag];
+    //选取的图片
     UIImage *resultImage = [info objectForKey:@"UIImagePickerControllerEditedImage"];
-    //改变后的图片 记录 加了什么
+    //判断分类
+    NSString *imageType;
     if(_btnTag == 1){
         _backImage = resultImage;
         [self.imgeDict setObject:resultImage forKey:@"backImg"];
+        imageType = @"backImg";
     }else{
         _headImage = resultImage;
         [self.imgeDict setObject:resultImage forKey:@"headImg"];
+        imageType = @"headImg";
     }
+    //上传七牛云
+    [self saveWithImgType:imageType];
+    //展示
     [button setImage:[resultImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
     [button.imageView setContentMode:UIViewContentModeScaleAspectFill];
     button.imageView.clipsToBounds = YES;
@@ -403,79 +509,7 @@
     //设置相册呈现的样式
     _picker.sourceType =  UIImagePickerControllerSourceTypeSavedPhotosAlbum;
     //选择完成图片或者点击取消按钮都是通过代理来操作我们所需要的逻辑过程
-//    _picker.delegate = self;
     [self.navigationController presentViewController:_picker animated:YES completion:nil];
-    
-//    TZImagePickerController *imagePickerVc = [[TZImagePickerController alloc] initWithMaxImagesCount:1 columnNumber:4 delegate:self pushPhotoPickerVc:YES];
-//    // imagePickerVc.navigationBar.translucent = NO;
-//    
-//    imagePickerVc.naviBgColor = [UIColor grayColor];
-//    
-//#pragma mark - 五类个性化设置，这些参数都可以不传，此时会走默认设置
-//    imagePickerVc.isSelectOriginalPhoto = YES;
-//    
-//    
-//    imagePickerVc.allowTakePicture = YES; // 在内部显示拍照按钮
-//    
-//    [imagePickerVc setUiImagePickerControllerSettingBlock:^(UIImagePickerController *imagePickerController) {
-//        imagePickerController.videoQuality = UIImagePickerControllerQualityTypeHigh;
-//    }];
-//    
-//    //主题颜色
-//    imagePickerVc.iconThemeColor = [UIColor colorWithRed:31 / 255.0 green:185 / 255.0 blue:34 / 255.0 alpha:1.0];
-//    //显示照片不能选择图层
-//    imagePickerVc.showPhotoCannotSelectLayer = YES;
-//    //    无法选择图层颜色
-//    imagePickerVc.cannotSelectLayerColor = [[UIColor whiteColor] colorWithAlphaComponent:0.8];
-//    //设置照片选择器页面UI配置块
-//    [imagePickerVc setPhotoPickerPageUIConfigBlock:^(UICollectionView *collectionView, UIView *bottomToolBar, UIButton *previewButton, UIButton *originalPhotoButton, UILabel *originalPhotoLabel, UIButton *doneButton, UIImageView *numberImageView, UILabel *numberLabel, UIView *divideLine) {
-//        [doneButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-//    }];
-//    
-//    // 3. 设置是否可以选择视频/图片/原图
-//    imagePickerVc.allowPickingVideo = NO;
-//    imagePickerVc.allowPickingImage = YES;
-//    imagePickerVc.allowPickingOriginalPhoto = YES;
-//    imagePickerVc.allowPickingGif = NO;
-//    imagePickerVc.allowPickingMultipleVideo = NO; // 是否可以多选视频
-//    
-//    // 4. 照片排列按修改时间升序
-//    imagePickerVc.sortAscendingByModificationDate = YES;
-//    
-//    /// 5. 单选模式,maxImagesCount为1时才生效
-//    imagePickerVc.showSelectBtn = NO;
-//    imagePickerVc.allowCrop = NO;
-//    imagePickerVc.needCircleCrop = NO;
-//    // 设置竖屏下的裁剪尺寸
-//    NSInteger left = 30;
-//    NSInteger widthHeight = self.view.width - 2 * left;
-//    NSInteger top = (self.view.height - widthHeight) / 2;
-//    imagePickerVc.cropRect = CGRectMake(left, top, widthHeight, widthHeight);
-//    
-//    imagePickerVc.statusBarStyle = UIStatusBarStyleLightContent;
-//    
-//    // 设置是否显示图片序号
-//    imagePickerVc.showSelectedIndex = YES;
-//    
-//    // 你可以通过block或者代理，来得到用户选择的照片.
-//    [imagePickerVc setDidFinishPickingPhotosHandle:^(NSArray<UIImage *> *photos, NSArray *assets, BOOL isSelectOriginalPhoto) {
-//        
-//        UIButton *button = (UIButton *)[self.view viewWithTag:self.btnTag];
-//        UIImage *resultImage = [photos objectAtIndex:0];
-//        //改变后的图片 记录 加了什么
-//        if(self.btnTag == 1){
-//            self.backImage = resultImage;
-//            [self.imgeDict setObject:resultImage forKey:@"backImg"];
-//        }else{
-//            self.headImage = resultImage;
-//            [self.imgeDict setObject:resultImage forKey:@"headImg"];
-//        }
-//        button.imageView.image = resultImage;
-//        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
-//    }];
-//    
-//    [self presentViewController:imagePickerVc animated:YES completion:nil];
-
 }
 
 //调用相机
@@ -570,7 +604,7 @@
     }
 }
 
-- (void)pickView4:(UIButton *)tf
+- (void)setupBirthday
 {
     [BAKit_DatePicker ba_creatPickerViewWithType:BAKit_CustomDatePickerDateTypeYMD configuration:^(BAKit_DatePicker *tempView) {
         NSDate *maxdDate;
@@ -610,10 +644,9 @@
         // 可以自由定制 toolBar 和 pickView 的背景颜色
         tempView.ba_backgroundColor_toolBar = [UIColor colorWithHexString:@"#58006E"];
     } block:^(NSString *resultString) {
-        [tf setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [tf setTitle:[NSString stringWithFormat:@"%@",resultString] forState:UIControlStateNormal];
         self.birthday = resultString;
-        
+        [self.tableView reloadData];
+        self.birthday = resultString;
     }];
 }
 
@@ -647,7 +680,7 @@
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self save];
+//    [self save];
 }
 
 -(void)loadUserData{
@@ -669,5 +702,47 @@
         
     }];
 }
+#pragma mark - 选择性别
+- (void)callSexActionSheet{
+    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:@"亲~请选择你的性别" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"男" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self setupSexWithsex:1];
+    }];
+    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"女" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self setupSexWithsex:2];
+    }];
+    UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        NSLog(@"点击了取消");
+    }];
 
+    
+    //把action添加到actionSheet里
+    [actionSheet addAction:action1];
+    [actionSheet addAction:action2];
+    [actionSheet addAction:action3];
+    
+    //相当于之前的[actionSheet show];
+    [self presentViewController:actionSheet animated:YES completion:nil];
+}
+
+//选择性别
+- (void)setupSexWithsex:(NSInteger)sex{
+    NSString *sexStr;
+    if (sex == 1) {
+        sex = 1;
+        //男生
+        sexStr = @"1";
+    }else{
+        sex = 2;
+        //女生
+        sexStr = @"2";
+    }
+    self.sex = sexStr;
+
+    //更新用户资料
+    [UserInfoManager share].sex = sexStr;
+    [self.tableView reloadData];
+
+}
 @end

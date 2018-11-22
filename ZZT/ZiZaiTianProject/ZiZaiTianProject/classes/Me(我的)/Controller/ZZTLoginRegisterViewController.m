@@ -35,9 +35,7 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor whiteColor];
-
-
-
+    
     [self setupLogoView];
 
     //下面是键盘
@@ -106,7 +104,6 @@
     loginView.LogBtnClick = ^(UIButton *sender) {
         [self loginButtonClick:sender];
     };
-    
     
     UIView *mindView = [[UIView alloc] init];
     [self.view addSubview:mindView];
@@ -238,8 +235,6 @@
     //一定要调用super
     [super viewDidLayoutSubviews];
     
-//    ZXDLoginRegisterView *loginView = self.midView.subviews[0];
-//    loginView.frame = CGRectMake(0, 0, self.midView.bounds.size.width * 0.5, self.midView.bounds.size.height);
 }
 
 - (IBAction)dissMiss:(UIButton *)sender {

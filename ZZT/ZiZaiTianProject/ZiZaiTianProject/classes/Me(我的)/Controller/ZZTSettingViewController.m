@@ -112,26 +112,38 @@ NSString *ExitCell = @"ExitCell";
     _array1 = [NSMutableArray arrayWithObjects:[ZZTSettingModel initSettingModelWith:@"低流量模式" detail:@"非WIFI环境下加载低质量图片,可为您节省70%流量"],[ZZTSettingModel initSettingModelWith:@"回复推送" detail:@"开启后及时收到别人的评论"],[ZZTSettingModel initSettingModelWith:@"更新提示" detail:@"关注作品更新后会及时提醒"],
 //               [ZZTSettingModel initSettingModelWith:@"夜间模式" detail:@"开启后,夜间阅读不伤眼睛"],
                nil];
-    _array2 = [NSArray arrayWithObjects:@"赏个好评",@"意见反馈",@"推荐给好友", nil];
-    _array3 = [NSArray arrayWithObjects:@"缓存清理",@"帮助中心",@"关于我们",@"用户协议", nil];
+//    _array2 = [NSArray arrayWithObjects:@"赏个好评",@"意见反馈",@"推荐给好友", nil];
+    _array2 = [NSArray arrayWithObjects:@"推荐给好友", nil];
+    _array3 = [NSArray arrayWithObjects:@"缓存清理", nil];
+//    _array3 = [NSArray arrayWithObjects:@"缓存清理",@"帮助中心",@"关于我们",@"用户协议", nil];
+
 }
 
 #pragma mark - tableView
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 4;
+//    return 4;
+    return 3;
 }
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if(section == 0){
-        return self.array1.count;
-    }else if(section == 1){
-        return 1;
-    }else if(section == 2){
-        return self.array2.count;
-    }else{
-        return self.array3.count + 1;
-    }
+//    if(section == 0){
+//        return self.array1.count;
+//    }else if(section == 1){
+////        return 1;
+//        return self.array2.count;
+//    }else if(section == 2){
+//        return self.array3.count + 1;
+//    }else{
+//        return self.array3.count + 1;
+//    }
+       if(section == 0){
+            return self.array1.count;
+        }else if(section == 1){
+            return self.array2.count;
+        }else{
+            return self.array3.count + 1;
+        }
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -144,40 +156,62 @@ NSString *ExitCell = @"ExitCell";
         cell.settingModel = model;
         return cell;
     }else if (indexPath.section == 1){
-        
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ZZTcellq];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        if (indexPath.row == 0) {
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        }else{
-            cell.accessoryType = UITableViewCellAccessoryNone;
-        }
-        cell.textLabel.text = @"手机号码";
-        UILabel *label = [[UILabel alloc] init];
-        
-        NSString *numberString = [self.userData.phone stringByReplacingCharactersInRange:NSMakeRange(3, 4) withString:@"****"];
-        label.text = numberString;
-        
-        label.font = [UIFont boldSystemFontOfSize:14];
-        [label sizeToFit];
-        label.backgroundColor = [UIColor clearColor];
-        label.frame =CGRectMake(Screen_Width - label.frame.size.width - 50, 15, label.frame.size.width, label.frame.size.height);
-        [cell.contentView addSubview:label];
-        label.textColor = [UIColor grayColor];
-        return cell;
-    }else if(indexPath.section == 2){
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ZZTcellq];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        if (indexPath.row == 1) {
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        }else{
-            cell.accessoryType = UITableViewCellAccessoryNone;
-        }
         cell.textLabel.text = self.array2[indexPath.row];
         return cell;
+        
+        //手机
+//        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ZZTcellq];
+//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//        if (indexPath.row == 0) {
+//            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+//        }else{
+//            cell.accessoryType = UITableViewCellAccessoryNone;
+//        }
+//        cell.textLabel.text = @"手机号码";
+//        UILabel *label = [[UILabel alloc] init];
+//
+//        NSString *numberString = [self.userData.phone stringByReplacingCharactersInRange:NSMakeRange(3, 4) withString:@"****"];
+//        label.text = numberString;
+//
+//        label.font = [UIFont boldSystemFontOfSize:14];
+//        [label sizeToFit];
+//        label.backgroundColor = [UIColor clearColor];
+//        label.frame =CGRectMake(Screen_Width - label.frame.size.width - 50, 15, label.frame.size.width, label.frame.size.height);
+//        [cell.contentView addSubview:label];
+//        label.textColor = [UIColor grayColor];
+//        return cell;
+        
+        
+//    }else if(indexPath.section == 2){
+//        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ZZTcellq];
+//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+////        if (indexPath.row == 1) {
+////            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+////        }else{
+////            cell.accessoryType = UITableViewCellAccessoryNone;
+////        }
+//        cell.textLabel.text = self.array2[indexPath.row];
+//        return cell;
+
+
+        
+
     }else{
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ZZTcellq];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ZZTcellq];
+//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//        if (indexPath.row == 0) {
+//            ZZTNoTypeCell *cell = [tableView dequeueReusableCellWithIdentifier:NoTypeCell];
+//            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+//            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//            cell.cellLab.text = self.array3[indexPath.row];
+//            cell.cache.text = self.cacheSize;
+//            _cell = cell;
+//            return cell;
+//        }else {
+        
+        //缓存
         if (indexPath.row == 0) {
             ZZTNoTypeCell *cell = [tableView dequeueReusableCellWithIdentifier:NoTypeCell];
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -186,54 +220,82 @@ NSString *ExitCell = @"ExitCell";
             cell.cache.text = self.cacheSize;
             _cell = cell;
             return cell;
-        }else if (indexPath.row == 4) {
+        }else{
             ZZTExitCell *cell = [tableView dequeueReusableCellWithIdentifier:ExitCell];
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             return cell;
-        }else{
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            cell.textLabel.text = self.array3[indexPath.row];
         }
-        return cell;
+//        }
+//        else{
+//            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+//            cell.textLabel.text = self.array3[indexPath.row];
+//        }
+//        return cell;
     }
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+//    if(indexPath.section == 1){
+//        if(indexPath.row == 0){
+//            //如果有号码
+//            if(_userData.phone){
+//                //电话号码
+//                ZZTPhoneNumViewController *phoneNum = [[ZZTPhoneNumViewController alloc] init];
+//                [self.navigationController pushViewController:phoneNum animated:YES];
+//            }else{
+//                ZZTAssociatedPhoneViewController *phoneVC = [[ZZTAssociatedPhoneViewController alloc] init];
+//                phoneVC.viewTitle = @"绑定手机号";
+//                [self.navigationController pushViewController:phoneVC animated:YES];
+//            }
+//        }
+//    }
+//    else if(indexPath.section == 2){
+//        if(indexPath.row == 2){
+//            [self shareWithSharePanel];
+//        }
+//    }
+//    else if(indexPath.section == 3){
+//        if(indexPath.row == 0){
+//            weakself(self);
+//
+//            dissmissCallBack dissmiss = [ProgressHUD showProgressWithStatus:@"清理中" inView:self.view];
+//            [[SDImageCache sharedImageCache] clearDiskOnCompletion:^{
+//                dissmiss();
+//                [weakSelf reloadCacheSize];
+//                [ProgressHUD showSuccessWithStatus:@"清理完毕" inView:weakSelf.view];
+//            }];
+//        }else if (indexPath.row == 3){
+//            ZZTUserAgreementViewController *userAgreementVC = [[ZZTUserAgreementViewController alloc] init];
+//            userAgreementVC.hidesBottomBarWhenPushed = YES;
+//            [self.navigationController pushViewController:userAgreementVC animated:YES];
+//
+//        }else if(indexPath.row == 4){
+//            //退出账号
+//            [[UserInfoManager share] logoutUserInfo];
+//            //            UserInfo *user = [[UserInfo alloc] init];
+////            user.userId = @"";
+////            [Utilities SetNSUserDefaults:user];
+////            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+////            [defaults setObject:@"" forKey:@"userId"];
+////            [defaults synchronize];
+//            //退出页面
+//            [self.navigationController popViewControllerAnimated:YES];
+//        }
+//    }
+    
     if(indexPath.section == 1){
-        if(indexPath.row == 0){
-            //如果有号码
-            if(_userData.phone){
-                //电话号码
-                ZZTPhoneNumViewController *phoneNum = [[ZZTPhoneNumViewController alloc] init];
-                [self.navigationController pushViewController:phoneNum animated:YES];
-            }else{
-                ZZTAssociatedPhoneViewController *phoneVC = [[ZZTAssociatedPhoneViewController alloc] init];
-                phoneVC.viewTitle = @"绑定手机号";
-                [self.navigationController pushViewController:phoneVC animated:YES];
-            }
-        }
-    }
-    else if(indexPath.section == 2){
-        if(indexPath.row == 2){
-            [self shareWithSharePanel];
-        }
-    }
-    else if(indexPath.section == 3){
+         [self shareWithSharePanel];
+    }else if (indexPath.section == 2){
         if(indexPath.row == 0){
             weakself(self);
-            
+
             dissmissCallBack dissmiss = [ProgressHUD showProgressWithStatus:@"清理中" inView:self.view];
             [[SDImageCache sharedImageCache] clearDiskOnCompletion:^{
                 dissmiss();
                 [weakSelf reloadCacheSize];
                 [ProgressHUD showSuccessWithStatus:@"清理完毕" inView:weakSelf.view];
             }];
-        }else if (indexPath.row == 3){
-            ZZTUserAgreementViewController *userAgreementVC = [[ZZTUserAgreementViewController alloc] init];
-            userAgreementVC.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:userAgreementVC animated:YES];
-
-        }else if(indexPath.row == 4){
+        }else{
             //退出账号
             [[UserInfoManager share] logoutUserInfo];
             //            UserInfo *user = [[UserInfo alloc] init];

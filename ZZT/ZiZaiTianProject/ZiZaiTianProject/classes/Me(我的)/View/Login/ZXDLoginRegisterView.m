@@ -75,6 +75,8 @@
     
     self.phoneNumber1.delegate = self;
     self.phoneNumber1.keyboardType = UIKeyboardTypeNumberPad;
+    self.phoneNumber1.textColor = [UIColor blackColor];
+    
     _phoneNumber = _phoneNumber1;
     _verification = _verificationFild;
     
@@ -97,6 +99,18 @@
     _passwordView.layer.cornerRadius = 8;
     _passwordView.layer.borderColor = [UIColor colorWithRGB:@"223,223,223"].CGColor;
     _passwordView.layer.borderWidth = 1.0f;
+    
+    //键盘响应
+    [_phoneNumber1 addTarget:self action:@selector(textChange) forControlEvents:UIControlEventEditingChanged];
+    [_verificationFild addTarget:self action:@selector(textChange) forControlEvents:UIControlEventEditingChanged];
+}
+
+-(void)textChange{
+   
+    if(self.phoneNumber1.text.length && self.verificationFild.text.length){
+        self.loginRegisterButton.enabled = YES;
+        self.loginRegisterButton.alpha = 1;
+    }
 }
 
 -(void)codeBtnVerification{

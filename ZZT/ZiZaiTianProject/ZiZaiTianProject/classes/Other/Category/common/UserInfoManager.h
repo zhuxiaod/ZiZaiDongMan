@@ -23,6 +23,14 @@
 
 @property (nonatomic,copy)   NSString *nickname;        //昵称
 
+@property (nonatomic,copy)   NSString *phone;           //手机号
+
+@property (nonatomic,copy)   NSString *intro;           //简介
+
+@property (nonatomic,copy)   NSString *sex;              //性别
+
+@property (nonatomic,copy)   NSString *birthday;         //生日
+
 @property (nonatomic,strong) UserInfo *userData;
 
 - (void)saveUserInfoWithData:(UserInfo *)user;
