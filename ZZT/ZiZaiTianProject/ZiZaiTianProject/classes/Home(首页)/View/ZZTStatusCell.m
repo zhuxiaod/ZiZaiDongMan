@@ -49,7 +49,6 @@ static CGFloat iconSize = 40;
     //内容
     self.contentTextLabel.text = model.content;
     
-//    [self myHeight];
 }
 
 - (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier{

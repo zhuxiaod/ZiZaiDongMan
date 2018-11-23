@@ -273,6 +273,8 @@
         make.width.mas_equalTo(18);
     }];
     
+    self.replyCountView.imageView.contentMode = UIViewContentModeCenter;
+
     [self.replyCountView.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.replyCountView.imageView.mas_top);
         make.left.equalTo(self.replyCountView.imageView.mas_right).offset(4);
@@ -290,16 +292,18 @@
 //    self.likeCountView.likeCount = 10000;
 
     [self.likeCountView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.replyCountView);
+        make.right.equalTo(self.replyCountView.mas_left).offset(-8);
         make.width.mas_equalTo(replyWidth);
     }];
     
     [self.likeCountView.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.likeCountView.mas_top).offset(1);
+        make.top.equalTo(self.likeCountView.mas_top).offset(0);
         make.left.equalTo(self.likeCountView.mas_left).offset(2);
-        make.bottom.equalTo(self.likeCountView.mas_bottom).offset(-1);
+        make.bottom.equalTo(self.likeCountView.mas_bottom).offset(0);
         make.width.mas_equalTo(18);
     }];
-    
+    self.likeCountView.imageView.contentMode = UIViewContentModeCenter;
     [self.likeCountView.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.likeCountView.imageView.mas_top);
         make.left.equalTo(self.likeCountView.imageView.mas_right).offset(4);
@@ -442,7 +446,8 @@
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     NSDictionary *dict = @{
                            @"typeId":_model.id,
-                           @"userId":[UserInfoManager share].ID
+                           @"userId":[UserInfoManager share].ID,
+                           @"type":@"1"
                            };
     [manager POST:[ZZTAPI stringByAppendingString:@"great/praises"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         

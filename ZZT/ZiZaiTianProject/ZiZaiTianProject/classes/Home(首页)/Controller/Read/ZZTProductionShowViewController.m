@@ -47,7 +47,7 @@ NSString *SuggestionView1 = @"SuggestionView1";
     
     self.pageSize = 10;
     
-    self.pageNumber = 1;
+    self.pageNumber = 2;
     //数据源传进来
     UICollectionViewFlowLayout *layout = [self setupCollectionViewFlowLayout];
     

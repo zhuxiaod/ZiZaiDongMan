@@ -55,6 +55,9 @@
 //继续阅读
 @property (nonatomic,strong) ZZTChapterlistModel *lastReadData;
 
+//记录选择
+@property (nonatomic,strong) NSString *chooseNum;
+
 @end
 
 NSString *zztWordListCell = @"zztWordListCell";
@@ -141,14 +144,13 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 -(void)setupBottomView{
     UIView *bottom = [[UIView alloc] init];
     bottom.frame = CGRectMake(0, SCREEN_HEIGHT - 50, SCREEN_WIDTH, 50);
-    bottom.backgroundColor = [UIColor redColor];
+    bottom.backgroundColor = [UIColor clearColor];
     [self.view addSubview:bottom];
     
     //页码
-    UIButton *pageBtn = [[UIButton alloc] init];
+    UIButton *pageBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     pageBtn.frame = CGRectMake(0, 0, SCREEN_WIDTH/3*2, 50);
-    pageBtn.backgroundColor = [UIColor colorWithRGB:@"226,226,226"];
-//    pageBtn.alpha = 0.6;
+    [pageBtn setBackgroundImage:[UIImage createImageWithColor:[UIColor colorWithHexString:@"223,223,223" alpha:1]] forState:UIControlStateNormal];
     [pageBtn setTitle:@" " forState:UIControlStateNormal];
     _pageBtn = pageBtn;
     [pageBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -238,6 +240,8 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 
 //目录
 -(void)loadListData:(NSString *)ID pageNum:(NSString *)pageNum isFirst:(BOOL)isFirst{
+
+    self.chooseNum = pageNum;
     NSDictionary *paramDict = @{
                                 @"cartoonId":ID,
                                 @"type":self.cartoonDetail.type,//1.漫画 剧本
@@ -281,9 +285,10 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 
 -(void)setupTopView{
     
-    UITableView *contenView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 50) style:UITableViewStyleGrouped];
+    UITableView *contenView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height) style:UITableViewStyleGrouped];
     contenView.backgroundColor = [UIColor clearColor];
     contenView.contentInset = UIEdgeInsetsMake(-20,0,0,0);
+    contenView.showsVerticalScrollIndicator = NO;
     contenView.delegate = self;
     contenView.dataSource = self;
     contenView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -471,7 +476,6 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 }
 
 -(void)chapterChooseView:(ZZTChapterChooseView *)chapterChooseView didItemWithModel:(ZZTChapterChooseModel *)model{
-    
     dispatch_group_async(self.group, self.q, ^{
         dispatch_group_enter(self.group);
         if(self.isId == YES){
@@ -578,8 +582,16 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     
     dispatch_group_async(self.group, self.q, ^{
         dispatch_group_enter(self.group);
+        NSLog(@"sekf ppp :%@",self.chooseNum);
         if(self.isId == YES){
-            [self loadListData:self.cartoonDetail.id pageNum:@"1" isFirst:YES];
+            //如果有记录的值 那么请求记录哪一行
+            if(self.chooseNum){
+                [self loadListData:self.cartoonDetail.id pageNum:self.chooseNum isFirst:YES];
+
+            }else{
+                [self loadListData:self.cartoonDetail.id pageNum:@"1" isFirst:YES];
+
+            }
         }else{
             [self loadListData:self.cartoonDetail.cartoonId pageNum:@"1" isFirst:YES];
         }

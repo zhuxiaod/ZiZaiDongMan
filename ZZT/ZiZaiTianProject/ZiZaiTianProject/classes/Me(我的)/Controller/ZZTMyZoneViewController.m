@@ -219,23 +219,24 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/selUserRoom"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-        
-        NSInteger total = [[dic objectForKey:@"total"] integerValue];
-        self.total = total;
-        
-        NSArray *list = [dic objectForKey:@"list"];
-        NSMutableArray *array = [ZZTMyZoneModel mj_objectArrayWithKeyValuesArray:list];
-        
-        self.dataArray = array;
-        
-        [self.tabelView reloadData];
-        
-        if(self.dataArray.count >= total){
-            [self.tabelView.mj_footer endRefreshingWithNoMoreData];
-//            [self.tabelView.mj_header endRefreshing];
-        }else{
-            [self.tabelView.mj_header endRefreshing];
+        if(dic.count != 6){
+            NSInteger total = [[dic objectForKey:@"total"] integerValue];
+            self.total = total;
+            
+            NSArray *list = [dic objectForKey:@"list"];
+            NSMutableArray *array = [ZZTMyZoneModel mj_objectArrayWithKeyValuesArray:list];
+            
+            self.dataArray = array;
+            
+            [self.tabelView reloadData];
+            
+            if(self.dataArray.count >= total){
+                [self.tabelView.mj_footer endRefreshingWithNoMoreData];
+            }else{
+                [self.tabelView.mj_header endRefreshing];
+            }
         }
+        [self.tabelView.mj_header endRefreshing];
         //page+size
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [self.tabelView.mj_header endRefreshing];
@@ -262,6 +263,9 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     ZZTMyZoneCell * cell = [tableView dequeueReusableCellWithIdentifier:myZoneCell forIndexPath:indexPath];
+    cell.update = ^{
+        [self loadData];
+    };
     cell.model = _dataArray[indexPath.row];
     return cell;
 

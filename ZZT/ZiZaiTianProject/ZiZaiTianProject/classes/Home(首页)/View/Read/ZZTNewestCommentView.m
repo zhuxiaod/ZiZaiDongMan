@@ -138,7 +138,7 @@ static NSString *const airView = @"airView";
     
     NSDictionary *dict = @{
                            @"itemId":_chapterId,
-                               @"type":@"1",
+                               @"type":@"2",
                                @"userId":[UserInfoManager share].ID,
                                 @"pageNum":@"1",
                                @"pageSize":[NSString stringWithFormat:@"%ld",self.size_num],
@@ -146,30 +146,32 @@ static NSString *const airView = @"airView";
     [session POST:[ZZTAPI stringByAppendingString:@"circle/comment"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [self.mj_header endRefreshing];
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-        NSDictionary *list = dic[@"list"];
-        NSString *totaldic = [dic objectForKey:@"total"];
-        NSMutableArray *array1 = [ZZTCircleModel mj_objectArrayWithKeyValuesArray:list];
-        if(array1.count == 0){
-            //没有数据的时候
-            ZZTCircleModel *airModel = [[ZZTCircleModel alloc] init];
-            NSMutableArray *airArray = [NSMutableArray arrayWithObject:airModel];
-            self.commentArray = airArray;
-            self.isHaveComment = NO;
-        }else{
-            //外面的数据
-            FriendCircleViewModel *circleViewModel = [[FriendCircleViewModel alloc] init];
-            circleViewModel.circleModelArray = array1;
-            [circleViewModel loadDatas];
-            self.commentArray = [circleViewModel addOpenDataWith:self.openArray];
-            ZZTCircleModel *model = self.commentArray[0];
-            model.isOpenComment = YES;
-            self.isHaveComment = YES;
-        }
-        if(self.commentArray.count >= [totaldic integerValue]){
-            self.mj_footer.hidden = YES;
-        }else{
-            self.mj_footer.hidden = NO;
-        }
+      
+            NSDictionary *list = dic[@"list"];
+            NSString *totaldic = [dic objectForKey:@"total"];
+            NSMutableArray *array1 = [ZZTCircleModel mj_objectArrayWithKeyValuesArray:list];
+            if(array1.count == 0){
+                //没有数据的时候
+                ZZTCircleModel *airModel = [[ZZTCircleModel alloc] init];
+                NSMutableArray *airArray = [NSMutableArray arrayWithObject:airModel];
+                self.commentArray = airArray;
+                self.isHaveComment = NO;
+            }else{
+                //外面的数据
+                FriendCircleViewModel *circleViewModel = [[FriendCircleViewModel alloc] init];
+                circleViewModel.circleModelArray = array1;
+                [circleViewModel loadDatas];
+                self.commentArray = [circleViewModel addOpenDataWith:self.openArray];
+                ZZTCircleModel *model = self.commentArray[0];
+                model.isOpenComment = YES;
+                self.isHaveComment = YES;
+            }
+            if(self.commentArray.count >= [totaldic integerValue]){
+                self.mj_footer.hidden = YES;
+            }else{
+                self.mj_footer.hidden = NO;
+            }
+        
         [self reloadData];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [self.mj_header endRefreshing];
@@ -181,7 +183,7 @@ static NSString *const airView = @"airView";
     
     NSDictionary *dict = @{
                            @"itemId":_chapterId,
-                           @"type":@"1",
+                           @"type":@"2",
                            @"userId":[UserInfoManager share].ID,
                            @"pageNum":[NSString stringWithFormat:@"%ld",_page_num],
                            @"pageSize":@"10",
@@ -189,41 +191,43 @@ static NSString *const airView = @"airView";
     [session POST:[ZZTAPI stringByAppendingString:@"circle/comment"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [self.mj_header endRefreshing];
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-        NSDictionary *list = dic[@"list"];
-        NSString *total = [dic objectForKey:@"total"];
-        NSMutableArray *array1 = [ZZTCircleModel mj_objectArrayWithKeyValuesArray:list];
-        if(array1.count == 0){
-            //没有数据的时候
-            ZZTCircleModel *airModel = [[ZZTCircleModel alloc] init];
-            NSMutableArray *airArray = [NSMutableArray arrayWithObject:airModel];
-            self.commentArray = airArray;
-            self.isHaveComment = NO;
-        }else{
-            //外面的数据
-            FriendCircleViewModel *circleViewModel = [[FriendCircleViewModel alloc] init];
-            circleViewModel.circleModelArray = array1;
-            [circleViewModel loadDatas];
-            ZZTCircleModel *model = self.commentArray[0];
-            model.isOpenComment = YES;
-            self.isHaveComment = YES;
-            [self.commentArray addObjectsFromArray:[circleViewModel addOpenDataWith:self.openArray]];
-            if (self.commentArray.count >= [total integerValue]) {
-                //停止刷新
-                [self.mj_footer endRefreshingWithNoMoreData];
-                //                [self.mj_footer setHidden:YES];
+        if(dic.count != 0){
+            NSDictionary *list = dic[@"list"];
+            NSString *total = [dic objectForKey:@"total"];
+            NSMutableArray *array1 = [ZZTCircleModel mj_objectArrayWithKeyValuesArray:list];
+            if(array1.count == 0){
+                //没有数据的时候
+                ZZTCircleModel *airModel = [[ZZTCircleModel alloc] init];
+                NSMutableArray *airArray = [NSMutableArray arrayWithObject:airModel];
+                self.commentArray = airArray;
+                self.isHaveComment = NO;
             }else{
-                self.page_num++;
-                [self.mj_footer endRefreshing];
+                //外面的数据
+                FriendCircleViewModel *circleViewModel = [[FriendCircleViewModel alloc] init];
+                circleViewModel.circleModelArray = array1;
+                [circleViewModel loadDatas];
+                ZZTCircleModel *model = self.commentArray[0];
+                model.isOpenComment = YES;
+                self.isHaveComment = YES;
+                [self.commentArray addObjectsFromArray:[circleViewModel addOpenDataWith:self.openArray]];
+                if (self.commentArray.count >= [total integerValue]) {
+                    //停止刷新
+                    [self.mj_footer endRefreshingWithNoMoreData];
+                    //                [self.mj_footer setHidden:YES];
+                }else{
+                    self.page_num++;
+                    [self.mj_footer endRefreshing];
+                }
+                self.size_num += 10;
+                self.isHaveComment = YES;
             }
-            self.size_num += 10;
-            self.isHaveComment = YES;
         }
-
         [self reloadData];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [self.mj_header endRefreshing];
     }];
 }
+
 //请求数据
 - (void)update{
     UserInfo *user = [Utilities GetNSUserDefaults];
@@ -438,6 +442,16 @@ static NSString *const airView = @"airView";
             footerView = [[ZZTStatusFooterView alloc] initWithReuseIdentifier:statusFooterView];
         }
         footerView.delegate = self;
+        footerView.isFind = self.isFind;
+        footerView.bookId = self.chapterId;
+        footerView.update = ^{
+          //更新数据
+            if(self.isFind == YES){
+                [self loadNewFindData];
+                return;
+            }
+            [self update];
+        };
         ZZTCircleModel *model = self.commentArray[section];
         footerView.model = model;
         return footerView;

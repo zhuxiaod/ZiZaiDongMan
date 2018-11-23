@@ -198,7 +198,7 @@ NSString *SuggestionView2 = @"SuggestionView2";
             [btn setImage:[UIImage imageNamed:@"排行榜-当前榜单"] forState:UIControlStateNormal];
             self.btnType = btn.rankType;
             
-            [self loadData];
+            [self loadTypeData];
             
         }else{
             [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -206,6 +206,40 @@ NSString *SuggestionView2 = @"SuggestionView2";
         }
     }
 }
+
+//点击type获取数据
+-(void)loadTypeData{
+    [self.collectionView.mj_footer resetNoMoreData];
+    self.pageNumber = 2;
+    NSDictionary *dic = @{
+                          @"bookType":self.btnType,
+                          //众创
+                          @"cartoonType":@"1",
+                          @"pageNum":@"1",
+                          @"pageSize":@"10"
+                          };
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonlist"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
+        
+        self.dataArray = array;
+        
+        NSInteger total = [[NSString stringWithFormat:@"%@",[dic objectForKey:@"total"]] integerValue];
+
+        if(self.dataArray.count >= total){
+            [self.collectionView.mj_footer endRefreshingWithNoMoreData];
+        }else{
+            [self.collectionView.mj_footer endRefreshing];
+        }
+        [self.collectionView reloadData];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [self.collectionView.mj_footer endRefreshing];
+        
+    }];
+}
+
 //加载更多
 -(void)loadData{
     NSDictionary *dic = @{
@@ -220,20 +254,23 @@ NSString *SuggestionView2 = @"SuggestionView2";
         
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         
-        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
+        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
 
-//        NSInteger total = [[dic objectForKey:@"total"] integerValue];
-     
-        
         [self.dataArray addObjectsFromArray:array];
         
-        [self.collectionView reloadData];
+        NSInteger total = [[NSString stringWithFormat:@"%@",[dic objectForKey:@"total"]] integerValue];
         
-//        if(self.dataArray.count >= total){
-//            [self.collectionView.mj_footer endRefreshingWithNoMoreData];
-//        }else{
+        if(self.dataArray.count >= total){
+            
+            [self.collectionView.mj_footer endRefreshingWithNoMoreData];
+            
+        }else{
+            
             [self.collectionView.mj_footer endRefreshing];
-//        }
+            
+        }
+        
+        [self.collectionView reloadData];
         
         self.pageNumber++;
         
@@ -258,19 +295,13 @@ NSString *SuggestionView2 = @"SuggestionView2";
         
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
         
-        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
-        
+        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
         
         self.dataArray = array;
         
-        [self.collectionView reloadData];
-        
-        self.pageNumber++;
-        
-        self.pageSize += 10;
-        
         [self.collectionView.mj_header endRefreshing];
 
+        [self.collectionView reloadData];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [self.collectionView.mj_header endRefreshing];
         

@@ -23,4 +23,10 @@
 
 @property (nonatomic,strong) ZZTCircleModel *model;
 
+@property (nonatomic,strong) NSString *bookId;
+
+@property (nonatomic,assign) BOOL isFind;
+
+@property (nonatomic,copy) void (^update)(void);
+
 @end

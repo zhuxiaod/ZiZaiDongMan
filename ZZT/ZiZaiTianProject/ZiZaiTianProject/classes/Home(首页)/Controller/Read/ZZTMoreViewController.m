@@ -39,7 +39,7 @@ NSString *WordCell = @"WordCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.pageNumber = 0;
+    self.pageNumber = 2;
     
     self.pageSize = 10;
     
@@ -52,12 +52,13 @@ NSString *WordCell = @"WordCell";
     //创建UICollectionView：黑色
     [self setupCollectionView:layout];
 
-    [self loadMoreData];
+//    [self loadMoreData];
     
     [self.view bringSubviewToFront:self.viewNavBar];
 
     [self setupMJRefresh];
 
+    [self.collectionView.mj_header beginRefreshing];
 
 //    [self setBackItemWithImage:@"blackBack" pressImage:nil];
 }

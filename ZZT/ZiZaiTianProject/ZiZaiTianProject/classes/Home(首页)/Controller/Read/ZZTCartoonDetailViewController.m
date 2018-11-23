@@ -87,7 +87,6 @@
 @property (nonatomic,strong) UIButton *publishBtn;
 
 @property (nonatomic,strong) ZZTStatusCell *statusCell;
-
 //判断恢复状态
 @property (nonatomic,assign) BOOL isReply;
 //回复者ID(节上的)
@@ -108,7 +107,6 @@
 @property (nonatomic,strong) ZZTLikeCollectShareHeaderView *likeCollectView;
 //电池条
 @property (nonatomic,strong) UIView *statusBar;
-
 //图片地址数组
 @property (nonatomic,strong) NSMutableArray *imageUrlArray;
 //TXTURL
@@ -125,7 +123,6 @@
 @property (nonatomic,assign) NSInteger updataCommentPage;
 //判断有没有评论
 @property (nonatomic,assign) BOOL isHasComment;
-
 //当前回复
 @property (nonatomic,strong) ZZTCircleModel *nowReplyModel;
 //判断是评论还是回复
@@ -683,7 +680,7 @@ static bool needHide = false;
         }else{
             
             NSDictionary *paramDict = @{
-                                        @"userId":@"13",
+                                        @"userId":[UserInfoManager share].ID,
                                         @"id":[NSString stringWithFormat:@"%ld",_dataModel.id],
                                         @"pageNum":@"0",
                                         @"pageSize":@"200"
@@ -761,7 +758,7 @@ static bool needHide = false;
     UserInfo *user = [Utilities GetNSUserDefaults];
     AFHTTPSessionManager *session = [[AFHTTPSessionManager alloc] init];
     NSDictionary *likeDict = @{
-                               @"chapterId":self.dataModel.chapterId,
+                               @"chapterId":[NSString stringWithFormat:@"%ld",self.dataModel.id],
                                @"userId":[NSString stringWithFormat:@"%ld",user.id]
                                };
     [session POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterPraise"] parameters:likeDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -1071,7 +1068,16 @@ static bool needHide = false;
             if(!footerView){
                 footerView = [[ZZTStatusFooterView alloc] initWithReuseIdentifier:statusFooterView];
             }
+//            footerView.isFind = NO;
             footerView.delegate = self;
+            footerView.update = ^{
+                //更新评论数据
+                dispatch_group_async(self.group, self.q, ^{
+                    dispatch_group_enter(self.group);
+                    [self loadCommentData];
+                });
+            };
+            footerView.bookId = self.cartoonModel.id;
             ZZTCircleModel *model = self.commentArray[section - 3];
             footerView.model = model;
             return footerView;
@@ -1173,6 +1179,7 @@ static bool needHide = false;
     NSDictionary *dic = @{
                           @"type":self.cartoonModel.type,
                               @"typeId":[NSString stringWithFormat:@"%ld",self.dataModel.id],
+//                              @"typeId":self.cartoonModel.id,
                               @"userId":[NSString stringWithFormat:@"%ld",user.id],
                               @"cartoonId":self.cartoonModel.id
                           };

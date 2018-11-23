@@ -35,15 +35,6 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aZm-48-bgD">
-                        <rect key="frame" x="262" y="15" width="50" height="50"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="50" id="iPQ-LV-W6W"/>
-                            <constraint firstAttribute="height" constant="50" id="zJn-0I-DG0"/>
-                        </constraints>
-                        <state key="normal" image="search_collect_normal"/>
-                        <state key="selected" image="search_collect_select"/>
-                    </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qce-XR-amJ">
                         <rect key="frame" x="96" y="47" width="37.5" height="24"/>
                         <constraints>
@@ -53,7 +44,7 @@
                         <color key="textColor" red="0.69803921568627447" green="0.69803921568627447" blue="0.69803921568627447" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="10000" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kxs-eV-Ahz">
+                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="10000" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kxs-eV-Ahz">
                         <rect key="frame" x="268" y="161" width="44" height="24"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="24" id="02b-q1-sMs"/>
@@ -63,10 +54,10 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="search_comment" translatesAutoresizingMaskIntoConstraints="NO" id="KXf-N0-nmQ">
+                    <imageView hidden="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="search_comment" translatesAutoresizingMaskIntoConstraints="NO" id="KXf-N0-nmQ">
                         <rect key="frame" x="248" y="165.5" width="16" height="15"/>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="10000" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CHD-EP-lql">
+                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="10000" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CHD-EP-lql">
                         <rect key="frame" x="196" y="164" width="44" height="18"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="44" id="ehw-WJ-vZv"/>
@@ -75,9 +66,18 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="catoonDetail_like" translatesAutoresizingMaskIntoConstraints="NO" id="BHS-An-cHz">
+                    <imageView hidden="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="catoonDetail_like" translatesAutoresizingMaskIntoConstraints="NO" id="BHS-An-cHz">
                         <rect key="frame" x="175" y="165" width="17" height="15"/>
                     </imageView>
+                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aZm-48-bgD">
+                        <rect key="frame" x="262" y="15" width="50" height="50"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="50" id="iPQ-LV-W6W"/>
+                            <constraint firstAttribute="height" constant="50" id="zJn-0I-DG0"/>
+                        </constraints>
+                        <state key="normal" image="search_collect_normal"/>
+                        <state key="selected" image="search_collect_select"/>
+                    </button>
                 </subviews>
                 <constraints>
                     <constraint firstItem="kxs-eV-Ahz" firstAttribute="leading" secondItem="KXf-N0-nmQ" secondAttribute="trailing" constant="4" id="9zQ-Th-LE0"/>

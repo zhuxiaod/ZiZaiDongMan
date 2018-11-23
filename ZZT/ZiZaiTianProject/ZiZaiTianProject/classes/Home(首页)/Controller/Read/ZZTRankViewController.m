@@ -49,24 +49,30 @@ NSString *zztRankCell = @"zztRankCell";
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor colorWithHexString:@"#F0F1F2"];
     //4个btn
-    [self setupTopView];
+//    [self setupTopView];
+    
+    
+    self.pageSize = 10;
+    
     //默认男生
-    [self manTarget:self.array[0]];
+//    [self manTarget:self.array[0]];
     
     //下view
     [self setupTableView];
     
     [self.viewNavBar.centerButton setTitle:@"排行榜" forState:UIControlStateNormal];
     
+    self.viewNavBar.backgroundColor = [UIColor whiteColor];
+    
     [self addBackBtn];
-    
-    self.pageNumber = 1;
-    
-    self.pageSize = 10;
+
     
     [self setupMJRefresh];
 
     [self.tableView.mj_header beginRefreshing];
+    
+    self.pageNumber = 2;
+
 }
 
 -(void)setupMJRefresh{
@@ -97,11 +103,7 @@ NSString *zztRankCell = @"zztRankCell";
         self.dataArray = array;
         
         [self.tableView reloadData];
-        
-        //page+size
-        self.pageNumber++;
-        
-        self.pageSize += 10;
+
         [self.tableView.mj_header endRefreshing];
 
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -116,7 +118,7 @@ NSString *zztRankCell = @"zztRankCell";
     NSDictionary *dic = @{
                           //众创
                           @"pageNum":[NSString stringWithFormat:@"%ld",self.pageNumber],
-                          @"pageSize":[NSString stringWithFormat:@"%ld",self.pageSize]
+                          @"pageSize":@"10"
                           };
     
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
@@ -222,7 +224,7 @@ NSString *zztRankCell = @"zztRankCell";
 }
 
 -(void)setupTableView{
-    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.topView.frame) + 8, SCREEN_WIDTH, SCREEN_HEIGHT - self.topView.height + 10 - navHeight) style:UITableViewStyleGrouped];
+    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, navHeight, SCREEN_WIDTH, SCREEN_HEIGHT - self.topView.height + 10 - navHeight) style:UITableViewStyleGrouped];
     tableView.backgroundColor = [UIColor whiteColor];
     tableView.delegate = self;
     tableView.dataSource = self;

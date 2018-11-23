@@ -52,8 +52,8 @@
     _likeBtn = likeBtn;
     likeBtn.titleLabel.font = [UIFont systemFontOfSize:12];
     likeBtn.enabled = NO;
-    [likeBtn setImage:[UIImage imageNamed:@"catoonDetail_like_select"] forState:UIControlStateNormal];
-    [likeBtn setImage:[UIImage imageNamed:@"catoonDetail_like_select"] forState:UIControlStateSelected];
+    [likeBtn setImage:[UIImage imageNamed:@"catoonDetail_like_select11"] forState:UIControlStateNormal];
+    [likeBtn setImage:[UIImage imageNamed:@"catoonDetail_like_select11"] forState:UIControlStateSelected];
     [likeBtn addTarget:self action:@selector(likeTarget:) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:likeBtn];
     

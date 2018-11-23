@@ -55,7 +55,7 @@
     [self.suggestionName setText:model.bookName];
     
     //作者
-    
+    [self.suggestionAuthor setText:model.author];
     //收藏
     
     //like

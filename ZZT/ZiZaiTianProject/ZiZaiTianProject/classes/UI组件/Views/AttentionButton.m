@@ -11,8 +11,8 @@
 //关注接口
 static NSString * const likeUrl = @"http://api.kuaikanmanhua.com/v1/comics";
 
-static NSString * const normalImageName = @"加关注";
-static NSString * const pressedImageName = @"已关注";
+static NSString *normalImageName = @"加关注";
+static NSString *pressedImageName = @"已关注";
 
 @implementation AttentionButton
 

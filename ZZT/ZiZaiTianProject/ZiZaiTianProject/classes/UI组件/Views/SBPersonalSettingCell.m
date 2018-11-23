@@ -99,6 +99,11 @@
     return YES;
 }
 
+-(void)textFieldDidEndEditing:(UITextField *)textField{
+    if(self.textFieldChange){
+        self.textFieldChange(textField.tag);
+    }
+}
 - (UIImageView *)bottomLine{
     if (!_bottomLine) {
         _bottomLine = [UIImageView new];

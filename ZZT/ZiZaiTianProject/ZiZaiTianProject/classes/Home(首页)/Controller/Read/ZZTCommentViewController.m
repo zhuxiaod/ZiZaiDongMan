@@ -102,15 +102,18 @@
     self.nowTableView = newestVC;
     _newestVC = newestVC;
     
-    ZZTNewestCommentView *hotestVC = [[ZZTNewestCommentView alloc] initWithFrame:CGRectMake(mainView.width, 0, mainView.width, mainView.height - 50)];
-    newestVC.isFind = yesOrNo;
-    hotestVC.chapterId = self.chapterId;
-    hotestVC.dataNum = 2;
-    _hotestVC = hotestVC;
-    hotestVC.backgroundColor = [UIColor whiteColor];
+    if(_isFind != YES){
+        ZZTNewestCommentView *hotestVC = [[ZZTNewestCommentView alloc] initWithFrame:CGRectMake(mainView.width, 0, mainView.width, mainView.height - 50)];
+        newestVC.isFind = yesOrNo;
+        hotestVC.chapterId = self.chapterId;
+        hotestVC.dataNum = 2;
+        _hotestVC = hotestVC;
+        hotestVC.backgroundColor = [UIColor whiteColor];
+        [mainView addSubview:hotestVC];
+    }
+
 
     [mainView addSubview:newestVC];
-    [mainView addSubview:hotestVC];
     [self.view addSubview:mainView];
 }
 

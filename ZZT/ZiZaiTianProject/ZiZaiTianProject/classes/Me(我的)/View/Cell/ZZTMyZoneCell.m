@@ -87,13 +87,15 @@
     
     [self.replyCountView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.contentLab.mas_right);
+        make.width.mas_equalTo(70);
 //        make.top.equalTo(self.bgImgsView.mas_bottom).offset(8);
         make.height.mas_equalTo(20);
     }];
     
     [self.likeCountView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(self.replyCountView).offset(-2);
+        make.centerY.equalTo(self.replyCountView);
         make.right.equalTo(self.replyCountView.mas_left).offset(-8);
+        make.width.mas_equalTo(70);
         make.height.mas_equalTo(20);
     }];
 
@@ -170,7 +172,7 @@
     //设置宽度
     [self.replyCountView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.bgImgsView.mas_bottom).offset(8);
-        make.width.equalTo(@(replyWidth));
+//        make.width.equalTo(@(replyWidth));
     }];
     
     //设置赞
@@ -208,7 +210,6 @@
         img.contentMode = UIViewContentModeScaleAspectFill;
         img.layer.masksToBounds = YES;
         [img sd_setImageWithURL:[NSURL URLWithString:_imgArray[i]]];
-//        img.image = [UIImage imageNamed:_imgArray[i]];
         img.backgroundColor = [UIColor whiteColor];
         img.frame = CGRectMake(x, y, w, h);
         img.userInteractionEnabled = YES;
@@ -248,7 +249,7 @@
         weakself(self);
         //发现点赞
         [lcv setOnClick:^(likeCountView *btn) {
-            
+            [self findLikeTarget];
         }];
         
         [self.contentView addSubview:lcv];
@@ -256,6 +257,24 @@
         _likeCountView = lcv;
     }
     return _likeCountView;
+}
+
+//发现点赞
+-(void)findLikeTarget{
+    UserInfo *user = [Utilities GetNSUserDefaults];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    NSDictionary *dic = @{
+                          @"type":@"1",//外面1 里面2
+                          @"typeId":_model.id,
+                          @"userId":[NSString stringWithFormat:@"%ld",user.id],
+                          };
+    [manager POST:[ZZTAPI stringByAppendingString:@"great/praises"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if(self.update){
+            self.update();
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
 }
 
 //评论
@@ -266,15 +285,30 @@
         
         btn.titleLabel.font = [UIFont systemFontOfSize:12];
         
-        //        [btn setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
+        [btn setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
+        [btn setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
+        [btn setContentVerticalAlignment:UIControlContentVerticalAlignmentBottom];
         //        [btn setTitleColor:[self.likeCountView titleColorForState:UIControlStateNormal] forState:UIControlStateNormal];
         [btn setImage:[UIImage imageNamed:@"评论"] forState:UIControlStateNormal];
-        //        [btn addTarget:self action:@selector(showCommentVc) forControlEvents:UIControlEventTouchUpInside];
+        [btn addTarget:self action:@selector(gotoCommentView) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:btn];
         
         _replyCountView = btn;
     }
     
     return _replyCountView;
+}
+
+-(void)gotoCommentView{
+    if([[UserInfoManager share] hasLogin] == NO){
+        [UserInfoManager needLogin];
+        return;
+    }
+    ZZTCommentViewController *commentView = [[ZZTCommentViewController alloc] init];
+    commentView.isFind = YES;
+    commentView.chapterId = _model.id;
+    commentView.cartoonType = @"3";
+    [[self myViewController].navigationController presentViewController:commentView animated:YES completion:nil];
+    [commentView hiddenTitleView];
 }
 @end

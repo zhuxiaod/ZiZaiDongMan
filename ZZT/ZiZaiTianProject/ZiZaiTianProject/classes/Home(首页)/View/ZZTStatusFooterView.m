@@ -53,6 +53,7 @@
     [self.likeCountView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.timeLabel);
         make.right.equalTo(self.replyCountView.mas_left).offset(-8);
+        make.width.mas_equalTo(70);
     }];
 }
 
@@ -61,10 +62,11 @@
     self.timeLabel.text = model.commentDate;
 
     //点赞的数量
+    self.likeCountView.islike = [model.ifPraise integerValue];
+
     self.likeCountView.likeCount = model.praiseNum;
     self.likeCountView.requestID = @"20";
     //是否点赞
-    self.likeCountView.islike = [model.ifPraise integerValue];
     
     //回复评论数量
     NSString *replayCountText = [NSString makeTextWithCount:model.replyComment.count];
@@ -102,7 +104,11 @@
         weakself(self);
         
         [lcv setOnClick:^(likeCountView *btn) {
-//            weakSelf.model.is_liked = !weakSelf.model.is_liked;
+            if(self.isFind == YES){
+                [weakSelf findLikeTarget];
+            }else{
+                [weakSelf likeTarget];
+            }
         }];
         
         [self.contentView addSubview:lcv];
@@ -110,6 +116,44 @@
         _likeCountView = lcv;
     }
     return _likeCountView;
+}
+
+//发现点赞
+-(void)findLikeTarget{
+    UserInfo *user = [Utilities GetNSUserDefaults];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    NSDictionary *dic = @{
+                          @"type":@"2",
+                          @"typeId":_model.id,
+                          @"userId":[NSString stringWithFormat:@"%ld",user.id],
+                          };
+    [manager POST:[ZZTAPI stringByAppendingString:@"great/praises"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if(self.update){
+            self.update();
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
+}
+
+//卡通点赞
+-(void)likeTarget{
+
+    UserInfo *user = [Utilities GetNSUserDefaults];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    NSDictionary *dic = @{
+                          @"type":@"3",
+                          @"typeId":_model.id,
+                          @"userId":[NSString stringWithFormat:@"%ld",user.id],
+                          @"cartoonId":_bookId
+                          };
+    [manager POST:[ZZTAPI stringByAppendingString:@"great/cartoonPraise"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if(self.update){
+            self.update();
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
 }
 
 - (UIButton *)replyCountView {
@@ -136,4 +180,9 @@
         [_delegate StatusFooterView:self didClickCommentButton:self.model];
     }
 }
+
+-(void)setIsFind:(BOOL)isFind{
+    _isFind = isFind;
+}
+
 @end

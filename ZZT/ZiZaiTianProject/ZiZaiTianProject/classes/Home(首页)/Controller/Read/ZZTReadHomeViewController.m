@@ -27,9 +27,13 @@
 
 @property (nonatomic,strong) NSArray *bannerModelArray;
 
-@property (nonatomic,strong)ZZTCollectionCycleView *cycleView;
+@property (nonatomic,strong) ZZTCollectionCycleView *cycleView;
 
 @property (nonatomic,assign) NSInteger pageNum;
+//最新更新
+@property (nonatomic,strong) NSArray *updateBooks;
+//经典好书
+@property (nonatomic,strong) NSArray *classicBooks;
 
 @end
 
@@ -48,6 +52,20 @@ static NSString *moreFooterView = @"moreFooterView";
 static NSString *bigImageCell = @"bigImageCell";
 
 @implementation ZZTReadHomeViewController
+
+-(NSArray *)classicBooks{
+    if(!_classicBooks){
+        _classicBooks = [NSArray array];
+    }
+    return _classicBooks;
+}
+
+-(NSArray *)updateBooks{
+    if(!_updateBooks){
+        _updateBooks = [NSArray array];
+    }
+    return _updateBooks;
+}
 
 -(NSArray *)caiNiXiHuan{
     if(!_caiNiXiHuan){
@@ -76,21 +94,61 @@ static NSString *bigImageCell = @"bigImageCell";
 
     [self setupCollectionView:layout];
 
-    //loadData
-    [self loadBookData];
-   
-    //轮播图
-    [self loadBannerData];
+//    //loadData
+//    [self loadBookData];
+//
+//    //轮播图
+//    [self loadBannerData];
     //设置btn的样式  点击
 
     //设置头视图
     [self setupMJRefresh];
+
+    [_collectionView.mj_header beginRefreshing];
 }
 
 -(void)setupMJRefresh{
     self.collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         [self loadBookData];
         [self loadBannerData];
+        [self loadUpdateBooksData];
+        [self loadClassBooksData];
+    }];
+}
+
+-(void)loadUpdateBooksData{
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    NSDictionary *dic = @{
+                          @"pageNum":@"1",
+                          @"pageSize":@"6",
+                          };
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getNewestCartoon"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
+        self.updateBooks = array;
+        self.pageNum++;
+        [self.collectionView reloadData];
+        [self.collectionView.mj_header endRefreshing];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [self.collectionView.mj_header endRefreshing];
+    }];
+}
+
+-(void)loadClassBooksData{
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    NSDictionary *dic = @{
+                          @"pageNum":@"1",
+                          @"pageSize":@"6",
+                          };
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getClassicsCartoon"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
+        self.classicBooks = array;
+        self.pageNum++;
+        [self.collectionView reloadData];
+        [self.collectionView.mj_header endRefreshing];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [self.collectionView.mj_header endRefreshing];
     }];
 }
 
@@ -161,14 +219,13 @@ static NSString *bigImageCell = @"bigImageCell";
     [self.collectionView registerClass:[ZZTAirHeaderFooterView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:airViewId];
     [self.collectionView registerClass:[ZZTMoreFooterView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:moreFooterView];
 
-//    [self.collectionView registerNib:[UINib nibWithNibName:@"ZZTCartoonCell" bundle:nil] forCellWithReuseIdentifier:cartoonCellId];
     [self.collectionView registerClass:[ZZTCartoonCell class] forCellWithReuseIdentifier:cartoonCellId];
     [self.collectionView registerClass:[ZZTBigImageCell class] forCellWithReuseIdentifier:bigImageCell];
 }
 
 //节
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
-    return 3;
+    return 5;
 }
 
 //行
@@ -180,6 +237,10 @@ static NSString *bigImageCell = @"bigImageCell";
         return self.caiNiXiHuan.count;
     }else if(section == 2){
         return self.caiNiXiHuan.count - 1;
+    }else if (section == 3){
+        return self.updateBooks.count;
+    }else if (section == 4){
+        return self.classicBooks.count;
     }else{
         return 0;
     }
@@ -188,20 +249,38 @@ static NSString *bigImageCell = @"bigImageCell";
 //cell
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    ZZTCarttonDetailModel *car = self.caiNiXiHuan[indexPath.row];
+    ZZTCarttonDetailModel *model = [[ZZTCarttonDetailModel alloc] init];
+    
+    if(indexPath.section == 1 || indexPath.section == 2){
+        model = self.caiNiXiHuan[indexPath.row];
+    }else if (indexPath.section == 3){
+        model = self.updateBooks[indexPath.row];
+    }else if(indexPath.section == 4){
+        model = self.classicBooks[indexPath.row];
+    }
+    
     if(indexPath.row == 3 && indexPath.section == 1){
         ZZTBigImageCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:bigImageCell forIndexPath:indexPath];
-        cell.model = car;
+        cell.model = model;
         return cell;
     }else{
         ZZTCartoonCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cartoonCellId forIndexPath:indexPath];
-        cell.cartoon = car;
+        cell.cartoon = model;
         return cell;
     }
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    ZZTCarttonDetailModel *model = self.caiNiXiHuan[indexPath.row];
+    ZZTCarttonDetailModel *model = [[ZZTCarttonDetailModel alloc] init];
+    
+    if(indexPath.section == 1 || indexPath.section == 2){
+        model = self.caiNiXiHuan[indexPath.row];
+    }else if (indexPath.section == 3){
+        model = self.updateBooks[indexPath.row];
+    }else{
+        model = self.classicBooks[indexPath.row];
+    }
+    
     //独创
     if([model.cartoonType isEqualToString:@"1"]){
         ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
@@ -227,20 +306,20 @@ static NSString *bigImageCell = @"bigImageCell";
             ZZTCollectionCycleView *view = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:collectionCycleView forIndexPath:indexPath];
             view.imageArray = self.bannerModelArray;
             return view;
-        }else if(indexPath.section == 1){
+        }else{
             //为您推荐
             ZZTSectionLabView *labView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:sectionLabView forIndexPath:indexPath];
-            labView.sectionName = @"为您推荐";
+            if (indexPath.section == 1) {
+                labView.sectionName = @"为您推荐";
+            }else if (indexPath.section == 2){
+                labView.sectionName = @"最热推荐";
+            }else if (indexPath.section == 3){
+                labView.sectionName = @"最近更新";
+            }else{
+                labView.sectionName = @"经典好书";
+            }
             return labView;
-        }else if(indexPath.section == 2){
-            //最热推荐
-            ZZTSectionLabView *labView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:sectionLabView forIndexPath:indexPath];
-            labView.sectionName = @"最热推荐";
-            return labView;
-        }else{
-            return nil;
         }
-
     }else if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
         if(indexPath.section == 0){
             //btnView
@@ -306,10 +385,8 @@ static NSString *bigImageCell = @"bigImageCell";
         }else{
             return CGSizeMake((SCREEN_WIDTH - 36) / 3 , SCREEN_HEIGHT * 0.24 + 24);
         }
-    }else if(indexPath.section == 2){
-        return CGSizeMake((SCREEN_WIDTH - 36) / 3 , SCREEN_HEIGHT * 0.24 + 24);
     }else{
-        return CGSizeZero;
+        return CGSizeMake((SCREEN_WIDTH - 36) / 3 , SCREEN_HEIGHT * 0.24 + 24);
     }
 }
 
@@ -343,4 +420,7 @@ static NSString *bigImageCell = @"bigImageCell";
     }
 }
 
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+}
 @end

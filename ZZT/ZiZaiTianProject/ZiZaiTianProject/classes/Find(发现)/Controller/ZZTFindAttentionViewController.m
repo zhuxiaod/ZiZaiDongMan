@@ -25,6 +25,10 @@
 //页码size
 @property (nonatomic,assign) NSInteger pageSize;
 
+@property (nonatomic,strong) dispatch_group_t group;
+
+@property (nonatomic,assign) dispatch_queue_t q;
+
 @end
 
 static NSString *CaiNiXiHuanView = @"CaiNiXiHuanView";
@@ -32,6 +36,20 @@ static NSString *CaiNiXiHuanView = @"CaiNiXiHuanView";
 static NSString *findCommentCell = @"findCommentCell";
 
 @implementation ZZTFindAttentionViewController
+
+-(dispatch_group_t)group{
+    if(!_group){
+        _group = dispatch_group_create();
+    }
+    return _group;
+}
+
+-(dispatch_queue_t)q{
+    if(!_q){
+        _q = dispatch_get_global_queue(0, 0);
+    }
+    return _q;
+}
 
 -(NSMutableArray *)dataArray{
     if(!_dataArray){
@@ -58,9 +76,7 @@ static NSString *findCommentCell = @"findCommentCell";
     
     self.pageSize = 10;
     
-    [self loadData];
-    
-    [self loadCaiNiXiHuanData];
+
     
     [self setupMJRefresh];
 
@@ -85,10 +101,19 @@ static NSString *findCommentCell = @"findCommentCell";
 
 -(void)setupMJRefresh{
     self.contentView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        [self loadData];
+        dispatch_group_async(self.group, self.q, ^{
+            dispatch_group_enter(self.group);
+           [self loadData];
+        });
+        [self loadCaiNiXiHuanData];
+
+     
     }];
     self.contentView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
-        [self loadMoreData];
+        dispatch_group_async(self.group, self.q, ^{
+            dispatch_group_enter(self.group);
+            [self loadMoreData];
+        });
     }];
 }
 
@@ -120,23 +145,29 @@ static NSString *findCommentCell = @"findCommentCell";
             [self.contentView.mj_footer endRefreshing];
         }
         self.pageSize++;
+        dispatch_group_leave(self.group);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [self.contentView.mj_footer endRefreshing];
         [self.contentView.mj_header endRefreshing];
+        dispatch_group_leave(self.group);
     }];
 }
 -(void)loadCaiNiXiHuanData{
-
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-    [manager POST:[ZZTAPI stringByAppendingString:@"circle/guessYouLike"] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-        NSMutableArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
-        self.CNXHArray = array;
-        [self.contentView reloadData];
-        [self.contentView.mj_header endRefreshing];
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        [self.contentView.mj_header endRefreshing];
-    }];
+    dispatch_group_async(self.group, self.q, ^{
+        dispatch_group_enter(self.group);
+        AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+        [manager POST:[ZZTAPI stringByAppendingString:@"circle/guessYouLike"] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+            NSMutableArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
+            self.CNXHArray = array;
+            [self.contentView reloadData];
+            [self.contentView.mj_header endRefreshing];
+            dispatch_group_leave(self.group);
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+            [self.contentView.mj_header endRefreshing];
+            dispatch_group_leave(self.group);
+        }];
+    });
 }
 
 -(void)loadData{
@@ -151,24 +182,30 @@ static NSString *findCommentCell = @"findCommentCell";
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/selDiscover"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-        
-        NSInteger total = [[NSString stringWithFormat:@"%@",[dic objectForKey:@"total"]] integerValue];
-        
-        NSMutableArray *array = [ZZTMyZoneModel mj_objectArrayWithKeyValuesArray:[dic objectForKey:@"list"]];
-        
-        self.dataArray = array;
-        [self.contentView reloadData];
-        
-        if(self.dataArray.count >= total){
-            //            [self.contentView.mj_footer setHidden:YES];
-            [self.contentView.mj_header endRefreshing];
-        }else{
-            [self.contentView.mj_header endRefreshing];
+        if(dic.count == 6){
+            NSLog(@"12121214312423142314141241234231412412");
         }
-        self.pageSize += 10;
+        if(dic.count != 6){
+            NSInteger total = [[NSString stringWithFormat:@"%@",[dic objectForKey:@"total"]] integerValue];
+            
+            NSMutableArray *array = [ZZTMyZoneModel mj_objectArrayWithKeyValuesArray:[dic objectForKey:@"list"]];
+            
+            self.dataArray = array;
+            [self.contentView reloadData];
+            
+            if(self.dataArray.count >= total){
+                //            [self.contentView.mj_footer setHidden:YES];
+                [self.contentView.mj_header endRefreshing];
+            }else{
+                [self.contentView.mj_header endRefreshing];
+            }
+            self.pageSize += 10;
+        }
+        dispatch_group_leave(self.group);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [self.contentView.mj_footer endRefreshing];
         [self.contentView.mj_header endRefreshing];
+        dispatch_group_leave(self.group);
     }];
 }
 

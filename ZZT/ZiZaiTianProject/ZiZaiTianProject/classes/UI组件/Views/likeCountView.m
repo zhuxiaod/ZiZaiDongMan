@@ -73,7 +73,6 @@ static NSString * const pressedImageName = @"catoonDetail_like_select";
     UIColor *textColor = self.islike ? subjectColor : [UIColor lightGrayColor];
     
     [self setTitleColor:textColor forState:UIControlStateNormal];
-
 }
 
 
@@ -81,7 +80,7 @@ static NSString * const pressedImageName = @"catoonDetail_like_select";
 - (void)setLikeCount:(NSInteger)likeCount {
     _likeCount = likeCount;
     
-//    CGFloat width = MyWidth;
+    CGFloat width = MyWidth;
 //
     if (likeCount < 1) {
 //
@@ -93,7 +92,7 @@ static NSString * const pressedImageName = @"catoonDetail_like_select";
         
         [self setTitle:title forState:UIControlStateNormal];
         
-//        width = [title getTextWidthWithFont:self.titleLabel.font] + MyWidth;
+        width = [title getTextWidthWithFont:self.titleLabel.font] + MyWidth;
 
     }
 //
@@ -120,18 +119,18 @@ static NSString * const pressedImageName = @"catoonDetail_like_select";
         self.onClick(self);
     }
     
-    [UIView animateWithDuration:0.25 animations:^{
-        
-        self.imageView.transform = CGAffineTransformMakeScale(1.5, 1.5);
-        
-    } completion:^(BOOL finished) {
-        
-        [UIView animateWithDuration:0.25 animations:^{
-            self.imageView.transform = CGAffineTransformIdentity;
+//    [UIView animateWithDuration:0.25 animations:^{
+//
+//        self.imageView.transform = CGAffineTransformMakeScale(1.5, 1.5);
+//
+//    } completion:^(BOOL finished) {
+//
+//        [UIView animateWithDuration:0.25 animations:^{
+//            self.imageView.transform = CGAffineTransformIdentity;
             self.userInteractionEnabled = YES;
-        }];
-        
-    }];
+//        }];
+//
+//    }];
     
     
 //    NetWorkManager *manger = [NetWorkManager share];

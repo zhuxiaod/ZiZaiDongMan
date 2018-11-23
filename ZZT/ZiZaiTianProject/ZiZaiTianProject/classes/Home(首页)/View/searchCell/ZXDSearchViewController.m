@@ -17,7 +17,7 @@
 
 @interface ZXDSearchViewController () <UITableViewDelegate,UITableViewDataSource,PYSearchViewControllerDelegate,PYSearchViewControllerDataSource>
 @property (nonatomic,strong) NSMutableArray *searchSuggestionArray;
-
+@property (nonatomic,strong) ZZTNavigationViewController *nav;
 @end
 
 @implementation ZXDSearchViewController
@@ -31,8 +31,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    //获取热门搜索
+    [self getHotSearch];
     NSArray *hotSeaches = @[@"妖神记", @"大霹雳", @"镖人", @"偷星九月天"];
-
+    
+    
     PYSearchViewController *searchVC = [PYSearchViewController searchViewControllerWithHotSearches:hotSeaches searchBarPlaceholder:@"搜索作品名、作者名、社区内容" didSearchBlock:^(PYSearchViewController *searchViewController, UISearchBar *searchBar, NSString *searchText) {
 
     }];
@@ -49,7 +52,19 @@
     [searchVC.cancelButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 
     ZZTNavigationViewController *nav = [[ZZTNavigationViewController alloc] initWithRootViewController:searchVC];
+    _nav = nav;
     [self presentViewController:nav animated:NO completion:nil];
+}
+
+-(void)getHotSearch{
+    //添加数据
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/hotSelect"]  parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
 }
 
 -(void)didClickCancel:(PYSearchViewController *)searchViewController{
@@ -62,13 +77,14 @@
 {
     if (searchText.length) {
         weakself(self);
+        UserInfo *user = [Utilities GetNSUserDefaults];
         NSDictionary *dic = @{
-                              @"fuzzy":searchText
+                              @"fuzzy":searchText,
+                              @"userId":[NSString stringWithFormat:@"%ld",user.id]
                               };
         //添加数据
         AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-        
-        [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/queryFuzzy"]  parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/queryCartoon"]  parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
             NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
             weakSelf.searchSuggestionArray = array;
@@ -80,7 +96,7 @@
 }
 //搜索结果多少节
 - (NSInteger)numberOfSectionsInSearchSuggestionView:(UITableView *)searchSuggestionView{
-    return 3;
+    return 1;
 }
 //多少行
 - (NSInteger)searchSuggestionView:(UITableView *)searchSuggestionView numberOfRowsInSection:(NSInteger)section{
@@ -89,20 +105,20 @@
 
 //每行显示什么
 - (UITableViewCell *)searchSuggestionView:(UITableView *)searchSuggestionView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    if(indexPath.section == 0){
+//    if(indexPath.section == 0){
         ZZTSearchCartoonCell *cell = [ZZTSearchCartoonCell cellWithTableView:searchSuggestionView];
         ZZTCarttonDetailModel *model = self.searchSuggestionArray[indexPath.row];
         cell.model = model;
         return cell;
-    }else if (indexPath.section == 1){
-        ZZTSearchZoneCell *cell = [ZZTSearchZoneCell cellWithTableView:searchSuggestionView];
-        return cell;
-    }else{
-        ZZTFindCommentCell *cell = [ZZTFindCommentCell cellWithTableView:searchSuggestionView];
-        //        cell.model = self.dataArray[indexPath.row];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        return cell;
-    }
+//    }else if (indexPath.section == 1){
+//        ZZTSearchZoneCell *cell = [ZZTSearchZoneCell cellWithTableView:searchSuggestionView];
+//        return cell;
+//    }else{
+//        ZZTFindCommentCell *cell = [ZZTFindCommentCell cellWithTableView:searchSuggestionView];
+//        //        cell.model = self.dataArray[indexPath.row];
+//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//        return cell;
+//    }
 }
 
 //高度
@@ -122,16 +138,26 @@
 
 - (UIView *)searchSuggestionView:(UITableView *)searchSuggestionView viewForHeaderInSection:(NSInteger)section{
     NSString *title;
-    if(section == 0){
+//    if(section == 0){
         title = @"相关漫画";
-    }else if (section == 1){
-        title = @"相关空间";
-    }else{
-        title = @"相关帖子";
-    }
+//    }
+//    else if (section == 1){
+//        title = @"相关空间";
+//    }else{
+//        title = @"相关帖子";
+//    }
     ZZTCartoonHeaderView *head = [[ZZTCartoonHeaderView alloc] init];
     head.title = title;
     return head;
+}
+
+-(void)searchViewController:(PYSearchViewController *)searchViewController didSelectSearchSuggestionAtIndexPath:(NSIndexPath *)indexPath searchBar:(UISearchBar *)searchBar{
+    ZZTCarttonDetailModel *md = self.searchSuggestionArray[indexPath.row];
+    ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
+    detailVC.isId = YES;
+    detailVC.cartoonDetail = md;
+    detailVC.hidesBottomBarWhenPushed = YES;
+    [_nav pushViewController:detailVC animated:YES];
 }
 
 -(CGFloat)searchSuggestionView:(UITableView *)searchSuggestionView heightForHeaderInSection:(NSInteger)section{

@@ -45,6 +45,10 @@
 @property (nonatomic,strong) NSString *birthday;
 //签名
 @property (nonatomic,strong) NSString *signature;
+//电话
+@property (nonatomic,strong) NSString *phone;
+//简介
+@property (nonatomic,strong) NSString *intro;
 
 @property (nonatomic,strong) NSMutableDictionary *imgeDict;
 
@@ -128,10 +132,7 @@ static NSString *personalCellThree = @"personalCellThree";
 
     
     [self setupTopView];
-//
-//
-//    [self setupBottomView];
-//
+
     //初始化图像选择控制器
     _picker = [[UIImagePickerController alloc]init];
     _picker.allowsEditing = YES;  //重点是这两句
@@ -146,35 +147,6 @@ static NSString *personalCellThree = @"personalCellThree";
 //
 //    [self hiddenViewNavBar];
    
-}
-
--(void)setupNavBar{
-    ZXDNavBar *navbar = [[ZXDNavBar alloc] init];
-    self.navbar = navbar;
-    navbar.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:navbar];
-    
-    [navbar mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.equalTo(self.view);
-        make.top.equalTo(self.view);
-        make.height.equalTo(@(navHeight));
-    }];
-    
-    navbar.showBottomLabel = NO;
-    
-    //设置内容
-    //返回
-    [navbar.leftButton setImage:[UIImage imageNamed:@"返回键"] forState:UIControlStateNormal];
-    navbar.leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 17);
-    [navbar.leftButton addTarget:self action:@selector(dismissVC) forControlEvents:UIControlEventTouchUpInside];
-    
-    //中
-    [navbar.centerButton setTitle:@"编辑个人信息" forState:UIControlStateNormal];
-    [navbar.centerButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    
-    [navbar.rightButton setTitle:@"上传" forState:UIControlStateNormal];
-    [navbar.rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [navbar.rightButton addTarget:self action:@selector(save) forControlEvents:UIControlEventTouchUpInside];
 }
 
 -(void)dismissVC{
@@ -234,7 +206,7 @@ static NSString *personalCellThree = @"personalCellThree";
         if(indexPath.row == 0){
             //用户名
             cell.showTextField = YES;
-            cell.textField.text = user.nickName;
+            cell.textField.text = self.userName;
             cell.textField.tag = 99;
             cell.textFieldChange = ^(NSInteger tag) {
                 [self textFieldChange:tag];
@@ -243,7 +215,7 @@ static NSString *personalCellThree = @"personalCellThree";
         }else{
             //账号
             cell.showTextField = NO;
-            cell.rightTextLabel.text = user.phone;
+            cell.rightTextLabel.text = self.phone;
         }
         return cell;
     }else if (indexPath.section == 1){
@@ -271,7 +243,7 @@ static NSString *personalCellThree = @"personalCellThree";
         cell.nameLabel.text = [self.sectionThree objectAtIndex:indexPath.row];
         //个性签名
         cell.showTextField = YES;
-        cell.textField.text = user.intro;
+        cell.textField.text = self.signature;
         cell.textField.tag = 100;
         cell.textFieldChange = ^(NSInteger tag) {
             [self textFieldChange:tag];
@@ -432,7 +404,7 @@ static NSString *personalCellThree = @"personalCellThree";
         //保存本地
         //请求一次 拿到数据
         [self loadUserData];
-        [self dismissViewControllerAnimated:YES completion:nil];
+        [self.navigationController popViewControllerAnimated:YES];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
@@ -665,6 +637,10 @@ static NSString *personalCellThree = @"personalCellThree";
     self.sex = model.sex;
     
     self.birthday = model.birthday;//1.男 2.女
+    
+    self.phone = model.phone;
+    
+    self.intro = model.intro;
 }
 
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{

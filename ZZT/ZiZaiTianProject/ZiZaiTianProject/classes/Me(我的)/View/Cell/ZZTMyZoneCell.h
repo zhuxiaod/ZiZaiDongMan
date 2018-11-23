@@ -14,8 +14,11 @@
 
 @property (nonatomic,strong) ZZTMyZoneModel *model;
 
+@property (nonatomic,copy) void (^update)(void);
+
 + (CGFloat)cellHeightWithStr:(NSString *)str imgs:(NSArray *)imgs;
 
 + (ZZTMyZoneCell *)dynamicCellWithTable:(UITableView *)table;
+
 
 @end
