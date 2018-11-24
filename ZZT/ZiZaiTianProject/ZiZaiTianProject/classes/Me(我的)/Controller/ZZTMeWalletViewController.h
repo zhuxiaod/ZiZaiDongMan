@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ZZTMeWalletViewController : UIViewController
+@interface ZZTMeWalletViewController : BaseViewController
 
 @end

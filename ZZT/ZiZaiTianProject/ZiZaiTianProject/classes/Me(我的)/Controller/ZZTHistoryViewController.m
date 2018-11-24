@@ -9,6 +9,7 @@
 #import "ZZTHistoryViewController.h"
 #import "ZZTCartoonHistoryCell.h"
 #import "ZZTCarttonDetailModel.h"
+#import "ZZTWordListCell.h"
 
 @interface ZZTHistoryViewController ()<UITableViewDelegate,UITableViewDataSource>
 
@@ -16,14 +17,25 @@
 
 @property (nonatomic,strong) UITableView *contentView;
 
+@property (nonatomic,strong) NSMutableArray *cartoonIdArray;
 
 @end
 
 static NSString *zztCartoonHistoryCell = @"zztCartoonHistoryCell";
 
+//NSString *zztWordListCell = @"zztWordListCell";
+
 @implementation ZZTHistoryViewController
 
 #pragma mark - 懒加载
+
+- (NSMutableArray *)cartoonIdArray{
+    if (!_cartoonIdArray) {
+        _cartoonIdArray = [NSMutableArray array];
+    }
+    return _cartoonIdArray;
+}
+
 - (NSArray *)cartoons{
     if (!_cartoons) {
         _cartoons = [NSArray array];
@@ -34,21 +46,21 @@ static NSString *zztCartoonHistoryCell = @"zztCartoonHistoryCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+
     //viewTitle
-    self.navigationItem.title = @"浏览历史";
+//    self.navigationItem.title = @"浏览历史";
     //右边
-    UIButton *leftbutton = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 40, 20)];
+//    UIButton *leftbutton = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 40, 20)];
     
-    [leftbutton setTitle:@"清空" forState:UIControlStateNormal];
+//    [leftbutton setTitle:@"清空" forState:UIControlStateNormal];
     
-    UIBarButtonItem *rightitem = [[UIBarButtonItem alloc]initWithCustomView:leftbutton];
+//    UIBarButtonItem *rightitem = [[UIBarButtonItem alloc]initWithCustomView:leftbutton];
     
-    self.navigationItem.rightBarButtonItem = rightitem;
-    
+//    self.navigationItem.rightBarButtonItem = rightitem;
     
     self.automaticallyAdjustsScrollViewInsets = NO;
 
-    self.view.backgroundColor = [UIColor whiteColor];
+//    self.view.backgroundColor = [UIColor whiteColor];
     
     [self setupTableView];
     
@@ -57,10 +69,29 @@ static NSString *zztCartoonHistoryCell = @"zztCartoonHistoryCell";
     [self addBackBtn];
     
     [self.viewNavBar.centerButton setTitle:@"浏览历史" forState:UIControlStateNormal];
+    
+    [self.viewNavBar.rightButton setTitle:@"清空" forState:UIControlStateNormal];
+    [self.viewNavBar.rightButton addTarget:self action:@selector(deletHistory) forControlEvents:UIControlEventTouchUpInside];
+}
+
+-(void)deletHistory{
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    UserInfo *user = [Utilities GetNSUserDefaults];
+    NSString *string = [self.cartoonIdArray componentsJoinedByString:@","];
+    NSLog(@"string:%@",string);
+    NSDictionary *dict = @{
+                           @"userId":[NSString stringWithFormat:@"%ld",user.id],
+                           @"id":string
+                           };
+    [manager POST:[ZZTAPI stringByAppendingString:@"record/delBrowsehistory"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [self loadData];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
 }
 
 -(void)setupTableView{
-    UITableView *contentView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 64) style:UITableViewStylePlain];
+    UITableView *contentView = [[UITableView alloc] initWithFrame:CGRectMake(0, navHeight, self.view.width, self.view.height - 64) style:UITableViewStylePlain];
     contentView.backgroundColor = [UIColor whiteColor];
     contentView.delegate = self;
     contentView.dataSource = self;
@@ -74,9 +105,10 @@ static NSString *zztCartoonHistoryCell = @"zztCartoonHistoryCell";
 }
 
 -(void)loadData{
+    UserInfo *user = [Utilities GetNSUserDefaults];
     //请求参数
     NSDictionary *paramDict = @{
-                                @"userId":@"32",
+                                @"userId":[NSString stringWithFormat:@"%ld",user.id]
                                 };
 //    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
@@ -85,10 +117,27 @@ static NSString *zztCartoonHistoryCell = @"zztCartoonHistoryCell";
               NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
               NSArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
               self.cartoons = array;
+              [self getCartoonId];
               [self.contentView reloadData];
           } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
               
     }];
+}
+
+-(void)getCartoonId{
+    NSMutableArray *cartoonIdArray = [NSMutableArray array];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        // 处理耗时操作的代码块...
+        for (int i = 0; i < self.cartoons.count; i++) {
+            ZZTCarttonDetailModel *model = self.cartoons[i];
+            [cartoonIdArray addObject:model.id];
+        }
+        //通知主线程刷新
+        dispatch_async(dispatch_get_main_queue(), ^{
+            //回调或者说是通知主线程刷新，
+            self.cartoonIdArray = cartoonIdArray;
+        });
+    });
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -97,15 +146,27 @@ static NSString *zztCartoonHistoryCell = @"zztCartoonHistoryCell";
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     ZZTCartoonHistoryCell *cell = [tableView dequeueReusableCellWithIdentifier:zztCartoonHistoryCell];
+//    ZZTWordListCell *cell = [tableView dequeueReusableCellWithIdentifier:zztWordListCell];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     ZZTCarttonDetailModel *car = self.cartoons[indexPath.row];
     cell.model = car;
     return cell;
 }
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    ZZTCarttonDetailModel *car = self.cartoons[indexPath.row];
+    ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
+    //yes 就是有Id
+    detailVC.isId = NO;
+    detailVC.cartoonDetail = car;
+    detailVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:detailVC animated:YES];
+}
+
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     ZZTCarttonDetailModel *model = self.cartoons[indexPath.row];
     if(model.cover){
-        return 150;
+        return SCREEN_HEIGHT * 0.25;
     }else{
         ZZTCarttonDetailModel *model = _cartoons[indexPath.row];
         NSArray *imgs = [model.contentImg componentsSeparatedByString:@","];

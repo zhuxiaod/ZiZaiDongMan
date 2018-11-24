@@ -115,8 +115,22 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     [self.viewNavBar.leftButton addTarget:self action:@selector(dismissVC) forControlEvents:UIControlEventTouchUpInside];
 
     //中
-    [self.viewNavBar.centerButton setTitle:@"空间" forState:UIControlStateNormal];
-    [self.viewNavBar.centerButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    SBStrokeLabel *lab = [[SBStrokeLabel alloc] init];
+    lab.text = @"空间";
+
+    [lab labOutline];
+    [lab setTextColor:[UIColor whiteColor]];
+    [self.viewNavBar addSubview:lab];
+    
+    [lab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.viewNavBar.centerButton.mas_top);
+        make.bottom.equalTo(self.viewNavBar.centerButton.mas_bottom);
+        make.centerX.equalTo(self.viewNavBar.centerButton);
+        make.centerY.equalTo(self.viewNavBar.centerButton);
+    }];
+    
+//    self.viewNavBar.centerButton.titleLabel = lab;
+
     if(self.viewNavBarHidden == YES){
         self.viewNavBar.hidden = YES;
     }

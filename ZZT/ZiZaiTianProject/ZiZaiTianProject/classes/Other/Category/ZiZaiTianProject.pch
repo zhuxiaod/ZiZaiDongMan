@@ -103,6 +103,7 @@
 #import <YYImage/YYImage.h>
 #import "SBPersonalSettingCell.h"
 #import "DateManager.h"
+#import "ZXDSearchViewController.h"
 
 #define BanerHeight SCREEN_HEIGHT * 0.3
 

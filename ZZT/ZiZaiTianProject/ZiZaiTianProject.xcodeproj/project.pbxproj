@@ -311,6 +311,7 @@
 		04B9FF4120E506FC007CC582 /* ZZTChildCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04B9FF3F20E506FB007CC582 /* ZZTChildCollectionView.m */; };
 		04C39F4E2136493900F4CB4A /* ZZTFindCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C39F4C2136493900F4CB4A /* ZZTFindCommentCell.m */; };
 		04C39F522136C47A00F4CB4A /* ZZTWritingSequelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C39F512136C47A00F4CB4A /* ZZTWritingSequelViewController.m */; };
+		04CB18E121A94CD7009D72F1 /* ZZTMeWalletViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04CB18E021A94CD7009D72F1 /* ZZTMeWalletViewController.xib */; };
 		04CCB98E218892620035C40C /* ZZTChapterChooseCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CCB98D218892620035C40C /* ZZTChapterChooseCell.m */; };
 		04CF25942105AACA0026EC8F /* ZZTMaterialLibraryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CF25932105AACA0026EC8F /* ZZTMaterialLibraryView.m */; };
 		04CF25972105B0AB0026EC8F /* ZZTMaterialKindView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CF25962105B0AB0026EC8F /* ZZTMaterialKindView.m */; };
@@ -919,6 +920,7 @@
 		04C39F4C2136493900F4CB4A /* ZZTFindCommentCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ZZTFindCommentCell.m; path = "ZiZaiTianProject/classes/Find(发现)/Controller/ZZTFindCommentCell.m"; sourceTree = SOURCE_ROOT; };
 		04C39F502136C47A00F4CB4A /* ZZTWritingSequelViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTWritingSequelViewController.h; sourceTree = "<group>"; };
 		04C39F512136C47A00F4CB4A /* ZZTWritingSequelViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTWritingSequelViewController.m; sourceTree = "<group>"; };
+		04CB18E021A94CD7009D72F1 /* ZZTMeWalletViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ZZTMeWalletViewController.xib; sourceTree = "<group>"; };
 		04CCB98C218892620035C40C /* ZZTChapterChooseCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTChapterChooseCell.h; sourceTree = "<group>"; };
 		04CCB98D218892620035C40C /* ZZTChapterChooseCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTChapterChooseCell.m; sourceTree = "<group>"; };
 		04CF25922105AACA0026EC8F /* ZZTMaterialLibraryView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTMaterialLibraryView.h; sourceTree = "<group>"; };
@@ -1927,6 +1929,7 @@
 				04E6D49320EC6B4E00116085 /* ZZTMeEditViewController.m */,
 				043B073B20EDCC6F00ED3F5B /* ZZTMeWalletViewController.h */,
 				043B073C20EDCC6F00ED3F5B /* ZZTMeWalletViewController.m */,
+				04CB18E021A94CD7009D72F1 /* ZZTMeWalletViewController.xib */,
 				043B075320EE11E600ED3F5B /* ZZTShoppingMallViewController.h */,
 				043B075420EE11E600ED3F5B /* ZZTShoppingMallViewController.m */,
 				040D28252133D0CF002A3B72 /* ZZTSignInViewController.h */,
@@ -2185,6 +2188,7 @@
 				0428E8BB21797BCE00702225 /* userAgreement.txt in Resources */,
 				04E49F95213EB2D8007EE617 /* ZZTShoppingHeaderView.xib in Resources */,
 				0484E7DB210AFC3400C39369 /* ZZTCartoonDrawView.xib in Resources */,
+				04CB18E121A94CD7009D72F1 /* ZZTMeWalletViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

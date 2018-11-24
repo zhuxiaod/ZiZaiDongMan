@@ -54,6 +54,8 @@
 
     [self.backgroundBtn.imageView setContentMode:UIViewContentModeScaleAspectFill];
     
+    _backgroundBtn.adjustsImageWhenHighlighted=NO;
+    
     self.backgroundBtn.imageView.clipsToBounds = YES;
     
     [self.backgroundBtn.imageView mas_makeConstraints:^(MASConstraintMaker *make) {

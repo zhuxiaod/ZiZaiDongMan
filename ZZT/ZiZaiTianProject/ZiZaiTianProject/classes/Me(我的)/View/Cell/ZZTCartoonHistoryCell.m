@@ -46,6 +46,9 @@
     UIImageView *headImg = [[UIImageView alloc] init];
     //    headImg.backgroundColor = [UIColor yellowColor];
     _headImg = headImg;
+    headImg.contentMode = UIViewContentModeScaleAspectFill;
+    headImg.layer.cornerRadius = 10;
+    headImg.layer.masksToBounds = YES;
     [self.contentView addSubview:headImg];
     
     //章节名
@@ -89,14 +92,14 @@
             make.top.equalTo(self).with.offset(10);
             make.left.equalTo(self).with.offset(10);
             make.bottom.equalTo(self.bottomView.mas_top).with.offset(-10);
-            make.width.mas_equalTo(80);
+//            make.width.mas_equalTo(80);
         }];
     }else{
         [self.headImg mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self).with.offset(10);
             make.left.equalTo(self).with.offset(10);
             //            make.bottom.equalTo(self.bottomView.mas_top).with.offset(-10);
-            make.width.mas_equalTo(80);
+//            make.width.mas_equalTo(80);
             make.height.mas_equalTo(80);
         }];
         //头像框
@@ -136,23 +139,33 @@
     _model = model;
     //有没有封面
     if(model.cover){
-        [self.headImg sd_setImageWithURL:[NSURL URLWithString:model.cover]];
+        [self.headImg sd_setImageWithURL:[NSURL URLWithString:model.cover] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+            //计算image的高度
+            CGFloat proportion = image.size.height / (SCREEN_HEIGHT * 0.25 - 21);
+            //            NSLog(@"proportion:%f",proportion);
+            CGFloat imageViewW = image.size.width / proportion;
+            //            NSLog(@"imageViewW:%f",imageViewW);
+            [self.headImg mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.width.mas_equalTo(imageViewW);
+            }];
+        }];
     }else{
-        [self.headImg sd_setImageWithURL:[NSURL URLWithString:model.headimg]];
+        [self.headImg sd_setImageWithURL:[NSURL URLWithString:model.headimg]completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+            //计算image的高度
+            CGFloat proportion = image.size.height / (SCREEN_HEIGHT * 0.25 - 21);
+            //            NSLog(@"proportion:%f",proportion);
+            CGFloat imageViewW = image.size.width / proportion;
+            //            NSLog(@"imageViewW:%f",imageViewW);
+            [self.headImg mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.width.mas_equalTo(imageViewW);
+            }];
+        }];
     }
     
     //如果有书名
     if(model.bookName){
         if([model.type isEqualToString:@"1"]){
-            NSString *bookName = [model.bookName stringByAppendingString:@"(漫画)"];
-            NSMutableAttributedString * attriStr = [[NSMutableAttributedString alloc] initWithString:bookName];
-            [attriStr addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#598BE2"] range:NSMakeRange(attriStr.length - 4,4)];
-            self.chapterLab.attributedText = attriStr;
-        }else if([model.type isEqualToString:@"2"]){
-            NSString *bookName = [model.bookName stringByAppendingString:@"(剧本)"];
-            NSMutableAttributedString * attriStr = [[NSMutableAttributedString alloc] initWithString:bookName];
-            [attriStr addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#87CDBF"] range:NSMakeRange(attriStr.length - 4,4)];
-            self.chapterLab.attributedText = attriStr;
+            self.chapterLab.text = model.bookName;
         }
     }else{
         //没有书名
@@ -175,35 +188,35 @@
             [mutableArray addObject:str];
         }
         _imgArray = mutableArray;
-        [self setupImageGroupView];
+//        [self setupImageGroupView];
     }
 }
 
--(void)setupImageGroupView{
-    [self layoutIfNeeded];
-    CGFloat w = (self.bgImgsView.width - 20) /3;
-    CGFloat h = (self.bgImgsView.width - 20) /3;
-    
-    CGFloat edge = 10;
-    for (int i = 0; i<_imgArray.count; i++) {
-        
-        int row = i / 3;
-        int loc = i % 3;
-        CGFloat x = (edge + w) * loc ;
-        CGFloat y = (edge + h) * row;
-        
-        UIImageView * img =[[UIImageView alloc]init];
-        [img sd_setImageWithURL:[NSURL URLWithString:_imgArray[i]]];
-        //        img.image = [UIImage imageNamed:_imgArray[i]];
-        img.backgroundColor = [UIColor greenColor];
-        img.frame = CGRectMake(x, y, w, h);
-        img.userInteractionEnabled = YES;
-        UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(browerImage:)];
-        [img addGestureRecognizer:tap];
-        [_bgImgsView addSubview:img];
-        [_groupImgArr addObject:img];
-    }
-}
+//-(void)setupImageGroupView{
+//    [self layoutIfNeeded];
+//    CGFloat w = (self.bgImgsView.width - 20) /3;
+//    CGFloat h = (self.bgImgsView.width - 20) /3;
+//
+//    CGFloat edge = 10;
+//    for (int i = 0; i<_imgArray.count; i++) {
+//
+//        int row = i / 3;
+//        int loc = i % 3;
+//        CGFloat x = (edge + w) * loc ;
+//        CGFloat y = (edge + h) * row;
+//
+//        UIImageView * img =[[UIImageView alloc]init];
+//        [img sd_setImageWithURL:[NSURL URLWithString:_imgArray[i]]];
+//        //        img.image = [UIImage imageNamed:_imgArray[i]];
+//        img.backgroundColor = [UIColor greenColor];
+//        img.frame = CGRectMake(x, y, w, h);
+//        img.userInteractionEnabled = YES;
+//        UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(browerImage:)];
+//        [img addGestureRecognizer:tap];
+//        [_bgImgsView addSubview:img];
+//        [_groupImgArr addObject:img];
+//    }
+//}
 
 + (CGFloat)cellHeightWithStr:(NSString *)str imgs:(NSArray *)imgs{
     CGFloat strH = [str heightWithWidth:CGRectGetWidth([UIScreen mainScreen].bounds) - 40 font:14];

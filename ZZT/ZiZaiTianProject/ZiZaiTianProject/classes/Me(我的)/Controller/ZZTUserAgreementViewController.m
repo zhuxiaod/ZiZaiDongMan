@@ -18,7 +18,7 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     
-    self.navigationController.title = @"用户协议";
+//    self.navigationController.title = @"用户协议";
     
     [self addBackBtn];
     

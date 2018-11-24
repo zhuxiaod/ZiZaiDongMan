@@ -18,9 +18,21 @@
 @interface ZXDSearchViewController () <UITableViewDelegate,UITableViewDataSource,PYSearchViewControllerDelegate,PYSearchViewControllerDataSource>
 @property (nonatomic,strong) NSMutableArray *searchSuggestionArray;
 @property (nonatomic,strong) ZZTNavigationViewController *nav;
+
+@property (nonatomic,strong) PYSearchViewController *searchVC;
+
+@property (nonatomic,strong) NSArray *hotSearchArray;
+
 @end
 
 @implementation ZXDSearchViewController
+
+-(NSArray *)hotSearchArray{
+    if(!_hotSearchArray){
+        _hotSearchArray = [NSArray array];
+    }
+    return _hotSearchArray;
+}
 
 - (NSMutableArray *)searchSuggestionArray{
     if(!_searchSuggestionArray){
@@ -31,15 +43,16 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    //获取热门搜索
-    [self getHotSearch];
+
+    
     NSArray *hotSeaches = @[@"妖神记", @"大霹雳", @"镖人", @"偷星九月天"];
     
     
     PYSearchViewController *searchVC = [PYSearchViewController searchViewControllerWithHotSearches:hotSeaches searchBarPlaceholder:@"搜索作品名、作者名、社区内容" didSearchBlock:^(PYSearchViewController *searchViewController, UISearchBar *searchBar, NSString *searchText) {
 
     }];
-
+    _searchVC = searchVC;
+    
     searchVC.searchSuggestionView.delegate = self;
     searchVC.searchSuggestionView.dataSource = self;
 
@@ -54,6 +67,9 @@
     ZZTNavigationViewController *nav = [[ZZTNavigationViewController alloc] initWithRootViewController:searchVC];
     _nav = nav;
     [self presentViewController:nav animated:NO completion:nil];
+    
+    //获取热门搜索
+    [self getHotSearch];
 }
 
 -(void)getHotSearch{
@@ -61,12 +77,49 @@
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/hotSelect"]  parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
+        NSArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
+        [self getHotSearchTitle:array];
+        self.hotSearchArray = array;
+        //获取书名 获取id
+//        [self setupHotSearchTags:array];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
 }
 
+-(void)setupHotSearchTags:(NSArray *)array{
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        // 处理耗时操作的代码块...
+        NSMutableArray *hotSearch = [NSMutableArray array];
+        for (int i = 0; i < array.count; i++) {
+            ZZTCarttonDetailModel *model = array[i];
+            [hotSearch addObject:model.id];
+        }
+        //通知主线程刷新
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.searchVC.hotSearchTags = hotSearch;
+        });
+    });
+}
+
+//获得热门搜索的名字
+-(void)getHotSearchTitle:(NSArray *)array{
+    
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        // 处理耗时操作的代码块...
+        NSMutableArray *hotSearch = [NSMutableArray array];
+        for (int i = 0; i < array.count; i++) {
+            ZZTCarttonDetailModel *model = array[i];
+            [hotSearch addObject:model.bookName];
+        }
+        //通知主线程刷新
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.searchVC.hotSearches = hotSearch;
+        });
+        
+    });
+  
+}
 -(void)didClickCancel:(PYSearchViewController *)searchViewController{
     [self.navigationController popViewControllerAnimated:NO];
 }
@@ -159,6 +212,36 @@
     detailVC.hidesBottomBarWhenPushed = YES;
     [_nav pushViewController:detailVC animated:YES];
 }
+#pragma mark - 热门搜索
+-(void)searchViewController:(PYSearchViewController *)searchViewController didSelectHotSearchAtIndex:(NSInteger)index searchText:(NSString *)searchText{
+    ZZTCarttonDetailModel *model = self.hotSearchArray[index];
+    ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
+    detailVC.isId = YES;
+    detailVC.cartoonDetail = model;
+    detailVC.hidesBottomBarWhenPushed = YES;
+    [_nav pushViewController:detailVC animated:YES];
+}
+
+#pragma mark - 搜索历史
+- (void)searchViewController:(PYSearchViewController *)searchViewController didSelectSearchHistoryAtIndex:(NSInteger)index searchText:(NSString *)searchText{
+    if (searchText.length) {
+        weakself(self);
+        UserInfo *user = [Utilities GetNSUserDefaults];
+        NSDictionary *dic = @{
+                              @"fuzzy":searchText,
+                              @"userId":[NSString stringWithFormat:@"%ld",user.id]
+                              };
+        //添加数据
+        AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+        [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/queryCartoon"]  parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+            NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
+            weakSelf.searchSuggestionArray = array;
+            [searchViewController.searchSuggestionView reloadData];
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+            
+        }];
+    }}
 
 -(CGFloat)searchSuggestionView:(UITableView *)searchSuggestionView heightForHeaderInSection:(NSInteger)section{
     return 50;

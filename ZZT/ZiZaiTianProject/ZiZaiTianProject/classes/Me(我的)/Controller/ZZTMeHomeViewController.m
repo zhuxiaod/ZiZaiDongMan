@@ -9,6 +9,7 @@
 #import "ZZTMeHomeViewController.h"
 #import "ZZTMeViewController.h"
 #import "ZZTMyZoneViewController.h"
+#import "ZZTMeWalletViewController.h"
 
 @interface ZZTMeHomeViewController ()<UIScrollViewDelegate>
 
@@ -17,6 +18,7 @@
 @property (nonatomic,strong) UIScrollView *mainView;
 @property (nonatomic,strong) ZZTNavBarTitleView *titleView;
 @property (nonatomic,strong) UIButton *mommentBtn;
+
 @end
 
 @implementation ZZTMeHomeViewController
@@ -139,6 +141,7 @@
     //主页
     //充值(左)
     [self.viewNavBar.leftButton setImage:[UIImage imageNamed:@"me_topUpBtn"] forState:UIControlStateNormal];
+    [self.viewNavBar.leftButton addTarget:self action:@selector(gotoTopupView) forControlEvents:UIControlEventTouchUpInside];
     //空间按钮
     //瞬间(左)
     UIButton *mommentBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -156,6 +159,13 @@
     
     //消息(通用 右)
     [self.viewNavBar.rightButton setImage:[UIImage imageNamed:@"me_messageBtn"] forState:UIControlStateNormal];
+}
+
+-(void)gotoTopupView{
+    //钱包
+    ZZTMeWalletViewController *walletVC = [[ZZTMeWalletViewController alloc] init];
+    walletVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:walletVC animated:YES];
 }
 
 //滑动展示清空按钮
