@@ -14,6 +14,8 @@
 
 @property (nonatomic, strong) SKPaymentTransaction *currentTransaction;
 
+@property (nonatomic, strong) NSString *productId;
+
 @end
 
 @implementation MLIAPManager
@@ -98,7 +100,7 @@
     if ([request isKindOfClass:[SKReceiptRefreshRequest class]]) {
         NSURL *receiptUrl = [[NSBundle mainBundle] appStoreReceiptURL];
         NSData *receiptData = [NSData dataWithContentsOfURL:receiptUrl];
-        [_delegate successedWithReceipt:receiptData];
+        [_delegate successedWithReceipt:receiptData transactionId:self.productId];
     }
 }
 
@@ -107,19 +109,19 @@
 
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
     
-//    NSLog(@"-----------收到产品反馈信息--------------");
-//    NSArray *myProduct = response.products;
-//    NSLog(@"产品Product ID:%@",response.invalidProductIdentifiers);
-//    NSLog(@"产品付费数量: %d", (int)[myProduct count]);
-//    // populate UI
-//    for(SKProduct *product in myProduct){
-//        NSLog(@"product info");
-//        NSLog(@"SKProduct 描述信息%@", [product description]);
-//        NSLog(@"产品标题 %@" , product.localizedTitle);
-//        NSLog(@"产品描述信息: %@" , product.localizedDescription);
-//        NSLog(@"价格: %@" , product.price);
-//        NSLog(@"Product id: %@" , product.productIdentifier);
-//    }
+    NSLog(@"-----------收到产品反馈信息--------------");
+    NSArray *myProducta = response.products;
+    NSLog(@"产品Product ID:%@",response.invalidProductIdentifiers);
+    NSLog(@"产品付费数量: %d", (int)[myProducta count]);
+    // populate UI
+    for(SKProduct *product in myProducta){
+        NSLog(@"product info");
+        NSLog(@"SKProduct 描述信息%@", [product description]);
+        NSLog(@"产品标题 %@" , product.localizedTitle);
+        NSLog(@"产品描述信息: %@" , product.localizedDescription);
+        NSLog(@"价格: %@" , product.price);
+        NSLog(@"Product id: %@" , product.productIdentifier);
+    }
     
     NSArray *myProductArray = response.products;
     if (myProductArray.count > 0) {
@@ -163,7 +165,8 @@
     
     NSURL *receiptUrl = [[NSBundle mainBundle] appStoreReceiptURL];
     NSData *receiptData = [NSData dataWithContentsOfURL:receiptUrl];
-    [_delegate successedWithReceipt:receiptData];
+    [_delegate successedWithReceipt:receiptData transactionId:transaction.transactionIdentifier];
+    self.productId = transaction.transactionIdentifier;
     self.currentTransaction = transaction;
 }
 

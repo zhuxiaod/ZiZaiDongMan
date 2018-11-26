@@ -16,12 +16,20 @@
 #import "ZZTVIPBtView.h"
 #import "MLIAPManager.h"
 #import <SVProgressHUD.h>
+#import "ZZTZBView.h"
 
 @interface ZZTMeWalletViewController ()<UITableViewDelegate,UITableViewDataSource,MLIAPManagerDelegate>
 
-@property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 @property (nonatomic,strong) NSArray *dataArray;
+
+@property (weak, nonatomic) IBOutlet ZZTZBView *sixBtn;
+@property (weak, nonatomic) IBOutlet ZZTZBView *twelveBtn;
+@property (weak, nonatomic) IBOutlet ZZTZBView *eighteenBtn;
+@property (weak, nonatomic) IBOutlet ZZTZBView *thirtyBtn;
+@property (weak, nonatomic) IBOutlet ZZTZBView *fiftyBtn;
+@property (weak, nonatomic) IBOutlet ZZTZBView *ninetyEightBtn;
+@property (strong, nonatomic) NSString *productId;
 
 @end
 
@@ -30,6 +38,13 @@
 
 NSString *zztWalletCell = @"zztWalletCell";
 NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
+
+//-(SKProduct *)product{
+//    if(!_product){
+//        _product = [[SKProduct alloc] init];
+//    }
+//    return <#expression#>
+//}
 
 -(NSArray *)dataArray{
     if(!_dataArray){
@@ -40,67 +55,66 @@ NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.navigationItem.title = @"钱包";
     
-    //scrollView
-    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
-    scrollView.backgroundColor = [UIColor colorWithHexString:@"#EEEEEE"];
-    [self.view addSubview:scrollView];
+    [self.viewNavBar.centerButton setTitle:@"充值" forState:UIControlStateNormal];
     
-    //top
-    ZZTWalletTopView *topView = [ZZTWalletTopView WalletTopView];
-    topView.frame = CGRectMake(0, 0, SCREEN_WIDTH, 140);
-    [scrollView addSubview:topView];
+    [self addBackBtn];
     
-    //midView
-    ZZTTopUpView *midView = [ZZTTopUpView TopUpView];
-    midView.buttonAction = ^(UIButton *sender) {
-        NSString *productId = @"";
-        if(sender.tag == 1)productId = @"ZZT600ZB";
-        else if(sender.tag == 2)productId = @"ZZT1200ZB";
-        else if (sender.tag == 3)productId = @"ZZT1800ZB";
-        else if (sender.tag == 4)productId = @"ZZT2500ZB";
-        else if (sender.tag == 5)productId = @"ZZT3000ZB";
-        else if (sender.tag == 6)productId = @"ZZT5000ZB";
-        else if (sender.tag == 7)productId = @"ZZT9800ZB";
-        else if (sender.tag == 8)productId = @"ZZT19800ZB";
-        else if (sender.tag == 9)productId = @"ZZT38800ZB";
-        [[MLIAPManager sharedManager] requestProductWithId:productId];
-        
-        [self refreshBtnClicked];
-        //菊花 开始
-        [SVProgressHUD showWithStatus:nil];
-    };
-    midView.frame = CGRectMake(0, topView.y + topView.height+15, SCREEN_WIDTH, 300);
-    [scrollView addSubview:midView];
-    
-    //bottom
-    ZZTVIPBtView *bottomView = [ZZTVIPBtView VIPBtView];
-    bottomView.frame = CGRectMake(0, midView.y + midView.height+15, SCREEN_WIDTH, 300);
-    bottomView.title = @"Z币用途";
-    bottomView.textViewStr = @"1 .购买订阅章节 2 .打赏作者 3 .购买素材 ";
-    [scrollView addSubview:bottomView];
-    
-    scrollView.contentSize = CGSizeMake(SCREEN_WIDTH, bottomView.y + bottomView.height);
-    
-    //创建数据源
     [self setupArray];
     
-    UIButton *leftbutton = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 40, 20)];
+    [self setUpTopUpBtn];
+
+}
+
+-(void)setUpTopUpBtn{
+    self.sixBtn.walletModel = self.dataArray[0];
+    self.twelveBtn.walletModel = self.dataArray[1];
+    self.eighteenBtn.walletModel = self.dataArray[2];
+    self.thirtyBtn.walletModel = self.dataArray[3];
+    self.fiftyBtn.walletModel = self.dataArray[4];
+    self.ninetyEightBtn.walletModel = self.dataArray[5];
     
-    [leftbutton setImage:[UIImage imageNamed:@"我的-注释"] forState:UIControlStateNormal];
-    leftbutton.contentEdgeInsets = UIEdgeInsetsMake(2, 2, 2, 2);
-    UIBarButtonItem *rightitem = [[UIBarButtonItem alloc]initWithCustomView:leftbutton];
+    self.sixBtn.tag = 0;
+    self.twelveBtn.tag = 1;
+    self.eighteenBtn.tag = 2;
+    self.thirtyBtn.tag = 3;
+    self.fiftyBtn.tag = 4;
+    self.ninetyEightBtn.tag = 5;
+
+    [self.sixBtn.viewBtn addTarget:self action:@selector(viewBtn:) forControlEvents:UIControlEventTouchUpInside];
+    [self.twelveBtn.viewBtn addTarget:self action:@selector(viewBtn:) forControlEvents:UIControlEventTouchUpInside];
+    [self.eighteenBtn.viewBtn addTarget:self action:@selector(viewBtn:) forControlEvents:UIControlEventTouchUpInside];
+    [self.thirtyBtn.viewBtn addTarget:self action:@selector(viewBtn:) forControlEvents:UIControlEventTouchUpInside];
+    [self.fiftyBtn.viewBtn addTarget:self action:@selector(viewBtn:) forControlEvents:UIControlEventTouchUpInside];
+    [self.ninetyEightBtn.viewBtn addTarget:self action:@selector(viewBtn:) forControlEvents:UIControlEventTouchUpInside];
+}
+
+-(void)viewBtn:(ZZTZBView *)btn{
+    ZZTFreeBiModel *model = self.dataArray[btn.tag];
+    [[MLIAPManager sharedManager] requestProductWithId:model.productId];
     
-    self.navigationItem.rightBarButtonItem = rightitem;
-    
+    self.productId = model.productId;
+    //内购代理
     [MLIAPManager sharedManager].delegate = self;
+    
+    [self refreshBtnClicked];
+
+    //菊花 开始
+    [SVProgressHUD showWithStatus:nil];
 }
 
 #pragma mark - 设置数据源
 -(void)setupArray{
-    self.dataArray = @[[ZZTFreeBiModel initZZTFreeBiWith:@"600自在币" ZZTBSpend:@"1阅读卷" btnType:@"￥6"],[ZZTFreeBiModel initZZTFreeBiWith:@"3000自在币" ZZTBSpend:@"7阅读卷" btnType:@"￥30"],[ZZTFreeBiModel initZZTFreeBiWith:@"5000自在币" ZZTBSpend:@"15阅读卷" btnType:@"￥50"],[ZZTFreeBiModel initZZTFreeBiWith:@"9800自在币" ZZTBSpend:@"38阅读卷" btnType:@"￥98"],[ZZTFreeBiModel initZZTFreeBiWith:@"19800自在币" ZZTBSpend:@"98阅读卷" btnType:@"￥198"],[ZZTFreeBiModel initZZTFreeBiWith:@"38800自在币" ZZTBSpend:@"238阅读卷" btnType:@"￥388"]];
+
+    self.dataArray = @[[ZZTFreeBiModel initZZTFreeBiWith:@"600Z币" ZZTBSpend:@"首充+送300Z币" btnType:@"￥6" productId:@"ZZT600ZB"],
+                       [ZZTFreeBiModel initZZTFreeBiWith:@"1200Z币" ZZTBSpend:@"首充+送500Z币" btnType:@"￥12" productId:@"ZZT1200ZB"],
+                       [ZZTFreeBiModel initZZTFreeBiWith:@"3000Z币" ZZTBSpend:@"首充+送1000Z币" btnType:@"￥30" productId:@"ZZT3000ZB"],
+                       [ZZTFreeBiModel initZZTFreeBiWith:@"5000Z币" ZZTBSpend:@"首充+送1500Z币" btnType:@"￥50" productId:@"ZZT5000ZB"],
+                       [ZZTFreeBiModel initZZTFreeBiWith:@"9800Z币" ZZTBSpend:@"首充+送2500Z币" btnType:@"￥98" productId:@"ZZT9800ZB"],
+                       [ZZTFreeBiModel initZZTFreeBiWith:@"19800Z币" ZZTBSpend:@"首充+送4900Z币" btnType:@"￥198" productId:@"ZZT19800ZB"]];
+    
 }
+
 #pragma mark - ================ Actions =================
 
 - (void)refreshBtnClicked {
@@ -143,12 +157,12 @@ NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
     }
 }
 
-- (void)successedWithReceipt:(NSData *)transactionReceipt {
+- (void)successedWithReceipt:(NSData *)transactionReceipt transactionId:(NSString *)transactionId{
     [SVProgressHUD dismiss];
     NSLog(@"购买成功");
     
     NSString  *transactionReceiptString = [transactionReceipt base64EncodedStringWithOptions:0];
-    
+    NSLog(@"transactionReceiptString:%@",transactionReceiptString);
     if ([transactionReceiptString length] > 0) {
         // 向自己的服务器验证购买凭证（此处应该考虑将凭证本地保存,对服务器有失败重发机制）
         /**
@@ -158,6 +172,31 @@ NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
          将该凭证发送到苹果的服务器验证，并将验证结果返回给客户端。
          如果需要，修改用户相应的会员权限
          */
+        
+        // 设置请求参数(key是苹果规定的)
+        
+        // 获取网络管理者
+//        // 设置请求参数(key是苹果规定的)
+//
+//        // 获取网络管理者
+//        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//
+//        // 发出请求
+//        UserInfo *user = [Utilities GetNSUserDefaults];
+//        NSDictionary *dict = @{
+//                               @"TransactionID":transactionId,//订单号
+//                               @"Payload":transactionReceiptString,//票据
+//                               @"userId":[NSString stringWithFormat:@"%ld",user.id]
+//                               };
+//        [manager POST:[ZZTAPI stringByAppendingString:@"iosBuy/recharge"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+//            NSLog(@"responseObject:%@",responseObject);
+        
+//        [manager POST:@"https://sandbox.itunes.apple.com/verifyReceipt" parameters:param progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id _Nullable responseObject) {
+//
+//            NSLog(@"responseObject = %@", responseObject);
+//
+//        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+
         
         /**
          if (凭证校验成功) {

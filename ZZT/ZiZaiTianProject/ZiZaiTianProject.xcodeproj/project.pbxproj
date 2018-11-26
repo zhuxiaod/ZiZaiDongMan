@@ -233,6 +233,7 @@
 		047720FE210822AE00FC97B5 /* EditImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 047720FD210822AE00FC97B5 /* EditImageView.m */; };
 		04772101210823EC00FC97B5 /* ZZTImageEditView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04772100210823EC00FC97B5 /* ZZTImageEditView.m */; };
 		047721032108545B00FC97B5 /* b.png in Resources */ = {isa = PBXBuildFile; fileRef = 047721022108545B00FC97B5 /* b.png */; };
+		04799F2921ABD9A800FD1769 /* ZZTZBView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04799F2821ABD9A800FD1769 /* ZZTZBView.m */; };
 		047ECEBA212814D3008D1E82 /* ColorInButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 047ECEB9212814D3008D1E82 /* ColorInButton.m */; };
 		047ECEBC212814E3008D1E82 /* ColorInButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 047ECEBB212814E3008D1E82 /* ColorInButton.xib */; };
 		047ECF04212A583B008D1E82 /* ZZTCreationButtonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 047ECF03212A583B008D1E82 /* ZZTCreationButtonView.m */; };
@@ -778,6 +779,8 @@
 		047720FF210823EC00FC97B5 /* ZZTImageEditView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTImageEditView.h; sourceTree = "<group>"; };
 		04772100210823EC00FC97B5 /* ZZTImageEditView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTImageEditView.m; sourceTree = "<group>"; };
 		047721022108545B00FC97B5 /* b.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = b.png; sourceTree = "<group>"; };
+		04799F2721ABD9A800FD1769 /* ZZTZBView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTZBView.h; sourceTree = "<group>"; };
+		04799F2821ABD9A800FD1769 /* ZZTZBView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTZBView.m; sourceTree = "<group>"; };
 		047ECEB8212814D3008D1E82 /* ColorInButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColorInButton.h; sourceTree = "<group>"; };
 		047ECEB9212814D3008D1E82 /* ColorInButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColorInButton.m; sourceTree = "<group>"; };
 		047ECEBB212814E3008D1E82 /* ColorInButton.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ColorInButton.xib; sourceTree = "<group>"; };
@@ -1580,6 +1583,8 @@
 				04DD53D821A59A7F00910D5A /* ZZTMePersonalView.h */,
 				04DD53D921A59A7F00910D5A /* ZZTMePersonalView.m */,
 				04DD53DB21A59A8E00910D5A /* ZZTMePersonalView.xib */,
+				04799F2721ABD9A800FD1769 /* ZZTZBView.h */,
+				04799F2821ABD9A800FD1769 /* ZZTZBView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -2366,6 +2371,7 @@
 				048C335C20E2540F00F69CE1 /* ZZTCell.m in Sources */,
 				0471A89A20FC312300ABFF35 /* ZZTCartoonContentCell.m in Sources */,
 				049D637721997118008EF62F /* ZZTSectionLabView.m in Sources */,
+				04799F2921ABD9A800FD1769 /* ZZTZBView.m in Sources */,
 				042D1477218AA86400BE05F6 /* TZAssetModel.m in Sources */,
 				04A2C6DF217D6EB6003D62BE /* ZZTNextWordHeaderView.m in Sources */,
 				04D2AFAB213006FB008F6CCB /* ZZTStoryModel.m in Sources */,

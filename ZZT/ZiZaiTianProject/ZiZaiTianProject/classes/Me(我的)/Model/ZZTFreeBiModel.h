@@ -16,7 +16,9 @@
 
 @property (nonatomic,strong) NSString *btnType;
 
-+(instancetype)initZZTFreeBiWith:(NSString *)Btype ZZTBSpend:(NSString *)ZZTBSpend btnType:(NSString *)btnType;
+@property (nonatomic,strong) NSString *productId;
+
++(instancetype)initZZTFreeBiWith:(NSString *)Btype ZZTBSpend:(NSString *)ZZTBSpend btnType:(NSString *)btnType productId:(NSString *)productId;
 
 
 @end

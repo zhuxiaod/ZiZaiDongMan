@@ -10,11 +10,12 @@
 
 @implementation ZZTFreeBiModel
 
-+(instancetype)initZZTFreeBiWith:(NSString *)Btype ZZTBSpend:(NSString *)ZZTBSpend btnType:(NSString *)btnType{
++(instancetype)initZZTFreeBiWith:(NSString *)Btype ZZTBSpend:(NSString *)ZZTBSpend btnType:(NSString *)btnType productId:(NSString *)productId{
     ZZTFreeBiModel *freeB = [[ZZTFreeBiModel alloc] init];
     freeB.btnType = btnType;
     freeB.ZZTBtype = Btype;
     freeB.ZZTBSpend = ZZTBSpend;
+    freeB.productId = productId;
     return freeB;
 }
 

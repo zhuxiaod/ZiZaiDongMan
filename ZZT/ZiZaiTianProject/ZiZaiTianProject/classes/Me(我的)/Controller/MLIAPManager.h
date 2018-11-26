@@ -15,7 +15,7 @@
 
 - (void)receiveProduct:(SKProduct *)product;
 
-- (void)successedWithReceipt:(NSData *)transactionReceipt;
+- (void)successedWithReceipt:(NSData *)transactionReceipt transactionId:(NSString *)transactionId;
 
 - (void)failedPurchaseWithError:(NSString *)errorDescripiton;
 
@@ -29,11 +29,15 @@
 
 
 + (instancetype)sharedManager;
-
+//通过商品ID发送购买请求
 - (BOOL)requestProductWithId:(NSString *)productId;
+//购买产品
 - (BOOL)purchaseProduct:(SKProduct *)skProduct;
+//恢复购买
 - (BOOL)restorePurchase;
+//刷新收据
 - (void)refreshReceipt;
+//完成交易
 - (void)finishTransaction;
 
 @end
