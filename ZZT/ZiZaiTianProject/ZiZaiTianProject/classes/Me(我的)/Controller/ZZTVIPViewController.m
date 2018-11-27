@@ -10,7 +10,6 @@
 #import "ZZTVIPTopView.h"
 #import "ZZTVIPMidView.h"
 #import "ZZTVIPBtView.h"
-//static NSString * const productId = @"zxd.ZiZaiTianProject2";
 #import "MLIAPManager.h"
 #import <SVProgressHUD.h>
 #import <MBProgressHUD.h>
@@ -24,41 +23,28 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.navigationItem.title = @"VIP";
+    [self.viewNavBar.centerButton setTitle:@"VIP" forState:UIControlStateNormal];
     
-    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
-    scrollView.backgroundColor = [UIColor colorWithHexString:@"#EEEEEE"];
-    [self.view addSubview:scrollView];
+    [self setMeNavBarStyle];
     
-    //头部
-    ZZTVIPTopView *VIPTopView = [ZZTVIPTopView VIPTopView];
-    VIPTopView.frame = CGRectMake(0, 0, SCREEN_WIDTH, 140);
-    [scrollView addSubview:VIPTopView];
-
-    //充值服务
-    ZZTVIPMidView *midView = [ZZTVIPMidView VIPMidView];
-    midView.frame = CGRectMake(0,VIPTopView.y + VIPTopView.height + 15, SCREEN_WIDTH, 280);
-    midView.buttonAction = ^(UIButton *sender) {
-        NSString *productId = @"";
-        if(sender.tag == 0)productId = @"zxd.ZiZaiTianProject1";
-        else if(sender.tag == 1)productId = @"zxd.ZiZaiTianProject3";
-        else if (sender.tag == 2)productId = @"zxd.ZiZaiTianProject4";
-        else if (sender.tag == 3)productId = @"zxd.ZiZaiTianProject5";
-        else if (sender.tag == 4)productId = @"zxd.ZiZaiTianProject6";
-        [[MLIAPManager sharedManager] requestProductWithId:productId];
-
-        [self refreshBtnClicked];
-        //菊花 开始
-        [SVProgressHUD showWithStatus:nil];
-    };
-    [scrollView addSubview:midView];
     
-    //VIP特权
-    ZZTVIPBtView *btView = [ZZTVIPBtView VIPBtView];
-    btView.frame = CGRectMake(0, midView.y+midView.height+15, SCREEN_WIDTH, 280);
-    [scrollView addSubview:btView];
-    
-    scrollView.contentSize = CGSizeMake(SCREEN_WIDTH, btView.y+btView.height);
+//    //充值服务
+//    ZZTVIPMidView *midView = [ZZTVIPMidView VIPMidView];
+//    midView.frame = CGRectMake(0,VIPTopView.y + VIPTopView.height + 15, SCREEN_WIDTH, 280);
+//    midView.buttonAction = ^(UIButton *sender) {
+//        NSString *productId = @"";
+//        if(sender.tag == 0)productId = @"zxd.ZiZaiTianProject1";
+//        else if(sender.tag == 1)productId = @"zxd.ZiZaiTianProject3";
+//        else if (sender.tag == 2)productId = @"zxd.ZiZaiTianProject4";
+//        else if (sender.tag == 3)productId = @"zxd.ZiZaiTianProject5";
+//        else if (sender.tag == 4)productId = @"zxd.ZiZaiTianProject6";
+//        [[MLIAPManager sharedManager] requestProductWithId:productId];
+//
+//        [self refreshBtnClicked];
+//        //菊花 开始
+//        [SVProgressHUD showWithStatus:nil];
+//    };
+   
     
     [MLIAPManager sharedManager].delegate = self;
 }

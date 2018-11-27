@@ -22,6 +22,7 @@
 }
 
 -(void)awakeFromNib{
+    [super awakeFromNib];
     _imageBtn.tag = 1;
     [_imageBtn addTarget:self action:@selector(clickBrn:) forControlEvents:UIControlEventTouchUpInside];
     
@@ -31,7 +32,7 @@
 
 -(void)setBackImage:(NSString *)backImage{
     _backImage = backImage;
-    [self.backImageView sd_setImageWithURL:[NSURL URLWithString:backImage]];
+    [self.backImageView sd_setImageWithURL:[NSURL URLWithString:backImage] placeholderImage:[UIImage imageNamed:@"Me_homeBackground"]];
     [self.imageBtn setTitle:@"" forState:UIControlStateNormal];
     
     [self.backImageView setContentMode:UIViewContentModeScaleAspectFill];

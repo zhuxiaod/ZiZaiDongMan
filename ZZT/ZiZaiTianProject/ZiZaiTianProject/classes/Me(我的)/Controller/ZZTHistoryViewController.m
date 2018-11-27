@@ -66,12 +66,15 @@ static NSString *zztCartoonHistoryCell = @"zztCartoonHistoryCell";
     
     [self loadData];
     
-    [self addBackBtn];
+//    [self addBackBtn];
     
     [self.viewNavBar.centerButton setTitle:@"浏览历史" forState:UIControlStateNormal];
     
     [self.viewNavBar.rightButton setTitle:@"清空" forState:UIControlStateNormal];
     [self.viewNavBar.rightButton addTarget:self action:@selector(deletHistory) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self setMeNavBarStyle];
+
 }
 
 -(void)deletHistory{

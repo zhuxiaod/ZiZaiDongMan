@@ -32,4 +32,17 @@
     return newimg;
 }
 
++(UIImage *)cropSquareImage:(UIImage *)image{
+    CGImageRef sourceImageRef = [image CGImage];
+    //将UIImage转换成CGImageRef
+    NSInteger left = 30;
+    NSInteger widthHeight = SCREEN_WIDTH - 2 * left;
+    NSInteger top = (SCREEN_WIDTH  - widthHeight) / 2;
+    CGRect cropRect = CGRectMake(0, top - 64, SCREEN_WIDTH, Screen_Height * 0.36);
+    CGImageRef newImageRef = CGImageCreateWithImageInRect(sourceImageRef, cropRect);
+    //按照给定的矩形区域进行剪裁
+    UIImage *newImage = [UIImage imageWithCGImage:newImageRef];
+    return newImage;
+}
+
 @end

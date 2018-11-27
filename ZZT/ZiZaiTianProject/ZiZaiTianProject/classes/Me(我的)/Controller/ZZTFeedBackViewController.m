@@ -27,10 +27,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    [self addBackBtn];
+//    [self addBackBtn];
     
     [self.viewNavBar.centerButton setTitle:@"问题反馈" forState:UIControlStateNormal];
     
+    [self setMeNavBarStyle];
+
     
     self.problemStatementTextView.delegate = self;
     self.contactTextView.delegate = self;
@@ -43,6 +45,13 @@
 }
 //提交问题
 - (IBAction)SubmitQuestions:(UIButton *)sender {
+    //显示提交成功
+    [MBProgressHUD showMessage:@"正在提交" toView:self.view];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideHUDForView:self.view];
+        [MBProgressHUD showSuccess:@"提交成功"];
+        [self.navigationController popViewControllerAnimated:YES];
+    });
 }
 
 - (IBAction)btnClickTarget:(UIButton *)sender {

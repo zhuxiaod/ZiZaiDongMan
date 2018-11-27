@@ -373,7 +373,7 @@ NSString *SuggestionView3 = @"SuggestionView";
     
     // 3. 设置是否可以选择视频/图片/原图
     imagePickerVc.allowPickingVideo = NO;
-    imagePickerVc.allowPickingImage = YES;
+    imagePickerVc.allowPickingImage = NO;
     imagePickerVc.allowPickingOriginalPhoto = YES;
     imagePickerVc.allowPickingGif = NO;
     imagePickerVc.allowPickingMultipleVideo = NO; // 是否可以多选视频
@@ -383,7 +383,7 @@ NSString *SuggestionView3 = @"SuggestionView";
 
     /// 5. 单选模式,maxImagesCount为1时才生效
     imagePickerVc.showSelectBtn = NO;
-    imagePickerVc.allowCrop = NO;
+    imagePickerVc.allowCrop = YES;
     imagePickerVc.needCircleCrop = NO;
     // 设置竖屏下的裁剪尺寸
     NSInteger left = 30;

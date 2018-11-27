@@ -102,6 +102,7 @@ static NSString *findCommentCell = @"findCommentCell";
     
     [self setupMJRefresh];
     
+    [self loadCaiNiXiHuanData];
 }
 
 
@@ -130,7 +131,6 @@ static NSString *findCommentCell = @"findCommentCell";
             dispatch_group_enter(self.group);
             [self loadData];
         });
-        [self loadCaiNiXiHuanData];
       
     }];
     self.contentView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
@@ -154,10 +154,7 @@ static NSString *findCommentCell = @"findCommentCell";
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/selDiscover"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-        if(dic.count == 6){
-            NSLog(@"12121214312423142314141241234231412412");
-        }
-        if(dic.count != 6){
+        if(dic.count >= 6){
             NSInteger total = [[NSString stringWithFormat:@"%@",[dic objectForKey:@"total"]] integerValue];
             
             NSMutableArray *array = [ZZTMyZoneModel mj_objectArrayWithKeyValuesArray:[dic objectForKey:@"list"]];
@@ -168,6 +165,7 @@ static NSString *findCommentCell = @"findCommentCell";
             
             if(self.dataArray.count >= total){
                 [self.contentView.mj_header endRefreshing];
+                [self.contentView.mj_footer endRefreshingWithNoMoreData];
             }else{
                 [self.contentView.mj_header endRefreshing];
             }

@@ -93,12 +93,15 @@ static NSString *circleCell = @"circleCell";
     
     self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithTitle:@"清空" target:self action:@selector(removeAllBook) titleColor:[UIColor whiteColor]];
     
-    [self addBackBtn];
+//    [self addBackBtn];
     
     [self.viewNavBar.centerButton setTitle:@"书柜" forState:UIControlStateNormal];
-    
+
     [self.viewNavBar.rightButton setTitle:@"清空" forState:UIControlStateNormal];
     [self.viewNavBar.rightButton addTarget:self action:@selector(removeAllBook) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self setMeNavBarStyle];
+
 }
 
 -(void)removeAllBook{

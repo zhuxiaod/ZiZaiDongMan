@@ -22,5 +22,6 @@ pod 'IQKeyboardManager'
 pod 'TTTAttributedLabel'
 pod 'UIColor+SKYExtension'
 pod 'SDAutoLayout'
+pod 'PhotoTweaks'
 end
 

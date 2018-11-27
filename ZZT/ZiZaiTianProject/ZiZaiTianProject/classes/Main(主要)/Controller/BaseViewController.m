@@ -162,4 +162,22 @@
     return _viewNavBar;
 }
 
+//设置我的模块bar风格
+-(void)setMeNavBarStyle{
+    
+    [self.viewNavBar setBackgroundColor:[UIColor colorWithRGB:@"54,54,54"]];
+    
+    [self.viewNavBar.centerButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    
+    [self.viewNavBar.leftButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+
+    [self.viewNavBar.rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+
+    [self addBackBtn];
+    
+    [self.viewNavBar.leftButton setImage:[UIImage imageNamed:@"navigationbarBack"] forState:UIControlStateNormal];
+    
+    [self.viewNavBar setShowBottomLabel:NO];
+}
+
 @end

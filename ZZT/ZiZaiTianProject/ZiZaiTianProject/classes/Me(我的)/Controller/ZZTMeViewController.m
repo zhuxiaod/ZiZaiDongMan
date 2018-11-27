@@ -157,8 +157,11 @@ NSString *bannerID = @"MeCell";
     cell.accessoryType = UITableViewCellAccessoryNone; //显示最右边的箭头
     
     UIView *bottomView = [[UIView alloc] init];
+    
     bottomView.backgroundColor = [UIColor colorWithRGB:@"232,232,232"];
+    
     [cell.contentView addSubview:bottomView];
+    
     [bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(cell.contentView.mas_bottom).offset(-1);
         make.height.mas_equalTo(1);
@@ -395,7 +398,6 @@ NSString *bannerID = @"MeCell";
 }
 -(void)viewWillDisappear:(BOOL)animated{
     [self.navigationController setNavigationBarHidden:YES animated:YES];
-//    [self.navigationController.navigationBar setTranslucent:NO];
 
 }
 @end

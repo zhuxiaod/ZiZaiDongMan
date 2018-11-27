@@ -11,8 +11,10 @@
 #import "ZZTMeEditButtomView.h"
 #import "TypeButton.h"
 #import "ZZTMePersonalView.h"
+#import "TZImageCropManager.h"
+#import "PhotoTweaksViewController.h"
 
-@interface ZZTMeEditViewController ()<UINavigationControllerDelegate,UIImagePickerControllerDelegate,TZImagePickerControllerDelegate,UITableViewDataSource,UITableViewDelegate>
+@interface ZZTMeEditViewController ()<UINavigationControllerDelegate,UIImagePickerControllerDelegate,TZImagePickerControllerDelegate,UITableViewDataSource,UITableViewDelegate,PhotoTweaksViewControllerDelegate>
 
 @property (nonatomic,assign) NSInteger btnTag;
 
@@ -116,8 +118,7 @@ static NSString *personalCellThree = @"personalCellThree";
     [self.viewNavBar.rightButton addTarget:self action:@selector(successUp) forControlEvents:UIControlEventTouchUpInside];
 
     //左边
-    [self addBackBtn];
-    
+//    [self addBackBtn];
     
     self.sectionOne = @[@"昵称",@"账号"];
     
@@ -128,9 +129,6 @@ static NSString *personalCellThree = @"personalCellThree";
     //设置mainView
     [self setupMainView];
 
-
-
-    
     [self setupTopView];
 
     //初始化图像选择控制器
@@ -146,6 +144,9 @@ static NSString *personalCellThree = @"personalCellThree";
 //    [self setupNavBar];
 //
 //    [self hiddenViewNavBar];
+    
+    
+    [self setMeNavBarStyle];
    
 }
 
@@ -191,8 +192,6 @@ static NSString *personalCellThree = @"personalCellThree";
         return self.sectionThree.count;
     }
 }
-
-
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -285,7 +284,8 @@ static NSString *personalCellThree = @"personalCellThree";
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    return Screen_Height * 0.36;
+//    return Screen_Height * 0.36;
+     return Screen_Height * 0.6;
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
@@ -302,33 +302,16 @@ static NSString *personalCellThree = @"personalCellThree";
     //添加topView
     ZZTMeEditTopView *topView = [ZZTMeEditTopView ZZTMeEditTopView];
     _topView = topView;
+    topView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT * 0.5);
     //假如现在有数据  添加进去
     topView.backImage = self.backImg;
     topView.headImage = self.headImg;
     
-   
     topView.buttonAction = ^(UIButton *sender) {
         [self clickBtn:sender];
     };
     _tableView.tableHeaderView = topView;
 }
-
-//-(void)setupBottomView{
-//    //添加buttomView
-//    __block ZZTMeEditViewController *blockSelf = self;
-//    ZZTMeEditButtomView *meButtomView = [ZZTMeEditButtomView ZZTMeEditButtomView];
-//    _meButtomView = meButtomView;
-//    meButtomView.model = self.model;
-//    _meButtomView.TextChange = ^(UITextField *texyField) {
-//        [blockSelf textChange:texyField];
-//    };
-//    meButtomView.frame = CGRectMake(0, 300, SCREEN_WIDTH, 400);
-//
-//    _meButtomView.BtnInside = ^(TypeButton *btn) {
-//        [blockSelf clickPickBtn:btn];
-//    };
-//    [_scrollView addSubview:_meButtomView];
-//}
 
 //保存
 -(void)saveWithImgType:(NSString *)imgType{
@@ -352,8 +335,12 @@ static NSString *personalCellThree = @"personalCellThree";
             NSString *toke = [tool makeToken:ZZTAccessKey secretKey:ZZTSecretKey];
 
             [AFNHttpTool putImagePath:filePath key:imageName token:toke complete:^(id objc) {
-//                NSLog(@"111%@",objc); //  上传成功并获取七牛云的图片地址
-                self.headImg = objc;
+                NSLog(@"上传的图片地址:%@",objc); //  上传成功并获取七牛云的图片地址
+                if([imgType isEqualToString:@"headImg"]){
+                    self.headImg = objc;
+                }else{
+                    self.backImg = objc;
+                }
                 [self.imgeDict setObject:objc forKey:imgType];
             }];
 
@@ -369,26 +356,25 @@ static NSString *personalCellThree = @"personalCellThree";
 
 -(void)successUp{
     //遍历字典
+    [MBProgressHUD showMessage:@"正在上传" toView:self.view];
     NSArray *imgDict = [self.imgeDict allKeys];
     for (int i = 0; i < imgDict.count; i++) {
         NSString *key = imgDict[i];
         if ([key isEqualToString:@"headImg"]) {
             self.headImg = [self.imgeDict objectForKey:@"headImg"];
+            //判断有无前缀 有前缀的 把前缀取消
+            if([[self.headImg substringToIndex:4]isEqualToString:@"http"]){
+                self.headImg = [self.headImg substringFromIndex:25];
+            }
         }else{
             self.backImg = [self.imgeDict objectForKey:@"backImg"];
+            NSLog(@"self.backImg:%@",self.backImg);
+            if([[self.backImg substringToIndex:4]isEqualToString:@"http"]){
+                self.backImg = [self.backImg substringFromIndex:25];
+            }
         }
     }
     
-
-    //判断有无前缀 有前缀的 把前缀取消
-    if([[self.headImg substringToIndex:4]isEqualToString:@"http"]){
-        self.headImg = [self.headImg substringFromIndex:25];
-    }
-    
-    if([[self.backImg substringToIndex:4]isEqualToString:@"http"]){
-        self.backImg = [self.backImg substringFromIndex:25];
-    }
-
     UserInfo *user = [Utilities GetNSUserDefaults];
     NSDictionary *dic = @{
                           @"userId":[NSString stringWithFormat:@"%ld",user.id],
@@ -401,12 +387,15 @@ static NSString *personalCellThree = @"personalCellThree";
                           };
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"login/upUser"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [MBProgressHUD hideHUD];
+        [MBProgressHUD showSuccess:@"上传成功"];
         //保存本地
         //请求一次 拿到数据
         [self loadUserData];
         [self.navigationController popViewControllerAnimated:YES];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
+        [MBProgressHUD hideHUD];
+        [MBProgressHUD showError:@"上传失败"];
     }];
 }
 
@@ -443,9 +432,42 @@ static NSString *personalCellThree = @"personalCellThree";
         [self alert:btn];
     }
 }
+- (void)photoTweaksController:(PhotoTweaksViewController *)controller didFinishWithCroppedImage:(UIImage *)croppedImage
+{
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    // cropped image
+    UIButton *button = (UIButton *)[self.view viewWithTag:self.btnTag];
+    NSString *imageType;
+    if(self.btnTag == 1){
+        self.backImage = croppedImage;
+        //        [self.imgeDict setObject:resultImage forKey:@"backImg"];
+        imageType = @"backImg";
+    }else{
+        self.headImage = croppedImage;
+        //        [self.imgeDict setObject:resultImage forKey:@"headImg"];
+        imageType = @"headImg";
+    }
+    //上传七牛云
+    [self saveWithImgType:imageType];
+    //展示
+    [button setImage:[croppedImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
+    [button.imageView setContentMode:UIViewContentModeScaleAspectFill];
+    button.imageView.clipsToBounds = YES;
+}
 
 #pragma mark - 相册回调
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
+//    [self dismissViewControllerAnimated:YES completion:nil];
+//    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
+//    PhotoTweaksViewController *photoTweaksViewController = [[PhotoTweaksViewController alloc] initWithImage:image];
+//    photoTweaksViewController.delegate = self;
+//    photoTweaksViewController.autoSaveToLibray = YES;
+//    photoTweaksViewController.maxRotationAngle = M_PI_4;
+////    [picker pushViewController:photoTweaksViewController animated:YES];
+//    [self.navigationController presentViewController:photoTweaksViewController animated:YES completion:nil];
+    
+    
+
     NSLog(@"%@",info);
     UIButton *button = (UIButton *)[self.view viewWithTag:_btnTag];
     //选取的图片
@@ -454,19 +476,19 @@ static NSString *personalCellThree = @"personalCellThree";
     NSString *imageType;
     if(_btnTag == 1){
         _backImage = resultImage;
-        [self.imgeDict setObject:resultImage forKey:@"backImg"];
+//        [self.imgeDict setObject:resultImage forKey:@"backImg"];
         imageType = @"backImg";
     }else{
         _headImage = resultImage;
-        [self.imgeDict setObject:resultImage forKey:@"headImg"];
+//        [self.imgeDict setObject:resultImage forKey:@"headImg"];
         imageType = @"headImg";
     }
     //上传七牛云
     [self saveWithImgType:imageType];
     //展示
     [button setImage:[resultImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
-    [button.imageView setContentMode:UIViewContentModeScaleAspectFill];
-    button.imageView.clipsToBounds = YES;
+    [button.imageView setContentMode:UIViewContentModeScaleAspectFit];
+//    button.imageView.clipsToBounds = YES;
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -474,15 +496,127 @@ static NSString *personalCellThree = @"personalCellThree";
 -(void)pushPhotoAlbum:(UIButton *)btn{
     //告诉是哪一个btn
     _btnTag = btn.tag;
-    //调用系统相册的类
-//    _picker = [[UIImagePickerController alloc]init];
-    //设置选取的照片是否可编辑
-    _picker.allowsEditing = YES;
-    //设置相册呈现的样式
-    _picker.sourceType =  UIImagePickerControllerSourceTypeSavedPhotosAlbum;
-    //选择完成图片或者点击取消按钮都是通过代理来操作我们所需要的逻辑过程
-    [self.navigationController presentViewController:_picker animated:YES completion:nil];
+//
+//    //调用系统相册的类
+////    _picker = [[UIImagePickerController alloc]init];
+//    //设置选取的照片是否可编辑
+//    _picker.allowsEditing = NO;
+//    //设置相册呈现的样式
+//    _picker.sourceType =  UIImagePickerControllerSourceTypeSavedPhotosAlbum;
+//    //选择完成图片或者点击取消按钮都是通过代理来操作我们所需要的逻辑过程
+//    [self.navigationController presentViewController:_picker animated:YES completion:nil];
+    
+    //最大选择数     最大显示照片
+    TZImagePickerController *imagePickerVc = [[TZImagePickerController alloc] initWithMaxImagesCount:1 columnNumber:4 delegate:self pushPhotoPickerVc:YES];
+    // imagePickerVc.navigationBar.translucent = NO;
+
+    imagePickerVc.naviBgColor = [UIColor grayColor];
+
+#pragma mark - 五类个性化设置，这些参数都可以不传，此时会走默认设置
+    imagePickerVc.isSelectOriginalPhoto = YES;
+
+    imagePickerVc.allowTakePicture = YES; // 在内部显示拍照按钮
+
+    [imagePickerVc setUiImagePickerControllerSettingBlock:^(UIImagePickerController *imagePickerController) {
+        imagePickerController.videoQuality = UIImagePickerControllerQualityTypeHigh;
+    }];
+
+    //主题颜色
+    imagePickerVc.iconThemeColor = [UIColor colorWithRed:31 / 255.0 green:185 / 255.0 blue:34 / 255.0 alpha:1.0];
+    //显示照片不能选择图层
+    imagePickerVc.showPhotoCannotSelectLayer = YES;
+    //    无法选择图层颜色
+    imagePickerVc.cannotSelectLayerColor = [[UIColor whiteColor] colorWithAlphaComponent:0.8];
+    //设置照片选择器页面UI配置块
+    [imagePickerVc setPhotoPickerPageUIConfigBlock:^(UICollectionView *collectionView, UIView *bottomToolBar, UIButton *previewButton, UIButton *originalPhotoButton, UILabel *originalPhotoLabel, UIButton *doneButton, UIImageView *numberImageView, UILabel *numberLabel, UIView *divideLine) {
+        [doneButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+    }];
+
+    // 3. 设置是否可以选择视频/图片/原图
+    imagePickerVc.allowPickingVideo = NO;
+    imagePickerVc.allowPickingImage = YES;
+    imagePickerVc.allowPickingOriginalPhoto = YES;
+    imagePickerVc.allowPickingGif = NO;
+    imagePickerVc.allowPickingMultipleVideo = NO; // 是否可以多选视频
+
+    // 4. 照片排列按修改时间升序
+    imagePickerVc.sortAscendingByModificationDate = YES;
+
+    /// 5. 单选模式,maxImagesCount为1时才生效
+    imagePickerVc.showSelectBtn = NO;
+    imagePickerVc.allowCrop = YES;
+    imagePickerVc.needCircleCrop = NO;
+    // 设置竖屏下的裁剪尺寸
+    NSInteger left = 30;
+    NSInteger widthHeight = self.view.width - 2 * left;
+    NSInteger top = (self.view.height - widthHeight) / 2;
+    imagePickerVc.cropRect = CGRectMake(0, top, SCREEN_WIDTH, SCREEN_HEIGHT * 0.36);
+
+    imagePickerVc.statusBarStyle = UIStatusBarStyleLightContent;
+
+    // 设置是否显示图片序号
+    imagePickerVc.showSelectedIndex = YES;
+
+#pragma mark - 到这里为止
+
+    // 你可以通过block或者代理，来得到用户选择的照片.
+    [imagePickerVc setDidFinishPickingPhotosHandle:^(NSArray<UIImage *> *photos, NSArray *assets, BOOL isSelectOriginalPhoto) {
+
+        isSelectOriginalPhoto = YES;
+        UIButton *button = (UIButton *)[self.view viewWithTag:self.btnTag];
+        UIImage *resultImage = photos[0];
+        NSString *imageType;
+        if(self.btnTag == 1){
+            self.backImage = resultImage;
+            //        [self.imgeDict setObject:resultImage forKey:@"backImg"];
+            imageType = @"backImg";
+        }else{
+            self.headImage = resultImage;
+            //        [self.imgeDict setObject:resultImage forKey:@"headImg"];
+            imageType = @"headImg";
+        }
+        //上传七牛云
+        [self saveWithImgType:imageType];
+        //展示
+        [button setImage:[resultImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
+            [button.imageView setContentMode:UIViewContentModeScaleAspectFill];
+            button.imageView.clipsToBounds = YES;
+    }];
+
+    [self presentViewController:imagePickerVc animated:YES completion:nil];
+
 }
+
+- (void)imagePickerController:(TZImagePickerController *)picker didFinishPickingPhotos:(NSArray<UIImage *> *)photos sourceAssets:(NSArray *)assets isSelectOriginalPhoto:(BOOL)isSelectOriginalPhoto infos:(NSArray<NSDictionary *> *)infos {
+//
+//    TZAssetModel *assetModel = [[TZImageManager manager] createModelWithAsset:assets[0]];
+//
+//    TZImagePickerController *imagePicker = [[TZImagePickerController alloc] initCropTypeWithAsset:assetModel.asset photo:photos[0] completion:^(UIImage *cropImage, id asset) {
+//        UIButton *button = (UIButton *)[self.view viewWithTag:self.btnTag];
+//        NSString *imageType;
+//        if(self.btnTag == 1){
+//            self.backImage = cropImage;
+//            //        [self.imgeDict setObject:resultImage forKey:@"backImg"];
+//            imageType = @"backImg";
+//        }else{
+//            self.headImage = cropImage;
+//            //        [self.imgeDict setObject:resultImage forKey:@"headImg"];
+//            imageType = @"headImg";
+//        }
+//        //上传七牛云
+//        [self saveWithImgType:imageType];
+//        //展示
+//        [button setImage:[cropImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
+//        [button.imageView setContentMode:UIViewContentModeScaleAspectFit];
+//        button.imageView.clipsToBounds = YES;
+//
+//    }];
+
+
+    
+   
+}
+
 
 //调用相机
 -(void)pushCamera:(UIButton *)btn{
@@ -494,7 +628,7 @@ static NSString *personalCellThree = @"personalCellThree";
         // 将sourceType设为UIImagePickerControllerSourceTypeCamera代表拍照或拍视频
         _picker.sourceType = UIImagePickerControllerSourceTypeCamera;
         // 设置拍摄照片
-        _picker.cameraCaptureMode =UIImagePickerControllerCameraCaptureModePhoto;
+        _picker.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
         // 设置使用手机的后置摄像头（默认使用后置摄像头）
         _picker.cameraDevice =UIImagePickerControllerCameraDeviceRear;
         // 设置使用手机的前置摄像头。
@@ -678,6 +812,7 @@ static NSString *personalCellThree = @"personalCellThree";
         
     }];
 }
+
 #pragma mark - 选择性别
 - (void)callSexActionSheet{
     UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:@"亲~请选择你的性别" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
@@ -692,7 +827,6 @@ static NSString *personalCellThree = @"personalCellThree";
         NSLog(@"点击了取消");
     }];
 
-    
     //把action添加到actionSheet里
     [actionSheet addAction:action1];
     [actionSheet addAction:action2];

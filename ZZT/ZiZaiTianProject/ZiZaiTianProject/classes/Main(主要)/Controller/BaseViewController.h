@@ -31,4 +31,6 @@
 
 -(void)setupNavigationBarHidden:(BOOL)isHidden;
 
+-(void)setMeNavBarStyle;
+
 @end

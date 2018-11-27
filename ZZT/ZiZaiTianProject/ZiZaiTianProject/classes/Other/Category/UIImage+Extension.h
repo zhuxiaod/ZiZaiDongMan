@@ -12,5 +12,7 @@
 
 - (UIImage *)clipEllipseImage;
 
++ (UIImage *)cropSquareImage:(UIImage *)image;
+
 
 @end

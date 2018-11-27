@@ -24,6 +24,7 @@ PODS:
   - MBProgressHUD (1.1.0)
   - MJExtension (3.0.15.1)
   - MJRefresh (3.1.15.3)
+  - PhotoTweaks (1.0.3)
   - PYSearch (0.9.0)
   - Qiniu (7.2.4):
     - HappyDNS (~> 0.3)
@@ -56,6 +57,7 @@ DEPENDENCIES:
   - MBProgressHUD (~> 1.1.0)
   - MJExtension
   - MJRefresh
+  - PhotoTweaks
   - PYSearch
   - Qiniu
   - RTRootNavigationController
@@ -82,6 +84,7 @@ SPEC REPOS:
     - MBProgressHUD
     - MJExtension
     - MJRefresh
+    - PhotoTweaks
     - PYSearch
     - Qiniu
     - RTRootNavigationController
@@ -107,6 +110,7 @@ SPEC CHECKSUMS:
   MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
   MJExtension: 19bc33ce2eee2d319760f5622562cf581a6ff756
   MJRefresh: b48380ae2b927b46c4ef000de9adb8dc748e1df7
+  PhotoTweaks: 17a448f451872fd9c3cc65ec5ca125ccd1b48d11
   PYSearch: 55175e6046e2e1b5236a90c780351988e914a015
   Qiniu: 65384bca1cdb0480a68d9b9b8f54db53418c0355
   RTRootNavigationController: d6aa6cbb78a3eaecea4f6e4df63f15dd887836b8
@@ -120,6 +124,6 @@ SPEC CHECKSUMS:
   XHImageViewer: 7b275d2aa829e56761c30303b9d51cae086a90b9
   YYImage: 1e1b62a9997399593e4b9c4ecfbbabbf1d3f3b54
 
-PODFILE CHECKSUM: 559fecc15b2fc6284c3d987e31d2796ff77a6d95
+PODFILE CHECKSUM: 865dbb8517e6769a32eb5915f11e716a3cb1fb67
 
 COCOAPODS: 1.5.3

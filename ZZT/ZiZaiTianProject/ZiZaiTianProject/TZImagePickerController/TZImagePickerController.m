@@ -489,6 +489,7 @@
     _cropRectPortrait = cropRect;
     CGFloat widthHeight = cropRect.size.width;
     _cropRectLandscape = CGRectMake((self.view.tz_height - widthHeight) / 2, cropRect.origin.x, widthHeight, widthHeight);
+//    _cropRectLandscape = cropRect;
 }
 
 - (void)setTimeout:(NSInteger)timeout {

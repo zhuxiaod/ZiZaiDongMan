@@ -17,9 +17,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self addBackBtn];
+//    [self addBackBtn];
     
     [self.viewNavBar.centerButton setTitle:@"关于我们" forState:UIControlStateNormal];
+    
+    [self setMeNavBarStyle];
+
     
     UIImageView *imageView = [[UIImageView alloc] init];
     [imageView setImage:[UIImage imageNamed:@"Me_aboutUsImage"]];

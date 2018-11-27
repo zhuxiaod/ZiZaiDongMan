@@ -20,10 +20,12 @@
     
 //    self.navigationController.title = @"用户协议";
     
-    [self addBackBtn];
+//    [self addBackBtn];
     
     [self.viewNavBar.centerButton setTitle:@"用户协议" forState:UIControlStateNormal];
     
+    [self setMeNavBarStyle];
+
     //设置TextView
     UITextView *textView = [[UITextView alloc] initWithFrame:CGRectMake(0, navHeight, SCREEN_WIDTH, SCREEN_HEIGHT)];
     textView.editable = NO;

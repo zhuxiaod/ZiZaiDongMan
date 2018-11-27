@@ -75,9 +75,7 @@ static NSString *findCommentCell = @"findCommentCell";
     self.pageNumber = 1;
     
     self.pageSize = 10;
-    
 
-    
     [self setupMJRefresh];
 
 }
@@ -182,10 +180,8 @@ static NSString *findCommentCell = @"findCommentCell";
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/selDiscover"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
-        if(dic.count == 6){
-            NSLog(@"12121214312423142314141241234231412412");
-        }
-        if(dic.count != 6){
+        if(dic.count >= 6){
+//        if([[dic allKeys] containsObject:@"total"]){
             NSInteger total = [[NSString stringWithFormat:@"%@",[dic objectForKey:@"total"]] integerValue];
             
             NSMutableArray *array = [ZZTMyZoneModel mj_objectArrayWithKeyValuesArray:[dic objectForKey:@"list"]];
@@ -200,6 +196,8 @@ static NSString *findCommentCell = @"findCommentCell";
                 [self.contentView.mj_header endRefreshing];
             }
             self.pageSize += 10;
+        }else{
+            NSLog(@"bug");
         }
         dispatch_group_leave(self.group);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

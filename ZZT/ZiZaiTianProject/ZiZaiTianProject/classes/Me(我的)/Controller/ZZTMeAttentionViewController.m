@@ -74,10 +74,12 @@ static NSString *AttentionCell = @"AttentionCell";
     
     [self.collectionView.mj_header beginRefreshing];
     
-    [self addBackBtn];
+//    [self addBackBtn];
     
     [self.viewNavBar.centerButton setTitle:@"关注" forState:UIControlStateNormal];
     
+    [self setMeNavBarStyle];
+
 }
 
 -(void)setupMJRefresh{

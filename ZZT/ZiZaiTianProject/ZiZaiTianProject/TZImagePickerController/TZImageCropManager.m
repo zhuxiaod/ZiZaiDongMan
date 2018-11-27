@@ -32,6 +32,7 @@
 
 /// 获得裁剪后的图片
 + (UIImage *)cropImageView:(UIImageView *)imageView toRect:(CGRect)rect zoomScale:(double)zoomScale containerView:(UIView *)containerView {
+    NSLog(@"toRect:%@",NSStringFromCGRect(rect));
     CGAffineTransform transform = CGAffineTransformIdentity;
     // 平移的处理
     CGRect imageViewRect = [imageView convertRect:imageView.bounds toView:containerView];

@@ -80,9 +80,12 @@ NSString *ExitCell = @"ExitCell";
 
     self.userData = [Utilities GetNSUserDefaults];
     
-    [self addBackBtn];
+//    [self addBackBtn];
     
     [self.viewNavBar.centerButton setTitle:@"设置" forState:UIControlStateNormal];
+    
+    [self setMeNavBarStyle];
+
 }
 #pragma mark - tableView
 -(void)setupTableView{

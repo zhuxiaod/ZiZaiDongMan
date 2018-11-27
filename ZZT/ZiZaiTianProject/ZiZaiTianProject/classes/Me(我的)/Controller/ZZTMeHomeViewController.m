@@ -10,6 +10,7 @@
 #import "ZZTMeViewController.h"
 #import "ZZTMyZoneViewController.h"
 #import "ZZTMeWalletViewController.h"
+#import "ZZTVIPViewController.h"
 
 @interface ZZTMeHomeViewController ()<UIScrollViewDelegate>
 
@@ -102,6 +103,8 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     _zoneVC.userId = [UserInfoManager share].ID;
+    //电池白色
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
 }
 -(void)setupNavbar{
     
@@ -159,6 +162,14 @@
     
     //消息(通用 右)
     [self.viewNavBar.rightButton setImage:[UIImage imageNamed:@"me_messageBtn"] forState:UIControlStateNormal];
+    [self.viewNavBar.rightButton addTarget:self action:@selector(gotoVipView) forControlEvents:UIControlEventTouchUpInside];
+
+}
+
+-(void)gotoVipView{
+    ZZTVIPViewController *VIPVC = [[ZZTVIPViewController alloc] init];
+    VIPVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:VIPVC animated:YES];
 }
 
 -(void)gotoTopupView{
