@@ -111,6 +111,32 @@
     }];
 }
 
+-(void)setVIPModel:(ZZTFreeBiModel *)VIPModel{
+    _VIPModel = VIPModel;
+    NSLog(@"viptag:%ld",self.tag);
+    //自动续费的view
+    if(self.tag == 0){
+        NSMutableAttributedString *attriStr1 = [[NSMutableAttributedString alloc] initWithString:VIPModel.ZZTBtype];
+        [attriStr1 addAttribute:NSForegroundColorAttributeName value:ZZTSubColor range:NSMakeRange(0, 2)];
+        [attriStr1 addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:24] range:NSMakeRange(0, 2)];
+        [_ZBLab setAttributedText:attriStr1];
+    }else{
+        NSMutableAttributedString *attriStr1 = [[NSMutableAttributedString alloc] initWithString:VIPModel.ZZTBtype];
+        [attriStr1 addAttribute:NSForegroundColorAttributeName value:ZZTSubColor range:NSMakeRange(0, VIPModel.ZZTBtype.length)];
+        [attriStr1 addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:24] range:NSMakeRange(0, VIPModel.ZZTBtype.length)];
+        [_ZBLab setAttributedText:attriStr1];
+    }
+    
+    [_ZBDetailLab setText:VIPModel.ZZTBSpend];
+    [_ZBDetailLab setTextColor:[UIColor colorWithRGB:@"205,99,207"]];
+    
+    [_btnImageView setImage:[UIImage imageNamed:@"ME_wallet_purpleBox"]];
+
+    [_moneyLab setText:VIPModel.btnType];
+
+}
+
+
 -(void)setWalletModel:(ZZTFreeBiModel *)walletModel{
     _walletModel = walletModel;
     //数字紫色  zb 黑色 大小不同

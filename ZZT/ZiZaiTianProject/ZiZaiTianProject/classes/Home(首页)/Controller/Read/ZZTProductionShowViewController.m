@@ -81,7 +81,7 @@ NSString *SuggestionView1 = @"SuggestionView1";
                            @"pageSize":@"10",
                            };
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getHostCartoon"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         NSArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
         
         NSInteger total = [[NSString stringWithFormat:@"%@",[dic objectForKey:@"total"]] integerValue];
@@ -110,7 +110,7 @@ NSString *SuggestionView1 = @"SuggestionView1";
                            };
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getHostCartoon"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
         
@@ -154,7 +154,7 @@ NSString *SuggestionView1 = @"SuggestionView1";
 #pragma mark - 创建CollectionView
 -(void)setupCollectionView:(UICollectionViewFlowLayout *)layout
 {
-    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, navHeight, Screen_Width, Screen_Height) collectionViewLayout:layout];
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, Height_NavBar, Screen_Width, Screen_Height) collectionViewLayout:layout];
     collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView = collectionView;
     collectionView.dataSource = self;
@@ -242,7 +242,7 @@ NSString *SuggestionView1 = @"SuggestionView1";
 //        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
         AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
         [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/queryFuzzy"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+            NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
             NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
             weakSelf.searchSuggestionArray = array;
             [searchViewController.searchSuggestionView reloadData];

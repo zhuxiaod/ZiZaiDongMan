@@ -178,7 +178,7 @@ NSString *SuggestionView3 = @"SuggestionView";
     [self.navBar mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
         make.top.equalTo(self.view);
-        make.height.equalTo(@(navHeight));
+        make.height.equalTo(@(Height_NavBar));
     }];
     
     //返回
@@ -198,7 +198,8 @@ NSString *SuggestionView3 = @"SuggestionView";
         make.centerX.equalTo(navBar.mainView);
         make.width.mas_equalTo(SCREEN_WIDTH * 0.34);
         make.height.mas_equalTo(30);
-        make.bottom.equalTo(navBar.mainView).offset(-10);
+//        make.bottom.equalTo(navBar.mainView).offset(-10);
+        make.centerY.equalTo(navBar.rightButton.mas_centerY);
     }];
     
     navBar.showBottomLabel = NO;
@@ -366,6 +367,11 @@ NSString *SuggestionView3 = @"SuggestionView";
     imagePickerVc.showPhotoCannotSelectLayer = YES;
     //    无法选择图层颜色
     imagePickerVc.cannotSelectLayerColor = [[UIColor whiteColor] colorWithAlphaComponent:0.8];
+    
+    imagePickerVc.naviBgColor = [UIColor blackColor];
+    imagePickerVc.naviTitleColor = [UIColor blackColor];
+    imagePickerVc.barItemTextColor = [UIColor blackColor];
+    
     //设置照片选择器页面UI配置块
     [imagePickerVc setPhotoPickerPageUIConfigBlock:^(UICollectionView *collectionView, UIView *bottomToolBar, UIButton *previewButton, UIButton *originalPhotoButton, UILabel *originalPhotoLabel, UIButton *doneButton, UIImageView *numberImageView, UILabel *numberLabel, UIView *divideLine) {
         [doneButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
@@ -373,7 +379,7 @@ NSString *SuggestionView3 = @"SuggestionView";
     
     // 3. 设置是否可以选择视频/图片/原图
     imagePickerVc.allowPickingVideo = NO;
-    imagePickerVc.allowPickingImage = NO;
+    imagePickerVc.allowPickingImage = YES;
     imagePickerVc.allowPickingOriginalPhoto = YES;
     imagePickerVc.allowPickingGif = NO;
     imagePickerVc.allowPickingMultipleVideo = NO; // 是否可以多选视频
@@ -381,17 +387,7 @@ NSString *SuggestionView3 = @"SuggestionView";
     // 4. 照片排列按修改时间升序
     imagePickerVc.sortAscendingByModificationDate = YES;
 
-    /// 5. 单选模式,maxImagesCount为1时才生效
-    imagePickerVc.showSelectBtn = NO;
-    imagePickerVc.allowCrop = YES;
-    imagePickerVc.needCircleCrop = NO;
-    // 设置竖屏下的裁剪尺寸
-    NSInteger left = 30;
-    NSInteger widthHeight = self.view.width - 2 * left;
-    NSInteger top = (self.view.height - widthHeight) / 2;
-    imagePickerVc.cropRect = CGRectMake(left, top, widthHeight, widthHeight);
-
-    imagePickerVc.statusBarStyle = UIStatusBarStyleLightContent;
+    imagePickerVc.statusBarStyle = UIStatusBarStyleDefault;
     
     // 设置是否显示图片序号
     imagePickerVc.showSelectedIndex = YES;
@@ -404,6 +400,7 @@ NSString *SuggestionView3 = @"SuggestionView";
         ZZTZoneUpLoadViewController *uploadVC = [[ZZTZoneUpLoadViewController alloc] init];
         
         TZImagePickerController *tzImagePickerVc = [[TZImagePickerController alloc] initWithMaxImagesCount:9 delegate:self];
+        
         [tzImagePickerVc showProgressHUD];
         
         [tzImagePickerVc hideProgressHUD];
@@ -421,8 +418,7 @@ NSString *SuggestionView3 = @"SuggestionView";
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:NO];
-    [self.navigationController.navigationBar setAlpha:0];
-    self.statusBarStyle = UIStatusBarStyleDefault;
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -435,6 +431,7 @@ NSString *SuggestionView3 = @"SuggestionView";
     [super didReceiveMemoryWarning];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
+
 //创建一个图片选择控制器
 - (UIImagePickerController *)imagePickerVc {
     if (_imagePickerVc == nil) {

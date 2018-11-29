@@ -3,6 +3,7 @@
 //
 
 #import "EncryptionTools.h"
+#import "NSString+AES.h"
 
 @interface EncryptionTools()
 @property (nonatomic, assign) int keySize;
@@ -173,7 +174,7 @@
 
 -(NSDictionary *)decry:(NSString *)getData{
     //解密
-    NSString *data = [self decryptString:getData keyString:@"ZIZAITIAN@666666" iv:[@"A-16-Byte-String" dataUsingEncoding:NSUTF8StringEncoding]];
+    NSString *data = [getData aci_decryptWithAES];
     NSData *jsonData = [data dataUsingEncoding:NSUTF8StringEncoding];
     NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:nil];
     return dic;
@@ -181,7 +182,7 @@
 
 -(NSArray *)getDecryArray:(NSString *)getData{
     //解密
-    NSString *data = [self decryptString:getData keyString:@"ZIZAITIAN@666666" iv:[@"A-16-Byte-String" dataUsingEncoding:NSUTF8StringEncoding]];
+    NSString *data = [getData aci_decryptWithAES];
     NSData *jsonData = [data dataUsingEncoding:NSUTF8StringEncoding];
     NSArray *dic = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:nil];
     return dic;

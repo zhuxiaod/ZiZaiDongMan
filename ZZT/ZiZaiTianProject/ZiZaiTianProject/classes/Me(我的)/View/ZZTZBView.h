@@ -17,4 +17,6 @@
 
 @property (nonatomic,strong) UIButton *viewBtn;
 
+@property (nonatomic,strong) ZZTFreeBiModel *VIPModel;
+
 @end

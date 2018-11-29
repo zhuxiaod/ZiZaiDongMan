@@ -76,7 +76,7 @@
     //添加数据
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/hotSelect"]  parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         NSArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
         [self getHotSearchTitle:array];
         self.hotSearchArray = array;
@@ -138,7 +138,7 @@
         //添加数据
         AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
         [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/queryCartoon"]  parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+            NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
             NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
             weakSelf.searchSuggestionArray = array;
             [searchViewController.searchSuggestionView reloadData];
@@ -234,7 +234,7 @@
         //添加数据
         AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
         [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/queryCartoon"]  parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+            NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
             NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
             weakSelf.searchSuggestionArray = array;
             [searchViewController.searchSuggestionView reloadData];

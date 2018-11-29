@@ -92,16 +92,20 @@
 }
 
 - (void)buttonClick:(UIButton *)button{
-    UserInfo *userInfo = self.dataArray[button.tag];
-    //跳转个人页
-    ZZTMyZoneViewController *zoneView = [[ZZTMyZoneViewController alloc] init];
-    zoneView.userId = [NSString stringWithFormat:@"%ld",userInfo.id];
-    [[self myViewController].navigationController pushViewController:zoneView animated:NO];
-
-    // 判断下这个block在控制其中有没有被实现
-    if (self.buttonAction) {
-        // 调用block传入参数
-        self.buttonAction(button);
+    if(self.dataArray.count > 0){
+        UserInfo *userInfo = self.dataArray[button.tag];
+        //跳转个人页
+        ZZTMyZoneViewController *zoneView = [[ZZTMyZoneViewController alloc] init];
+        zoneView.userId = [NSString stringWithFormat:@"%ld",userInfo.id];
+        [[self myViewController].navigationController pushViewController:zoneView animated:NO];
+        
+        // 判断下这个block在控制其中有没有被实现
+        if (self.buttonAction) {
+            // 调用block传入参数
+            self.buttonAction(button);
+        }
+    }else{
+        [MBProgressHUD showMessage:@"服务器繁忙,请刷新数据。"];
     }
 }
 

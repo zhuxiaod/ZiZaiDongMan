@@ -73,6 +73,9 @@
     [self.userName addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
     
     [self.userHead.viewClick addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.backgroundBtn addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
+
 }
 
 - (void)buttonClick:(UIButton *)button{

@@ -103,6 +103,8 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
         make.right.left.bottom.equalTo(self.view);
     }];
     underLineView.hidden = YES;
+    
+
 }
 
 -(void)setupNavBar{
@@ -113,7 +115,8 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     [self.viewNavBar.leftButton setImage:[UIImage imageNamed:@"返回键"] forState:UIControlStateNormal];
     self.viewNavBar.leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 17);
     [self.viewNavBar.leftButton addTarget:self action:@selector(dismissVC) forControlEvents:UIControlEventTouchUpInside];
-
+    self.viewNavBar.backgroundColor = [UIColor clearColor];
+    
     //中
     SBStrokeLabel *lab = [[SBStrokeLabel alloc] init];
     lab.text = @"空间";
@@ -145,7 +148,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     _tabelView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, Screen_Height) style:UITableViewStyleGrouped];
     _tabelView.delegate = self;
     _tabelView.dataSource = self;
-    _tabelView.contentInset = UIEdgeInsetsMake(-20, 0, 0, 0);
+    _tabelView.contentInset = UIEdgeInsetsMake(Height_TabbleViewInset, 0, 0, 0);
     _tabelView.backgroundColor = [UIColor whiteColor];
     [_tabelView registerClass:[ZZTMyZoneCell class] forCellReuseIdentifier:myZoneCell];
     [_tabelView registerClass:[ZZTMEXuHuaCell class] forCellReuseIdentifier:zztMEXuHuaCell];
@@ -194,7 +197,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
                           };
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/selUserRoom"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         
         NSInteger total = [[dic objectForKey:@"total"] integerValue];
         self.total = total;
@@ -232,7 +235,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
                           };
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/selUserRoom"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         if(dic.count != 6){
             NSInteger total = [[dic objectForKey:@"total"] integerValue];
             self.total = total;
@@ -301,14 +304,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     }
 //    UserInfo *user = [Utilities GetNSUserDefaults];
     self.zoneHeadView.user = self.userData;
-    if(self.userData == nil){
-        //添加一张图片
-        self.underLineView.hidden = NO;
-        self.tabelView.scrollEnabled = NO;
-    }else{
-        self.underLineView.hidden = YES;
-        self.tabelView.scrollEnabled = YES;
-    }
+
     return _zoneHeadView;
 }
 
@@ -359,7 +355,15 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
 -(void)setUserId:(NSString *)userId{
     _userId = userId;
     //请求个人资料
-//    if(userId == nil)userId = @"";
+    if([userId isEqualToString:@"0"]){
+   
+        //添加一张图片
+        self.underLineView.hidden = NO;
+        self.tabelView.scrollEnabled = NO;
+    }else{
+        self.underLineView.hidden = YES;
+        self.tabelView.scrollEnabled = YES;
+    }
    
     [self.tabelView.mj_header beginRefreshing];
 }
@@ -371,7 +375,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"login/usersInfo"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         
         NSArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
         if(array.count != 0){
@@ -381,6 +385,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
             [self.tabelView reloadData];
         }else{
             self.userData = nil;
+            [self.tabelView reloadData];
         }
         [self.tabelView.mj_header endRefreshing];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

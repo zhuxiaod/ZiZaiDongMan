@@ -57,7 +57,7 @@ NSString *zztComment = @"zztComment";
 }
 - (EncryptionTools *)encryptionManager{
     if(!_encryptionManager){
-        _encryptionManager = [EncryptionTools sharedEncryptionTools];
+        _encryptionManager = [EncryptionTools alloc];
     }
     return _encryptionManager;
 }

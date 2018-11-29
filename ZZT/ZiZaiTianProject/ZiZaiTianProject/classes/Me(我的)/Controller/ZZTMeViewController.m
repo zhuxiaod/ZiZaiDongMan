@@ -55,7 +55,7 @@ NSString *bannerID = @"MeCell";
 #pragma mark - 懒加载
 - (EncryptionTools *)encryptionManager{
     if(!_encryptionManager){
-        _encryptionManager = [EncryptionTools sharedEncryptionTools];
+        _encryptionManager = [EncryptionTools alloc];
     }
     return _encryptionManager;
 }
@@ -92,7 +92,7 @@ NSString *bannerID = @"MeCell";
 {
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0 , self.view.bounds.size.width, self.view.bounds.size.height) style:UITableViewStyleGrouped];
     _tableView.backgroundColor = [UIColor whiteColor];
-    _tableView.contentInset = UIEdgeInsetsMake(-20, 0, 0, 0);
+    _tableView.contentInset = UIEdgeInsetsMake(Height_TabbleViewInset, 0, 0, 0);
     _tableView.sectionHeaderHeight = 0;
     _tableView.sectionFooterHeight = 0;
     _tableView.dataSource = self;
@@ -233,7 +233,7 @@ NSString *bannerID = @"MeCell";
                                     };
         [self.manager POST:[ZZTAPI stringByAppendingString:@"login/usersInfo"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             
-            NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+            NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
             
             NSArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
             if(array.count != 0){

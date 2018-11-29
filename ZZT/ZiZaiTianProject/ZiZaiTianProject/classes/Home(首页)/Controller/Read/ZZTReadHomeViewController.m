@@ -123,7 +123,7 @@ static NSString *bigImageCell = @"bigImageCell";
                           @"pageSize":@"6",
                           };
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getNewestCartoon"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
         self.updateBooks = array;
         self.pageNum++;
@@ -141,7 +141,7 @@ static NSString *bigImageCell = @"bigImageCell";
                           @"pageSize":@"6",
                           };
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getClassicsCartoon"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
         self.classicBooks = array;
         self.pageNum++;
@@ -156,7 +156,7 @@ static NSString *bigImageCell = @"bigImageCell";
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     weakself(self);
     [manager POST:[ZZTAPI stringByAppendingString:@"homepage/banner"] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         NSArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
         weakSelf.bannerModelArray = array;
         self.cycleView.imageArray = array;
@@ -175,7 +175,7 @@ static NSString *bigImageCell = @"bigImageCell";
                            @"more":@"1"
                            };
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getRecommendCartoon"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
         self.caiNiXiHuan = array;
         self.pageNum++;
@@ -205,7 +205,7 @@ static NSString *bigImageCell = @"bigImageCell";
 -(void)setupCollectionView:(UICollectionViewFlowLayout *)layout
 {
     UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, Screen_Width, SCREEN_HEIGHT - 50) collectionViewLayout:layout];
-    [collectionView setContentInset:UIEdgeInsetsMake(-20, 0, 0, 0)];
+    [collectionView setContentInset:UIEdgeInsetsMake(-Height_TabbleViewInset, 0, 0, 0)];
     collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView = collectionView;
     collectionView.dataSource = self;
@@ -354,7 +354,7 @@ static NSString *bigImageCell = @"bigImageCell";
 //执行的 headerView 代理 返回 headerView 的高度
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
     if(section == 0){
-        return CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT * 0.3385);
+        return CGSizeMake(SCREEN_WIDTH, [Utilities getBannerH]);
     }else{
         return CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT * 0.052);
     }
@@ -381,7 +381,7 @@ static NSString *bigImageCell = @"bigImageCell";
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
     if(indexPath.section == 1){
         if(indexPath.row == 3){
-            return CGSizeMake(SCREEN_WIDTH - 16, SCREEN_HEIGHT * 0.27);
+            return CGSizeMake(SCREEN_WIDTH - 16, [Utilities getCarChapterH]);
         }else{
             return CGSizeMake((SCREEN_WIDTH - 36) / 3 , SCREEN_HEIGHT * 0.24 + 24);
         }

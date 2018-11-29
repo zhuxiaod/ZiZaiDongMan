@@ -13,8 +13,9 @@
 #import "ZZTMePersonalView.h"
 #import "TZImageCropManager.h"
 #import "PhotoTweaksViewController.h"
+#import "SBDatePickerView.h"
 
-@interface ZZTMeEditViewController ()<UINavigationControllerDelegate,UIImagePickerControllerDelegate,TZImagePickerControllerDelegate,UITableViewDataSource,UITableViewDelegate,PhotoTweaksViewControllerDelegate>
+@interface ZZTMeEditViewController ()<UINavigationControllerDelegate,UIImagePickerControllerDelegate,TZImagePickerControllerDelegate,UITableViewDataSource,UITableViewDelegate,PhotoTweaksViewControllerDelegate,UITextFieldDelegate,SBDatePickerViewDelegate>
 
 @property (nonatomic,assign) NSInteger btnTag;
 
@@ -25,10 +26,6 @@
 @property (nonatomic,strong) ZZTMeEditButtomView *meButtomView;
 
 @property (nonatomic,strong) UIButton *doneButton;
-
-@property(nonatomic, strong) BAKit_PickerView *pickView;
-
-@property(nonatomic, strong)BAKit_DatePicker *tempView;
 
 @property(nonatomic, strong) ZZTMeEditTopView *topView;
 //背景图
@@ -68,6 +65,10 @@
 @property (nonatomic,strong) NSArray *sectionThree;
 
 @property (nonatomic,strong) SBPersonalSettingCell *cell;
+
+@property (nonatomic,strong) SBDatePickerView *datePickerView;
+
+
 
 /** 选择性别提示 */
 @property (nonatomic, strong) UIActionSheet     *sexActionSheet;
@@ -114,7 +115,7 @@ static NSString *personalCellThree = @"personalCellThree";
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.viewNavBar.centerButton setTitle:@"个人信息" forState:UIControlStateNormal];
-    [self.viewNavBar.rightButton setTitle:@"上传" forState:UIControlStateNormal];
+    [self.viewNavBar.rightButton setTitle:@"保存" forState:UIControlStateNormal];
     [self.viewNavBar.rightButton addTarget:self action:@selector(successUp) forControlEvents:UIControlEventTouchUpInside];
 
     //左边
@@ -122,7 +123,7 @@ static NSString *personalCellThree = @"personalCellThree";
     
     self.sectionOne = @[@"昵称",@"账号"];
     
-    self.sectionTwo = @[@"性别",@"年龄"];
+    self.sectionTwo = @[@"性别",@"生日"];
     
     self.sectionThree = @[@"个性签名"];
     
@@ -137,14 +138,6 @@ static NSString *personalCellThree = @"personalCellThree";
     
     //遵守代理
     _picker.delegate =self;
-
-//    //注册观察键盘的变化
-//    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(transformView:) name:UIKeyboardWillChangeFrameNotification object:nil];
-//
-//    [self setupNavBar];
-//
-//    [self hiddenViewNavBar];
-    
     
     [self setMeNavBarStyle];
    
@@ -153,11 +146,12 @@ static NSString *personalCellThree = @"personalCellThree";
 -(void)dismissVC{
     
     [self dismissViewControllerAnimated:YES completion:nil];
-
 }
 
+
+
 -(void)setupMainView{
-    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, navHeight , SCREEN_WIDTH, SCREEN_HEIGHT - navHeight) style:UITableViewStyleGrouped];
+    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, Height_NavBar , SCREEN_WIDTH, SCREEN_HEIGHT - navHeight) style:UITableViewStyleGrouped];
     _tableView.backgroundColor = [UIColor whiteColor];
     _tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
 //    _tableView.sectionHeaderHeight = 0;
@@ -198,6 +192,7 @@ static NSString *personalCellThree = @"personalCellThree";
     UserInfo *user = [Utilities GetNSUserDefaults];
     if(indexPath.section == 0){
         SBPersonalSettingCell *cell = [tableView dequeueReusableCellWithIdentifier:personalCellOne];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         if (!cell) {
             cell = [[SBPersonalSettingCell alloc] initWithStyle:0 reuseIdentifier:personalCellOne];
         }
@@ -219,6 +214,7 @@ static NSString *personalCellThree = @"personalCellThree";
         return cell;
     }else if (indexPath.section == 1){
         SBPersonalSettingCell *cell = [tableView dequeueReusableCellWithIdentifier:personalCellTwo];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         if (!cell) {
             cell = [[SBPersonalSettingCell alloc] initWithStyle:0 reuseIdentifier:personalCellTwo];
         }
@@ -236,18 +232,42 @@ static NSString *personalCellThree = @"personalCellThree";
         return cell;
     }else{
         SBPersonalSettingCell *cell = [tableView dequeueReusableCellWithIdentifier:personalCellThree];
+        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         if (!cell) {
             cell = [[SBPersonalSettingCell alloc] initWithStyle:0 reuseIdentifier:personalCellThree];
         }
         cell.nameLabel.text = [self.sectionThree objectAtIndex:indexPath.row];
         //个性签名
         cell.showTextField = YES;
-        cell.textField.text = self.signature;
+        cell.textFieldText = self.signature;
         cell.textField.tag = 100;
+//        cell.textField.delegate = self;
         cell.textFieldChange = ^(NSInteger tag) {
             [self textFieldChange:tag];
         };
+        cell.textFieldEndEditing = ^(NSInteger tag) {
+            [self textFieldEnd:tag];
+        };
+        cell.textFieldBeginEditing = ^(NSInteger tag) {
+            [self textFieldBeg:tag];
+        };
         return cell;
+    }
+}
+
+-(void)textFieldBeg:(NSInteger)tag{
+    UITextField *textView = (UITextField *)[self.view viewWithTag:tag];
+    if(textView.tag == 100 && [textView.text isEqualToString:@"未填写"]){
+        textView.text = @"";
+    }
+}
+
+-(void)textFieldEnd:(NSInteger)tag{
+    UITextField *textView = (UITextField *)[self.view viewWithTag:tag];
+    if(textView.tag == 100 && [textView.text isEqualToString:@""]){
+        textView.text = @"未填写";
+        self.signature = textView.text;
     }
 }
 
@@ -277,8 +297,20 @@ static NSString *personalCellThree = @"personalCellThree";
             NSLog(@"年龄");
             [self setupBirthday];
         }
+    }else if (indexPath.section == 0){
+        if (indexPath.row == 1) {
+            return;
+        }
+        SBPersonalSettingCell *cell = (SBPersonalSettingCell *)[tableView cellForRowAtIndexPath:indexPath];
+        [cell.textField becomeFirstResponder];
+    }else{
+        SBPersonalSettingCell *cell = (SBPersonalSettingCell *)[tableView cellForRowAtIndexPath:indexPath];
+        [cell.textField becomeFirstResponder];
     }
 }
+
+
+
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 50;
 }
@@ -302,7 +334,7 @@ static NSString *personalCellThree = @"personalCellThree";
     //添加topView
     ZZTMeEditTopView *topView = [ZZTMeEditTopView ZZTMeEditTopView];
     _topView = topView;
-    topView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT * 0.5);
+    topView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT * 0.36);
     //假如现在有数据  添加进去
     topView.backImage = self.backImg;
     topView.headImage = self.headImg;
@@ -347,10 +379,6 @@ static NSString *personalCellThree = @"personalCellThree";
         }else{
             NSLog(@"保存失败");
         }
-//        }
-//        if(imgDict.count == 0){
-//            [self successUp];
-//        }
     });
 }
 
@@ -457,164 +485,80 @@ static NSString *personalCellThree = @"personalCellThree";
 
 #pragma mark - 相册回调
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
-//    [self dismissViewControllerAnimated:YES completion:nil];
-//    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
-//    PhotoTweaksViewController *photoTweaksViewController = [[PhotoTweaksViewController alloc] initWithImage:image];
-//    photoTweaksViewController.delegate = self;
-//    photoTweaksViewController.autoSaveToLibray = YES;
-//    photoTweaksViewController.maxRotationAngle = M_PI_4;
-////    [picker pushViewController:photoTweaksViewController animated:YES];
-//    [self.navigationController presentViewController:photoTweaksViewController animated:YES completion:nil];
     
+    [self dismissViewControllerAnimated:YES completion:nil];
     
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
 
-    NSLog(@"%@",info);
-    UIButton *button = (UIButton *)[self.view viewWithTag:_btnTag];
-    //选取的图片
-    UIImage *resultImage = [info objectForKey:@"UIImagePickerControllerEditedImage"];
-    //判断分类
-    NSString *imageType;
-    if(_btnTag == 1){
-        _backImage = resultImage;
-//        [self.imgeDict setObject:resultImage forKey:@"backImg"];
-        imageType = @"backImg";
-    }else{
-        _headImage = resultImage;
-//        [self.imgeDict setObject:resultImage forKey:@"headImg"];
-        imageType = @"headImg";
-    }
-    //上传七牛云
-    [self saveWithImgType:imageType];
-    //展示
-    [button setImage:[resultImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
-    [button.imageView setContentMode:UIViewContentModeScaleAspectFit];
-//    button.imageView.clipsToBounds = YES;
-    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
+    
+    //跳转截图页面
+    [self jumpToClipController:image completion:^{
+        
+    }];
 }
+
+
+/**
+ *  @brief 弹出裁剪视图
+ */
+- (void)jumpToClipController:(UIImage *)image completion:(void (^ __nullable)(void))completion{
+    //剪裁视图
+    ImageClipViewController *imageClip = [[ImageClipViewController alloc] init];
+    [imageClip setClipResult:^(BOOL isCancel, UIImage *image) {
+        if (image) {
+            //处理图片
+            UIButton *button = (UIButton *)[self.view viewWithTag:self.btnTag];
+            //判断分类
+            NSString *imageType;
+            if(self.btnTag == 1){
+                self.backImage = image;
+                imageType = @"backImg";
+            }else{
+                self.headImage = image;
+                imageType = @"headImg";
+            }
+            //上传七牛云
+            [self saveWithImgType:imageType];
+            //展示
+            [button setImage:[image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
+            [button.imageView setContentMode:UIViewContentModeScaleAspectFill];
+            button.imageView.clipsToBounds = YES;
+        }
+    }];
+    imageClip.clipImage = image;
+    if(self.btnTag == 1){
+        //背景
+        imageClip.targetSize = CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT * 0.36);
+    }else{
+        //头像
+        NSInteger left = 30;
+        NSInteger widthHeight = self.view.width - 2 * left;
+        imageClip.targetSize = CGSizeMake(widthHeight, widthHeight);
+    }
+    [self presentViewController:imageClip animated:YES completion:^{
+        if (completion) {
+            completion();
+        }
+    }];
+}
+
 
 //调用相册
 -(void)pushPhotoAlbum:(UIButton *)btn{
     //告诉是哪一个btn
     _btnTag = btn.tag;
-//
-//    //调用系统相册的类
-////    _picker = [[UIImagePickerController alloc]init];
-//    //设置选取的照片是否可编辑
-//    _picker.allowsEditing = NO;
-//    //设置相册呈现的样式
-//    _picker.sourceType =  UIImagePickerControllerSourceTypeSavedPhotosAlbum;
-//    //选择完成图片或者点击取消按钮都是通过代理来操作我们所需要的逻辑过程
-//    [self.navigationController presentViewController:_picker animated:YES completion:nil];
     
-    //最大选择数     最大显示照片
-    TZImagePickerController *imagePickerVc = [[TZImagePickerController alloc] initWithMaxImagesCount:1 columnNumber:4 delegate:self pushPhotoPickerVc:YES];
-    // imagePickerVc.navigationBar.translucent = NO;
-
-    imagePickerVc.naviBgColor = [UIColor grayColor];
-
-#pragma mark - 五类个性化设置，这些参数都可以不传，此时会走默认设置
-    imagePickerVc.isSelectOriginalPhoto = YES;
-
-    imagePickerVc.allowTakePicture = YES; // 在内部显示拍照按钮
-
-    [imagePickerVc setUiImagePickerControllerSettingBlock:^(UIImagePickerController *imagePickerController) {
-        imagePickerController.videoQuality = UIImagePickerControllerQualityTypeHigh;
+    //跳转系统相册
+    //设置选取的照片是否可编辑
+    _picker.allowsEditing = NO;
+    //设置相册呈现的样式
+    _picker.sourceType =  UIImagePickerControllerSourceTypeSavedPhotosAlbum;
+    //选择完成图片或者点击取消按钮都是通过代理来操作我们所需要的逻辑过程
+//    [self.navigationController pushViewController:_picker animated:YES];
+    [self.navigationController presentViewController:_picker animated:YES completion:^{
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
     }];
-
-    //主题颜色
-    imagePickerVc.iconThemeColor = [UIColor colorWithRed:31 / 255.0 green:185 / 255.0 blue:34 / 255.0 alpha:1.0];
-    //显示照片不能选择图层
-    imagePickerVc.showPhotoCannotSelectLayer = YES;
-    //    无法选择图层颜色
-    imagePickerVc.cannotSelectLayerColor = [[UIColor whiteColor] colorWithAlphaComponent:0.8];
-    //设置照片选择器页面UI配置块
-    [imagePickerVc setPhotoPickerPageUIConfigBlock:^(UICollectionView *collectionView, UIView *bottomToolBar, UIButton *previewButton, UIButton *originalPhotoButton, UILabel *originalPhotoLabel, UIButton *doneButton, UIImageView *numberImageView, UILabel *numberLabel, UIView *divideLine) {
-        [doneButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-    }];
-
-    // 3. 设置是否可以选择视频/图片/原图
-    imagePickerVc.allowPickingVideo = NO;
-    imagePickerVc.allowPickingImage = YES;
-    imagePickerVc.allowPickingOriginalPhoto = YES;
-    imagePickerVc.allowPickingGif = NO;
-    imagePickerVc.allowPickingMultipleVideo = NO; // 是否可以多选视频
-
-    // 4. 照片排列按修改时间升序
-    imagePickerVc.sortAscendingByModificationDate = YES;
-
-    /// 5. 单选模式,maxImagesCount为1时才生效
-    imagePickerVc.showSelectBtn = NO;
-    imagePickerVc.allowCrop = YES;
-    imagePickerVc.needCircleCrop = NO;
-    // 设置竖屏下的裁剪尺寸
-    NSInteger left = 30;
-    NSInteger widthHeight = self.view.width - 2 * left;
-    NSInteger top = (self.view.height - widthHeight) / 2;
-    imagePickerVc.cropRect = CGRectMake(0, top, SCREEN_WIDTH, SCREEN_HEIGHT * 0.36);
-
-    imagePickerVc.statusBarStyle = UIStatusBarStyleLightContent;
-
-    // 设置是否显示图片序号
-    imagePickerVc.showSelectedIndex = YES;
-
-#pragma mark - 到这里为止
-
-    // 你可以通过block或者代理，来得到用户选择的照片.
-    [imagePickerVc setDidFinishPickingPhotosHandle:^(NSArray<UIImage *> *photos, NSArray *assets, BOOL isSelectOriginalPhoto) {
-
-        isSelectOriginalPhoto = YES;
-        UIButton *button = (UIButton *)[self.view viewWithTag:self.btnTag];
-        UIImage *resultImage = photos[0];
-        NSString *imageType;
-        if(self.btnTag == 1){
-            self.backImage = resultImage;
-            //        [self.imgeDict setObject:resultImage forKey:@"backImg"];
-            imageType = @"backImg";
-        }else{
-            self.headImage = resultImage;
-            //        [self.imgeDict setObject:resultImage forKey:@"headImg"];
-            imageType = @"headImg";
-        }
-        //上传七牛云
-        [self saveWithImgType:imageType];
-        //展示
-        [button setImage:[resultImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
-            [button.imageView setContentMode:UIViewContentModeScaleAspectFill];
-            button.imageView.clipsToBounds = YES;
-    }];
-
-    [self presentViewController:imagePickerVc animated:YES completion:nil];
-
-}
-
-- (void)imagePickerController:(TZImagePickerController *)picker didFinishPickingPhotos:(NSArray<UIImage *> *)photos sourceAssets:(NSArray *)assets isSelectOriginalPhoto:(BOOL)isSelectOriginalPhoto infos:(NSArray<NSDictionary *> *)infos {
-//
-//    TZAssetModel *assetModel = [[TZImageManager manager] createModelWithAsset:assets[0]];
-//
-//    TZImagePickerController *imagePicker = [[TZImagePickerController alloc] initCropTypeWithAsset:assetModel.asset photo:photos[0] completion:^(UIImage *cropImage, id asset) {
-//        UIButton *button = (UIButton *)[self.view viewWithTag:self.btnTag];
-//        NSString *imageType;
-//        if(self.btnTag == 1){
-//            self.backImage = cropImage;
-//            //        [self.imgeDict setObject:resultImage forKey:@"backImg"];
-//            imageType = @"backImg";
-//        }else{
-//            self.headImage = cropImage;
-//            //        [self.imgeDict setObject:resultImage forKey:@"headImg"];
-//            imageType = @"headImg";
-//        }
-//        //上传七牛云
-//        [self saveWithImgType:imageType];
-//        //展示
-//        [button setImage:[cropImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
-//        [button.imageView setContentMode:UIViewContentModeScaleAspectFit];
-//        button.imageView.clipsToBounds = YES;
-//
-//    }];
-
-
-    
-   
 }
 
 
@@ -639,7 +583,9 @@ static NSString *personalCellThree = @"personalCellThree";
         NSLog(@"模拟器无法打开摄像头");
     }
     // 显示picker视图控制器
-    [self presentViewController:_picker animated:YES completion:nil];
+    [self presentViewController:_picker animated:YES completion:^{
+        
+    }];
 }
 
 -(void)alert:(UIButton *)btn{
@@ -712,48 +658,23 @@ static NSString *personalCellThree = @"personalCellThree";
 
 - (void)setupBirthday
 {
-    [BAKit_DatePicker ba_creatPickerViewWithType:BAKit_CustomDatePickerDateTypeYMD configuration:^(BAKit_DatePicker *tempView) {
-        NSDate *maxdDate;
-        NSDate *mindDate;
-        NSDateFormatter *format = [NSDateFormatter ba_setupDateFormatterWithYMD];
-        NSDate *today = [[NSDate alloc]init];
-        [format setDateFormat:@"yyyy-MM-dd"];
-        
-        self.tempView = tempView;
-        
-        // 最小时间，当前时间
-        mindDate = [format dateFromString:[format stringFromDate:today]];
-
-        NSTimeInterval oneDay = 24 * 60 * 60;
-        // 最大时间，当前时间+180天
-        NSDate *theDay = [today initWithTimeIntervalSinceNow:oneDay * 180];
-        maxdDate = [format dateFromString:[format stringFromDate:theDay]];
-        tempView.isShowBackgroundYearLabel = YES;
-
-        // 自定义 pickview title 的字体颜色
-        tempView.ba_pickViewTitleColor = [UIColor whiteColor];
-        // 自定义 pickview title 的字体
-        tempView.ba_pickViewTitleFont = [UIFont boldSystemFontOfSize:15];
-        // 自定义 pickview背景 title 的字体颜色
-        // 自定义：动画样式
-        tempView.animationType = BAKit_PickerViewAnimationTypeBottom;
-
-        // 自定义：pickView 文字颜色
-        tempView.ba_pickViewTextColor = [UIColor blackColor];
-        // 自定义：pickView 文字字体
-        tempView.ba_pickViewFont = [UIFont systemFontOfSize:13];
-
-        // 可以自由定制按钮颜色
-        tempView.ba_buttonTitleColor_sure = [UIColor whiteColor];
-        tempView.ba_buttonTitleColor_cancle = [UIColor whiteColor];
-
-        // 可以自由定制 toolBar 和 pickView 的背景颜色
-        tempView.ba_backgroundColor_toolBar = [UIColor colorWithHexString:@"#58006E"];
-    } block:^(NSString *resultString) {
-        self.birthday = resultString;
-        [self.tableView reloadData];
-        self.birthday = resultString;
+    //生成时间View
+    SBDatePickerView *datePickerView = [[SBDatePickerView alloc] init];
+    datePickerView.date = self.birthday;
+    datePickerView.delegate = self;
+    _datePickerView = datePickerView;
+    [self.view addSubview:datePickerView];
+    
+    [datePickerView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(self.view);
+        make.right.left.equalTo(self.view);
+        make.height.mas_equalTo(SCREEN_HEIGHT * 0.33);
     }];
+}
+//设置时间
+-(void)confirmDate:(SBDatePickerView *)datePickerView dateStr:(NSString *)str{
+    self.birthday = str;
+    [self.tableView reloadData];
 }
 
 -(void)setModel:(UserInfo *)model{
@@ -784,8 +705,7 @@ static NSString *personalCellThree = @"personalCellThree";
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-//    self.navigationController.navigationBar.alpha = 0;
-//    [self.navigationController setNavigationBarHidden:YES animated:NO];
+    [IQKeyboardManager sharedManager].shouldResignOnTouchOutside = YES;
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -801,7 +721,7 @@ static NSString *personalCellThree = @"personalCellThree";
                                 };
     [manager POST:[ZZTAPI stringByAppendingString:@"login/usersInfo"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         
         NSArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
         if(array.count != 0){

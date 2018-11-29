@@ -90,7 +90,7 @@ NSString *ExitCell = @"ExitCell";
 #pragma mark - tableView
 -(void)setupTableView{
     
-    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, navHeight, SCREEN_WIDTH, SCREEN_HEIGHT) style:UITableViewStyleGrouped];
+    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, Height_NavBar, SCREEN_WIDTH, SCREEN_HEIGHT) style:UITableViewStyleGrouped];
     [self.view addSubview:_tableView];
     
     _tableView.dataSource = self;

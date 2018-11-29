@@ -14,7 +14,6 @@ PODS:
   - AFNetworking/Serialization (3.2.1)
   - AFNetworking/UIKit (3.2.1):
     - AFNetworking/NSURLSession
-  - BAPickView (1.1.4)
   - CDDPagerController (1.1.5)
   - FDFullscreenPopGesture (1.1)
   - HappyDNS (0.3.14)
@@ -48,7 +47,6 @@ PODS:
 
 DEPENDENCIES:
   - AFNetworking
-  - BAPickView
   - CDDPagerController
   - FDFullscreenPopGesture
   - IQKeyboardManager
@@ -74,7 +72,6 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - AFNetworking
-    - BAPickView
     - CDDPagerController
     - FDFullscreenPopGesture
     - HappyDNS
@@ -100,7 +97,6 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
-  BAPickView: dbabd31468df83df1b1e5f218e28a8a41908e000
   CDDPagerController: ed05951429a860c56cfdffbeba1a8af5132a28ae
   FDFullscreenPopGesture: a8a620179e3d9c40e8e00256dcee1c1a27c6d0f0
   HappyDNS: dc6a164ee81979093123c241c6353bcf0218add6
@@ -124,6 +120,6 @@ SPEC CHECKSUMS:
   XHImageViewer: 7b275d2aa829e56761c30303b9d51cae086a90b9
   YYImage: 1e1b62a9997399593e4b9c4ecfbbabbf1d3f3b54
 
-PODFILE CHECKSUM: 865dbb8517e6769a32eb5915f11e716a3cb1fb67
+PODFILE CHECKSUM: b938effad764333709b4c08052c33139e637f526
 
 COCOAPODS: 1.5.3

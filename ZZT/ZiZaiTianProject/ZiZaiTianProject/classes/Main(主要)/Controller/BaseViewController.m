@@ -150,13 +150,13 @@
     if(!_viewNavBar){
         ZXDNavBar *navBar = [[ZXDNavBar alloc] init];
         _viewNavBar = navBar;
-        navBar.backgroundColor = [UIColor clearColor];
+        navBar.backgroundColor = [UIColor whiteColor];
         [self.view addSubview:navBar];
         
         [_viewNavBar mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.right.equalTo(self.view);
             make.top.equalTo(self.view);
-            make.height.equalTo(@(navHeight));
+            make.height.equalTo(@(Height_NavBar));
         }];
     }
     return _viewNavBar;

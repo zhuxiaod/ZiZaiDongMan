@@ -72,6 +72,7 @@
     
     //关注btn
     _attentionButton = [[AttentionButton alloc] init];
+    _attentionButton.hidden = YES;
     [self.contentView addSubview:_attentionButton];
     
     //底View
@@ -84,8 +85,6 @@
 -(void)layoutSubviews{
     [super layoutSubviews];
 
-  
-    
     [_commentSectionHeadView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.contentView).offset(0);
         make.right.left.equalTo(self.contentView).offset(0);
@@ -150,7 +149,7 @@
     
     //关注
     _attentionButton.isAttention = NO;
-    
+    _attentionButton.hidden = YES;
     self.attentionButton.userInteractionEnabled = NO;
 }
 

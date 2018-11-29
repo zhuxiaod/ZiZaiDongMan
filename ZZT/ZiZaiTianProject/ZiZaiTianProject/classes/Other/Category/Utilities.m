@@ -66,4 +66,22 @@
     UIImage *newImage = [image stretchableImageWithLeftCapWidth:leftCapWidth topCapHeight:topCapHeight];
     [nav.navigationBar setBackgroundImage:newImage forBarMetrics:UIBarMetricsDefault];
 }
+
++(CGFloat)getBannerH{
+    //6 6s 7 8
+    if(SCREEN_WIDTH == 414){
+        return 249;
+    }else{
+        return 234;
+    }
+}
+
++(CGFloat)getCarChapterH{
+    //6 6s 7 8
+    if(SCREEN_WIDTH == 414){
+        return 184;
+    }else{
+        return 166;
+    }
+}
 @end

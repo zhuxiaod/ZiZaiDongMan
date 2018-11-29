@@ -335,7 +335,7 @@
 
 -(void)loginAfterLoadUserDataWith:(id)responseObject{
     //成功
-    NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+    NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
     NSArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
     //获得数据
     UserInfo *user = array[0];

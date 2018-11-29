@@ -109,11 +109,10 @@ static AFHTTPSessionManager *manager;
             NSLog(@"上传失败");
         }
         
-        
-        
         //        HYLog(@"%@-%@-%@",info,key,resp);
     } option:nil];
 }
+
 - (NSString *)makeToken:(NSString *)accessKey secretKey:(NSString *)secretKey {
     const char *secretKeyStr = [secretKey UTF8String];
     NSString *policy = [self marshal];

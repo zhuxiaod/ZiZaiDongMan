@@ -131,7 +131,7 @@
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonImg"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSString *data = responseObject[@"result"];
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:data];
+        NSDictionary *dic = [[EncryptionTools alloc] decry:data];
         NSArray *array = [ZZTCartoonModel mj_objectArrayWithKeyValuesArray:dic];
         weakSelf.cartoonDetail = array;
         weakSelf.secondCartoonDetail.cartoonDetail = array;

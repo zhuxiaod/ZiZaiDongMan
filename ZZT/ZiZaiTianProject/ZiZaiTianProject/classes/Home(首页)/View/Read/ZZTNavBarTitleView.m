@@ -57,8 +57,6 @@ static CGFloat const MyHeight = 30;
     
     _selBtnTextColor = ZZTSubColor;
     _selBtnBackgroundColor = [UIColor clearColor];
-    
-
 }
 
 
@@ -87,9 +85,11 @@ static CGFloat const MyHeight = 30;
     UIButton *btn = [UIButton new];
     
     [btn setTitleColor:_btnTextColor forState:UIControlStateNormal];
+    
     btn.titleLabel.font = [UIFont systemFontOfSize:17];
     
     btn.layer.cornerRadius = MyHeight * 0.5;
+    
     btn.layer.masksToBounds = YES;
     
     return btn;
@@ -101,6 +101,7 @@ static CGFloat const MyHeight = 30;
     CGFloat w = self.width * 0.49;
     
     self.leftBtn.frame  = CGRectMake(1, 1, w, self.height - 2);
+    
     self.rightBtn.frame = CGRectMake(w + 2, 1, w, self.height-2);
 }
 
@@ -119,6 +120,6 @@ static CGFloat const MyHeight = 30;
 
 -(void)setSelBtnBackgroundColor:(UIColor *)selBtnBackgroundColor{
     _selBtnBackgroundColor = selBtnBackgroundColor;
-
 }
+
 @end

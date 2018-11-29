@@ -187,9 +187,9 @@
 }
 
 //上传后台
--(void)uploadSever{
+-(void)uploadSeverWithImageStr:(NSString *)str{
     UserInfo *user = [Utilities GetNSUserDefaults];
-    NSString *str = [self.imageUrlArr componentsJoinedByString:@","];
+//    NSString *str = [self.imageUrlArr componentsJoinedByString:@","];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     NSDictionary *dict = @{
                            @"userId":[NSString stringWithFormat:@"%ld",user.id],
@@ -207,53 +207,16 @@
 
 
 -(void)upLoadQiNiuLoad:(NSArray *)array{
-    //正在上传
-    [MBProgressHUD showMessage:@"正在上传..." toView:self.view ];
-    //上传七牛云
-    for (int i = 0; i < array.count; i++) {
-        //文件名
-        NSString *imgName = [self getImgName];
-        //写入本地
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-        NSString *filePath = [[paths objectAtIndex:0] stringByAppendingPathComponent:imgName];
-        BOOL result = [UIImagePNGRepresentation(array[i]) writeToFile:filePath atomically:YES];
-        
-        if (result == YES) {
-            NSLog(@"保存成功");
-            [self.imageUrlArr removeAllObjects];
-            AFNHttpTool *tool = [[AFNHttpTool alloc] init];
-            NSString *toke = [tool makeToken:ZZTAccessKey secretKey:ZZTSecretKey];
-            [AFNHttpTool putImagePath:filePath key:imgName token:toke complete:^(id objc) {
-
-                [self.imageUrlArr addObject:objc];
-                if(array.count == self.imageUrlArr.count){
-                    [MBProgressHUD hideHUDForView:self.view];
-                    [MBProgressHUD showSuccess:@"上传成功" toView:self.view];
-                    [MBProgressHUD hideHUDForView:self.view];
-                    //上传
-                    [self uploadSever];
-                }
-            }];
-        
-        }else{
-            NSLog(@"保存失败");
-            [MBProgressHUD hideHUDForView:self.view];
-        }
+    //多图上传
+    NSString * imageParms = @"";
+    if (array.count > 0) {
+        imageParms = [SYQiniuUpload QiniuPutImageArray:array complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp) {
+            NSLog(@"info == %@ \n resp === %@",info,resp);
+        }];
     }
-}
 
-//生成文件名
--(NSString *)getImgName{
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    formatter.dateFormat = [formatter stringFromDate:[NSDate date]];
-    NSString *imgName = [formatter stringFromDate:[NSDate date]];
-    NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    NSMutableString *randomString = [NSMutableString stringWithCapacity:32];
-    for (NSInteger i = 0; i < 32; i++) {
-        [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random_uniform((uint32_t)letters.length)]];
-    }
-    imgName = [NSString stringWithFormat:@"%@%@.png",imgName,randomString];
-    return imgName;
+    //上传
+    [self uploadSeverWithImageStr:imageParms];
 }
 
 -(void)viewWillAppear:(BOOL)animated{

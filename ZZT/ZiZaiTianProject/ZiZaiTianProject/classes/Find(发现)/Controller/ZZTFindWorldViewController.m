@@ -111,7 +111,7 @@ static NSString *findCommentCell = @"findCommentCell";
     contentView.delegate = self;
     contentView.dataSource = self;
     contentView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    contentView.contentInset = UIEdgeInsetsMake(-20, 0, 0, 0);
+    contentView.contentInset = UIEdgeInsetsMake(Height_TabbleViewInset, 0, 0, 0);
     _contentView = contentView;
     contentView.backgroundColor = [UIColor whiteColor];
     contentView.estimatedRowHeight = 0;
@@ -127,18 +127,13 @@ static NSString *findCommentCell = @"findCommentCell";
 
 -(void)setupMJRefresh{
     self.contentView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        dispatch_group_async(self.group, self.q, ^{
-            dispatch_group_enter(self.group);
+ 
             [self loadData];
-        });
+            [self loadCaiNiXiHuanData];
       
     }];
     self.contentView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
-        
-        dispatch_group_async(self.group, self.q, ^{
-            dispatch_group_enter(self.group);
             [self loadMoreData];
-        });
     }];
 }
 //刷新数据
@@ -153,7 +148,8 @@ static NSString *findCommentCell = @"findCommentCell";
                           };
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/selDiscover"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+//        NSDictionary *dic = [NSString alloc]desc  description];
         if(dic.count >= 6){
             NSInteger total = [[NSString stringWithFormat:@"%@",[dic objectForKey:@"total"]] integerValue];
             
@@ -171,11 +167,9 @@ static NSString *findCommentCell = @"findCommentCell";
             }
             self.pageSize += 10;
         }
-        dispatch_group_leave(self.group);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [self.contentView.mj_footer endRefreshing];
         [self.contentView.mj_header endRefreshing];
-        dispatch_group_leave(self.group);
     }];
 }
 
@@ -191,7 +185,7 @@ static NSString *findCommentCell = @"findCommentCell";
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/selDiscover"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         
         NSInteger total = [[NSString stringWithFormat:@"%@",[dic objectForKey:@"total"]] integerValue];
         
@@ -208,11 +202,9 @@ static NSString *findCommentCell = @"findCommentCell";
             [self.contentView.mj_footer endRefreshing];
         }
         self.pageSize++;
-        dispatch_group_leave(self.group);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [self.contentView.mj_footer endRefreshing];
         [self.contentView.mj_header endRefreshing];
-        dispatch_group_leave(self.group);
     }];
 }
 
@@ -335,22 +327,19 @@ static NSString *findCommentCell = @"findCommentCell";
 }
 
 -(void)loadCaiNiXiHuanData{
-    dispatch_group_async(self.group, self.q, ^{
-        dispatch_group_enter(self.group);
+  
         AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
         [manager POST:[ZZTAPI stringByAppendingString:@"circle/guessYouLike"] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+            NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
             NSMutableArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
             self.CNXHArray = array;
             [self.contentView reloadData];
             [self.contentView.mj_header endRefreshing];
-            dispatch_group_leave(self.group);
+            
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             [self.contentView.mj_header endRefreshing];
-            dispatch_group_leave(self.group);
+
         }];
-    });
-  
 }
 
 //刷新NavBar的zhuang'ta

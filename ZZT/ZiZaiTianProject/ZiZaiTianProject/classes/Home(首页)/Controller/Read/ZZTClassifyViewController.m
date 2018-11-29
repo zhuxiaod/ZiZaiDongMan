@@ -221,7 +221,7 @@ NSString *SuggestionView2 = @"SuggestionView2";
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonlist"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
         
         self.dataArray = array;
@@ -252,7 +252,7 @@ NSString *SuggestionView2 = @"SuggestionView2";
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonlist"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
 
@@ -293,7 +293,7 @@ NSString *SuggestionView2 = @"SuggestionView2";
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonlist"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
         
@@ -309,7 +309,7 @@ NSString *SuggestionView2 = @"SuggestionView2";
 }
 
 -(void)setupScrollView{
-    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, navHeight, SCREEN_WIDTH, 60)];
+    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, Height_NavBar, SCREEN_WIDTH, 60)];
     self.scrollView = scrollView;
     self.scrollView.bounces = YES;
     self.scrollView.showsHorizontalScrollIndicator = NO;
@@ -319,7 +319,7 @@ NSString *SuggestionView2 = @"SuggestionView2";
 -(void)loadTopViewData{
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getBookType"] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTBookType mj_objectArrayWithKeyValuesArray:dic];
         self.titles = array;
         [self addBtn];
@@ -370,7 +370,7 @@ NSString *SuggestionView2 = @"SuggestionView2";
 //        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
         AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
         [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/queryFuzzy"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+            NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
             NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
             weakSelf.searchSuggestionArray = array;
             [searchViewController.searchSuggestionView reloadData];

@@ -21,8 +21,7 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "ZZTCircleImage.h"
 #import "ZZTUserModel.h"
-#import "BAPickView_OC.h"
-#import "BAKit_DatePicker.h"
+//#import "BAKit_PickerViewConfig.h"
 #import "ZZTUserShoppingModel.h"
 #import "DCNewWelfareLayout.h"
 #import "UIView+Extension.h"
@@ -104,6 +103,9 @@
 #import "SBPersonalSettingCell.h"
 #import "DateManager.h"
 #import "ZXDSearchViewController.h"
+#import "ImageClipViewController.h"
+#import "SYQiniuUpload.h"
+#import "UIView+BAAnimation.h"
 
 #define BanerHeight SCREEN_HEIGHT * 0.3
 
@@ -141,8 +143,22 @@
 
 #define iPhone6plus ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? (CGSizeEqualToSize(CGSizeMake(1125,2001), [[UIScreen mainScreen] currentMode].size) || CGSizeEqualToSize(CGSizeMake(1242,2208), [[UIScreen mainScreen] currentMode].size)) : NO)
 
+//iPhoneX 适配
+#define IS_IPHONE_X (Screen_Height == 812.0f) ? YES : NO
+
+#define Height_NavContentBar 44.0f
+
+#define Height_StatusBar (IS_IPHONE_X==YES)?44.0f: 20.0f
+
+#define Height_NavBar    (IS_IPHONE_X==YES)?88.0f: 64.0f
+
+#define Height_TabBar    (IS_IPHONE_X==YES)?83.0f: 49.0f
+
+#define Height_TabbleViewInset (IS_IPHONE_X==YES)?(-44.0f):(-20.0f)
+
+
 //测试环境
-//#define ZZTAPI @"http://192.168.0.165:8888/"
+#define ZZTAPI @"http://192.168.0.165:8888/"
 //#define ZZTBucket @"image"
 //#define imageHost @"http://p872ue3rt.bkt.clouddn.com"
 
@@ -154,7 +170,7 @@
 //#import "UITableView+ZFTableViewSnapshot.h"
 
 //正式环境
-#define ZZTAPI @"http://120.79.178.191:8888/"
+//#define ZZTAPI @"http://120.79.178.191:8888/"
 #define ZZTBucket @"zizaitian"
 #define imageHost @"http://img.cdn.zztian.cn"
 
@@ -175,6 +191,14 @@
 #define   TOPBAR_HEIGHT       ([[UIApplication sharedApplication] statusBarFrame].size.height + [UINavigationController new].navigationBar.frame.size.height)
 
 //#define AFNHttpTool AFNHttpTool *tool = [AFNHttpTool ];
+
+
+
+
+
+
+
+
 
 
 #endif /* ZiZaiTianProject_pch */

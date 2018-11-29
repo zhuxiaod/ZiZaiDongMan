@@ -88,6 +88,15 @@
     }
     return _textField;
 }
+
+-(void)setTextFieldText:(NSString *)textFieldText{
+    _textFieldText = textFieldText;
+    if([textFieldText isEqualToString:@""]){
+        textFieldText = @"未填写";
+    }
+    self.textField.text = textFieldText;
+}
+
 - (BOOL)textField:(UITextField*)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString*)string {
     NSString *blank = [[string componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] componentsJoinedByString:@""];
     if(![string isEqualToString:blank]) {
@@ -100,10 +109,19 @@
 }
 
 -(void)textFieldDidEndEditing:(UITextField *)textField{
-    if(self.textFieldChange){
-        self.textFieldChange(textField.tag);
+    if(self.textFieldEndEditing){
+        self.textFieldEndEditing(textField.tag);
     }
 }
+
+-(void)textFieldDidBeginEditing:(UITextField *)textField{
+    if(self.textFieldBeginEditing){
+        self.textFieldBeginEditing(textField.tag);
+    }
+}
+
+
+
 - (UIImageView *)bottomLine{
     if (!_bottomLine) {
         _bottomLine = [UIImageView new];

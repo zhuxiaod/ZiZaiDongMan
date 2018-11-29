@@ -66,6 +66,10 @@
 		041EE0B420EB8D0C0012FEDF /* ZZTExitCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 041EE0B220EB8D0C0012FEDF /* ZZTExitCell.m */; };
 		041EE0B520EB8D0C0012FEDF /* ZZTExitCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 041EE0B320EB8D0C0012FEDF /* ZZTExitCell.xib */; };
 		041EE0BA20EB90180012FEDF /* ZZTSettingModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 041EE0B920EB90180012FEDF /* ZZTSettingModel.m */; };
+		041F5CD321AE61AA00527A8F /* ImageClipViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 041F5CD021AE61A900527A8F /* ImageClipViewController.m */; };
+		041F5CD421AE61AA00527A8F /* MaskView.m in Sources */ = {isa = PBXBuildFile; fileRef = 041F5CD221AE61A900527A8F /* MaskView.m */; };
+		041F5CD721AE621200527A8F /* UIImage+ClipImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 041F5CD621AE621100527A8F /* UIImage+ClipImage.m */; };
+		041F5CDB21AE8F3E00527A8F /* SYQiniuUpload.m in Sources */ = {isa = PBXBuildFile; fileRef = 041F5CDA21AE8F3D00527A8F /* SYQiniuUpload.m */; };
 		0421C02A2119CA600068AD21 /* RectangleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0421C0292119CA600068AD21 /* RectangleView.m */; };
 		0421C033211AC6910068AD21 /* ZZTFangKuangModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0421C032211AC6910068AD21 /* ZZTFangKuangModel.m */; };
 		0422217E217038F600E67F59 /* ZZTUserReplyModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0422217D217038F600E67F59 /* ZZTUserReplyModel.m */; };
@@ -360,6 +364,10 @@
 		04E9FAD92153D5BC005A3986 /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E9FAD82153D5BC005A3986 /* Utilities.m */; };
 		04E9FADC2154E0AE005A3986 /* ZZTMyZoneTotalModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E9FADB2154E0AE005A3986 /* ZZTMyZoneTotalModel.m */; };
 		04E9FAE021551879005A3986 /* NSDate+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E9FADF21551879005A3986 /* NSDate+Extension.m */; };
+		04EC76EF21AFB90F00C54CB5 /* SBDatePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04EC76EE21AFB90F00C54CB5 /* SBDatePickerView.m */; };
+		04EC76F221AFBE8900C54CB5 /* UIView+BAAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 04EC76F021AFBE8800C54CB5 /* UIView+BAAnimation.m */; };
+		04EC76F521AFBF4900C54CB5 /* CALayer+BAAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 04EC76F421AFBF4800C54CB5 /* CALayer+BAAnimation.m */; };
+		04EC770521AFEB4000C54CB5 /* NSString+AES.m in Sources */ = {isa = PBXBuildFile; fileRef = 04EC770421AFEB4000C54CB5 /* NSString+AES.m */; };
 		04F9D7982168A17800EF953D /* ZZTColorPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F9D7972168A17800EF953D /* ZZTColorPickerView.m */; };
 		D9D2D4F33CB3B47DB08AD9C9 /* libPods-ZiZaiTianProject.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BA8586C54F8E7A26D9A888C6 /* libPods-ZiZaiTianProject.a */; };
 		F7C04BEE20DF3D190055E7A8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F7C04BEC20DF3D190055E7A8 /* Main.storyboard */; };
@@ -470,6 +478,14 @@
 		041EE0B320EB8D0C0012FEDF /* ZZTExitCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ZZTExitCell.xib; sourceTree = "<group>"; };
 		041EE0B820EB90180012FEDF /* ZZTSettingModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTSettingModel.h; sourceTree = "<group>"; };
 		041EE0B920EB90180012FEDF /* ZZTSettingModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTSettingModel.m; sourceTree = "<group>"; };
+		041F5CCF21AE61A900527A8F /* ImageClipViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageClipViewController.h; sourceTree = "<group>"; };
+		041F5CD021AE61A900527A8F /* ImageClipViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageClipViewController.m; sourceTree = "<group>"; };
+		041F5CD121AE61A900527A8F /* MaskView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MaskView.h; sourceTree = "<group>"; };
+		041F5CD221AE61A900527A8F /* MaskView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MaskView.m; sourceTree = "<group>"; };
+		041F5CD521AE621000527A8F /* UIImage+ClipImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ClipImage.h"; sourceTree = "<group>"; };
+		041F5CD621AE621100527A8F /* UIImage+ClipImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ClipImage.m"; sourceTree = "<group>"; };
+		041F5CD921AE8F3D00527A8F /* SYQiniuUpload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYQiniuUpload.h; sourceTree = "<group>"; };
+		041F5CDA21AE8F3D00527A8F /* SYQiniuUpload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYQiniuUpload.m; sourceTree = "<group>"; };
 		0421C0282119CA600068AD21 /* RectangleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RectangleView.h; sourceTree = "<group>"; };
 		0421C0292119CA600068AD21 /* RectangleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RectangleView.m; sourceTree = "<group>"; };
 		0421C031211AC6910068AD21 /* ZZTFangKuangModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ZZTFangKuangModel.h; path = "ZiZaiTianProject/classes/Home(首页)/View/ZZTFangKuangModel.h"; sourceTree = SOURCE_ROOT; };
@@ -1008,6 +1024,14 @@
 		04E9FADB2154E0AE005A3986 /* ZZTMyZoneTotalModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTMyZoneTotalModel.m; sourceTree = "<group>"; };
 		04E9FADE21551838005A3986 /* NSDate+Extension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSDate+Extension.h"; sourceTree = "<group>"; };
 		04E9FADF21551879005A3986 /* NSDate+Extension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Extension.m"; sourceTree = "<group>"; };
+		04EC76ED21AFB90F00C54CB5 /* SBDatePickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBDatePickerView.h; sourceTree = "<group>"; };
+		04EC76EE21AFB90F00C54CB5 /* SBDatePickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBDatePickerView.m; sourceTree = "<group>"; };
+		04EC76F021AFBE8800C54CB5 /* UIView+BAAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+BAAnimation.m"; sourceTree = "<group>"; };
+		04EC76F121AFBE8900C54CB5 /* UIView+BAAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+BAAnimation.h"; sourceTree = "<group>"; };
+		04EC76F321AFBF4700C54CB5 /* CALayer+BAAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CALayer+BAAnimation.h"; sourceTree = "<group>"; };
+		04EC76F421AFBF4800C54CB5 /* CALayer+BAAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CALayer+BAAnimation.m"; sourceTree = "<group>"; };
+		04EC770321AFEB4000C54CB5 /* NSString+AES.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+AES.h"; sourceTree = "<group>"; };
+		04EC770421AFEB4000C54CB5 /* NSString+AES.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+AES.m"; sourceTree = "<group>"; };
 		04F9D7962168A17800EF953D /* ZZTColorPickerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTColorPickerView.h; sourceTree = "<group>"; };
 		04F9D7972168A17800EF953D /* ZZTColorPickerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTColorPickerView.m; sourceTree = "<group>"; };
 		749399599CA48ED07BA87311 /* Pods-ZiZaiTianProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZiZaiTianProject.release.xcconfig"; path = "Pods/Target Support Files/Pods-ZiZaiTianProject/Pods-ZiZaiTianProject.release.xcconfig"; sourceTree = "<group>"; };
@@ -1154,6 +1178,28 @@
 			path = Cell;
 			sourceTree = "<group>";
 		};
+		041F5CCE21AE61A900527A8F /* ImageClip */ = {
+			isa = PBXGroup;
+			children = (
+				041F5CD521AE621000527A8F /* UIImage+ClipImage.h */,
+				041F5CD621AE621100527A8F /* UIImage+ClipImage.m */,
+				041F5CCF21AE61A900527A8F /* ImageClipViewController.h */,
+				041F5CD021AE61A900527A8F /* ImageClipViewController.m */,
+				041F5CD121AE61A900527A8F /* MaskView.h */,
+				041F5CD221AE61A900527A8F /* MaskView.m */,
+			);
+			path = ImageClip;
+			sourceTree = "<group>";
+		};
+		041F5CD821AE8F3D00527A8F /* 七牛 */ = {
+			isa = PBXGroup;
+			children = (
+				041F5CD921AE8F3D00527A8F /* SYQiniuUpload.h */,
+				041F5CDA21AE8F3D00527A8F /* SYQiniuUpload.m */,
+			);
+			path = "七牛";
+			sourceTree = "<group>";
+		};
 		0428E8B121796B8900702225 /* MBProgressHUD */ = {
 			isa = PBXGroup;
 			children = (
@@ -1234,6 +1280,8 @@
 		0466835F20F3096A0095C6BC /* DCPicscrollView */ = {
 			isa = PBXGroup;
 			children = (
+				04EC76ED21AFB90F00C54CB5 /* SBDatePickerView.h */,
+				04EC76EE21AFB90F00C54CB5 /* SBDatePickerView.m */,
 				0466836020F3096A0095C6BC /* DCPicItem.h */,
 				0466836120F3096A0095C6BC /* DCPicItem.m */,
 				0466836220F3096A0095C6BC /* DCPicItemConfiguration.h */,
@@ -1251,6 +1299,9 @@
 		0466838720F314860095C6BC /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				04EC76F621AFE4BA00C54CB5 /* AES */,
+				041F5CD821AE8F3D00527A8F /* 七牛 */,
+				041F5CCE21AE61A900527A8F /* ImageClip */,
 				04A0C0A021804B8500D08F6C /* LxGridViewFlowLayout.h */,
 				04A0C0A121804B8500D08F6C /* LxGridViewFlowLayout.m */,
 				04A0C0A421804C3600D08F6C /* TZTestCell.h */,
@@ -1629,6 +1680,10 @@
 				04949C4A218BF1FB0029A59F /* UI组件 */,
 				0456F155219052170077739A /* UserInfoManager.h */,
 				0456F156219052170077739A /* UserInfoManager.m */,
+				04EC76F121AFBE8900C54CB5 /* UIView+BAAnimation.h */,
+				04EC76F021AFBE8800C54CB5 /* UIView+BAAnimation.m */,
+				04EC76F321AFBF4700C54CB5 /* CALayer+BAAnimation.h */,
+				04EC76F421AFBF4800C54CB5 /* CALayer+BAAnimation.m */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -1672,6 +1727,15 @@
 				04A0C0E62180AB6900D08F6C /* UITableView+ZFTableViewSnapshot.m */,
 			);
 			path = UITableViewSnapshot;
+			sourceTree = "<group>";
+		};
+		04EC76F621AFE4BA00C54CB5 /* AES */ = {
+			isa = PBXGroup;
+			children = (
+				04EC770321AFEB4000C54CB5 /* NSString+AES.h */,
+				04EC770421AFEB4000C54CB5 /* NSString+AES.m */,
+			);
+			path = AES;
 			sourceTree = "<group>";
 		};
 		6A89D7600687879961A023BD /* Frameworks */ = {
@@ -2211,7 +2275,6 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-ZiZaiTianProject/Pods-ZiZaiTianProject-resources.sh",
-				"${PODS_ROOT}/BAPickView/BAPickView/BAPickView/BAPickView.bundle",
 				"${PODS_ROOT}/IQKeyboardManager/IQKeyboardManager/Resources/IQKeyboardManager.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/JGProgressHUD/JGProgressHUD.bundle",
 				"${PODS_ROOT}/MJRefresh/MJRefresh/MJRefresh.bundle",
@@ -2225,7 +2288,6 @@
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/BAPickView.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/IQKeyboardManager.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/JGProgressHUD.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MJRefresh.bundle",
@@ -2268,6 +2330,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				042D1488218AA98C00BE05F6 /* NetWorkManager.m in Sources */,
+				041F5CD721AE621200527A8F /* UIImage+ClipImage.m in Sources */,
 				0471A83B20F598DB00ABFF35 /* ZZTCreationBtnCellTableViewCell.m in Sources */,
 				042A5BE120E7623700F5BA89 /* ZZTCartonnPlayModel.m in Sources */,
 				040FD50720EF160E00004C71 /* ZZTShoppingMidCell.m in Sources */,
@@ -2315,6 +2378,7 @@
 				046152E321087FDB0061AEA8 /* UIImage+Rotate.m in Sources */,
 				04E6D49E20EC736400116085 /* ZZTMeEditButtomView.m in Sources */,
 				0484E7E7210B02E700C39369 /* ZZTAddLengthFooterView.m in Sources */,
+				041F5CD321AE61AA00527A8F /* ImageClipViewController.m in Sources */,
 				049A99DB20E3879700ED27C9 /* ZZTVIPViewController.m in Sources */,
 				04E49F93213D5C57007EE617 /* ZZTJiXuYueDuModel.m in Sources */,
 				0456F14B21903A520077739A /* ZZTCommentViewController.m in Sources */,
@@ -2360,6 +2424,7 @@
 				044244D320EA20480044502C /* ZZTUserModel.m in Sources */,
 				043B074A20EDEED800ED3F5B /* ZZTRoundRectButton.m in Sources */,
 				049A99B520E3288400ED27C9 /* UITextField+ZXDLoginRegisterTextField.m in Sources */,
+				04EC76F521AFBF4900C54CB5 /* CALayer+BAAnimation.m in Sources */,
 				04A0C0FC2181939A00D08F6C /* GGVerifyCodeViewBtn.m in Sources */,
 				04A0C1022181AA8400D08F6C /* ZXDCheckContent.m in Sources */,
 				04E9FACA2153784B005A3986 /* GlobalUI.m in Sources */,
@@ -2443,9 +2508,11 @@
 				049A99B720E3288400ED27C9 /* ZXDFastLoginView.m in Sources */,
 				0471A88220F84E6A00ABFF35 /* ZZTCommentCell.m in Sources */,
 				0466837920F3096A0095C6BC /* likeCountView.m in Sources */,
+				04EC770521AFEB4000C54CB5 /* NSString+AES.m in Sources */,
 				04A0C0EB218154C800D08F6C /* TJLongImgCut.m in Sources */,
 				04CF25A02105E2170026EC8F /* ZZTFodderListModel.m in Sources */,
 				042D1483218AA86400BE05F6 /* UIView+Layout.m in Sources */,
+				041F5CDB21AE8F3E00527A8F /* SYQiniuUpload.m in Sources */,
 				0450E2412135804900AE924B /* ZZTFindWorldViewController.m in Sources */,
 				048C333620E2106200F69CE1 /* ZZTMeViewController.m in Sources */,
 				0434BC8D212C10D800AC43E0 /* ZZTRankCell.m in Sources */,
@@ -2492,6 +2559,7 @@
 				0456F154219041800077739A /* ZZTNavBarTitleView.m in Sources */,
 				0466837C20F3096A0095C6BC /* ProgressHUD.m in Sources */,
 				04C39F4E2136493900F4CB4A /* ZZTFindCommentCell.m in Sources */,
+				041F5CD421AE61AA00527A8F /* MaskView.m in Sources */,
 				042BA0BB20E9C75B003E279A /* ZZTCircleImage.m in Sources */,
 				0466839920F32F8F0095C6BC /* ZZTReadTableView.m in Sources */,
 				04E9FAC4215372BD005A3986 /* ZZTMyZoneViewController.m in Sources */,
@@ -2524,10 +2592,12 @@
 				042D148E218B337400BE05F6 /* CommentSectionHeadView.m in Sources */,
 				042D147F218AA86400BE05F6 /* TZPhotoPreviewCell.m in Sources */,
 				040A03BD2100201B000FAE13 /* ZZTMoreViewController.m in Sources */,
+				04EC76EF21AFB90F00C54CB5 /* SBDatePickerView.m in Sources */,
 				049D636E21995820008EF62F /* ZZTReadHomeViewController.m in Sources */,
 				046FF6592101797B005DED73 /* MainTabbar.m in Sources */,
 				0466837D20F3096A0095C6BC /* userAuthenticationIcon.m in Sources */,
 				0495D663215F5C8200A10E7B /* ZZTMulPlayCell.m in Sources */,
+				04EC76F221AFBE8900C54CB5 /* UIView+BAAnimation.m in Sources */,
 				044B6D88219A7C2100D6A523 /* ZZTBigImageCell.m in Sources */,
 				04D7D1EB20E64D46008D3969 /* EncryptionTools.m in Sources */,
 				0434BC91212C3E4100AC43E0 /* ZZTClassifyViewController.m in Sources */,

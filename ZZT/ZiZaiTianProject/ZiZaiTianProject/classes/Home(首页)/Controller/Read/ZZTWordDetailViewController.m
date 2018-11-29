@@ -150,7 +150,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     //页码
     UIButton *pageBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     pageBtn.frame = CGRectMake(0, 0, SCREEN_WIDTH/3*2, 50);
-    [pageBtn setBackgroundImage:[UIImage createImageWithColor:[UIColor colorWithHexString:@"223,223,223" alpha:1]] forState:UIControlStateNormal];
+    [pageBtn setBackgroundColor:[UIColor colorWithHexString:@"#D6D6D6" alpha:0.74]];
     [pageBtn setTitle:@" " forState:UIControlStateNormal];
     _pageBtn = pageBtn;
     [pageBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -230,11 +230,9 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
         self.ctDetail = mode;
         self.head.detailModel = mode;
         [self.navbar.centerButton setTitle:mode.bookName forState:UIControlStateNormal];
-        dispatch_group_leave(self.group);
         [self.contentView reloadData];
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        dispatch_group_leave(self.group);
     }];
 }
 
@@ -277,9 +275,8 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
             }
         }
         [self.contentView reloadData];
-        dispatch_group_leave(self.group);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        dispatch_group_leave(self.group);
+
     }];
 }
 
@@ -287,7 +284,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     
     UITableView *contenView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height) style:UITableViewStyleGrouped];
     contenView.backgroundColor = [UIColor clearColor];
-    contenView.contentInset = UIEdgeInsetsMake(-20,0,0,0);
+    contenView.contentInset = UIEdgeInsetsMake(Height_TabbleViewInset,0,0,0);
     contenView.showsVerticalScrollIndicator = NO;
     contenView.delegate = self;
     contenView.dataSource = self;
@@ -476,14 +473,12 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 }
 
 -(void)chapterChooseView:(ZZTChapterChooseView *)chapterChooseView didItemWithModel:(ZZTChapterChooseModel *)model{
-    dispatch_group_async(self.group, self.q, ^{
-        dispatch_group_enter(self.group);
+
         if(self.isId == YES){
             [self loadListData:self.cartoonDetail.id pageNum:[NSString stringWithFormat:@"%ld",model.APIPage] isFirst:NO];
         }else{
             [self loadListData:self.cartoonDetail.cartoonId pageNum:[NSString stringWithFormat:@"%ld",model.APIPage] isFirst:NO];
         }
-    });
     
 }
 
@@ -521,16 +516,14 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
                                   };
             AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
             [manager POST:[ZZTAPI stringByAppendingString:@"great/collects"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-//                //重新获取信息
-                dispatch_group_async(weakSelf.group, weakSelf.q, ^{
-                    dispatch_group_enter(weakSelf.group);
+
                     if(self.isId == YES){
                         //上部分View
                         [weakSelf loadtopData:weakSelf.cartoonDetail.id];
                     }else{
                         [weakSelf loadtopData:weakSelf.cartoonDetail.cartoonId];
                     }
-                });
+
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                 
             }];
@@ -570,18 +563,16 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 }
 
 -(void)loadData{
-     dispatch_group_async(self.group, self.q, ^{
-         dispatch_group_enter(self.group);
+
          if(self.isId == YES){
              //上部分View
              [self loadtopData:self.cartoonDetail.id];
          }else{
              [self loadtopData:self.cartoonDetail.cartoonId];
          }
-    });
+
     
-    dispatch_group_async(self.group, self.q, ^{
-        dispatch_group_enter(self.group);
+  
         NSLog(@"sekf ppp :%@",self.chooseNum);
         if(self.isId == YES){
             //如果有记录的值 那么请求记录哪一行
@@ -595,7 +586,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
         }else{
             [self loadListData:self.cartoonDetail.cartoonId pageNum:@"1" isFirst:YES];
         }
-    });
+
 }
 
 -(void)viewWillDisappear:(BOOL)animated{

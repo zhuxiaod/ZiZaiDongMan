@@ -152,7 +152,7 @@ static NSString *circleCell = @"circleCell";
                                     };
         [self.manager POST:[ZZTAPI stringByAppendingString:@"great/userCollect"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             
-            NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+            NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
             NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
             self.cartoons = array;
             [self addCartoonId:array];
@@ -168,7 +168,7 @@ static NSString *circleCell = @"circleCell";
         
         [self.manager POST:[ZZTAPI stringByAppendingString:@"great/userCollect"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             
-            NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+            NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
             NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
             self.cartoons = array;
             [self addCartoonId:array];

@@ -38,7 +38,7 @@
 -(void)setup{
     _backgroundBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     _backgroundBtn.adjustsImageWhenHighlighted = NO;
-    [_backgroundBtn setImage:[UIImage imageNamed:@"用户空间背景"] forState:UIControlStateNormal];
+    [_backgroundBtn setImage:[UIImage imageNamed:@"Me_homeBackground"] forState:UIControlStateNormal];
     [_backgroundBtn addTarget:self action:@selector(print) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:_backgroundBtn];
     
@@ -66,7 +66,7 @@
 -(void)setModel:(UserInfo *)model{
     _model = model;
     
-    [self.backgroundBtn sd_setImageWithURL:[NSURL URLWithString:model.cover] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"用户空间背景"]];
+    [self.backgroundBtn sd_setImageWithURL:[NSURL URLWithString:model.cover] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"Me_homeBackground"]];
     
     [self.backgroundBtn.imageView  setContentMode:UIViewContentModeScaleAspectFill];
     

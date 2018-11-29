@@ -145,7 +145,7 @@ static NSString *const airView = @"airView";
                            };
     [session POST:[ZZTAPI stringByAppendingString:@"circle/comment"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [self.mj_header endRefreshing];
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
       
             NSDictionary *list = dic[@"list"];
             NSString *totaldic = [dic objectForKey:@"total"];
@@ -190,7 +190,7 @@ static NSString *const airView = @"airView";
                            };
     [session POST:[ZZTAPI stringByAppendingString:@"circle/comment"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [self.mj_header endRefreshing];
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         if(dic.count != 0){
             NSDictionary *list = dic[@"list"];
             NSString *total = [dic objectForKey:@"total"];
@@ -242,7 +242,7 @@ static NSString *const airView = @"airView";
                            };
     [session POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonComment"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [self.mj_header endRefreshing];
-        NSDictionary *commenDdic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *commenDdic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
         NSDictionary *list = commenDdic[@"list"];
         NSString *totaldic = [commenDdic objectForKey:@"total"];
@@ -286,7 +286,7 @@ static NSString *const airView = @"airView";
                            @"host":[NSString stringWithFormat:@"%ld",_dataNum]
                            };
     [session POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonComment"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *commenDdic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *commenDdic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
         NSDictionary *list = commenDdic[@"list"];
         //总数

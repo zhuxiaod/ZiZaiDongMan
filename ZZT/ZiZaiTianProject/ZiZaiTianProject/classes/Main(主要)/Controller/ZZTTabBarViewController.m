@@ -112,19 +112,22 @@
     
     if (hidesBottomBar) {
         
-        [UIView animateWithDuration:0.25 animations:^{
-            [self.mainTabbar setY:SCREEN_HEIGHT];
-        }];
-        
+//        [UIView animateWithDuration:0.25 animations:^{
+//            [self.mainTabbar setY:SCREEN_HEIGHT + 44];
+//        }];
+        self.tabBar.hidden = YES;
+    
     }else {
         
-        [UIView animateWithDuration:0.25 delay:0.5 usingSpringWithDamping:0.8f initialSpringVelocity:15.0f options:UIViewAnimationOptionTransitionNone animations:^{
-            
-            [self.mainTabbar setY:SCREEN_HEIGHT - 44];
-            
-        } completion:^(BOOL finished) {
-            
-        }];
+        self.tabBar.hidden = NO;
+
+//        [UIView animateWithDuration:0.25 delay:0.5 usingSpringWithDamping:0.8f initialSpringVelocity:15.0f options:UIViewAnimationOptionTransitionNone animations:^{
+//
+//            [self.mainTabbar setY:SCREEN_HEIGHT - 44];
+//
+//        } completion:^(BOOL finished) {
+//
+//        }];
     }
 }
 

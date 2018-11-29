@@ -287,7 +287,8 @@ NSString *SuggestionView = @"SuggestionView";
         make.centerX.equalTo(navBar.mainView);
         make.width.mas_equalTo(SCREEN_WIDTH * 0.34);
         make.height.mas_equalTo(30);
-        make.bottom.equalTo(navBar.mainView).offset(-10);
+//        make.bottom.equalTo(navBar.mainView).offset(-10);
+        make.centerY.equalTo(navBar.leftButton.mas_centerY);
     }];
     
     navBar.showBottomLabel = NO;
@@ -372,7 +373,7 @@ NSString *SuggestionView = @"SuggestionView";
         AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
 
         [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/queryFuzzy"]  parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+            NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
             NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
             weakSelf.searchSuggestionArray = array;
             [searchViewController.searchSuggestionView reloadData];

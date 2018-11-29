@@ -331,7 +331,7 @@ static bool needHide = false;
                                   };
     [session POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonComment"] parameters:commentDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         //还要判断
-        NSDictionary *commenDdic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *commenDdic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
         NSMutableArray *array1 = [ZZTCircleModel mj_objectArrayWithKeyValuesArray:commenDdic];
         //外面的数据
@@ -469,16 +469,14 @@ static bool needHide = false;
         return;
     }
     [MBProgressHUD showSuccess:@"点赞成功" toView:self.view];
-    dispatch_group_async(self.group, self.q, ^{
-        dispatch_group_enter(self.group);
+  
         [self headerViewLike];
-    });
+
 
     //点赞完了以后 重新请求一次获取点赞的接口  刷新点赞图标
-    dispatch_group_async(self.group, self.q, ^{
-        dispatch_group_enter(self.group);
+ 
         [self loadLikeData];
-    });
+
 }
 
 
@@ -583,39 +581,25 @@ static bool needHide = false;
 
 -(void)loadContent{
 
-    dispatch_group_async(self.group, self.q, ^{
-        dispatch_group_enter(self.group);
-        [self loadContentData];
-    });
 
-    dispatch_group_async(self.group, self.q, ^{
-        dispatch_group_enter(self.group);
-        [self loadCommentData];
-    });
-    
-    dispatch_group_async(self.group, self.q, ^{
-        dispatch_group_enter(self.group);
-        [self loadLikeData];
-    });
+    [self loadContentData];
 
-//    dispatch_group_async(self.group, self.q, ^{
-//        dispatch_group_enter(self.group);
-//        [self loadUpDownBtnData];
-//    });
-    
-    dispatch_group_notify(self.group, dispatch_get_main_queue(), ^{
+    [self loadCommentData];
 
-        //显示作者信息
-        self.authorHeaderView.userModel = self.author;
-        //没有本地连接
-        if(!self.chapterModel.TXTFileName){
-            //下载地址
-            [self downloadTxT];
-        }else{
+    [self loadLikeData];
+
+#warning 看这里有没有问题
+    //显示作者信息
+    self.authorHeaderView.userModel = self.author;
+    //没有本地连接
+    if(!self.chapterModel.TXTFileName){
+        //下载地址
+        [self downloadTxT];
+    }else{
 //            [self.tableView reloadData];
-        }
-        [self.tableView reloadData];
-    });
+    }
+    [self.tableView reloadData];
+
 }
 
 #warning 上下页btn样式
@@ -629,7 +613,7 @@ static bool needHide = false;
                           @"code":@"1"//1.漫画 2.章节
                           };
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getupDown"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         NSLog(@"dic:%@",dic);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
@@ -673,7 +657,6 @@ static bool needHide = false;
             self.cartoonDetailArray = self.chapterModel.imageUrlArray;
             self.imageUrlArray = self.cartoonDetailArray;
             self.author = self.chapterModel.autherData;
-            dispatch_group_leave(self.group);
             [self reloadCellWithIndex];
 
             
@@ -689,7 +672,7 @@ static bool needHide = false;
                 [self.cartoonDetailArray removeAllObjects];
                 [self.imageUrlArray removeAllObjects];
                 
-                NSArray *dataArray = [[EncryptionTools sharedEncryptionTools] getDecryArray:responseObject[@"result"]];
+                NSArray *dataArray = [[EncryptionTools alloc] getDecryArray:responseObject[@"result"]];
                 if(dataArray.count > 0){
                     NSDictionary *dict = dataArray[0];
                     NSArray *array = dict[@"list"];
@@ -700,11 +683,9 @@ static bool needHide = false;
                     self.imageUrlArray = cartArray;
                     self.author = author;
                 }
-                dispatch_group_leave(self.group);
                 [self reloadCellWithIndex];
 
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                dispatch_group_leave(self.group);
             }];
             
         }
@@ -719,7 +700,6 @@ static bool needHide = false;
             self.stroyModel = model;
             self.author = self.chapterModel.autherData;
             [self reloadCellWithIndex];
-            dispatch_group_leave(self.group);
             [self reloadCellWithIndex];
 
         }else{
@@ -731,7 +711,7 @@ static bool needHide = false;
             [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterInfo"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                 self.cartoonDetailArray = nil;
                 NSString *data = responseObject[@"result"];
-                NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:data];
+                NSDictionary *dic = [[EncryptionTools alloc] decry:data];
                 NSMutableArray *array = [ZZTStoryModel mj_objectArrayWithKeyValuesArray:dic];
                 self.cartoonDetailArray = array;
                 if(array.count > 0) {
@@ -744,10 +724,9 @@ static bool needHide = false;
                     self.author = userData;
                 }
 
-                dispatch_group_leave(self.group);
                 [self reloadCellWithIndex];
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                dispatch_group_leave(self.group);
+
             }];
         }
     }
@@ -762,13 +741,12 @@ static bool needHide = false;
                                @"userId":[NSString stringWithFormat:@"%ld",user.id]
                                };
     [session POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterPraise"] parameters:likeDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         self.likeModel = [ZZTStoryModel mj_objectWithKeyValues:dic];
         self.likeCollectView.likeModel = self.likeModel;
         [self.tableView reloadData];
-        dispatch_group_leave(self.group);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        dispatch_group_leave(self.group);
+
     }];
 }
 
@@ -787,7 +765,7 @@ static bool needHide = false;
                            };
     [session POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonComment"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         self.commentArray = nil;
-        NSDictionary *commenDdic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *commenDdic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         //这里有问题 应该是转成数组 然后把对象取出
         NSDictionary *list = commenDdic[@"list"];
         NSMutableArray *array1 = [ZZTCircleModel mj_objectArrayWithKeyValuesArray:list];
@@ -805,9 +783,8 @@ static bool needHide = false;
         }
         //加工一下评论的数据
         [self.tableView reloadData];
-        dispatch_group_leave(self.group);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        dispatch_group_leave(self.group);
+
     }];
 }
 
@@ -819,7 +796,6 @@ static bool needHide = false;
         user.id = self.stroyModel.id;
         user.userId = self.stroyModel.userId;
         self.author = user;
-        dispatch_group_leave(self.group);
         return;
     }
 }
@@ -1072,10 +1048,9 @@ static bool needHide = false;
             footerView.delegate = self;
             footerView.update = ^{
                 //更新评论数据
-                dispatch_group_async(self.group, self.q, ^{
-                    dispatch_group_enter(self.group);
+          
                     [self loadCommentData];
-                });
+
             };
             footerView.bookId = self.cartoonModel.id;
             ZZTCircleModel *model = self.commentArray[section - 3];
@@ -1123,7 +1098,7 @@ static bool needHide = false;
                           @"code":code//1.漫画 2.章节
                           };
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getupDown"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [[EncryptionTools sharedEncryptionTools] decry:responseObject[@"result"]];
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         if(dic){
             //准备跳转  --->   初始化数据源
             [self.cartoonDetailArray removeAllObjects];
@@ -1733,10 +1708,9 @@ static bool needHide = false;
 
 -(void)sendMessageSuccess{
     //刷新数据
-    dispatch_group_async(self.group, self.q, ^{
-        dispatch_group_enter(self.group);
-        [self loadCommentData];
-    });
+
+    [self loadCommentData];
+
     
 //    [self.tableView reloadData];
     

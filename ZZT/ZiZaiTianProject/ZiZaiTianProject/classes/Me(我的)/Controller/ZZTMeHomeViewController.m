@@ -11,6 +11,7 @@
 #import "ZZTMyZoneViewController.h"
 #import "ZZTMeWalletViewController.h"
 #import "ZZTVIPViewController.h"
+#import "ImageClipViewController.h"
 
 @interface ZZTMeHomeViewController ()<UIScrollViewDelegate>
 
@@ -104,8 +105,9 @@
     [super viewWillAppear:animated];
     _zoneVC.userId = [UserInfoManager share].ID;
     //电池白色
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
 }
+
 -(void)setupNavbar{
     
     ZZTNavBarTitleView *titleView = [[ZZTNavBarTitleView alloc] init];
@@ -136,7 +138,8 @@
         make.centerX.equalTo(self.viewNavBar.mainView);
         make.width.mas_equalTo(SCREEN_WIDTH * 0.34);
         make.height.mas_equalTo(30);
-        make.bottom.equalTo(self.viewNavBar.mainView).offset(-10);
+//        make.bottom.equalTo(self.viewNavBar.mainView).offset(-10);
+        make.centerY.equalTo(self.viewNavBar.rightButton.mas_centerY);
     }];
     
     self.viewNavBar.showBottomLabel = NO;
@@ -160,16 +163,23 @@
         make.height.mas_equalTo(40);
     }];
     
+    self.viewNavBar.backgroundColor = [UIColor clearColor];
+    
     //消息(通用 右)
     [self.viewNavBar.rightButton setImage:[UIImage imageNamed:@"me_messageBtn"] forState:UIControlStateNormal];
     [self.viewNavBar.rightButton addTarget:self action:@selector(gotoVipView) forControlEvents:UIControlEventTouchUpInside];
 
+//    self.viewNavBar.rightButton.hidden = YES;
+//    self.viewNavBar.leftButton.hidden = YES;
+
 }
 
 -(void)gotoVipView{
+    
     ZZTVIPViewController *VIPVC = [[ZZTVIPViewController alloc] init];
     VIPVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:VIPVC animated:YES];
+
 }
 
 -(void)gotoTopupView{
@@ -192,7 +202,7 @@
 
 -(void)showHomeView{
     //显示搜索
-    self.viewNavBar.leftButton.hidden = NO;
+    self.viewNavBar.leftButton.hidden = YES;
     self.mommentBtn.hidden = YES;
     [self.titleView selectBtn:self.titleView.leftBtn];
 }
@@ -200,7 +210,7 @@
 -(void)showZoneView{
     //显示删除
     self.viewNavBar.leftButton.hidden = YES;
-    self.mommentBtn.hidden = NO;
+    self.mommentBtn.hidden = YES;
     [self.titleView selectBtn:self.titleView.rightBtn];
 }
 

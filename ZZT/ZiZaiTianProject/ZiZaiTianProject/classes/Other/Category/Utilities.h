@@ -12,6 +12,11 @@
 #import "ZZTJiXuYueDuModel.h"
 
 @interface Utilities : NSObject
+
++(CGFloat)getBannerH;
+
++(CGFloat)getCarChapterH;
+
 +(void)SetNSUserDefaults:(UserInfo *)userInfo;
 
 +(UserInfo *)GetNSUserDefaults;
