@@ -413,14 +413,13 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 //高度设置
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if(section == 0){
-        return SCREEN_HEIGHT * 0.3385;
+        return [Utilities getBannerH];
     }else if(section == 1){
         //字符串
         self.descHeadView.desc = self.ctDetail.intro;
         return self.descHeadView.myHeight;
     }
     else{
-//        return self.chapterChooseView.myHeight;
         return 0.01;
     }
 }

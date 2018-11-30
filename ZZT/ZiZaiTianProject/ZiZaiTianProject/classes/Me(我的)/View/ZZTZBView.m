@@ -39,7 +39,7 @@
     ZBLab.textAlignment = NSTextAlignmentCenter;
     _ZBLab = ZBLab;
     ZBLab.font = [UIFont systemFontOfSize:18];
-    ZBLab.text = @"1000ZB";
+//    ZBLab.text = @"1000ZB";
     [self addSubview:ZBLab];
     
     //ZB 详情
@@ -48,7 +48,7 @@
     ZBDetailLab.textColor = [UIColor colorWithRGB:@"253,169,122"];
     ZBDetailLab.textAlignment = NSTextAlignmentCenter;
     ZBDetailLab.font = [UIFont systemFontOfSize:16];
-    ZBDetailLab.text = @"首冲";
+//    ZBDetailLab.text = @"首冲";
     [self addSubview:ZBDetailLab];
     
     //按钮
@@ -113,26 +113,33 @@
 
 -(void)setVIPModel:(ZZTFreeBiModel *)VIPModel{
     _VIPModel = VIPModel;
+    
     NSLog(@"viptag:%ld",self.tag);
+    
     //自动续费的view
     if(self.tag == 0){
-        NSMutableAttributedString *attriStr1 = [[NSMutableAttributedString alloc] initWithString:VIPModel.ZZTBtype];
-        [attriStr1 addAttribute:NSForegroundColorAttributeName value:ZZTSubColor range:NSMakeRange(0, 2)];
-        [attriStr1 addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:24] range:NSMakeRange(0, 2)];
+        
+        NSMutableAttributedString *attriStr1 = [[NSMutableAttributedString alloc] initWithString:VIPModel.goodsName];
+        [attriStr1 addAttribute:NSForegroundColorAttributeName value:ZZTSubColor range:NSMakeRange(0, 3)];
+        [attriStr1 addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:24] range:NSMakeRange(0, 3)];
         [_ZBLab setAttributedText:attriStr1];
+        
     }else{
-        NSMutableAttributedString *attriStr1 = [[NSMutableAttributedString alloc] initWithString:VIPModel.ZZTBtype];
-        [attriStr1 addAttribute:NSForegroundColorAttributeName value:ZZTSubColor range:NSMakeRange(0, VIPModel.ZZTBtype.length)];
-        [attriStr1 addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:24] range:NSMakeRange(0, VIPModel.ZZTBtype.length)];
+        
+        NSMutableAttributedString *attriStr1 = [[NSMutableAttributedString alloc] initWithString:VIPModel.goodsName];
+        [attriStr1 addAttribute:NSForegroundColorAttributeName value:ZZTSubColor range:NSMakeRange(0, VIPModel.goodsName.length)];
+        [attriStr1 addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:24] range:NSMakeRange(0, VIPModel.goodsName.length)];
         [_ZBLab setAttributedText:attriStr1];
+        
     }
     
-    [_ZBDetailLab setText:VIPModel.ZZTBSpend];
+    [_ZBDetailLab setText:VIPModel.goodsDetaill];
+    
     [_ZBDetailLab setTextColor:[UIColor colorWithRGB:@"205,99,207"]];
     
     [_btnImageView setImage:[UIImage imageNamed:@"ME_wallet_purpleBox"]];
 
-    [_moneyLab setText:VIPModel.btnType];
+    [_moneyLab setText:[NSString stringWithFormat:@"¥%ld",(long)VIPModel.goodsMoney]];
 
 }
 
@@ -140,17 +147,17 @@
 -(void)setWalletModel:(ZZTFreeBiModel *)walletModel{
     _walletModel = walletModel;
     //数字紫色  zb 黑色 大小不同
-    NSMutableAttributedString *attriStr1 = [[NSMutableAttributedString alloc] initWithString:walletModel.ZZTBtype];
-    [attriStr1 addAttribute:NSForegroundColorAttributeName value:ZZTSubColor range:NSMakeRange(0, walletModel.ZZTBtype.length - 2)];
-    [attriStr1 addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:24] range:NSMakeRange(0, walletModel.ZZTBtype.length - 2)];
+    NSMutableAttributedString *attriStr1 = [[NSMutableAttributedString alloc] initWithString:walletModel.goodsName];
+    [attriStr1 addAttribute:NSForegroundColorAttributeName value:ZZTSubColor range:NSMakeRange(0, walletModel.goodsName.length - 2)];
+    [attriStr1 addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:24] range:NSMakeRange(0, walletModel.goodsName.length - 2)];
     
     [_ZBLab setAttributedText:attriStr1];
     
-    [_ZBDetailLab setText:walletModel.ZZTBSpend];
+    [_ZBDetailLab setText:walletModel.goodsDetaill];
     
     [_btnImageView setImage:[UIImage imageNamed:@"ME_wallet_orangeBox"]];
     
-    [_moneyLab setText:walletModel.btnType];
+    [_moneyLab setText:[NSString stringWithFormat:@"¥%ld",(long)walletModel.goodsMoney]];
 }
 
 

@@ -277,6 +277,6 @@ NSString *zztRankCell = @"zztRankCell";
 #pragma mark 高度设置
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     //根据点击的不同 判断应该有多少高度
-    return  SCREEN_HEIGHT * 0.24;
+    return  [Utilities getCarChapterH] + 24 + 15;
 }
 @end

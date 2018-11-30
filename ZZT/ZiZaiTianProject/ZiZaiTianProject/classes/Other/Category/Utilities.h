@@ -8,10 +8,19 @@
 
 #import <Foundation/Foundation.h>
 
+//针对判断是否有网络需要的头文件
+#import <CommonCrypto/CommonHMAC.h>
+#import <SystemConfiguration/SystemConfiguration.h>
+#import <netdb.h>
+#import <arpa/inet.h>
+
 #import "UserInfo.h"
 #import "ZZTJiXuYueDuModel.h"
 
 @interface Utilities : NSObject
+
+
++(CGFloat)getBigCarChapterH;
 
 +(CGFloat)getBannerH;
 
@@ -33,4 +42,11 @@
 + (NSString *)fileWithPathComponent:(NSString *)path;
 
 -(void)setupNavgationStyle:(UINavigationController *)nav;
+
+/**
+ 判断当前是否可以连接到网络
+ */
++ (BOOL) connectedToNetwork;
+
+
 @end

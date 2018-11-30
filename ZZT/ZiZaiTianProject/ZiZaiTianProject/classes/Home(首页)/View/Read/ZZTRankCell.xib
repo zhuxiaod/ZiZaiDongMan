@@ -102,7 +102,7 @@
             <connections>
                 <outlet property="cartoonImg" destination="oVO-Ht-r6l" id="sle-A0-Wlj"/>
                 <outlet property="cartoonName" destination="XjM-xy-uSC" id="Q3j-OA-cpf"/>
-                <outlet property="imageW" destination="wl3-nq-BHc" id="FEh-CR-qvU"/>
+                <outlet property="imageW" destination="wl3-nq-BHc" id="2e9-Ic-Dad"/>
                 <outlet property="rankImage" destination="8qy-Vy-hzN" id="cgE-tA-Jig"/>
                 <outlet property="rankNum" destination="i6Z-0w-1AT" id="oJ4-Ke-Yii"/>
                 <outlet property="titleView" destination="Xmq-tj-uTU" id="Wyq-lN-xpq"/>

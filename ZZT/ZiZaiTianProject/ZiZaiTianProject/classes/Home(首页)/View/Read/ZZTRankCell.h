@@ -11,6 +11,7 @@
 @interface ZZTRankCell : UITableViewCell
 
 @property (nonatomic,strong) ZZTCarttonDetailModel *dataModel;
+
 @property (weak, nonatomic) IBOutlet UILabel *cartoonName;
 
 @property (nonatomic,assign) NSInteger cellIndex;

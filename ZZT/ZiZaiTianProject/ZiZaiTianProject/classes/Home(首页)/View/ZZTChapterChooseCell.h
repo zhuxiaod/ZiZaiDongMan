@@ -16,4 +16,6 @@
 
 @property (nonatomic,strong) ZZTChapterChooseModel *model;
 
+@property (nonatomic,strong) NSString *str;
+
 @end

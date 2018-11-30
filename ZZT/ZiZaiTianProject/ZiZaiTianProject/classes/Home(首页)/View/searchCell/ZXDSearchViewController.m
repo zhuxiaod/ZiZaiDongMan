@@ -66,6 +66,9 @@
 
     ZZTNavigationViewController *nav = [[ZZTNavigationViewController alloc] initWithRootViewController:searchVC];
     _nav = nav;
+//    searchSuggestionVC.view.frame = CGRectMake(0, CGRectGetMaxY(self.navigationController.navigationBar.frame), PYScreenW, PYScreenH);
+
+    
     [self presentViewController:nav animated:NO completion:nil];
     
     //获取热门搜索
@@ -141,6 +144,7 @@
             NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
             NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
             weakSelf.searchSuggestionArray = array;
+
             [searchViewController.searchSuggestionView reloadData];
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             
@@ -254,7 +258,7 @@
 }
 
 - (CGFloat)searchSuggestionView:(UITableView *)searchSuggestionView heightForFooterInSection:(NSInteger)section{
-    return 4;
+    return 1;
 }
 
 

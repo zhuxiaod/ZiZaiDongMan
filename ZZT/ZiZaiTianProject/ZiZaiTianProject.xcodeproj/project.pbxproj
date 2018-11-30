@@ -192,6 +192,8 @@
 		046683C020F49AA00095C6BC /* CaiNiXiHuanCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 046683BF20F49AA00095C6BC /* CaiNiXiHuanCell.m */; };
 		046683C320F49CCB0095C6BC /* ZZTJiuGongGeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 046683C220F49CCB0095C6BC /* ZZTJiuGongGeView.m */; };
 		046683C620F4BC990095C6BC /* ZZTCartoonHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 046683C520F4BC990095C6BC /* ZZTCartoonHeaderView.m */; };
+		046DE4E021B0DA5C006D71D3 /* ZZTChapterPayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 046DE4DE21B0DA5C006D71D3 /* ZZTChapterPayViewController.m */; };
+		046DE4E121B0DA5C006D71D3 /* ZZTChapterPayViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 046DE4DF21B0DA5C006D71D3 /* ZZTChapterPayViewController.xib */; };
 		046FF6592101797B005DED73 /* MainTabbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 046FF6572101797B005DED73 /* MainTabbar.m */; };
 		046FF65F21018706005DED73 /* ZZTCollectView.m in Sources */ = {isa = PBXBuildFile; fileRef = 046FF65E21018706005DED73 /* ZZTCollectView.m */; };
 		046FF66A2101E029005DED73 /* ZZTCreatCartoonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 046FF6682101E029005DED73 /* ZZTCreatCartoonViewController.m */; };
@@ -716,6 +718,9 @@
 		046683C220F49CCB0095C6BC /* ZZTJiuGongGeView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTJiuGongGeView.m; sourceTree = "<group>"; };
 		046683C420F4BC990095C6BC /* ZZTCartoonHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTCartoonHeaderView.h; sourceTree = "<group>"; };
 		046683C520F4BC990095C6BC /* ZZTCartoonHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTCartoonHeaderView.m; sourceTree = "<group>"; };
+		046DE4DD21B0DA5C006D71D3 /* ZZTChapterPayViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTChapterPayViewController.h; sourceTree = "<group>"; };
+		046DE4DE21B0DA5C006D71D3 /* ZZTChapterPayViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTChapterPayViewController.m; sourceTree = "<group>"; };
+		046DE4DF21B0DA5C006D71D3 /* ZZTChapterPayViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ZZTChapterPayViewController.xib; sourceTree = "<group>"; };
 		046FF6572101797B005DED73 /* MainTabbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainTabbar.m; sourceTree = "<group>"; };
 		046FF6582101797B005DED73 /* MainTabbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainTabbar.h; sourceTree = "<group>"; };
 		046FF65D21018706005DED73 /* ZZTCollectView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTCollectView.h; sourceTree = "<group>"; };
@@ -1453,6 +1458,9 @@
 				04C39F512136C47A00F4CB4A /* ZZTWritingSequelViewController.m */,
 				0456F14921903A520077739A /* ZZTCommentViewController.h */,
 				0456F14A21903A520077739A /* ZZTCommentViewController.m */,
+				046DE4DD21B0DA5C006D71D3 /* ZZTChapterPayViewController.h */,
+				046DE4DE21B0DA5C006D71D3 /* ZZTChapterPayViewController.m */,
+				046DE4DF21B0DA5C006D71D3 /* ZZTChapterPayViewController.xib */,
 			);
 			path = Read;
 			sourceTree = "<group>";
@@ -2209,6 +2217,7 @@
 				040FD51320EF415C00004C71 /* ZZTMaterialCell.xib in Resources */,
 				048C334120E2121C00F69CE1 /* ZZTMeTopView.xib in Resources */,
 				0471A83620F5970400ABFF35 /* u=4213799443,3151115557&fm=27&gp=0.jpg in Resources */,
+				046DE4E121B0DA5C006D71D3 /* ZZTChapterPayViewController.xib in Resources */,
 				04DD53CF21A52B2500910D5A /* ZZTFeedBackViewController.xib in Resources */,
 				F7C04BF320DF3D190055E7A8 /* LaunchScreen.storyboard in Resources */,
 				049A99BB20E3288400ED27C9 /* ZXDLoginRegisterView.xib in Resources */,
@@ -2579,6 +2588,7 @@
 				042D148B218AFB7100BE05F6 /* ZZTLikeCollectShareHeaderView.m in Sources */,
 				0498B5F0212ED33B005BD26D /* ZZTXuHuaBtn.m in Sources */,
 				040D282D2133F044002A3B72 /* ZZTCartoonHistoryCell.m in Sources */,
+				046DE4E021B0DA5C006D71D3 /* ZZTChapterPayViewController.m in Sources */,
 				04DE149520E4781C009DF030 /* ZZTVIPMidView.m in Sources */,
 				042D1482218AA86400BE05F6 /* TZVideoPlayerController.m in Sources */,
 				043D06CF2193CDFD00016748 /* ZZTUserHeadView.m in Sources */,

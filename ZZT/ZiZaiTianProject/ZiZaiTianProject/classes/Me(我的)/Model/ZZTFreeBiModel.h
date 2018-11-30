@@ -10,15 +10,26 @@
 
 @interface ZZTFreeBiModel : NSObject
 
-@property (nonatomic,strong) NSString *ZZTBtype;
+@property (nonatomic,strong) NSString *goodsDetaill;//商品详情
 
-@property (nonatomic,strong) NSString *ZZTBSpend;
+@property (nonatomic,strong) NSString *goodsName;//商品名称
 
-@property (nonatomic,strong) NSString *btnType;
+@property (nonatomic,strong) NSString *goodsOrder;//商品编号
 
-@property (nonatomic,strong) NSString *productId;
+@property (nonatomic,assign) NSInteger id;
 
-+(instancetype)initZZTFreeBiWith:(NSString *)Btype ZZTBSpend:(NSString *)ZZTBSpend btnType:(NSString *)btnType productId:(NSString *)productId;
+@property (nonatomic,assign) NSInteger goodsJifen;//商品积分
+
+@property (nonatomic,assign) NSInteger goodsType;//商品类型 1.ZB 2.会员
+
+@property (nonatomic,assign) NSInteger goodsMoney;//商品金额
+
+
+
+
+
+
+//+(instancetype)initZZTFreeBiWith:(NSString *)Btype ZZTBSpend:(NSString *)ZZTBSpend btnType:(NSString *)btnType productId:(NSString *)productId;
 
 
 @end

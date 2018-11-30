@@ -381,12 +381,12 @@ static NSString *bigImageCell = @"bigImageCell";
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
     if(indexPath.section == 1){
         if(indexPath.row == 3){
-            return CGSizeMake(SCREEN_WIDTH - 16, [Utilities getCarChapterH]);
+            return CGSizeMake(SCREEN_WIDTH - 16, [Utilities getBigCarChapterH]);
         }else{
-            return CGSizeMake((SCREEN_WIDTH - 36) / 3 , SCREEN_HEIGHT * 0.24 + 24);
+            return CGSizeMake((SCREEN_WIDTH - 36) / 3 , [Utilities getCarChapterH] + 24);
         }
     }else{
-        return CGSizeMake((SCREEN_WIDTH - 36) / 3 , SCREEN_HEIGHT * 0.24 + 24);
+        return CGSizeMake((SCREEN_WIDTH - 36) / 3 , [Utilities getCarChapterH] + 24);
     }
 }
 

@@ -119,7 +119,7 @@
 
 #define MyLog(...) NSLog(__VA_ARGS__);
 #define ZZTColor(r, g, b) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:1.0]
-#define ZZTSubColor [UIColor colorWithRed:113.0/255.0 green:68.0/255.0 blue:246.0/255.0 alpha:1.0]
+#define ZZTSubColor [UIColor colorWithRed:137.0/255.0 green:134.0/255.0 blue:219.0/255.0 alpha:1.0]
 
 /** 屏幕尺寸 */
 #define SCREEN_BOUNDS [UIScreen mainScreen].bounds

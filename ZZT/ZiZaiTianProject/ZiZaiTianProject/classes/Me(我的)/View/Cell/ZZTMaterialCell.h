@@ -10,4 +10,8 @@
 
 @interface ZZTMaterialCell : UICollectionViewCell
 
+@property (weak, nonatomic) IBOutlet UIImageView *imageView;
+
+@property (nonatomic,strong) NSString *imageStr;
+
 @end

@@ -12,6 +12,7 @@
 #import "ZZTMeWalletViewController.h"
 #import "ZZTVIPViewController.h"
 #import "ImageClipViewController.h"
+#import "ZZTChapterPayViewController.h"
 
 @interface ZZTMeHomeViewController ()<UIScrollViewDelegate>
 
@@ -175,11 +176,10 @@
 }
 
 -(void)gotoVipView{
-    
-    ZZTVIPViewController *VIPVC = [[ZZTVIPViewController alloc] init];
-    VIPVC.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:VIPVC animated:YES];
-
+    ZZTChapterPayViewController *CPVC = [[ZZTChapterPayViewController alloc] init];
+    ZZTNavigationViewController *nav = [[ZZTNavigationViewController alloc] initWithRootViewController:CPVC];
+    nav.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 -(void)gotoTopupView{

@@ -1871,7 +1871,7 @@ static bool needHide = false;
 //    }
     
     //获取下面的行数
-    indexPaths = [self tableView:tableView nextIndexPathCount:3 fromIndexPath:maximumIndexPath];
+    indexPaths = [self tableView:tableView nextIndexPathCount:6 fromIndexPath:maximumIndexPath];
     
     for (NSIndexPath *indexPath in indexPaths){
         if(indexPath.section == 0){

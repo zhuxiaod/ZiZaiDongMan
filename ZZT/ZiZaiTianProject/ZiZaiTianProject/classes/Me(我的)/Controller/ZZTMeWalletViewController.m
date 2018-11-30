@@ -31,6 +31,8 @@
 @property (weak, nonatomic) IBOutlet ZZTZBView *ninetyEightBtn;
 @property (strong, nonatomic) NSString *productId;
 @property (strong, nonatomic) ZZTFreeBiModel *buyModel;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bannerH;
+@property (weak, nonatomic) IBOutlet UILabel *ZbLab;
 
 @property (assign, nonatomic) BOOL isBuy;
 
@@ -38,16 +40,9 @@
 
 @implementation ZZTMeWalletViewController
 
-
 NSString *zztWalletCell = @"zztWalletCell";
 NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
 
-//-(SKProduct *)product{
-//    if(!_product){
-//        _product = [[SKProduct alloc] init];
-//    }
-//    return <#expression#>
-//}
 
 -(NSArray *)dataArray{
     if(!_dataArray){
@@ -58,19 +53,39 @@ NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    NSLog(@"是否有网络：%d",[Utilities connectedToNetwork] );
     //我的模块  navbar 风格设置
     [self.viewNavBar.centerButton setTitle:@"充值" forState:UIControlStateNormal];
     
     [self setMeNavBarStyle];
     
-    [self setupArray];
-    
-    [self setUpTopUpBtn];
-    
-    //启动回调
-    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
-    
-    self.isBuy = NO;
+    if([Utilities connectedToNetwork] == YES){
+      
+        [self setupArray];
+        
+   
+        
+        self.ZbLab.text = [NSString stringWithFormat:@"%ld", (long)[Utilities GetNSUserDefaults].zzbNum];
+        
+        //启动回调
+        [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+        
+        self.isBuy = NO;
+        
+        CGFloat bannerH;
+        if(SCREEN_WIDTH == 414){
+            bannerH = 150;
+        }else{
+            bannerH = 136;
+        }
+        
+        _bannerH.constant = bannerH;
+    }else{
+        [self.view layoutIfNeeded];
+        UIView *whiteView = [[UIView alloc] initWithFrame:CGRectMake(0, Height_NavBar, SCREEN_WIDTH, SCREEN_HEIGHT)];
+        whiteView.backgroundColor = [UIColor whiteColor];
+        [self.view addSubview:whiteView];
+    }
 }
 
 -(void)setUpTopUpBtn{
@@ -100,7 +115,7 @@ NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
     ZZTFreeBiModel *model = self.dataArray[btn.tag];
     _buyModel = model;
     if([SKPaymentQueue canMakePayments]){
-        [self requestProductData:model.productId];
+        [self requestProductData:model.goodsOrder];
         //必须是点击后
         self.isBuy = YES;
     }else{
@@ -157,7 +172,7 @@ NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
         NSLog(@"%@", [pro price]);
         NSLog(@"%@", [pro productIdentifier]);
         
-        if([pro.productIdentifier isEqualToString:_buyModel.productId]){
+        if([pro.productIdentifier isEqualToString:_buyModel.goodsOrder]){
             p = pro;
         }
     }
@@ -234,10 +249,36 @@ NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
 //            NSLog(@"responseObject = %@", responseObject);
 //            [self completeTransaction:transactionReceipt];
 //        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-//            [self completeTransaction:transactionReceipt];
+            [self completeTransaction:transactionReceipt];
 //        }];
         
+        //交易成功后  刷新个人资料
+        //创建通知
+        [self loadUserData];
     }
+}
+
+-(void)loadUserData{
+    
+    NSDictionary *paramDict = @{
+                                @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id]
+                                };
+    
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"login/usersInfo"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+        
+        NSArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
+        if(array.count != 0){
+            UserInfo *model = array[0];
+            //存一下数据
+            [Utilities SetNSUserDefaults:model];
+            self.ZbLab.text = [NSString stringWithFormat:@"%ld", (long)[Utilities GetNSUserDefaults].zzbNum];
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
 }
 
 //交易结束
@@ -254,14 +295,21 @@ NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
 
 #pragma mark - 设置数据源
 -(void)setupArray{
-    self.dataArray = @[
-                       [ZZTFreeBiModel initZZTFreeBiWith:@"600Z币" ZZTBSpend:@"首充+送300Z币" btnType:@"￥6" productId:@"ZZT600ZB"],
-                       [ZZTFreeBiModel initZZTFreeBiWith:@"1200Z币" ZZTBSpend:@"首充+送500Z币" btnType:@"￥12" productId:@"ZZT1200ZB"],
-                       [ZZTFreeBiModel initZZTFreeBiWith:@"3000Z币" ZZTBSpend:@"首充+送1000Z币" btnType:@"￥30" productId:@"ZZT3000ZB"],
-                       [ZZTFreeBiModel initZZTFreeBiWith:@"5000Z币" ZZTBSpend:@"首充+送1500Z币" btnType:@"￥50" productId:@"ZZT5000ZB"],
-                       [ZZTFreeBiModel initZZTFreeBiWith:@"9800Z币" ZZTBSpend:@"首充+送2500Z币" btnType:@"￥98" productId:@"ZZT9800ZB"],
-                       [ZZTFreeBiModel initZZTFreeBiWith:@"19800Z币" ZZTBSpend:@"首充+送4900Z币" btnType:@"￥198" productId:@"ZZT19800ZB"]
-                       ];
+    [MBProgressHUD showMessage:@"正在获取商品信息" toView:self.view];
+    //获取商品信息
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSDictionary *dict = @{
+                           @"goodsType":@"1",// 1充值z币；2购买会员
+                           };
+    [manager POST:[ZZTAPI stringByAppendingString:@"record/getGoodsList"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+        self.dataArray = [ZZTFreeBiModel mj_objectArrayWithKeyValuesArray:dic];
+        [self setUpTopUpBtn];
+        NSLog(@"dic:%@",dic);
+        [MBProgressHUD hideHUDForView:self.view];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [MBProgressHUD hideHUDForView:self.view];
+    }];
 }
 
 //#pragma mark - ================ Actions =================

@@ -140,7 +140,7 @@ NSString *SuggestionView1 = @"SuggestionView1";
     
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     //修改尺寸(控制)
-    layout.itemSize = CGSizeMake((SCREEN_WIDTH - 36) / 3 , SCREEN_HEIGHT * 0.24 + 24);
+    layout.itemSize = CGSizeMake((SCREEN_WIDTH - 36) / 3 , [Utilities getCarChapterH] + 24);
     
     layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     //行距

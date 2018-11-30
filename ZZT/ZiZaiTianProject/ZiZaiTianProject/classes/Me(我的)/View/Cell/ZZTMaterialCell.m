@@ -8,19 +8,19 @@
 
 #import "ZZTMaterialCell.h"
 @interface ZZTMaterialCell ()
-@property (weak, nonatomic) IBOutlet UIImageView *materialImage;
-@property (weak, nonatomic) IBOutlet UILabel *materialTitle;
-@property (weak, nonatomic) IBOutlet UILabel *materialPrice;
+
 
 @end
 
 @implementation ZZTMaterialCell
 
-- (void)awakeFromNib {
-    [super awakeFromNib];
-    [_materialTitle setTextColor: [UIColor colorWithHexString:@"#58006E"]];
-    _materialPrice.backgroundColor = [UIColor colorWithHexString:@"#FB9321"];
-    [_materialPrice setTextColor:[UIColor whiteColor]];
+-(void)setImageStr:(NSString *)imageStr{
+    _imageStr = imageStr;
+    [self.imageView sd_setImageWithURL:[NSURL URLWithString:imageStr] placeholderImage:[UIImage createImageWithColor:[UIColor whiteColor]] options:0];
+    
+    [self.imageView setContentMode:UIViewContentModeScaleAspectFill];
+    
+    self.imageView.clipsToBounds = YES;
 }
 
 @end

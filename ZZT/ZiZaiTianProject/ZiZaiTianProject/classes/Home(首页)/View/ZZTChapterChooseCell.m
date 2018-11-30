@@ -52,6 +52,12 @@
     _label.text = [NSString stringWithFormat:@"%@-%@话",model.benginPage,model.endPage];
 }
 
+-(void)setStr:(NSString *)str{
+    _str = str;
+    _label.text = str;
+
+}
+
 -(void)setIsChangeStyle:(NSNumber *)isChangeStyle{
     _isChangeStyle = isChangeStyle;
     if([isChangeStyle isEqualToNumber:@1]){

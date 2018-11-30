@@ -23,11 +23,11 @@
     // Initialization code
 }
 
--(void)setFreeBiModel:(ZZTFreeBiModel *)freeBiModel{
-    _freeBiModel = freeBiModel;
-    self.ZZTBiType.text = freeBiModel.ZZTBtype;
-    self.ZZTBiContent.text = freeBiModel.ZZTBSpend;
-    [self.btnTitle setTitle:freeBiModel.btnType forState:UIControlStateNormal];
-}
+//-(void)setFreeBiModel:(ZZTFreeBiModel *)freeBiModel{
+//    _freeBiModel = freeBiModel;
+//    self.ZZTBiType.text = freeBiModel.ZZTBtype;
+//    self.ZZTBiContent.text = freeBiModel.ZZTBSpend;
+//    [self.btnTitle setTitle:freeBiModel.btnType forState:UIControlStateNormal];
+//}
 
 @end

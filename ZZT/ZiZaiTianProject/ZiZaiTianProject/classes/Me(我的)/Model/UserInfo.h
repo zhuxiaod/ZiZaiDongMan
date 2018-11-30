@@ -28,7 +28,6 @@
 @property (nonatomic,assign) NSInteger tabBarSelected;
 @property (nonatomic,copy) NSString *deviceid;
 
-
 //用户ID+
 @property (nonatomic,strong)NSString *userId;
 //积分数量+

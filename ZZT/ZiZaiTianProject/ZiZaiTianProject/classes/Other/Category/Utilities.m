@@ -79,9 +79,45 @@
 +(CGFloat)getCarChapterH{
     //6 6s 7 8
     if(SCREEN_WIDTH == 414){
-        return 184;
+        return 174;
     }else{
-        return 166;
+        return 156;
     }
 }
+
++(CGFloat)getBigCarChapterH{
+    //6 6s 7 8
+    if(SCREEN_WIDTH == 414){
+        return 240;
+    }else{
+        return 216;
+    }
+}
+
+//是否连接wang'l
++ (BOOL)connectedToNetwork{
+    
+    struct sockaddr_in zeroAddress;
+    bzero(&zeroAddress, sizeof(zeroAddress));
+    zeroAddress.sin_len = sizeof(zeroAddress);
+    zeroAddress.sin_family = AF_INET;
+    
+    SCNetworkReachabilityRef defaultRouteReachability = SCNetworkReachabilityCreateWithAddress(NULL, (struct sockaddr *)&zeroAddress);
+    SCNetworkReachabilityFlags flags;
+    
+    BOOL didRetrieveFlags = SCNetworkReachabilityGetFlags(defaultRouteReachability, &flags);
+    CFRelease(defaultRouteReachability);
+    
+    if (!didRetrieveFlags) {
+        return NO;
+    }
+    
+    BOOL isReachable = flags & kSCNetworkFlagsReachable;
+    BOOL needsConnection = flags & kSCNetworkFlagsConnectionRequired;
+    BOOL nonWifi = flags & kSCNetworkReachabilityFlagsTransientConnection;
+    BOOL moveNet = flags & kSCNetworkReachabilityFlagsIsWWAN;
+    
+    return ((isReachable && !needsConnection) || nonWifi || moveNet) ? YES : NO;
+}
+
 @end

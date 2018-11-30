@@ -45,6 +45,13 @@
 
 @property (nonatomic,strong) ZZTMeTopView *topView;
 
+//节1
+@property (nonatomic,strong) NSArray *sectionOne;
+//节2
+@property (nonatomic,strong) NSArray *sectionTwo;
+//节3
+@property (nonatomic,strong) NSArray *sectionThree;
+
 @end
 
 @implementation ZZTMeViewController
@@ -77,6 +84,7 @@ NSString *bannerID = @"MeCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     self.view.backgroundColor = [UIColor colorWithRGB:@"200,206,226"];
     
     //请求数据
@@ -85,6 +93,11 @@ NSString *bannerID = @"MeCell";
     [self setupTab];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tongzhi)name:@"loadMeView" object:nil];
+    
+    _sectionOne = [NSArray arrayWithObjects:@"自在VIP",@"我的关注", nil];
+    _sectionTwo = [NSArray arrayWithObjects:@"问题反馈",@"关于我们", nil];
+    _sectionThree = [NSArray arrayWithObjects:@"用户协议",@"设置", nil];
+
 }
 
 #pragma mark - 设置tableView
@@ -141,11 +154,11 @@ NSString *bannerID = @"MeCell";
 {
 
     if(section == 0){
-        return 3;
+        return _sectionOne.count;
     }else if(section == 1){
-        return 2;
+        return _sectionTwo.count;
     }else{
-        return 2;
+        return _sectionThree.count;
     }
 }
 
@@ -170,28 +183,23 @@ NSString *bannerID = @"MeCell";
     }];
     
     if(indexPath.section == 0){
-        if(indexPath.row == 0){
-            cell.textLabel.text = @"我的书柜";
-        }else if (indexPath.row == 1){
-            cell.textLabel.text = @"浏览历史";
-        }else{
-            cell.textLabel.text = @"我的关注";
+        NSString *rowName = _sectionOne[indexPath.row];
+        cell.textLabel.text = rowName;
+        if(indexPath.row == (_sectionOne.count - 1)){
             [bottomView removeFromSuperview];
         }
         return cell;
     }else if(indexPath.section == 1){
-        if (indexPath.row == 0){
-            cell.textLabel.text = @"问题反馈";
-        }else{
-            cell.textLabel.text = @"关于我们";
+        NSString *rowName = _sectionTwo[indexPath.row];
+        cell.textLabel.text = rowName;
+        if(indexPath.row == (_sectionTwo.count - 1)){
             [bottomView removeFromSuperview];
         }
         return cell;
     }else{
-        if (indexPath.row == 0){
-            cell.textLabel.text = @"用户协议";
-        }else{
-            cell.textLabel.text = @"设置";
+        NSString *rowName = _sectionThree[indexPath.row];
+        cell.textLabel.text = rowName;
+        if(indexPath.row == (_sectionThree.count - 1)){
             [bottomView removeFromSuperview];
         }
         return cell;
@@ -265,22 +273,14 @@ NSString *bannerID = @"MeCell";
 {
     if (indexPath.section == 0) {
         if(indexPath.row == 0){
-            //书柜
+            //VIP
             if([[UserInfoManager share] hasLogin] == NO){
                 [UserInfoManager needLogin];
                 return;
             }
-            ZZTCartoonViewController *bookVC = [[ZZTCartoonViewController alloc] init];
-            bookVC.hidesBottomBarWhenPushed = YES;
-            bookVC.viewTitle = @"书柜";
-            bookVC.viewType = @"2";
-            //            bookVC.user = self.userData;
-            [self.navigationController pushViewController:bookVC animated:YES];
-        }else if(indexPath.row == 1){
-            //浏览历史
-            ZZTHistoryViewController *historyVC = [[ZZTHistoryViewController alloc] init];
-            historyVC.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:historyVC animated:YES];
+            ZZTVIPViewController *VIPVC = [[ZZTVIPViewController alloc] init];
+            VIPVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:VIPVC animated:YES];
         }else{
             //关注
             if([[UserInfoManager share] hasLogin] == NO){

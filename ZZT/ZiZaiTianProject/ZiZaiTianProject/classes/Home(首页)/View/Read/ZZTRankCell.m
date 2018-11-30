@@ -38,10 +38,10 @@
     
     _dataModel = dataModel;
     
-    CGFloat imageW = SCREEN_WIDTH * 0.28;
+    CGFloat imageW = [Utilities getCarChapterH] * 390 / 540;
     
     self.imageW.constant = imageW;
-    
+    // 高度 
     [_cartoonImg sd_setImageWithURL:[NSURL URLWithString:dataModel.cover]];
     
     _cartoonImg.layer.cornerRadius = 10;

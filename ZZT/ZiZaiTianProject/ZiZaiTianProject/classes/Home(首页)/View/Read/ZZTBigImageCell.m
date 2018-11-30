@@ -40,7 +40,9 @@
 -(void)setModel:(ZZTCarttonDetailModel *)model{
     _model = model;
     
-    [self.imageView sd_setImageWithURL:[NSURL URLWithString:model.lbCover]];
+    [self.imageView sd_setImageWithURL:[NSURL URLWithString:model.lbCover] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+//        NSLog(@"imageW:%f imageH:%f",image.size.width,image.size.height);
+    }];
     
     self.imageView.layer.cornerRadius = 12;
     self.imageView.layer.masksToBounds = YES;

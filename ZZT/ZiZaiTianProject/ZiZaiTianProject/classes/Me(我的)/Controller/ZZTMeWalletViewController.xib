@@ -13,6 +13,8 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ZZTMeWalletViewController">
             <connections>
+                <outlet property="ZbLab" destination="qhG-xO-huV" id="qLy-Rf-iBw"/>
+                <outlet property="bannerH" destination="IUS-hS-hmG" id="VeR-CF-6Jz"/>
                 <outlet property="eighteenBtn" destination="NGP-sa-RJK" id="kJ8-0o-YVS"/>
                 <outlet property="fiftyBtn" destination="pe1-Tt-wHd" id="OcP-s9-LXb"/>
                 <outlet property="ninetyEightBtn" destination="MiR-ff-bLB" id="9VI-cC-PMH"/>
@@ -51,11 +53,14 @@
                         <constraint firstItem="fGO-gi-oUv" firstAttribute="leading" secondItem="fAv-7v-zyH" secondAttribute="leading" constant="16" id="nE0-9V-vvZ"/>
                     </constraints>
                 </view>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ME_wallet_advertising" translatesAutoresizingMaskIntoConstraints="NO" id="KVb-0J-xE6">
-                    <rect key="frame" x="0.0" y="106" width="375" height="133.5"/>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ME_wallet_advertising" translatesAutoresizingMaskIntoConstraints="NO" id="KVb-0J-xE6">
+                    <rect key="frame" x="0.0" y="106" width="375" height="136"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="136" id="IUS-hS-hmG"/>
+                    </constraints>
                 </imageView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="F9q-J0-bsj">
-                    <rect key="frame" x="0.0" y="240" width="375" height="46"/>
+                    <rect key="frame" x="0.0" y="242.5" width="375" height="46"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="充值服务" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xvd-dl-tmv">
                             <rect key="frame" x="16" y="13" width="69.5" height="21"/>
@@ -81,45 +86,45 @@
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fEO-Rp-GWI" customClass="ZZTZBView">
-                    <rect key="frame" x="0.0" y="286" width="125" height="123"/>
+                    <rect key="frame" x="0.0" y="288.5" width="125" height="123"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </view>
                 <view tag="2" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NGP-sa-RJK" customClass="ZZTZBView">
-                    <rect key="frame" x="250" y="286" width="125" height="123"/>
+                    <rect key="frame" x="250" y="288.5" width="125" height="123"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </view>
                 <view tag="1" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9sK-Bx-LOc" customClass="ZZTZBView">
-                    <rect key="frame" x="125" y="286" width="125" height="123"/>
+                    <rect key="frame" x="125" y="288.5" width="125" height="123"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sLM-i9-HEb">
-                    <rect key="frame" x="0.0" y="409" width="375" height="1"/>
+                    <rect key="frame" x="0.0" y="411.5" width="375" height="1"/>
                     <color key="backgroundColor" red="0.94117647059999998" green="0.94117647059999998" blue="0.94117647059999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="1" id="t2z-Se-pPl"/>
                     </constraints>
                 </view>
                 <view tag="4" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pe1-Tt-wHd" customClass="ZZTZBView">
-                    <rect key="frame" x="125" y="410" width="125" height="123"/>
+                    <rect key="frame" x="125" y="412.5" width="125" height="123"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </view>
                 <view tag="3" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="S6L-OJ-rDJ" customClass="ZZTZBView">
-                    <rect key="frame" x="0.0" y="410" width="125" height="123"/>
+                    <rect key="frame" x="0.0" y="412.5" width="125" height="123"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </view>
                 <view tag="5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MiR-ff-bLB" customClass="ZZTZBView">
-                    <rect key="frame" x="250" y="410" width="125" height="123"/>
+                    <rect key="frame" x="250" y="412.5" width="125" height="123"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cSp-As-yKG">
-                    <rect key="frame" x="0.0" y="533" width="375" height="1"/>
+                    <rect key="frame" x="0.0" y="535.5" width="375" height="1"/>
                     <color key="backgroundColor" red="0.94117647058823528" green="0.94117647058823528" blue="0.94117647058823528" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="1" id="ZmC-9R-81G"/>
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="64N-JF-q7t">
-                    <rect key="frame" x="250" y="286.5" width="1" height="246"/>
+                    <rect key="frame" x="250" y="289" width="1" height="246"/>
                     <color key="backgroundColor" red="0.94117647059999998" green="0.94117647059999998" blue="0.94117647059999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="1" id="Rhn-GB-5zP"/>
@@ -127,7 +132,7 @@
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nnH-7k-X9f">
-                    <rect key="frame" x="124" y="286.5" width="1" height="246"/>
+                    <rect key="frame" x="124" y="289" width="1" height="246"/>
                     <color key="backgroundColor" red="0.94117647058823528" green="0.94117647058823528" blue="0.94117647058823528" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="1" id="Ich-rR-Dz2"/>
@@ -149,7 +154,6 @@
                 <constraint firstItem="MiR-ff-bLB" firstAttribute="centerY" secondItem="S6L-OJ-rDJ" secondAttribute="centerY" id="7kv-mv-02P"/>
                 <constraint firstItem="NGP-sa-RJK" firstAttribute="leading" secondItem="9sK-Bx-LOc" secondAttribute="trailing" id="8VE-32-ppm"/>
                 <constraint firstItem="fAv-7v-zyH" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="40" id="9Gq-Tr-1s3"/>
-                <constraint firstItem="KVb-0J-xE6" firstAttribute="height" secondItem="iN0-l3-epB" secondAttribute="height" multiplier="0.2" id="9Jo-P0-vFh"/>
                 <constraint firstItem="F9q-J0-bsj" firstAttribute="height" secondItem="fAv-7v-zyH" secondAttribute="height" id="9oO-8U-arn"/>
                 <constraint firstItem="S6L-OJ-rDJ" firstAttribute="height" secondItem="pe1-Tt-wHd" secondAttribute="height" id="Cmn-a1-eBX"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="cSp-As-yKG" secondAttribute="trailing" id="Dcg-pS-lX7"/>

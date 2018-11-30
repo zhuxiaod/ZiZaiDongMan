@@ -23,12 +23,16 @@
 @property (weak, nonatomic) IBOutlet ZZTZBView *oneMonth;
 @property (weak, nonatomic) IBOutlet ZZTZBView *threeMonth;
 @property (weak, nonatomic) IBOutlet ZZTZBView *twelveMonth;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bannerH;
+@property (weak, nonatomic) IBOutlet UILabel *VIPDateLab;
 
 @property (strong, nonatomic) ZZTFreeBiModel *buyModel;
 
 @property (assign, nonatomic) BOOL isBuy;
 
 @property (strong, nonatomic) NSArray *dataArray;
+
+@property (weak, nonatomic) IBOutlet UIImageView *userImg;
 
 @end
 
@@ -48,26 +52,60 @@
     
     [self setMeNavBarStyle];
     
-    [self setupArray];
+    if([Utilities connectedToNetwork] == YES){
+        //用户头像
+        [self.userImg sd_setImageWithURL:[NSURL URLWithString:[Utilities GetNSUserDefaults].headimg]];
+        NSLog(@"aasasdasda:%@",[Utilities GetNSUserDefaults].headimg);
+        //VIP到期时间
+        self.VIPDateLab.text = @"2018-12-12 到期";
+       
+        [self setupArray];
+        
+//        [self setUpTopUpBtn];
+        
+        //启动回调
+        [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+        
+        self.isBuy = NO;
+        
+        [MLIAPManager sharedManager].delegate = self;
+        
+        CGFloat bannerH;
+        if(SCREEN_WIDTH == 414){
+            bannerH = 150;
+        }else{
+            bannerH = 136;
+        }
+        
+        _bannerH.constant = bannerH;
+    }else{
+        [self.view layoutIfNeeded];
+        UIView *whiteView = [[UIView alloc] initWithFrame:CGRectMake(0, Height_NavBar, SCREEN_WIDTH, SCREEN_HEIGHT)];
+        whiteView.backgroundColor = [UIColor whiteColor];
+        [self.view addSubview:whiteView];
 
-    [self setUpTopUpBtn];
+    }
     
-    //启动回调
-    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
-    
-    self.isBuy = NO;
-    
-    [MLIAPManager sharedManager].delegate = self;
 }
 
 #pragma mark - 设置数据源
 -(void)setupArray{
-    self.dataArray = @[
-                       [ZZTFreeBiModel initZZTFreeBiWith:@"1个月(自动续费)" ZZTBSpend:@"+送500Z币" btnType:@"￥15" productId:@"automaticRenewalOneMonth1"],
-                       [ZZTFreeBiModel initZZTFreeBiWith:@"1个月" ZZTBSpend:@"+送500Z币" btnType:@"￥18" productId:@"zxd.ZiZaiTianProject3"],
-                       [ZZTFreeBiModel initZZTFreeBiWith:@"3个月" ZZTBSpend:@"+送2000Z币" btnType:@"￥50" productId:@"zxd.ZiZaiTianProject4"],
-                       [ZZTFreeBiModel initZZTFreeBiWith:@"12个月" ZZTBSpend:@"+送8888Z币" btnType:@"￥188" productId:@"zxd.ZiZaiTianProject6"]
-                       ];
+    [MBProgressHUD showMessage:@"正在获取商品信息" toView:self.view];
+    //获取商品信息
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSDictionary *dict = @{
+                           @"goodsType":@"2",// 1充值z币；2购买会员
+                           };
+    [manager POST:[ZZTAPI stringByAppendingString:@"record/getGoodsList"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+        self.dataArray = [ZZTFreeBiModel mj_objectArrayWithKeyValuesArray:dic];
+        [self setUpTopUpBtn];
+        NSLog(@"dic:%@",dic);
+        [MBProgressHUD hideHUDForView:self.view];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [MBProgressHUD hideHUDForView:self.view];
+    }];
+
 }
 
 -(void)setUpTopUpBtn{
@@ -93,7 +131,7 @@
     ZZTFreeBiModel *model = self.dataArray[btn.tag];
     _buyModel = model;
     if([SKPaymentQueue canMakePayments]){
-        [self requestProductData:model.productId];
+        [self requestProductData:model.goodsOrder];
         //必须是点击后
         self.isBuy = YES;
     }else{
@@ -135,7 +173,7 @@
         NSLog(@"%@", [pro price]);
         NSLog(@"%@", [pro productIdentifier]);
         
-        if([pro.productIdentifier isEqualToString:_buyModel.productId]){
+        if([pro.productIdentifier isEqualToString:_buyModel.goodsOrder]){
             p = pro;
         }
     }
@@ -218,10 +256,33 @@
         //            NSLog(@"responseObject = %@", responseObject);
         //            [self completeTransaction:transactionReceipt];
         //        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        //            [self completeTransaction:transactionReceipt];
+                    [self completeTransaction:transactionReceipt];
         //        }];
-        
+        [self loadUserData];
     }
+}
+
+-(void)loadUserData{
+    
+    NSDictionary *paramDict = @{
+                                @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id]
+                                };
+    
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"login/usersInfo"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+        
+        NSArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
+        if(array.count != 0){
+            UserInfo *model = array[0];
+            //存一下数据
+            [Utilities SetNSUserDefaults:model];
+            self.VIPDateLab.text = @"2018-12-12 到期";
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
 }
 
 //交易结束
@@ -235,4 +296,5 @@
 - (void)dealloc{
     [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
 }
+
 @end

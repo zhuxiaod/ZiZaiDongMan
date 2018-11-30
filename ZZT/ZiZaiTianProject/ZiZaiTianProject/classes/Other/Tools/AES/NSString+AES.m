@@ -34,7 +34,7 @@ static NSString *const AES_IV_PARAMETER = @"A-16-Byte-String";
     NSData *AESData_GTM = [self AES128operation:kCCDecrypt data:baseData_GTM key:PSW_AES_KEY iv:AES_IV_PARAMETER];
     NSData *AESData = [self AES128operation:kCCDecrypt data:baseData key:PSW_AES_KEY iv:AES_IV_PARAMETER];
     NSString *decStr_GTM = [[NSString alloc] initWithData:AESData_GTM encoding:NSUTF8StringEncoding];
-    NSLog(@"decStr_GTM : %@",decStr_GTM);
+//    NSLog(@"decStr_GTM : %@",decStr_GTM);
     NSString *decStr = [[NSString alloc] initWithData:AESData encoding:NSUTF8StringEncoding];
     return decStr;
     

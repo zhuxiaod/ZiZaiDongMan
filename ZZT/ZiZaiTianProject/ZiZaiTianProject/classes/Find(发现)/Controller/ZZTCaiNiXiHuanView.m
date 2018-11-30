@@ -132,6 +132,7 @@
         _topView = [[UIImageView alloc] init];
         //设置图片
         [_topView setImage:[UIImage imageNamed:@"推荐-猜你喜欢"]];
+        _topView.contentMode = UIViewContentModeScaleAspectFill;
         [self.contentView addSubview:_topView];
     }
     return _topView;
