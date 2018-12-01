@@ -9,7 +9,7 @@
 
 #import "ZZTMyZoneCell.h"
 #import "ZZTMyZoneModel.h"
-#import <XHImageViewer.h>
+#import "XHImageViewer.h"
 
 @interface ZZTMyZoneCell ()
 

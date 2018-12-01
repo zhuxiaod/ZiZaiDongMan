@@ -38,7 +38,7 @@
  */
 @interface EncryptionTools : NSObject
 
-+ (instancetype)sharedEncryptionTools;
+//+ (instancetype)sharedEncryptionTools;
 
 /**
  @constant   kCCAlgorithmAES     高级加密标准，128位(默认)

@@ -8,10 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void (^tapImageBlock) (UIImageView *imageView);
+
 @interface ZZTMaterialCell : UICollectionViewCell
 
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 
+@property (nonatomic,copy) tapImageBlock buttonAction;
+
 @property (nonatomic,strong) NSString *imageStr;
+
+@property (strong, nonatomic) UIImageView *selectImageView;
 
 @end

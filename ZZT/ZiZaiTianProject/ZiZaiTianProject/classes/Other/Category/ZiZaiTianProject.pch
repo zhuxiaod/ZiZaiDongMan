@@ -158,12 +158,12 @@
 
 
 //测试环境
-#define ZZTAPI @"http://192.168.0.165:8888/"
+//#define ZZTAPI @"http://192.168.0.165:8888/"
 //#define ZZTBucket @"image"
 //#define imageHost @"http://p872ue3rt.bkt.clouddn.com"
 
 //测试
-//#define ZZTAPI @"http://192.168.0.142:8888/"
+#define ZZTAPI @"http://192.168.0.142:8888/"
 
 //#define BaseUrl(url)  [NSString stringWithFormat:@"http://192.168.0.142:8888/%@",(url)]
 

@@ -349,128 +349,127 @@ static NSString *findCommentCell = @"findCommentCell";
     [_contentView.mj_header beginRefreshing];
     [self scrollViewDidScroll:_contentView];
     [self.navigationController setNavigationBarHidden:YES animated:NO];
-    
 }
 
-#pragma mark 预加载
-//当view开始减速的时候
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{   //预加载
-    [self prefetchImagesForTableView:self.contentView];
-}
-
-//当view已经停止的时候
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{   //预加载
-    if(!decelerate){
-        [self prefetchImagesForTableView:self.contentView];
-    }
-}
-
--(void)prefetchImagesForTableView:(UITableView *)tableView{
-  
-    NSArray *indexPaths = [self.contentView indexPathsForVisibleRows];
-
-    //获取显示出来的行
-    //如果行为0 不继续执行
-    if ([indexPaths count] == 0) return;
-    //显示出来的第一行
-    NSIndexPath *minimumIndexPath = indexPaths[0];
-    //显示出来的最后一行
-    NSIndexPath *maximumIndexPath = [indexPaths lastObject];
-    //遍历
-    
-    for (NSIndexPath *indexPath in indexPaths)
-    {   //得到最小行 和 最大行
-        if (indexPath.section < minimumIndexPath.section || (indexPath.section == minimumIndexPath.section && indexPath.row < minimumIndexPath.row)) minimumIndexPath = indexPath;
-        if (indexPath.section > maximumIndexPath.section || (indexPath.section == maximumIndexPath.section && indexPath.row > maximumIndexPath.row)) maximumIndexPath = indexPath;
-    }
-    
-    //  预加载的图片数组
-    NSMutableArray *imageURLs = [NSMutableArray array];
-    
-    indexPaths = [self tableView:tableView priorIndexPathCount:9 fromIndexPath:minimumIndexPath];
-    
-    for (NSIndexPath *indexPath in indexPaths){
-        ZZTMyZoneModel *model = self.dataArray[indexPath.row];
-        [imageURLs addObject:model.contentImg];
-    }
-    
-    //获取下面的行数
-    indexPaths = [self tableView:tableView nextIndexPathCount:9 fromIndexPath:maximumIndexPath];
-    
-    for (NSIndexPath *indexPath in indexPaths){
-        if(indexPath.section == 0){
-            ZZTMyZoneModel *model = self.dataArray[indexPath.row];
-            [imageURLs addObject:model.contentImg];
-        }
-    }
-    
-    // now prefetch
-    if ([imageURLs count] > 0)
-    {
-        [[SDWebImagePrefetcher sharedImagePrefetcher] prefetchURLs:imageURLs];
-    }
-  
-
-   
-}
-
-- (NSArray *)tableView:(UITableView *)tableView priorIndexPathCount:(NSInteger)count fromIndexPath:(NSIndexPath *)indexPath
-{
-    
-    
-    NSMutableArray *indexPaths = [NSMutableArray array];
-    NSInteger row = indexPath.row;
-    NSInteger section = indexPath.section;
-    
-    for (NSInteger i = 0; i < count; i++) {
-        //如果是第一行不再进行
-        if (row == 0) {
-            if (section == 0) {
-                return indexPaths;
-            } else {
-                //如果不是第一节
-                section--;
-                row = [tableView numberOfRowsInSection:section] - 1;
-            }
-        } else {
-            row--;
-        }
-        if(row < 0){
-            break;
-        }else{
-            [indexPaths addObject:[NSIndexPath indexPathForRow:row inSection:section]];
-            NSLog(@"priorIndexPathCount:%ld row:%ld",section,row);
-        }
-    }
-    return indexPaths;
-}
-
-//获取下行的数据索引
-- (NSArray *)tableView:(UITableView *)tableView nextIndexPathCount:(NSInteger)count fromIndexPath:(NSIndexPath *)indexPath
-{
-    //创建数组
-    NSMutableArray *indexPaths = [NSMutableArray array];
-    //第几行
-    NSInteger row = indexPath.row;
-    //第几节
-    NSInteger section = indexPath.section;
-    //这一节有多少行
-    NSInteger rowCountForSection = [tableView numberOfRowsInSection:section];
-    //需要获取几行数据
-    for (NSInteger i = 0; i < count; i++) {
-        //下一行
-        row++;
-        //如果row是最后一行
-        if (row == rowCountForSection) {
-            return indexPaths;
-        }
-        [indexPaths addObject:[NSIndexPath indexPathForRow:row inSection:section]];
-        NSLog(@"nextIndexPathCount:%ld row:%ld",section,row);
-    }
-    return indexPaths;
-}
+//#pragma mark 预加载
+////当view开始减速的时候
+//- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+//{   //预加载
+//    [self prefetchImagesForTableView:self.contentView];
+//}
+//
+////当view已经停止的时候
+//- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+//{   //预加载
+//    if(!decelerate){
+//        [self prefetchImagesForTableView:self.contentView];
+//    }
+//}
+//
+//-(void)prefetchImagesForTableView:(UITableView *)tableView{
+//
+//    NSArray *indexPaths = [self.contentView indexPathsForVisibleRows];
+//
+//    //获取显示出来的行
+//    //如果行为0 不继续执行
+//    if ([indexPaths count] == 0) return;
+//    //显示出来的第一行
+//    NSIndexPath *minimumIndexPath = indexPaths[0];
+//    //显示出来的最后一行
+//    NSIndexPath *maximumIndexPath = [indexPaths lastObject];
+//    //遍历
+//
+//    for (NSIndexPath *indexPath in indexPaths)
+//    {   //得到最小行 和 最大行
+//        if (indexPath.section < minimumIndexPath.section || (indexPath.section == minimumIndexPath.section && indexPath.row < minimumIndexPath.row)) minimumIndexPath = indexPath;
+//        if (indexPath.section > maximumIndexPath.section || (indexPath.section == maximumIndexPath.section && indexPath.row > maximumIndexPath.row)) maximumIndexPath = indexPath;
+//    }
+//
+//    //  预加载的图片数组
+//    NSMutableArray *imageURLs = [NSMutableArray array];
+//
+//    indexPaths = [self tableView:tableView priorIndexPathCount:3 fromIndexPath:minimumIndexPath];
+//
+//    for (NSIndexPath *indexPath in indexPaths){
+//        ZZTMyZoneModel *model = self.dataArray[indexPath.row];
+//        [imageURLs addObject:model.contentImg];
+//    }
+//
+//    //获取下面的行数
+//    indexPaths = [self tableView:tableView nextIndexPathCount:3 fromIndexPath:maximumIndexPath];
+//
+//    for (NSIndexPath *indexPath in indexPaths){
+//        if(indexPath.section == 0){
+//            ZZTMyZoneModel *model = self.dataArray[indexPath.row];
+//            [imageURLs addObject:model.contentImg];
+//        }
+//    }
+//
+//    // now prefetch
+//    if ([imageURLs count] > 0)
+//    {
+//        [[SDWebImagePrefetcher sharedImagePrefetcher] prefetchURLs:imageURLs];
+//    }
+//
+//
+//
+//}
+//
+//- (NSArray *)tableView:(UITableView *)tableView priorIndexPathCount:(NSInteger)count fromIndexPath:(NSIndexPath *)indexPath
+//{
+//
+//
+//    NSMutableArray *indexPaths = [NSMutableArray array];
+//    NSInteger row = indexPath.row;
+//    NSInteger section = indexPath.section;
+//
+//    for (NSInteger i = 0; i < count; i++) {
+//        //如果是第一行不再进行
+//        if (row == 0) {
+//            if (section == 0) {
+//                return indexPaths;
+//            } else {
+//                //如果不是第一节
+//                section--;
+//                row = [tableView numberOfRowsInSection:section] - 1;
+//            }
+//        } else {
+//            row--;
+//        }
+//        if(row < 0){
+//            break;
+//        }else{
+//            [indexPaths addObject:[NSIndexPath indexPathForRow:row inSection:section]];
+//            NSLog(@"priorIndexPathCount:%ld row:%ld",section,row);
+//        }
+//    }
+//    return indexPaths;
+//}
+//
+////获取下行的数据索引
+//- (NSArray *)tableView:(UITableView *)tableView nextIndexPathCount:(NSInteger)count fromIndexPath:(NSIndexPath *)indexPath
+//{
+//    //创建数组
+//    NSMutableArray *indexPaths = [NSMutableArray array];
+//    //第几行
+//    NSInteger row = indexPath.row;
+//    //第几节
+//    NSInteger section = indexPath.section;
+//    //这一节有多少行
+//    NSInteger rowCountForSection = [tableView numberOfRowsInSection:section];
+//    //需要获取几行数据
+//    for (NSInteger i = 0; i < count; i++) {
+//        //下一行
+//        row++;
+//        //如果row是最后一行
+//        if (row == rowCountForSection) {
+//            return indexPaths;
+//        }
+//        [indexPaths addObject:[NSIndexPath indexPathForRow:row inSection:section]];
+//        NSLog(@"nextIndexPathCount:%ld row:%ld",section,row);
+//    }
+//    return indexPaths;
+//}
 
 
 @end

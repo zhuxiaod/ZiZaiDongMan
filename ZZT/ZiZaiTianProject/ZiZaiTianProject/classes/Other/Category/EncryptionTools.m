@@ -12,18 +12,18 @@
 
 @implementation EncryptionTools
 
-+ (instancetype)sharedEncryptionTools
-{
-    static EncryptionTools *instance;
-    
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        instance = [[self alloc] init];
-        instance.algorithm = kCCAlgorithmAES;
-    });
-    
-    return instance;
-}
+//+ (instancetype)sharedEncryptionTools
+//{
+//    static EncryptionTools *instance;
+//    
+//    static dispatch_once_t onceToken;
+//    dispatch_once(&onceToken, ^{
+//        instance = [[self alloc] init];
+//        instance.algorithm = kCCAlgorithmAES;
+//    });
+//    
+//    return instance;
+//}
 
 - (instancetype)init
 {

@@ -170,7 +170,7 @@ static NSString *findCommentCell = @"findCommentCell";
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/selDiscover"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
-        if(dic.count >= 6){
+        if(dic.count > 6){
 //        if([[dic allKeys] containsObject:@"total"]){
             NSInteger total = [[NSString stringWithFormat:@"%@",[dic objectForKey:@"total"]] integerValue];
             
