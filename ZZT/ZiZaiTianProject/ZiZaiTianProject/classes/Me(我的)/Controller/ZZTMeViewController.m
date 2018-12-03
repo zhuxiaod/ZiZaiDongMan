@@ -94,7 +94,8 @@ NSString *bannerID = @"MeCell";
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tongzhi)name:@"loadMeView" object:nil];
     
-    _sectionOne = [NSArray arrayWithObjects:@"自在VIP",@"我的关注", nil];
+//    _sectionOne = [NSArray arrayWithObjects:@"自在VIP",@"我的关注", nil];
+    _sectionOne = [NSArray arrayWithObjects:@"我的关注", nil];
     _sectionTwo = [NSArray arrayWithObjects:@"问题反馈",@"关于我们", nil];
     _sectionThree = [NSArray arrayWithObjects:@"用户协议",@"设置", nil];
 
@@ -185,9 +186,9 @@ NSString *bannerID = @"MeCell";
     if(indexPath.section == 0){
         NSString *rowName = _sectionOne[indexPath.row];
         cell.textLabel.text = rowName;
-        if(indexPath.row == (_sectionOne.count - 1)){
+//        if(indexPath.row == (_sectionOne.count - 1)){
             [bottomView removeFromSuperview];
-        }
+//        }
         return cell;
     }else if(indexPath.section == 1){
         NSString *rowName = _sectionTwo[indexPath.row];
@@ -272,16 +273,16 @@ NSString *bannerID = @"MeCell";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 0) {
-        if(indexPath.row == 0){
-            //VIP
-            if([[UserInfoManager share] hasLogin] == NO){
-                [UserInfoManager needLogin];
-                return;
-            }
-            ZZTVIPViewController *VIPVC = [[ZZTVIPViewController alloc] init];
-            VIPVC.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:VIPVC animated:YES];
-        }else{
+//        if(indexPath.row == 0){
+//            //VIP
+//            if([[UserInfoManager share] hasLogin] == NO){
+//                [UserInfoManager needLogin];
+//                return;
+//            }
+//            ZZTVIPViewController *VIPVC = [[ZZTVIPViewController alloc] init];
+//            VIPVC.hidesBottomBarWhenPushed = YES;
+//            [self.navigationController pushViewController:VIPVC animated:YES];
+//        }else{
             //关注
             if([[UserInfoManager share] hasLogin] == NO){
                 [UserInfoManager needLogin];
@@ -291,7 +292,7 @@ NSString *bannerID = @"MeCell";
             meAttentionVC.hidesBottomBarWhenPushed = YES;
             //            meAttentionVC.user = self.userData;
             [self.navigationController pushViewController:meAttentionVC animated:YES];
-        }
+//        }
     }else if (indexPath.section == 1){
         if(indexPath.row == 0){
             //问题反馈

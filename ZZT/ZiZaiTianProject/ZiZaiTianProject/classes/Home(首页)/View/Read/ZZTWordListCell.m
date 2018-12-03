@@ -19,7 +19,7 @@
 @property (nonatomic,strong) UILabel *commentLab;
 @property (nonatomic,strong) UIView *bottomView;
 @property (nonatomic,strong) UILabel *xuHuaLab;
-
+@property (nonatomic,strong) UIImageView *VIPChapterImg;
 @end
 
 @implementation ZZTWordListCell
@@ -68,6 +68,12 @@
     [bottomView setBackgroundColor:[UIColor colorWithHexString:@"#F0F1F2"]];
     _bottomView = bottomView;
     [self.contentView addSubview:bottomView];
+    
+    //VIP章节
+    UIImageView *VIPChapterImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"VIPChapterImage"]];
+    _VIPChapterImg = VIPChapterImg;
+    [self.contentView addSubview:VIPChapterImg];
+    VIPChapterImg.hidden = NO;
 }
 
 -(void)goToCommentView{
@@ -105,17 +111,24 @@
         }];
     }
     
+    //VIP
+    [self.VIPChapterImg mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self).offset(10);
+        make.right.equalTo(self.mas_right).offset(-8);
+        
+    }];
+    
     [self.chapterLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self).with.offset(10);
         make.left.equalTo(self.headImg.mas_right).with.offset(10);
-        make.right.equalTo(self).with.offset(-10);
+//        make.right.equalTo(self).with.offset(-10);
         make.height.mas_equalTo(20);
     }];
     
     [self.pageLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.chapterLab.mas_bottom).with.offset(10);
         make.left.equalTo(self.chapterLab.mas_left).with.offset(0);
-        make.right.equalTo(self).with.offset(-10);
+//        make.right.equalTo(self).with.offset(-10);
         make.height.mas_equalTo(20);
     }];
     
@@ -152,7 +165,7 @@
     if([model.type isEqualToString:@"1"]){
         //漫画
         //名字
-        [self.headImg sd_setImageWithURL:[NSURL URLWithString:model.chapterCover] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+        [self.headImg sd_setImageWithURL:[NSURL URLWithString:model.chapterCover] placeholderImage:[UIImage imageNamed:@"chapterPlaceV"] options:0 completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
             //计算image的高度
             CGFloat proportion = image.size.height / (SCREEN_HEIGHT * 0.25 - 21);
 //            NSLog(@"proportion:%f",proportion);
@@ -163,12 +176,14 @@
             }];
         }];
         [self.chapterLab setAttributedText:[NSString addStrSpace:[NSString stringWithFormat:@"第%@",model.chapterName]]];
+
     }else{
         //剧本
         [self.chapterLab setText:model.chapterName];
     }
     self.chapterLab.textColor = [UIColor blackColor];
-
+    
+    
     self.likeNum.text = [NSString stringWithFormat:@"%ld",model.praiseNum];
     self.likeNum.textColor = [UIColor grayColor];
     //如果是章节 显示页 漫画 显示画

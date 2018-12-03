@@ -206,16 +206,19 @@ NSString *SuggestionView3 = @"SuggestionView";
 }
 
 -(void)addMoment{
+    
     if([[UserInfoManager share] hasLogin] == NO){
         [UserInfoManager needLogin];
         return;
     }
+    
     UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
 
     UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"手机拍摄" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         //打开相机
         [self takePhoto];
     }];
+    
     [action1 setValue:[UIColor blackColor] forKey:@"_titleTextColor"];
    
     UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"从手机相册选择" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {

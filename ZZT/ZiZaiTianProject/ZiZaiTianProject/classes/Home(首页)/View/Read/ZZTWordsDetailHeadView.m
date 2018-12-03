@@ -88,7 +88,7 @@ static NSString * const offsetKeyPath = @"contentOffset";
     self.ifCollect = detailModel.ifCollect;
     
     //背景
-    [self.bookCover sd_setImageWithURL:[NSURL URLWithString:detailModel.lbCover]];
+    [self.bookCover sd_setImageWithURL:[NSURL URLWithString:detailModel.lbCover] placeholderImage:[UIImage imageNamed:@"bannerPlaceV"] options:0];
     
     //title
     NSArray *titleArray = [detailModel.bookType componentsSeparatedByString:@","];

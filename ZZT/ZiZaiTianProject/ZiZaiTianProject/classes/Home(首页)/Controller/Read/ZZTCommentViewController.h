@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ZZTCommentViewController : UIViewController
+@interface ZZTCommentViewController : BaseViewController
 
 @property (nonatomic,strong) NSString *chapterId;
 

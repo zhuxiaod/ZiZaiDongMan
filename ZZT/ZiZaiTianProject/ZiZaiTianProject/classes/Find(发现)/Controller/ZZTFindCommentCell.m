@@ -9,14 +9,12 @@
 #define imgHeight  (CGRectGetWidth([UIScreen mainScreen].bounds) - 80)/3
 
 #import "ZZTFindCommentCell.h"
-//#import <XHImageViewer.h>
 #import "ZZTMyZoneModel.h"
 #import "AttentionButton.h"
 #import "ZZTMaterialCell.h"
-#import "XHImageViewer.h"
 #import "HZPhotoBrowser.h"
 
-@interface ZZTFindCommentCell ()<UIGestureRecognizerDelegate,UICollectionViewDataSource,UICollectionViewDelegate,XHImageViewerDelegate>
+@interface ZZTFindCommentCell ()<UIGestureRecognizerDelegate,UICollectionViewDataSource,UICollectionViewDelegate>
 
 @property (strong, nonatomic)  UIButton *headBtn;
 @property (strong, nonatomic)  UILabel *userName;
@@ -25,7 +23,6 @@
 @property (strong, nonatomic)  UILabel *contentLab;
 @property (strong, nonatomic)  UIImageView *contentImg;
 @property (strong, nonatomic)  UILabel *dataLab;
-//@property (strong, nonatomic)  UIView *bgImgsView;
 @property (strong, nonatomic)  UIView *bottomView;
 @property (nonatomic,strong) NSMutableArray * groupImgArr;
 @property (nonatomic,strong) NSArray *imgArray;
@@ -57,30 +54,6 @@
     }
     return _downImageArray;
 }
-
-//-(NSMutableArray *)groupImgArr{
-//    if(!_groupImgArr){
-//        _groupImgArr = [NSMutableArray array];
-//        for (int i = 0; i < self.imgArray.count; i++) {
-//            UIImageView * img = [[UIImageView alloc]init];
-//
-//            [img setContentMode:UIViewContentModeScaleAspectFill];
-//
-//            img.clipsToBounds = YES;
-//
-//            [img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://img.cdn.zztian.cn/%@",_imgArray[i]]] placeholderImage:[UIImage createImageWithColor:[UIColor whiteColor]] options:0];
-//
-////            img.userInteractionEnabled = YES;
-//
-////            UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(browerImage:)];
-////
-////            [img addGestureRecognizer:tap];
-//
-//            [self.groupImgArr addObject:img];
-//        }
-//    }
-//    return _groupImgArr;
-//}
 
 + (instancetype)cellWithTableView:(UITableView *)tableView{
     static NSString *ID = @"findCommentCell";
@@ -117,7 +90,6 @@
     [_headBtn addTarget:self action:@selector(clickHead) forControlEvents:UIControlEventTouchUpInside];
     _headBtn.adjustsImageWhenHighlighted = NO;
     
-    
     //用户名
     _userName = [GlobalUI createLabelFont:18 titleColor:ZZTSubColor bgColor:[UIColor clearColor]];
     
@@ -133,9 +105,6 @@
     _contentLab = [GlobalUI createLabelFont:14 titleColor:[UIColor blackColor] bgColor:[UIColor whiteColor]];
     _contentLab.numberOfLines = 0;
     
-    
-    //图片
-//    _bgImgsView = [[UIView alloc]init];
 
     //使用collectionView
     UICollectionViewFlowLayout *layout = [self setupCollectionViewFlowLayout];
@@ -154,14 +123,27 @@
     [self.contentView addSubview:_vipLab];
     [self.contentView addSubview:_attentionBtn];
     [self.contentView addSubview:_contentLab];
-//    [self.contentView addSubview:_bgImgsView];
     [self.contentView addSubview:_dataLab];
-    
-//    self.groupImgArr = [NSMutableArray array];
+
     
     _bottomView = [[UIView alloc] init];
     _bottomView.backgroundColor = [UIColor colorWithRGB:@"239,239,239"];
     [self.contentView addSubview:_bottomView];
+    
+    //长按手势
+    UILongPressGestureRecognizer * longPressGesture =[[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(cellLongPress:)];
+    
+    longPressGesture.minimumPressDuration=1.0f;//设置长按 时间
+    [self addGestureRecognizer:longPressGesture];
+}
+
+-(void)cellLongPress:(UILongPressGestureRecognizer *)gesture{
+    //代理出去
+    if(![[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id] isEqualToString:self.model.userId]){
+        if(self.LongPressBlock){
+            self.LongPressBlock(self.model);
+        }
+    }
 }
 
 #pragma mark - 创建流水布局
@@ -174,6 +156,7 @@
     layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     //行距
     layout.minimumLineSpacing = 10;
+    
     layout.minimumInteritemSpacing = 10;
     
     return layout;
@@ -183,7 +166,6 @@
 -(void)setupCollectionView:(UICollectionViewFlowLayout *)layout
 {
     UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
-//    [collectionView setContentInset:UIEdgeInsetsMake(0, 0, 0, 30)];
     collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView = collectionView;
     collectionView.dataSource = self;
@@ -236,9 +218,6 @@
         make.left.equalTo(self.headBtn.mas_left);
         make.right.equalTo(self.attentionBtn.mas_right);
         make.top.equalTo(self.headBtn.mas_bottom).offset(space);
-//        make.height.mas_equalTo(contentHeight);
-        
-//        make.height.mas_equalTo(0);
     }];
     
     NSInteger row = _imgArray.count / 3;// 多少行图片
@@ -251,10 +230,8 @@
     
     [_collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.contentLab.mas_bottom).offset(space);
-//        make.right.equalTo(self.attentionBtn.mas_right);
         make.width.mas_equalTo(collectionW);
         make.left.equalTo(self.headBtn.mas_left);
-//        make.height.mas_equalTo(1);
     }];
     
     [_dataLab mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -270,48 +247,13 @@
         make.height.mas_equalTo(20);
         make.width.mas_equalTo(70);
     }];
-    
-//    [self.replyCountView.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(self.replyCountView.mas_top).offset(1);
-//        make.left.equalTo(self.replyCountView.mas_left).offset(2);
-//        make.bottom.equalTo(self.replyCountView.mas_bottom).offset(-1);
-//        make.width.mas_equalTo(18);
-//    }];
-//
-//    self.replyCountView.imageView.contentMode = UIViewContentModeCenter;
-//
-//    [self.replyCountView.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(self.replyCountView.imageView.mas_top);
-//        make.left.equalTo(self.replyCountView.imageView.mas_right).offset(4);
-//        make.bottom.equalTo(self.replyCountView.mas_bottom);
-//        make.width.mas_equalTo(70 - 22);
-//    }];
-    
-    
-    
-    
+
     [self.likeCountView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.replyCountView);
         make.right.equalTo(self.replyCountView.mas_left).offset(-space);
         make.height.mas_equalTo(20);
         make.width.mas_equalTo(70);
     }];
-    
-//    [self.likeCountView.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(self.likeCountView.mas_top).offset(0);
-//        make.left.equalTo(self.likeCountView.mas_left).offset(2);
-//        make.bottom.equalTo(self.likeCountView.mas_bottom).offset(0);
-//        make.width.mas_equalTo(18);
-//    }];
-//    
-//    self.likeCountView.imageView.contentMode = UIViewContentModeCenter;
-//    
-//    [self.likeCountView.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(self.likeCountView.imageView.mas_top);
-//        make.left.equalTo(self.likeCountView.imageView.mas_right).offset(4);
-//        make.bottom.equalTo(self.likeCountView.mas_bottom);
-//        make.width.mas_equalTo(70 - 22);
-//    }];
     
     [_bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.left.bottom.equalTo(self.contentView);
@@ -321,25 +263,6 @@
 
 - (void)setModel:(ZZTMyZoneModel *)model{
     _model = model;
-
-//    // 处理耗时操作的代码块...
-//    for (int i = 0; i < self.imgArray.count; i++) {
-//
-//        UIImageView * img = [[UIImageView alloc]init];
-//
-//        [img setContentMode:UIViewContentModeScaleAspectFill];
-//
-//        img.clipsToBounds = YES;
-//
-//        [img sd_setImageWithURL:[NSURL URLWithString:_imgArray[i]] placeholderImage:[UIImage createImageWithColor:[UIColor whiteColor]] options:0];
-//
-//        UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(browerImage:)];
-//
-//        [img addGestureRecognizer:tap];
-//
-//        [self.groupImgArr addObject:img];
-//    }
-    
     
     //更新时间
     [_dataLab mas_updateConstraints:^(MASConstraintMaker *make) {
@@ -372,20 +295,6 @@
     }];
     
     [self.collectionView reloadData];
-    
-    // 处理耗时操作的代码块...
-    self.groupImgArr = [NSMutableArray array];
-    for (int i = 0; i < self.imgArray.count; i++) {
-        UIImageView * img = [[UIImageView alloc]init];
-        
-        [img setContentMode:UIViewContentModeScaleAspectFill];
-        
-        img.clipsToBounds = YES;
-        
-        [img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://img.cdn.zztian.cn/%@",self.imgArray[i]]] placeholderImage:[UIImage createImageWithColor:[UIColor whiteColor]] options:0];
-        
-        [self.groupImgArr addObject:img];
-    }
   
     //先把时间搓换成nstime
     
@@ -409,11 +318,6 @@
 
     [self.replyCountView setTitle:replayCountText forState:UIControlStateNormal];
 
-//    //设置宽度
-//    [self.replyCountView mas_updateConstraints:^(MASConstraintMaker *make) {
-//        make.width.equalTo(@(replyWidth));
-//    }];
-    
    
     
     //评论跳转
@@ -428,6 +332,7 @@
    
 
     //关注
+    _attentionBtn.hidden = NO;
     _attentionBtn.isAttention = [model.ifConcern integerValue];
     _attentionBtn.requestID = model.userId;
     UserInfo *user = [Utilities GetNSUserDefaults];
@@ -443,58 +348,16 @@
         return;
     }
     ZZTCommentViewController *commentView = [[ZZTCommentViewController alloc] init];
+    ZZTNavigationViewController *nav = [[ZZTNavigationViewController alloc] initWithRootViewController:commentView];
     commentView.isFind = YES;
     commentView.chapterId = _model.id;
     commentView.cartoonType = @"3";
-    [[self myViewController].navigationController presentViewController:commentView animated:YES completion:nil];
+    [[self myViewController].navigationController presentViewController:nav animated:YES completion:nil];
     [commentView hiddenTitleView];
 }
 
-- (void)setupImageGroupView{
-    CGFloat w = imgHeight;
-    CGFloat h = imgHeight;
-    
-    CGFloat edge = 10;
-    for (int i = 0; i<_imgArray.count; i++) {
-        
-        int row = i / 3;
-        int loc = i % 3;
-        
-        CGFloat x = (edge + w) * loc ;
-        CGFloat y = (edge + h) * row;
-        
-        UIImageView * img =[[UIImageView alloc]init];
-        
-        [img setContentMode:UIViewContentModeScaleAspectFill];
-        
-        img.clipsToBounds = YES;
-        
-//        [img sd_setImageWithURL:[NSURL URLWithString:_imgArray[i]]];
-        
-        [img sd_setImageWithURL:[NSURL URLWithString:_imgArray[i]] placeholderImage:[UIImage createImageWithColor:[UIColor whiteColor]] options:0];
-        
-        //        img.image = [UIImage imageNamed:_imgArray[i]];
-//        img.backgroundColor = [UIColor greenColor];
-        img.frame = CGRectMake(x, y, w, h);
-        
-        img.userInteractionEnabled = YES;
-        
-        UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(browerImage:)];
-        
-        [img addGestureRecognizer:tap];
-        
-//        [_bgImgsView addSubview:img];
-        
-        [_groupImgArr addObject:img];
-    }
-}
 
-//#pragma mark - brower image
-- (void)browerImage:(UITapGestureRecognizer *)gest{
-//    UIImageView *tapView = (UIImageView *)gest.view;
-//    XHImageViewer *brower  = [[XHImageViewer alloc]init];
-//    [brower showWithImageViews:self.groupImgArr selectedView:tapView];
-}
+
 
 //时间显示过大了
 + (CGFloat)cellHeightWithStr:(NSString *)str imgs:(NSArray *)imgs{
@@ -578,35 +441,27 @@
 //cell
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-//    NSString *imgStr = self.imgArray[indexPath.row];
+    NSString *imgStr = self.imgArray[indexPath.row];
     ZZTMaterialCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"wordImageCell" forIndexPath:indexPath];
     //显示一张图  然后给他一张图
-//    cell.imageStr = imgStr;
-    cell.selectImageView = self.groupImgArr[indexPath.row];
+    cell.imageStr = imgStr;
+//    cell.selectImageView = self.groupImgArr[indexPath.row];
     return cell;
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    
     HZPhotoBrowser *browser = [[HZPhotoBrowser alloc] init];
+    
     browser.isFullWidthForLandScape = YES;
+    
     browser.isNeedLandscape = YES;
     
     browser.currentImageIndex = [[NSString stringWithFormat:@"%ld",indexPath.row] intValue];
+    
     browser.imageArray = self.imgArray;
     
     [browser show];
     
-    
-//    ZZTMaterialCell *cell = (ZZTMaterialCell *)[collectionView cellForItemAtIndexPath:indexPath];
-//    NSLog(@"indexPath:%ld",indexPath.row);
-//    UIImageView *tapView = (UIImageView *)cell.selectImageView;
-//    XHImageViewer *imageViewer = [[XHImageViewer alloc] init];
-////    imageViewer.delegate = self;
-//    imageViewer.disableTouchDismiss = NO;
-//
-////    XHImageViewer *brower  = [[XHImageViewer alloc]init];
-////    _imageViewer.disableTouchDismiss = NO;
-////    [self layoutIfNeeded];
-//    [imageViewer showWithImageViews:self.groupImgArr selectedView:tapView];
 }
 @end

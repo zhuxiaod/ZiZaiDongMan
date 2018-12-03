@@ -307,9 +307,11 @@ static bool needHide = false;
     
     //显示评论页面
     ZZTCommentViewController *commentView = [[ZZTCommentViewController alloc] init];
+    ZZTNavigationViewController *nav = [[ZZTNavigationViewController alloc] initWithRootViewController:commentView];
+
     commentView.chapterId = [NSString stringWithFormat:@"%ld",self.dataModel.id];
     commentView.cartoonType = self.cartoonModel.type;
-    [self presentViewController:commentView animated:YES completion:nil];
+    [self presentViewController:nav animated:YES completion:nil];
 
     [table endRefreshing];
 

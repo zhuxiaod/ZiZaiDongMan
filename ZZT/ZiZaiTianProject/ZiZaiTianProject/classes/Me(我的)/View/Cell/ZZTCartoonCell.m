@@ -66,9 +66,7 @@
 -(void)setCartoon:(ZZTCarttonDetailModel *)cartoon{
     _cartoon = cartoon;
     
-    [self.image sd_setImageWithURL:[NSURL URLWithString:cartoon.cover] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-        NSLog(@"imageW:%f imageH:%f",image.size.width,image.size.height);
-    }];
+    [self.image sd_setImageWithURL:[NSURL URLWithString:cartoon.cover] placeholderImage:[UIImage imageNamed:@"chapterPlaceV"] options:0];
     
     self.cartoonName.text = cartoon.bookName;
     

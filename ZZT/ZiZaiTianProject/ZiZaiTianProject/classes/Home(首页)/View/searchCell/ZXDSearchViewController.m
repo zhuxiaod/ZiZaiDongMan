@@ -67,7 +67,6 @@
     ZZTNavigationViewController *nav = [[ZZTNavigationViewController alloc] initWithRootViewController:searchVC];
     _nav = nav;
 //    searchSuggestionVC.view.frame = CGRectMake(0, CGRectGetMaxY(self.navigationController.navigationBar.frame), PYScreenW, PYScreenH);
-
     
     [self presentViewController:nav animated:NO completion:nil];
     
@@ -123,6 +122,7 @@
     });
   
 }
+
 -(void)didClickCancel:(PYSearchViewController *)searchViewController{
     [self.navigationController popViewControllerAnimated:NO];
 }
@@ -151,10 +151,12 @@
         }];
     }
 }
+
 //搜索结果多少节
 - (NSInteger)numberOfSectionsInSearchSuggestionView:(UITableView *)searchSuggestionView{
     return 1;
 }
+
 //多少行
 - (NSInteger)searchSuggestionView:(UITableView *)searchSuggestionView numberOfRowsInSection:(NSInteger)section{
     return self.searchSuggestionArray.count;

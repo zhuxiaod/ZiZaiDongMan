@@ -319,7 +319,37 @@
     //如果此评论是自己发的 那么可以删除
     if([circleItem.customer.id isEqualToString:[NSString stringWithFormat:@"%ld",user.id]]){
         [self deleteReplyActionView:@"1" comentId:circleItem.id];
+    }else{
+        //举报
+        [self reportUserData:circleItem];
     }
+}
+
+//举报
+-(void)reportUserData:(ZZTCircleModel *)messageData{
+    //弹出举报框
+    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertAction *reportBtn = [UIAlertAction actionWithTitle:@"举报" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        
+        //        NSLog(@"%@ : %@",messageData.nickName,messageData.content);
+        [self gotoReportVCWithModel:messageData];
+        
+    }];
+    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        NSLog(@"点击了取消");
+    }];
+    
+    [actionSheet addAction:reportBtn];
+    [actionSheet addAction:action2];
+    
+    [self presentViewController:actionSheet animated:YES completion:nil];
+}
+
+-(void)gotoReportVCWithModel:(ZZTCircleModel *)reportMessage{
+    ZZTReportViewController *reportVC = [[ZZTReportViewController alloc] init];
+    
+    reportVC.replyData = reportMessage;
+    [self.navigationController pushViewController:reportVC animated:YES];
 }
 
 //评论 获取发送评论 所需要的参数

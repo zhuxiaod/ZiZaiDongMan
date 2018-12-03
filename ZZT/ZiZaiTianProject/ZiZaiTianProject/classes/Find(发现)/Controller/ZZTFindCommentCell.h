@@ -10,13 +10,20 @@
 
 @class ZZTMyZoneModel;
 @class ZZTFindCommentCell;
+
 typedef void (^ReValueBlock) (void);
+
+typedef void (^LongPressBlock) (ZZTMyZoneModel *message);
+
 
 @interface ZZTFindCommentCell : UITableViewCell
 
 @property (nonatomic,strong) ZZTMyZoneModel *model;
 
 @property (nonatomic,copy) ReValueBlock btnBlock;
+
+@property (nonatomic,copy) LongPressBlock LongPressBlock;
+
 
 + (CGFloat)cellHeightWithStr:(NSString *)str imgs:(NSArray *)imgs;
 

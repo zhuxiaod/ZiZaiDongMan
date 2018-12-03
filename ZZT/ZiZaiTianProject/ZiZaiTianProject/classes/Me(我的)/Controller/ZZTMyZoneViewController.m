@@ -132,8 +132,6 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
         make.centerY.equalTo(self.viewNavBar.centerButton);
     }];
     
-//    self.viewNavBar.centerButton.titleLabel = lab;
-
     if(self.viewNavBarHidden == YES){
         self.viewNavBar.hidden = YES;
     }
@@ -270,9 +268,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-//    if(indexPath.row == 0){
-//        return 170;
-//    }
+
     ZZTMyZoneModel *model = _dataArray[indexPath.row];
     NSArray *imgs = [model.contentImg componentsSeparatedByString:@","];
     return  [ZZTMyZoneCell cellHeightWithStr:model.content imgs:imgs];
@@ -283,9 +279,37 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     cell.update = ^{
         [self loadData];
     };
+    cell.LongPressBlock = ^(ZZTMyZoneModel *message) {
+        [self reportUserData:message];
+    };
     cell.model = _dataArray[indexPath.row];
     return cell;
 
+}
+
+-(void)reportUserData:(ZZTMyZoneModel *)messageData{
+    //弹出举报框
+    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertAction *reportBtn = [UIAlertAction actionWithTitle:@"举报" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        
+//        NSLog(@"%@ : %@",messageData.nickName,messageData.content);
+        [self gotoReportVCWithModel:messageData];
+
+    }];
+    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        NSLog(@"点击了取消");
+    }];
+    
+    [actionSheet addAction:reportBtn];
+    [actionSheet addAction:action2];
+    
+    [self presentViewController:actionSheet animated:YES completion:nil];
+}
+
+-(void)gotoReportVCWithModel:(ZZTMyZoneModel *)reportMessage{
+    ZZTReportViewController *reportVC = [[ZZTReportViewController alloc] init];
+    reportVC.reportData = reportMessage;
+    [self.navigationController pushViewController:reportVC animated:YES];
 }
 
 -(void)startCreate{

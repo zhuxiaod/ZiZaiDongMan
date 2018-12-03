@@ -10,7 +10,11 @@
 
 @class ZZTMyZoneModel;
 
+typedef void (^LongPressBlock) (ZZTMyZoneModel *message);
+
 @interface ZZTMyZoneCell : UITableViewCell
+
+@property (nonatomic,copy) LongPressBlock LongPressBlock;
 
 @property (nonatomic,strong) ZZTMyZoneModel *model;
 

@@ -42,7 +42,7 @@
     
     self.imageW.constant = imageW;
     // 高度 
-    [_cartoonImg sd_setImageWithURL:[NSURL URLWithString:dataModel.cover]];
+    [_cartoonImg sd_setImageWithURL:[NSURL URLWithString:dataModel.cover] placeholderImage:[UIImage imageNamed:@"bannerPlaceV"] options:0];
     
     _cartoonImg.layer.cornerRadius = 10;
     _cartoonImg.layer.masksToBounds = YES;

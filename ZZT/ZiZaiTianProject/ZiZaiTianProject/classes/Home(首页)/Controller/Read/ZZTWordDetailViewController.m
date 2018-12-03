@@ -365,9 +365,10 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     cell.gotoCommentViewBlock = ^{
         //前往评论页
         ZZTCommentViewController *commentView = [[ZZTCommentViewController alloc] init];
+        ZZTNavigationViewController *nav = [[ZZTNavigationViewController alloc] initWithRootViewController:commentView];
         commentView.chapterId = [NSString stringWithFormat:@"%ld",model.id];
         commentView.cartoonType = model.type;
-        [self presentViewController:commentView animated:YES completion:nil];
+        [self presentViewController:nav animated:YES completion:nil];
     };
     cell.selected = UITableViewCellSelectionStyleNone;
     cell.model = model;

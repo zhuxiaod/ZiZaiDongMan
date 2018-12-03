@@ -9,7 +9,7 @@
 
 #import "ZZTMyZoneCell.h"
 #import "ZZTMyZoneModel.h"
-#import "XHImageViewer.h"
+#import "HZPhotoBrowser.h"
 
 @interface ZZTMyZoneCell ()
 
@@ -59,6 +59,21 @@
     _bottomView = [[UIView alloc] init];
     _bottomView.backgroundColor = [UIColor colorWithRGB:@"239,239,239"];
     [self.contentView addSubview:_bottomView];
+    
+    //长按手势
+    UILongPressGestureRecognizer * longPressGesture =[[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(cellLongPress:)];
+    
+    longPressGesture.minimumPressDuration=1.0f;//设置长按 时间
+    [self addGestureRecognizer:longPressGesture];
+}
+
+-(void)cellLongPress:(UILongPressGestureRecognizer *)gesture{
+    //代理出去
+    if(![[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id] isEqualToString:self.model.userId]){
+        if(self.LongPressBlock){
+            self.LongPressBlock(self.model);
+        }
+    }
 }
 
 -(void)layoutSubviews{
@@ -209,7 +224,8 @@
         UIImageView * img =[[UIImageView alloc]init];
         img.contentMode = UIViewContentModeScaleAspectFill;
         img.layer.masksToBounds = YES;
-        [img sd_setImageWithURL:[NSURL URLWithString:_imgArray[i]]];
+        img.tag = i;
+        [img sd_setImageWithURL:[NSURL URLWithString:_imgArray[i]] placeholderImage:[UIImage imageNamed:@"worldPlaceV"] options:0];
         img.backgroundColor = [UIColor whiteColor];
         img.frame = CGRectMake(x, y, w, h);
         img.userInteractionEnabled = YES;
@@ -222,9 +238,16 @@
 
 #pragma mark - brower image
 - (void)browerImage:(UITapGestureRecognizer *)gest{
-    UIImageView *tapView = (UIImageView *)gest.view;
-    XHImageViewer *brower  = [[XHImageViewer alloc]init];
-    [brower showWithImageViews:_groupImgArr selectedView:tapView];
+    
+    HZPhotoBrowser *browser = [[HZPhotoBrowser alloc] init];
+    browser.isFullWidthForLandScape = YES;
+    browser.isNeedLandscape = YES;
+    
+    browser.currentImageIndex = [[NSString stringWithFormat:@"%ld",gest.view.tag] intValue];
+    browser.imageArray = self.imgArray;
+    
+    [browser show];
+    
 }
 
 //高度有问题
@@ -305,10 +328,11 @@
         return;
     }
     ZZTCommentViewController *commentView = [[ZZTCommentViewController alloc] init];
+    ZZTNavigationViewController *nav = [[ZZTNavigationViewController alloc] initWithRootViewController:commentView];
     commentView.isFind = YES;
     commentView.chapterId = _model.id;
     commentView.cartoonType = @"3";
-    [[self myViewController].navigationController presentViewController:commentView animated:YES completion:nil];
+    [[self myViewController].navigationController presentViewController:nav animated:YES completion:nil];
     [commentView hiddenTitleView];
 }
 @end

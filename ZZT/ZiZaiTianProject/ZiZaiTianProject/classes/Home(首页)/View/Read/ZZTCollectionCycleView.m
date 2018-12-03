@@ -80,7 +80,7 @@
 
 -(SDCycleScrollView *)cycleScrollView{
     if(!_cycleScrollView){
-        _cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectZero delegate:self placeholderImage:[UIImage createImageWithColor:[UIColor whiteColor]]];
+        _cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectZero delegate:self placeholderImage:[UIImage imageNamed:@"bannerPlaceV"]];
         [self addSubview:_cycleScrollView];
     }
     return _cycleScrollView;

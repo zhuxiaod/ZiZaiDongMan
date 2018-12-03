@@ -170,8 +170,8 @@
     [self.viewNavBar.rightButton setImage:[UIImage imageNamed:@"me_messageBtn"] forState:UIControlStateNormal];
     [self.viewNavBar.rightButton addTarget:self action:@selector(gotoVipView) forControlEvents:UIControlEventTouchUpInside];
 
-//    self.viewNavBar.rightButton.hidden = YES;
-//    self.viewNavBar.leftButton.hidden = YES;
+    self.viewNavBar.rightButton.hidden = YES;
+    self.viewNavBar.leftButton.hidden = YES;
 
 }
 
