@@ -9,6 +9,7 @@
 #import "ZZTFindAttentionView.h"
 #import "ZZTUserHeadView.h"
 #import <SDWebImage/UIButton+WebCache.h>
+#import "UUWaveView.h"
 
 @interface ZZTFindAttentionView ()
 
@@ -22,6 +23,7 @@
 //头像框
 //头像
 //用户名
+@property (nonatomic, strong) UUWaveView *WaveView;
 
 @end
 
@@ -41,11 +43,27 @@
     [_backgroundBtn setImage:[UIImage imageNamed:@"Me_homeBackground"] forState:UIControlStateNormal];
     [_backgroundBtn addTarget:self action:@selector(print) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:_backgroundBtn];
+
+    UUWave *secondWave1 = [[UUWave alloc] initWithStyle:UUWaveStyleSin
+                                              direction:UUWaveDirectionRight
+                                              amplitude:14.0f
+                                                  width:SCREEN_WIDTH
+                                              lineWidth:1.0f
+                                                offsetX:0.0f
+                                                  stepX:1.2f
+                                           layerCreator:^CALayer *(CAShapeLayer *waveLayer) {
+                                               waveLayer.backgroundColor = [UIColor clearColor].CGColor;
+                                               waveLayer.fillColor = [UIColor whiteColor].CGColor;
+                                               waveLayer.strokeColor = [UIColor whiteColor].CGColor;
+                                               return waveLayer;
+                                           }];
+
+    _WaveView = [[UUWaveView alloc] init];
+    [_WaveView addWaves:@[secondWave1]];
+    [self.contentView addSubview:_WaveView];
+
     
-    _waveView = [[UIImageView alloc] init];
-    _waveView.backgroundColor = [UIColor clearColor];
-    _waveView.image = [UIImage imageNamed:@"waveView"];
-    [self.contentView addSubview:_waveView];
+    
     
     _userHead = [[ZZTUserHeadView alloc] initWithFrame:CGRectZero];
     [_userHead.viewClick addTarget:self action:@selector(print) forControlEvents:UIControlEventTouchUpInside];
@@ -91,6 +109,7 @@
 
 -(void)layoutSubviews{
     [super layoutSubviews];
+    
     [self.userHead mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.contentView).offset(-20);
         make.bottom.equalTo(self.contentView).offset(-10);
@@ -101,14 +120,15 @@
         make.top.left.right.bottom.equalTo(self.contentView);
     }];
     
-    //波浪
-    [self.waveView mas_makeConstraints:^(MASConstraintMaker *make) {
+    CGFloat waveH = 32;
+//    //波浪
+    [self.WaveView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.left.bottom.equalTo(self.contentView);
-        make.height.mas_equalTo(36);
+        make.height.mas_equalTo(waveH);
     }];
     
     [_userName mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(self.waveView.mas_top).offset(-4);
+        make.bottom.equalTo(self.WaveView.mas_top).offset(-4);
         make.right.equalTo(self.userHead.mas_left).offset(-8);
         make.height.mas_equalTo(20);
     }];

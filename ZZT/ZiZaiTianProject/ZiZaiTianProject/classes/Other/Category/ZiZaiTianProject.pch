@@ -165,14 +165,15 @@
 //#define imageHost @"http://p872ue3rt.bkt.clouddn.com"
 
 //测试
-//#define ZZTAPI @"http://192.168.0.142:8888/"
+#define ZZTAPI @"http://192.168.0.142:8888/"
 
 //#define BaseUrl(url)  [NSString stringWithFormat:@"http://192.168.0.142:8888/%@",(url)]
 
 //#import "UITableView+ZFTableViewSnapshot.h"
 
+
 //正式环境
-#define ZZTAPI @"http://120.79.178.191:8888/"
+//#define ZZTAPI @"http://120.79.178.191:8888/"
 #define ZZTBucket @"zizaitian"
 #define imageHost @"http://img.cdn.zztian.cn"
 

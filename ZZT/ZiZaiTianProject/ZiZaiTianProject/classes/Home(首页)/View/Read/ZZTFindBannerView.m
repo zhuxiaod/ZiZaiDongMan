@@ -7,12 +7,15 @@
 //
 
 #import "ZZTFindBannerView.h"
+#import "UUWaveView.h"
 
 @interface ZZTFindBannerView ()<SDCycleScrollViewDelegate>
 
 @property (nonatomic,strong) SDCycleScrollView *cycleScrollView;
 
 @property (nonatomic,strong) UIImageView *waveView;
+
+@property (nonatomic, strong) UUWaveView *WaveView;
 
 @end
 
@@ -27,7 +30,7 @@
 }
 
 -(void)setup{
-
+    
 }
 
 -(void)layoutSubviews{
@@ -39,9 +42,11 @@
     }];
     
     //波浪
-    [self.waveView mas_makeConstraints:^(MASConstraintMaker *make) {
+    CGFloat waveH = 32;
+
+    [self.WaveView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.left.bottom.equalTo(self.contentView);
-        make.height.mas_equalTo(36);
+        make.height.mas_equalTo(waveH);
     }];
 }
 
@@ -55,14 +60,27 @@
     return _cycleScrollView;
 }
 
--(UIImageView *)waveView{
-    if(!_waveView){
-        _waveView = [[UIImageView alloc] init];
-        _waveView.backgroundColor = [UIColor clearColor];
-        _waveView.image = [UIImage imageNamed:@"waveView"];
-        [self.contentView addSubview:_waveView];
+-(UUWaveView *)WaveView{
+    if(!_WaveView){
+        UUWave *secondWave1 = [[UUWave alloc] initWithStyle:UUWaveStyleSin
+                                                  direction:UUWaveDirectionRight
+                                                  amplitude:14.0f
+                                                      width:SCREEN_WIDTH
+                                                  lineWidth:1.0f
+                                                    offsetX:0.0f
+                                                      stepX:1.2f
+                                               layerCreator:^CALayer *(CAShapeLayer *waveLayer) {
+                                                   waveLayer.backgroundColor = [UIColor clearColor].CGColor;
+                                                   waveLayer.fillColor = [UIColor whiteColor].CGColor;
+                                                   waveLayer.strokeColor = [UIColor whiteColor].CGColor;
+                                                   return waveLayer;
+                                               }];
+        
+        _WaveView = [[UUWaveView alloc] init];
+        [_WaveView addWaves:@[secondWave1]];
+        [self.contentView addSubview:_WaveView];
     }
-    return _waveView;
+    return _WaveView;
 }
 -(void)setImageArray:(NSString *)imageArray{
     _imageArray = imageArray;

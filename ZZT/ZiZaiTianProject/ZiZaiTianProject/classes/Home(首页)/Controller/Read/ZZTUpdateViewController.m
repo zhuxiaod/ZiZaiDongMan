@@ -121,7 +121,7 @@
 #pragma mark - 创建CollectionView
 -(void)setupCollectionView:(UICollectionViewFlowLayout *)layout
 {
-    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, Height_NavBar , Screen_Width, Screen_Height) collectionViewLayout:layout];
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, Height_NavBar , Screen_Width, Screen_Height - 88) collectionViewLayout:layout];
     collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView = collectionView;
     collectionView.dataSource = self;

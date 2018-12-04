@@ -199,6 +199,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 //        cartoonDetailVC.lastReadModel = self.lastReadData;
     }
     cartoonDetailVC.hidesBottomBarWhenPushed = YES;
+    _cartoonDetail.bookName = self.ctDetail.bookName;
     cartoonDetailVC.cartoonModel = _cartoonDetail;
     [self.navigationController pushViewController:cartoonDetailVC animated:YES];
 }
@@ -380,6 +381,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     //跳页
     ZZTCartoonDetailViewController *cartoonDetailVC = [[ZZTCartoonDetailViewController alloc] init];
     //书模型 cartoonDetail.id
+    _cartoonDetail.bookName = self.ctDetail.bookName;
     cartoonDetailVC.cartoonModel = _cartoonDetail;
     //章节
     model.listTotal = self.chapterChooseView.total;

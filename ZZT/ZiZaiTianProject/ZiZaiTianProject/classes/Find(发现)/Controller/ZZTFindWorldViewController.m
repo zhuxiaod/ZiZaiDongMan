@@ -102,7 +102,9 @@ static NSString *findCommentCell = @"findCommentCell";
     
     [self setupMJRefresh];
     
-    [self loadCaiNiXiHuanData];
+//    [self loadCaiNiXiHuanData];
+
+    [self.contentView.mj_header beginRefreshing];
 
 }
 
@@ -354,6 +356,7 @@ static NSString *findCommentCell = @"findCommentCell";
     //通知
     NSDictionary *dataDic = [NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%f",offset] forKey:@"navHidden"];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"infoNotification" object:nil userInfo:dataDic];
+    
 }
 
 -(void)loadCaiNiXiHuanData{
@@ -375,7 +378,7 @@ static NSString *findCommentCell = @"findCommentCell";
 //刷新NavBar的zhuang'ta
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [_contentView.mj_header beginRefreshing];
+//    [_contentView.mj_header beginRefreshing];
     [self scrollViewDidScroll:_contentView];
     [self.navigationController setNavigationBarHidden:YES animated:NO];
 }

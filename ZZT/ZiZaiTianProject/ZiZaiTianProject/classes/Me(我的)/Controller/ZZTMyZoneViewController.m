@@ -112,7 +112,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     self.viewNavBar.showBottomLabel = NO;
 
     //返回
-    [self.viewNavBar.leftButton setImage:[UIImage imageNamed:@"返回键"] forState:UIControlStateNormal];
+    [self.viewNavBar.leftButton setImage:[UIImage imageNamed:@"bordBack"] forState:UIControlStateNormal];
     self.viewNavBar.leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 17);
     [self.viewNavBar.leftButton addTarget:self action:@selector(dismissVC) forControlEvents:UIControlEventTouchUpInside];
     self.viewNavBar.backgroundColor = [UIColor clearColor];
@@ -124,6 +124,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     [lab labOutline];
     [lab setTextColor:[UIColor whiteColor]];
     [self.viewNavBar addSubview:lab];
+    [self.view bringSubviewToFront:self.viewNavBar];
     
     [lab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.viewNavBar.centerButton.mas_top);
@@ -191,7 +192,8 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
                           @"pageSize":@"5",
                           //                          @"userId":[[NSUserDefaults standardUserDefaults]objectForKey:@"userId"]
                           //传什么id 显示谁的空间
-                          @"userId":_userId
+                          @"userId":_userId,
+                          @"toUserId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id]
                           };
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/selUserRoom"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -229,7 +231,8 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
                           @"pageSize":self.pageSize,
 //                          @"userId":[[NSUserDefaults standardUserDefaults]objectForKey:@"userId"]
                           //传什么id 显示谁的空间
-                          @"userId":_userId
+                          @"userId":_userId,
+                          @"toUserId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id]
                           };
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/selUserRoom"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -358,6 +361,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     }
     return _zoneHeadView;
 }
+
 //向下滑 显示不同navbar
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     CGFloat offsetY = scrollView.contentOffset.y;
@@ -367,12 +371,22 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     
     CGFloat alpha = offsetY * 1 / 136.0;   // (200 - 64) / 136.0f
     if (alpha >= 1) {
-        alpha = 0.5;
+        alpha = 0.99;
     }
+    
     if(offsetY == 64){
-        self.navbar.backgroundColor = [UIColor clearColor];
+        UIColor *color = [UIColor clearColor];
+        
+        self.viewNavBar.backgroundImageView.image = [UIImage createImageWithColor:color];
+        
+        [self.viewNavBar.leftButton setImage:[UIImage imageNamed:@"bordBack"] forState:UIControlStateNormal];
+        
     }else{
-        self.navbar.backgroundColor = [UIColor colorWithWhite:0 alpha:alpha];
+        UIColor *color = [UIColor colorWithWhite:1 alpha:alpha];
+
+        self.viewNavBar.backgroundImageView.image = [UIImage createImageWithColor:color];
+        
+        [self.viewNavBar.leftButton setImage:[UIImage imageNamed:@"blackBack"] forState:UIControlStateNormal];
     }
 }
 
@@ -383,9 +397,11 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
    
         //添加一张图片
         self.underLineView.hidden = NO;
+        
         self.tabelView.scrollEnabled = NO;
     }else{
         self.underLineView.hidden = YES;
+        
         self.tabelView.scrollEnabled = YES;
     }
    
@@ -416,4 +432,6 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
         [self.tabelView.mj_header endRefreshing];
     }];
 }
+
+
 @end

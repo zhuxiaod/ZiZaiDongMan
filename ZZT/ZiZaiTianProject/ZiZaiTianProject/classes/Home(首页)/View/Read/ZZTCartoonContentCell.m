@@ -83,17 +83,20 @@
 //        判断图片是否加载完成 如果是不用
         if(cacheType == SDImageCacheTypeNone){
             NSLog(@"我是刚被下载下来的");
+           
         }
-        if(cacheType == SDImageCacheTypeDisk){
+        else if(cacheType == SDImageCacheTypeDisk){
             NSLog(@"我本来就在");
         }
-        if(cacheType == SDImageCacheTypeMemory){
+        else if (cacheType == SDImageCacheTypeMemory){
             NSLog(@"我是内存里面的");
         }
+        
+        if ([self.delegate respondsToSelector:@selector(cellHeightUpdataWithIndex:Height:)]) {
+            [self.delegate cellHeightUpdataWithIndex:model.index Height:imageHeight];
+        }
 //        if(cacheType == SDImageCacheTypeNone || cacheType == SDImageCacheTypeDisk){
-            if ([self.delegate respondsToSelector:@selector(cellHeightUpdataWithIndex:Height:)]) {
-                [self.delegate cellHeightUpdataWithIndex:model.index Height:imageHeight];
-            }
+        
 //        }
     
         NSNumber *newHeight = [NSNumber numberWithDouble:height];

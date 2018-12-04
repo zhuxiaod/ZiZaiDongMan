@@ -103,7 +103,9 @@ NSString *SuggestionView1 = @"SuggestionView1";
 }
 
 -(void)loadNewData{
+    
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    
     NSDictionary *dict = @{
                            @"pageNum":@"1",
                            @"pageSize":[NSString stringWithFormat:@"%ld",self.pageSize]

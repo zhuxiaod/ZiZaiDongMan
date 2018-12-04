@@ -29,7 +29,7 @@
 {
     self = [super init]; //用于初始化父类
     if (self) {
-        self.algorithm = kCCAlgorithmAES;
+//        self.algorithm = kCCAlgorithmAES;
     }
     return self;
 }

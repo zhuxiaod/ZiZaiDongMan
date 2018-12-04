@@ -36,9 +36,23 @@ static NSString *const AES_IV_PARAMETER = @"A-16-Byte-String";
     NSString *decStr_GTM = [[NSString alloc] initWithData:AESData_GTM encoding:NSUTF8StringEncoding];
 //    NSLog(@"decStr_GTM : %@",decStr_GTM);
     NSString *decStr = [[NSString alloc] initWithData:AESData encoding:NSUTF8StringEncoding];
+  
+//    NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding];
+//    NSData *AESData = [self AES128operation:kCCEncrypt
+//                                       data:data
+//                                        key:PSW_AES_KEY
+//                                         iv:AES_IV_PARAMETER];
+//    NSString *baseStr_GTM = [self encodeBase64Data:AESData];
+//    NSString *decStr = [AESData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+    
+//    NSLog(@"*****************\nGTMBase:%@\n*****************", baseStr_GTM);
+//    NSLog(@"*****************\niOSCode:%@\n*****************", baseStr);
+    
+    
     return decStr;
     
 }
+
 /** * AES加解密算法 * * @param operation kCCEncrypt（加密）kCCDecrypt（解密） * @param data 待操作Data数据 * @param key key * @param iv 向量 * * */
 - (NSData *)AES128operation:(CCOperation)operation data:(NSData *)data key:(NSString *)key iv:(NSString *)iv {
     char keyPtr[kCCKeySizeAES128 + 1];

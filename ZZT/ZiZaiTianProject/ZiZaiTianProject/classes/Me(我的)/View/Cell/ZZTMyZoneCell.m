@@ -148,7 +148,7 @@
         //拼接字符串
         NSMutableArray *urlArray = [NSMutableArray array];
         for(int i = 0; i < _imgArray.count;i++){
-            NSString *imgUrl = [NSString stringWithFormat:@"%@%@",model.qiniu,_imgArray[i]];
+            NSString *imgUrl = [NSString stringWithFormat:@"%@",_imgArray[i]];
             [urlArray addObject:imgUrl];
         }
         _imgArray = urlArray;

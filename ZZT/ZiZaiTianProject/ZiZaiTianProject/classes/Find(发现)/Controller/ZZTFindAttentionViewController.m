@@ -77,6 +77,9 @@ static NSString *findCommentCell = @"findCommentCell";
     self.pageSize = 10;
 
     [self setupMJRefresh];
+    
+    [self.contentView.mj_header beginRefreshing];
+
 
 }
 
@@ -321,7 +324,7 @@ static NSString *findCommentCell = @"findCommentCell";
 //刷新NavBar的状态
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self.contentView.mj_header beginRefreshing];
+//    [self.contentView.mj_header beginRefreshing];
     [self scrollViewDidScroll:_contentView];
     [self.navigationController setNavigationBarHidden:YES animated:NO];
 

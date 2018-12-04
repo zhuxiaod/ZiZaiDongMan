@@ -73,7 +73,7 @@
     UIImageView *VIPChapterImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"VIPChapterImage"]];
     _VIPChapterImg = VIPChapterImg;
     [self.contentView addSubview:VIPChapterImg];
-    VIPChapterImg.hidden = NO;
+    VIPChapterImg.hidden = YES;
 }
 
 -(void)goToCommentView{

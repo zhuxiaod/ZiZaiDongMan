@@ -27,6 +27,7 @@
 		0404A11421521E2D003BC1CC /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0404A11321521E2D003BC1CC /* StoreKit.framework */; };
 		0404A11721521EDB003BC1CC /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0404A11621521EDB003BC1CC /* CoreGraphics.framework */; };
 		0404A11921521EF3003BC1CC /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0404A11821521EF3003BC1CC /* Photos.framework */; };
+		04091E6C21B6A038006727B9 /* UUWaveView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04091E6B21B6A038006727B9 /* UUWaveView.m */; };
 		040A03AD20FD8406000FAE13 /* ZZTStoryDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 040A03AC20FD8406000FAE13 /* ZZTStoryDetailView.m */; };
 		040A03B120FD8706000FAE13 /* ZZTStoryDetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 040A03AF20FD8706000FAE13 /* ZZTStoryDetailCell.m */; };
 		040A03B620FDDAEA000FAE13 /* ZZTWritePlayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 040A03B420FDDAEA000FAE13 /* ZZTWritePlayViewController.m */; };
@@ -427,6 +428,8 @@
 		0404A11521521E4B003BC1CC /* ZiZaiTianProject.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ZiZaiTianProject.entitlements; sourceTree = "<group>"; };
 		0404A11621521EDB003BC1CC /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		0404A11821521EF3003BC1CC /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
+		04091E6A21B6A038006727B9 /* UUWaveView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UUWaveView.h; sourceTree = "<group>"; };
+		04091E6B21B6A038006727B9 /* UUWaveView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UUWaveView.m; sourceTree = "<group>"; };
 		040A03AB20FD8406000FAE13 /* ZZTStoryDetailView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTStoryDetailView.h; sourceTree = "<group>"; };
 		040A03AC20FD8406000FAE13 /* ZZTStoryDetailView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTStoryDetailView.m; sourceTree = "<group>"; };
 		040A03AE20FD8706000FAE13 /* ZZTStoryDetailCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTStoryDetailCell.h; sourceTree = "<group>"; };
@@ -1142,6 +1145,15 @@
 			path = Macro;
 			sourceTree = "<group>";
 		};
+		04091E6921B6A038006727B9 /* UUWaveView */ = {
+			isa = PBXGroup;
+			children = (
+				04091E6A21B6A038006727B9 /* UUWaveView.h */,
+				04091E6B21B6A038006727B9 /* UUWaveView.m */,
+			);
+			path = UUWaveView;
+			sourceTree = "<group>";
+		};
 		040FD50820EF17C100004C71 /* CusSortLayout */ = {
 			isa = PBXGroup;
 			children = (
@@ -1321,6 +1333,7 @@
 		0466835E20F3096A0095C6BC /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				04091E6921B6A038006727B9 /* UUWaveView */,
 				0466835F20F3096A0095C6BC /* DCPicscrollView */,
 				0466836A20F3096A0095C6BC /* likeCountView.h */,
 				0466836B20F3096A0095C6BC /* likeCountView.m */,
@@ -2437,6 +2450,7 @@
 				0498B5D7212D8058005BD26D /* ZZTWordListCell.m in Sources */,
 				04E9FAC721537661005A3986 /* ZZTMyZoneCell.m in Sources */,
 				0428E8B021787D0A00702225 /* ZZTChapterModel.m in Sources */,
+				04091E6C21B6A038006727B9 /* UUWaveView.m in Sources */,
 				04A803EF2188616900E81C5E /* ZZTChapterChooseModel.m in Sources */,
 				0484E7D6210ABBFD00C39369 /* ZZTEditImageViewModel.m in Sources */,
 				04C39F522136C47A00F4CB4A /* ZZTWritingSequelViewController.m in Sources */,
