@@ -140,6 +140,8 @@
     //有没有封面
     if(model.cover){
         [self.headImg sd_setImageWithURL:[NSURL URLWithString:model.cover] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+            if(!image)return ;
+
             //计算image的高度
             CGFloat proportion = image.size.height / (SCREEN_HEIGHT * 0.25 - 21);
             //            NSLog(@"proportion:%f",proportion);
@@ -151,6 +153,7 @@
         }];
     }else{
         [self.headImg sd_setImageWithURL:[NSURL URLWithString:model.headimg]completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+            if(!image)return ;
             //计算image的高度
             CGFloat proportion = image.size.height / (SCREEN_HEIGHT * 0.25 - 21);
             //            NSLog(@"proportion:%f",proportion);

@@ -16,6 +16,7 @@
 static NSString * const likeUrl = @"http://api.kuaikanmanhua.com/v1/comics";
 
 static NSString * const normalImageName = @"catoonDetail_like";
+
 static NSString * const pressedImageName = @"catoonDetail_like_select";
 
 #define MyWidth 30.0f
@@ -49,14 +50,31 @@ static NSString * const pressedImageName = @"catoonDetail_like_select";
 - (void)setup {
 
     [self addTarget:self action:@selector(like) forControlEvents:UIControlEventTouchUpInside];
-    [self setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
-    [self setContentVerticalAlignment:UIControlContentVerticalAlignmentBottom];
+
     
     [self setTitleEdgeInsets:UIEdgeInsetsMake(0,8, 0, 0)];
     
     self.titleLabel.font = [UIFont systemFontOfSize:12];
     self.islike = false;
     
+    self.titleLabel.textAlignment = NSTextAlignmentCenter;
+    
+    //点赞的地方  添加
+    [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.mas_left).offset(2);
+        make.centerY.equalTo(self);
+    }];
+    
+    //点赞的地方  添加
+    [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.imageView.mas_right).offset(2);
+        make.centerY.equalTo(self);
+        make.height.mas_offset(18);
+    }];
+    
+    [self setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
+    [self setContentVerticalAlignment:UIControlContentVerticalAlignmentBottom];
+
 }
 
 - (void)setIslike:(BOOL)islike {
@@ -70,9 +88,11 @@ static NSString * const pressedImageName = @"catoonDetail_like_select";
     
     [self setImage:[[UIImage imageNamed:imageName] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
     
-    UIColor *textColor = self.islike ? subjectColor : [UIColor lightGrayColor];
+    UIColor *textColor = self.islike ? ZZTSubColor : [UIColor lightGrayColor];
     
     [self setTitleColor:textColor forState:UIControlStateNormal];
+    
+
 }
 
 

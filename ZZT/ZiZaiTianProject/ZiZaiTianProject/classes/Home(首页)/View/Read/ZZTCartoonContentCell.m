@@ -35,11 +35,11 @@
         
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         
-        //点赞按钮
-        UIImageView *likeView = [[UIImageView alloc] init];
-        _likeView = likeView;
-        likeView.backgroundColor = [UIColor yellowColor];
-        [self.contentView addSubview:likeView];
+//        //点赞按钮
+//        UIImageView *likeView = [[UIImageView alloc] init];
+//        _likeView = likeView;
+//        likeView.backgroundColor = [UIColor yellowColor];
+//        [self.contentView addSubview:likeView];
     }
     return self;
 }
@@ -67,40 +67,43 @@
     _model = model;
     
 //    [_content sd_setImageWithURL:[NSURL URLWithString:model.cartoonUrl] placeholderImage:[UIImage imageNamed:@"peien"]];
-    __block float height;
+    __block float height = 0.0f;
     [_content sd_setImageWithURL:[NSURL URLWithString:model.cartoonUrl] placeholderImage:[UIImage imageNamed:@"chapterPlaceV"] options:0 completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-        CGFloat percentage;
-        CGFloat imageHeight;
-        if(image.size.width > Screen_Width){
-            percentage = image.size.width / Screen_Width;
-            imageHeight = image.size.height / percentage;
-        }else{
-            percentage = Screen_Width / image.size.width;
-            imageHeight = image.size.height * percentage;
+        if(image){
+            CGFloat percentage;
+            CGFloat imageHeight;
+            NSLog(@"imageW:%@",image);
+            if(image.size.width > Screen_Width){
+                percentage = image.size.width / Screen_Width;
+                imageHeight = image.size.height / percentage;
+            }else{
+                percentage = Screen_Width / image.size.width;
+                imageHeight = image.size.height * percentage;
+            }
+            height = imageHeight;
+            //        刷新
+            //        判断图片是否加载完成 如果是不用
+            if(cacheType == SDImageCacheTypeNone){
+                NSLog(@"我是刚被下载下来的");
+                
+            }
+            else if(cacheType == SDImageCacheTypeDisk){
+                NSLog(@"我本来就在");
+            }
+            else if (cacheType == SDImageCacheTypeMemory){
+                NSLog(@"我是内存里面的");
+            }
+            
+            if ([self.delegate respondsToSelector:@selector(cellHeightUpdataWithIndex:Height:)]) {
+                [self.delegate cellHeightUpdataWithIndex:model.index Height:imageHeight];
+            }
+            //        if(cacheType == SDImageCacheTypeNone || cacheType == SDImageCacheTypeDisk){
+            
+            //        }
+            
+            NSNumber *newHeight = [NSNumber numberWithDouble:height];
+            self.imageHeight = newHeight;
         }
-        height = imageHeight;
-//        刷新
-//        判断图片是否加载完成 如果是不用
-        if(cacheType == SDImageCacheTypeNone){
-            NSLog(@"我是刚被下载下来的");
-           
-        }
-        else if(cacheType == SDImageCacheTypeDisk){
-            NSLog(@"我本来就在");
-        }
-        else if (cacheType == SDImageCacheTypeMemory){
-            NSLog(@"我是内存里面的");
-        }
-        
-        if ([self.delegate respondsToSelector:@selector(cellHeightUpdataWithIndex:Height:)]) {
-            [self.delegate cellHeightUpdataWithIndex:model.index Height:imageHeight];
-        }
-//        if(cacheType == SDImageCacheTypeNone || cacheType == SDImageCacheTypeDisk){
-        
-//        }
-    
-        NSNumber *newHeight = [NSNumber numberWithDouble:height];
-        self.imageHeight = newHeight;
     }];
 
 }

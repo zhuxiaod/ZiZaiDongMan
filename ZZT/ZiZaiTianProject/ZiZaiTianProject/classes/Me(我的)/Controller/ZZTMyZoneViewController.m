@@ -283,11 +283,11 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
         [self loadData];
     };
     cell.LongPressBlock = ^(ZZTMyZoneModel *message) {
+        message.nickName = self.userData.nickName;
         [self reportUserData:message];
     };
     cell.model = _dataArray[indexPath.row];
     return cell;
-
 }
 
 -(void)reportUserData:(ZZTMyZoneModel *)messageData{
@@ -307,6 +307,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     [actionSheet addAction:action2];
     
     [self presentViewController:actionSheet animated:YES completion:nil];
+    
 }
 
 -(void)gotoReportVCWithModel:(ZZTMyZoneModel *)reportMessage{

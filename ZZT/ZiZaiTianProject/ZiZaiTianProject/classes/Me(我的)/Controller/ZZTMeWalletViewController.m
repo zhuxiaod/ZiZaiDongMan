@@ -142,11 +142,15 @@ NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
 //请求商品
 - (void)requestProductData:(NSString *)type{
     NSLog(@"-------------请求对应的产品信息----------------");
+    
     NSArray *product = [[NSArray alloc] initWithObjects:type, nil];
     
     NSSet *nsset = [NSSet setWithArray:product];
+    
     SKProductsRequest *request = [[SKProductsRequest alloc] initWithProductIdentifiers:nsset];
+    
     request.delegate = self;
+    
     [request start];
     
 }
@@ -213,6 +217,7 @@ NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
                 break;
             case SKPaymentTransactionStateRestored:
                 NSLog(@"已经购买过商品");
+                [self completeTransaction:tran];
                 break;
             case SKPaymentTransactionStateFailed:
                 NSLog(@"交易失败");
@@ -230,7 +235,7 @@ NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
 - (void)buyAppleStoreProductSucceedWithPaymentTransactionp:(SKPaymentTransaction *)transactionReceipt {
     NSURL *recepitURL = [[NSBundle mainBundle] appStoreReceiptURL];
     NSData *receipt = [NSData dataWithContentsOfURL:recepitURL];
-    NSString  *transactionReceiptString = [receipt base64EncodedStringWithOptions:0];
+    NSString *transactionReceiptString = [receipt base64EncodedStringWithOptions:0];
 
     NSLog(@"transactionReceiptString:%@",transactionReceiptString);
     if ([transactionReceiptString length] > 0) {

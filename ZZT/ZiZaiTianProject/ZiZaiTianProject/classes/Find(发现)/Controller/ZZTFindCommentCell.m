@@ -13,6 +13,7 @@
 #import "AttentionButton.h"
 #import "ZZTMaterialCell.h"
 #import "HZPhotoBrowser.h"
+#import "replyCountView.h"
 
 @interface ZZTFindCommentCell ()<UIGestureRecognizerDelegate,UICollectionViewDataSource,UICollectionViewDelegate>
 
@@ -31,11 +32,13 @@
 @property (nonatomic,strong) NSMutableArray * downImageArray;
 
 //评论
-@property (strong, nonatomic) UIButton *replyCountView;
+@property (strong, nonatomic) replyCountView *replyCountView;
 //点赞
 @property (strong, nonatomic) likeCountView *likeCountView;
 //图片View
 @property (strong, nonatomic) UICollectionView *collectionView;
+//举报
+@property (strong, nonatomic) UIButton *reportBtn;
 
 @end
 
@@ -93,7 +96,6 @@
     //用户名
     _userName = [GlobalUI createLabelFont:18 titleColor:ZZTSubColor bgColor:[UIColor clearColor]];
     
-    
     //vip
     _vipLab = [GlobalUI createButtonWithImg:nil title:@"VIP" titleColor:[UIColor whiteColor]];
     [_vipLab setHidden:YES];
@@ -118,6 +120,14 @@
     //时间
     _dataLab = [GlobalUI createLabelFont:14 titleColor:[UIColor grayColor] bgColor:[UIColor whiteColor]];
     
+    //举报
+    _reportBtn = [[UIButton alloc] init];
+    [_reportBtn setImage:[[UIImage imageNamed:@"commentReport"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
+    [_reportBtn setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
+    [_reportBtn addTarget:self action:@selector(cellLongPress:) forControlEvents:UIControlEventTouchUpInside];
+    [_reportBtn setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+    [self.contentView addSubview:_reportBtn];
+    
     [self.contentView addSubview:_headBtn];
     [self.contentView addSubview:_userName];
     [self.contentView addSubview:_vipLab];
@@ -131,10 +141,10 @@
     [self.contentView addSubview:_bottomView];
     
     //长按手势
-    UILongPressGestureRecognizer * longPressGesture =[[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(cellLongPress:)];
+//    UILongPressGestureRecognizer * longPressGesture =[[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(cellLongPress:)];
     
-    longPressGesture.minimumPressDuration=1.0f;//设置长按 时间
-    [self addGestureRecognizer:longPressGesture];
+//    longPressGesture.minimumPressDuration=1.0f;//设置长按 时间
+//    [self addGestureRecognizer:longPressGesture];
 }
 
 -(void)cellLongPress:(UILongPressGestureRecognizer *)gesture{
@@ -242,17 +252,51 @@
     }];
     
     [self.replyCountView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(self.dataLab);
+        make.centerY.equalTo(self.dataLab);
         make.right.equalTo(self.contentView.mas_right).offset(-8);
         make.height.mas_equalTo(20);
-        make.width.mas_equalTo(70);
+        make.width.mas_equalTo(60);
     }];
 
+//    //点赞的地方  添加
+//    [self.replyCountView.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.equalTo(self.replyCountView.mas_left).offset(2);
+//        make.centerY.equalTo(self.dataLab);
+////        make.width.mas_equalTo(18);
+//    }];
+////
+//    //点赞的地方  添加
+//    [self.replyCountView.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.equalTo(self.replyCountView.imageView.mas_right).offset(2);
+//        make.centerY.equalTo(self.dataLab);
+//        make.height.mas_offset(18);
+//    }];
+    
     [self.likeCountView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.replyCountView);
         make.right.equalTo(self.replyCountView.mas_left).offset(-space);
         make.height.mas_equalTo(20);
-        make.width.mas_equalTo(70);
+        make.width.mas_equalTo(60);
+    }];
+    
+//    //点赞的地方  添加
+//    [self.likeCountView.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.equalTo(self.likeCountView.mas_left).offset(2);
+//        make.centerY.equalTo(self.replyCountView);
+//    }];
+//
+//    //点赞的地方  添加
+//    [self.likeCountView.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.equalTo(self.likeCountView.imageView.mas_right).offset(2);
+//        make.centerY.equalTo(self.replyCountView);
+//        make.height.mas_offset(18);
+//    }];
+    
+    //举报
+    [self.reportBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.dataLab);
+        make.right.equalTo(self.likeCountView.mas_left).offset(-64);
+        make.height.mas_equalTo(20);
     }];
     
     [_bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -279,7 +323,6 @@
     [_contentLab mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(contentHeight);
     }];
-
     
     //获取图片数组
     self.imgArray = [model.contentImg componentsSeparatedByString:@","];
@@ -314,12 +357,9 @@
     //评论
     NSString *replayCountText = [NSString makeTextWithCount:model.replycount];
     
-    CGFloat replyWidth = 70;
-
     [self.replyCountView setTitle:replayCountText forState:UIControlStateNormal];
 
-   
-    
+
     //评论跳转
     [self.replyCountView addTarget:self action:@selector(gotoCommentView) forControlEvents:UIControlEventTouchUpInside];
 
@@ -327,9 +367,7 @@
     self.likeCountView.islike  = [model.ifpraise integerValue];
     self.likeCountView.requestID = model.userId;
     self.likeCountView.likeCount = model.praisecount;
-//    self.likeCountView.likeCount = 10000;
 
-   
 
     //关注
     _attentionBtn.hidden = NO;
@@ -356,9 +394,6 @@
     [commentView hiddenTitleView];
 }
 
-
-
-
 //时间显示过大了
 + (CGFloat)cellHeightWithStr:(NSString *)str imgs:(NSArray *)imgs{
     CGFloat strH = [str heightWithWidth:CGRectGetWidth([UIScreen mainScreen].bounds) - 40 font:14];
@@ -374,20 +409,17 @@
 }
 
 //评论
-- (UIButton *)replyCountView {
+- (replyCountView *)replyCountView {
     if (!_replyCountView) {
         
-        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        replyCountView *btn = [[replyCountView alloc]init];
         
-        btn.titleLabel.font = [UIFont systemFontOfSize:12];
         [btn setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
+        
         [btn setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-        
-        [btn setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
-        [btn setTitleColor:[self.likeCountView titleColorForState:UIControlStateNormal] forState:UIControlStateNormal];
-        [btn setImage:[UIImage imageNamed:@"wordDetail_comment"] forState:UIControlStateNormal];
+
         [self.contentView addSubview:btn];
-        
+
         _replyCountView = btn;
     }
     
@@ -396,9 +428,13 @@
 
 - (likeCountView *)likeCountView {
     if (!_likeCountView) {
+        
         likeCountView *lcv = [[likeCountView alloc] init];
+        
         [lcv setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
+        
         [lcv setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+        
         weakself(self);
         //发现点赞
         [lcv setOnClick:^(likeCountView *btn) {

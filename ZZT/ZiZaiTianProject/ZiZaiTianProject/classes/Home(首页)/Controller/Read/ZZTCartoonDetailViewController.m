@@ -1532,8 +1532,6 @@ static bool needHide = false;
             [self.tableView endUpdates];
         }
     }
-    
-
 }
 
 -(void)updataStoryCellHeight:(NSString *)story index:(NSUInteger)index{

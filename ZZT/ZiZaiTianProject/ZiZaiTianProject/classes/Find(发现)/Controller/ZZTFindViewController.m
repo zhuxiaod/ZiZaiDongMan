@@ -142,9 +142,16 @@ NSString *SuggestionView3 = @"SuggestionView";
         alpha = 0.99;
     }
     if(offsetY == 64){
-        self.navBar.backgroundColor = [UIColor clearColor];
+        UIColor *color = [UIColor clearColor];
+        
+        self.navBar.backgroundImageView.image = [UIImage createImageWithColor:color];
+        
+        
     }else{
-        self.navBar.backgroundColor = [UIColor colorWithWhite:1 alpha:alpha];
+        UIColor *color = [UIColor colorWithWhite:1 alpha:alpha];
+        
+        self.navBar.backgroundImageView.image = [UIImage createImageWithColor:color];
+        
     }
     
 }

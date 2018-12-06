@@ -42,6 +42,7 @@
     
     // 高度
     [_cartoonImg sd_setImageWithURL:[NSURL URLWithString:dataModel.cover] placeholderImage:[UIImage imageNamed:@"bannerPlaceV"] options:0 completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+        if(!image)return ;
         CGFloat prop = image.size.height / (self.height - 15);
         CGFloat imageW = SCREEN_WIDTH / prop;
         self.imageW.constant = imageW;

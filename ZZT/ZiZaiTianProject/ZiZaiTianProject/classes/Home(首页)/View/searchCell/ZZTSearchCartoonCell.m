@@ -46,6 +46,8 @@
     _model = model;
     [self.suggestionImage sd_setImageWithURL:[NSURL URLWithString:[@"http://img.cdn.zztian.cn/"stringByAppendingString:model.cover]] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
         //cell高度
+        if(!image)return ;
+
         CGFloat cellH = SCREEN_HEIGHT * 0.22;
         CGFloat cellW = cellH * 1080 / 1920;
         NSLog(@"cellW:%f",cellW);

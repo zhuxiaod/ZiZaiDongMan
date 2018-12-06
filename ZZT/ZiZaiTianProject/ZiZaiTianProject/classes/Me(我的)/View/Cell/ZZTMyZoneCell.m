@@ -24,6 +24,8 @@
 @property (strong, nonatomic) UIButton *replyCountView;
 //点赞
 @property (strong, nonatomic) likeCountView *likeCountView;
+//举报
+@property (strong, nonatomic) UIButton *reportBtn;
 
 @end
 
@@ -60,11 +62,19 @@
     _bottomView.backgroundColor = [UIColor colorWithRGB:@"239,239,239"];
     [self.contentView addSubview:_bottomView];
     
-    //长按手势
-    UILongPressGestureRecognizer * longPressGesture =[[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(cellLongPress:)];
+//    //长按手势
+//    UILongPressGestureRecognizer * longPressGesture =[[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(cellLongPress:)];
+//
+//    longPressGesture.minimumPressDuration=1.0f;//设置长按 时间
+//    [self addGestureRecognizer:longPressGesture];
     
-    longPressGesture.minimumPressDuration=1.0f;//设置长按 时间
-    [self addGestureRecognizer:longPressGesture];
+    //举报
+    _reportBtn = [[UIButton alloc] init];
+    [_reportBtn setImage:[[UIImage imageNamed:@"commentReport"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
+    [_reportBtn setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
+    [_reportBtn addTarget:self action:@selector(cellLongPress:) forControlEvents:UIControlEventTouchUpInside];
+    [_reportBtn setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+    [self.contentView addSubview:_reportBtn];
 }
 
 -(void)cellLongPress:(UILongPressGestureRecognizer *)gesture{
@@ -103,8 +113,21 @@
     [self.replyCountView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.contentLab.mas_right);
         make.width.mas_equalTo(70);
-//        make.top.equalTo(self.bgImgsView.mas_bottom).offset(8);
+        make.top.equalTo(self.bgImgsView.mas_bottom).offset(8);
         make.height.mas_equalTo(20);
+    }];
+    
+    //点赞的地方  添加
+    [self.replyCountView.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.replyCountView.mas_left).offset(2);
+        make.centerY.equalTo(self.replyCountView);
+    }];
+
+    //点赞的地方  添加
+    [self.replyCountView.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.replyCountView.imageView.mas_right).offset(2);
+        make.centerY.equalTo(self.replyCountView);
+        make.height.mas_offset(18);
     }];
     
     [self.likeCountView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -114,6 +137,13 @@
         make.height.mas_equalTo(20);
     }];
 
+    //举报
+    [self.reportBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.replyCountView);
+        make.right.equalTo(self.likeCountView.mas_left).offset(-64);
+        make.height.mas_equalTo(20);
+    }];
+    
     [self.bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.left.bottom.equalTo(self.contentView);
         make.height.mas_equalTo(1);
@@ -181,14 +211,6 @@
     NSString *replayCountText = [NSString makeTextWithCount:model.replycount];
     
     [self.replyCountView setTitle:replayCountText forState:UIControlStateNormal];
-    
-    CGFloat replyWidth = [replayCountText getTextWidthWithFont:self.replyCountView.titleLabel.font] + 30;
-    
-    //设置宽度
-    [self.replyCountView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.bgImgsView.mas_bottom).offset(8);
-//        make.width.equalTo(@(replyWidth));
-    }];
     
     //设置赞
     self.likeCountView.islike  = [model.ifpraise integerValue];
@@ -269,6 +291,10 @@
     if (!_likeCountView) {
         likeCountView *lcv = [[likeCountView alloc] init];
         
+        [lcv setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
+        
+        [lcv setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+        
         weakself(self);
         //发现点赞
         [lcv setOnClick:^(likeCountView *btn) {
@@ -304,15 +330,19 @@
 - (UIButton *)replyCountView {
     if (!_replyCountView) {
         
-        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        UIButton *btn = [[UIButton alloc] init];
         
         btn.titleLabel.font = [UIFont systemFontOfSize:12];
         
         [btn setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
-        [btn setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
-        [btn setContentVerticalAlignment:UIControlContentVerticalAlignmentBottom];
-        //        [btn setTitleColor:[self.likeCountView titleColorForState:UIControlStateNormal] forState:UIControlStateNormal];
+
+        [btn setTitleColor:[self.likeCountView titleColorForState:UIControlStateNormal] forState:UIControlStateNormal];
+        
+        [btn setTitle:@"0" forState:UIControlStateNormal];
+
         [btn setImage:[UIImage imageNamed:@"评论"] forState:UIControlStateNormal];
+        
+
         [btn addTarget:self action:@selector(gotoCommentView) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:btn];
         

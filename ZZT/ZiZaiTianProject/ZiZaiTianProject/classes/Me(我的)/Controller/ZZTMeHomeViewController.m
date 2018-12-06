@@ -170,8 +170,8 @@
     [self.viewNavBar.rightButton setImage:[UIImage imageNamed:@"me_messageBtn"] forState:UIControlStateNormal];
     [self.viewNavBar.rightButton addTarget:self action:@selector(gotoVipView) forControlEvents:UIControlEventTouchUpInside];
 
-    self.viewNavBar.rightButton.hidden = YES;
-    self.viewNavBar.leftButton.hidden = YES;
+//    self.viewNavBar.rightButton.hidden = YES;
+//    self.viewNavBar.leftButton.hidden = YES;
 
 }
 
@@ -201,16 +201,16 @@
 }
 
 -(void)showHomeView{
-    //显示搜索
-    self.viewNavBar.leftButton.hidden = YES;
+
+    self.viewNavBar.leftButton.hidden = NO;
     self.mommentBtn.hidden = YES;
     [self.titleView selectBtn:self.titleView.leftBtn];
 }
 
 -(void)showZoneView{
-    //显示删除
+
     self.viewNavBar.leftButton.hidden = YES;
-    self.mommentBtn.hidden = YES;
+    self.mommentBtn.hidden = NO;
     [self.titleView selectBtn:self.titleView.rightBtn];
 }
 
@@ -218,10 +218,12 @@
     // 取出选中的这个控制器
     if(btn.tag == 0){
         [self.mainView setContentOffset:CGPointMake(0, 0) animated:YES];
+        [self showHomeView];
         [self.titleView selectBtn:btn];
     }else{
         [self.mainView setContentOffset:CGPointMake(SCREEN_WIDTH, 0) animated:YES];
         [self.titleView selectBtn:btn];
+        [self showZoneView];
     }
 }
 @end

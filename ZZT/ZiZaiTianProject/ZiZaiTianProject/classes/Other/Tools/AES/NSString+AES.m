@@ -90,6 +90,7 @@ static NSString *const AES_IV_PARAMETER = @"A-16-Byte-String";
 
 /**< GTMBase64解码 */
 - (NSData*)decodeBase64Data:(NSData *)data {
+//    GTMBase64 *baseTool = [[GTMBase64 alloc] init];
     data = [GTMBase64 decodeData:data];
     return data;
 }

@@ -43,6 +43,7 @@
         for (int i = 0; i < self.cartoonArray.count; i++) {
             ZZTCartoonModel *model = self.cartoonArray[i];
             [_manager loadImageWithURL:[NSURL URLWithString:model.cartoonUrl] options:SDWebImageProgressiveDownload progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
+                if(!image)return ;
                 CGFloat percentage;
                 CGFloat imageHeight;
                 if(image.size.width > Screen_Width){

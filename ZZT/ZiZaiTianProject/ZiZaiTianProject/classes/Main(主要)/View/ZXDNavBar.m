@@ -25,7 +25,8 @@
         }];
         //背景图片
         _backgroundImageView = [[UIImageView alloc] init];
-        [self addSubview:_backgroundImageView];
+        [_mainView addSubview:_backgroundImageView];
+        [_mainView sendSubviewToBack:_backgroundImageView];
         [_backgroundImageView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.right.top.bottom.mas_equalTo(0);
         }];
@@ -42,7 +43,8 @@
         _leftButton.adjustsImageWhenHighlighted = NO;
         _leftButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_leftButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [self.mainView addSubview:_leftButton]; [_leftButton addTarget:self action:@selector(clickLeftButton) forControlEvents:UIControlEventTouchUpInside];
+        [self.mainView addSubview:_leftButton];
+        [_leftButton addTarget:self action:@selector(clickLeftButton) forControlEvents:UIControlEventTouchUpInside];
         [_leftButton mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.mas_equalTo(0);
             make.width.mas_equalTo(50);

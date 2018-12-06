@@ -167,13 +167,15 @@
         //名字
         [self.headImg sd_setImageWithURL:[NSURL URLWithString:model.chapterCover] placeholderImage:[UIImage imageNamed:@"chapterPlaceV"] options:0 completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
             //计算image的高度
-            CGFloat proportion = image.size.height / (SCREEN_HEIGHT * 0.25 - 21);
-//            NSLog(@"proportion:%f",proportion);
-            CGFloat imageViewW = image.size.width / proportion;
-//            NSLog(@"imageViewW:%f",imageViewW);
-            [self.headImg mas_updateConstraints:^(MASConstraintMaker *make) {
-                make.width.mas_equalTo(imageViewW);
-            }];
+            if(image){
+                CGFloat proportion = image.size.height / (SCREEN_HEIGHT * 0.25 - 21);
+                //            NSLog(@"proportion:%f",proportion);
+                CGFloat imageViewW = image.size.width / proportion;
+                //            NSLog(@"imageViewW:%f",imageViewW);
+                [self.headImg mas_updateConstraints:^(MASConstraintMaker *make) {
+                    make.width.mas_equalTo(imageViewW);
+                }];
+            }
         }];
         [self.chapterLab setAttributedText:[NSString addStrSpace:[NSString stringWithFormat:@"第%@",model.chapterName]]];
 
