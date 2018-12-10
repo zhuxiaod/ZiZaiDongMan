@@ -39,4 +39,6 @@
 
 + (BOOL)needLogin;
 
+//更新数据
+-(void)loadUserInfoData;
 @end

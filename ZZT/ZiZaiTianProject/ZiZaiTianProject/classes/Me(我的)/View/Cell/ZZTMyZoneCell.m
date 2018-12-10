@@ -5,7 +5,8 @@
 //  Created by mac on 2018/9/20.
 //  Copyright © 2018年 zxd. All rights reserved.
 //
-#define imgHeight  (CGRectGetWidth([UIScreen mainScreen].bounds) - 80)/3
+
+#define imgHeight  (CGRectGetWidth([UIScreen mainScreen].bounds) - 24 - 24)/3
 
 #import "ZZTMyZoneCell.h"
 #import "ZZTMyZoneModel.h"
@@ -24,8 +25,7 @@
 @property (strong, nonatomic) UIButton *replyCountView;
 //点赞
 @property (strong, nonatomic) likeCountView *likeCountView;
-//举报
-@property (strong, nonatomic) UIButton *reportBtn;
+
 
 @end
 
@@ -46,7 +46,7 @@
     _dateLab = [GlobalUI createLabelFont:14 titleColor:[UIColor blackColor] bgColor:[UIColor whiteColor]];
     
     //内容lab
-    _contentLab = [GlobalUI createLabelFont:14 titleColor:[UIColor blackColor] bgColor:[UIColor whiteColor]];
+    _contentLab = [GlobalUI createLabelFont:MomentFontSize titleColor:[UIColor blackColor] bgColor:[UIColor whiteColor]];
     _contentLab.numberOfLines = 0;
     
     //多图
@@ -69,22 +69,11 @@
 //    [self addGestureRecognizer:longPressGesture];
     
     //举报
-    _reportBtn = [[UIButton alloc] init];
-    [_reportBtn setImage:[[UIImage imageNamed:@"commentReport"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
-    [_reportBtn setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
-    [_reportBtn addTarget:self action:@selector(cellLongPress:) forControlEvents:UIControlEventTouchUpInside];
-    [_reportBtn setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+    _reportBtn = [[ZZTReportBtn alloc] init];
     [self.contentView addSubview:_reportBtn];
+
 }
 
--(void)cellLongPress:(UILongPressGestureRecognizer *)gesture{
-    //代理出去
-    if(![[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id] isEqualToString:self.model.userId]){
-        if(self.LongPressBlock){
-            self.LongPressBlock(self.model);
-        }
-    }
-}
 
 -(void)layoutSubviews{
     [super layoutSubviews];
@@ -92,27 +81,27 @@
     _dateLab.frame = CGRectMake(10, 10, 100, 50);
     
     [_dateLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.contentView).offset(8);
-        make.left.equalTo(self.contentView).offset(8);
+        make.top.equalTo(self.contentView).offset(SafetyW);
+        make.left.equalTo(self.contentView).offset(SafetyW);
         make.width.mas_equalTo(100);
         make.height.mas_equalTo(50);
     }];
     
     [_contentLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.dateLab.mas_bottom).offset(8);
-        make.left.equalTo(self.contentView).offset(8);
-        make.right.equalTo(self.contentView).offset(-8);
+        make.left.equalTo(self.contentView).offset(SafetyW);
+        make.right.equalTo(self.contentView).offset(-SafetyW);
     }];
     
     [_bgImgsView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.contentLab.mas_bottom).offset(8);
+        make.top.equalTo(self.contentLab.mas_bottom).offset(SafetyW);
         make.left.equalTo(self.contentLab.mas_left);
         make.right.equalTo(self.contentLab.mas_right);
     }];
     
     [self.replyCountView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.contentLab.mas_right);
-        make.width.mas_equalTo(70);
+        make.width.mas_equalTo(60);
         make.top.equalTo(self.bgImgsView.mas_bottom).offset(8);
         make.height.mas_equalTo(20);
     }];
@@ -128,19 +117,20 @@
         make.left.equalTo(self.replyCountView.imageView.mas_right).offset(2);
         make.centerY.equalTo(self.replyCountView);
         make.height.mas_offset(18);
+        make.right.equalTo(self.replyCountView.mas_right);
     }];
     
     [self.likeCountView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.replyCountView);
         make.right.equalTo(self.replyCountView.mas_left).offset(-8);
-        make.width.mas_equalTo(70);
+        make.width.mas_equalTo(60);
         make.height.mas_equalTo(20);
     }];
 
     //举报
     [self.reportBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.replyCountView);
-        make.right.equalTo(self.likeCountView.mas_left).offset(-64);
+        make.right.equalTo(self.likeCountView.mas_left).offset(-54);
         make.height.mas_equalTo(20);
     }];
     
@@ -160,7 +150,7 @@
     _contentLab.text = model.content;
     
     //更新内容高度
-    CGFloat contentHeight = [_contentLab.text heightWithWidth:CGRectGetWidth(self.contentView.bounds) - 16 font:14];
+    CGFloat contentHeight = [_contentLab.text heightWithWidth:CGRectGetWidth(self.contentView.bounds) - 24 font:MomentFontSize];
     contentHeight += 10;
     [_contentLab mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(contentHeight);
@@ -216,6 +206,13 @@
     self.likeCountView.islike  = [model.ifpraise integerValue];
     self.likeCountView.requestID = model.userId;
     self.likeCountView.likeCount = model.praisecount;
+    
+    _reportBtn.hidden = NO;
+    _reportBtn.zoneModel = model;
+    if([Utilities GetNSUserDefaults].id == [self.model.userId integerValue]){
+        _reportBtn.hidden = YES;
+    }
+    
 }
 
 //年月混排
@@ -262,10 +259,13 @@
 - (void)browerImage:(UITapGestureRecognizer *)gest{
     
     HZPhotoBrowser *browser = [[HZPhotoBrowser alloc] init];
+    
     browser.isFullWidthForLandScape = YES;
+    
     browser.isNeedLandscape = YES;
     
     browser.currentImageIndex = [[NSString stringWithFormat:@"%ld",gest.view.tag] intValue];
+    
     browser.imageArray = self.imgArray;
     
     [browser show];
@@ -275,8 +275,8 @@
 //高度有问题
 //时间显示过大了
 + (CGFloat)cellHeightWithStr:(NSString *)str imgs:(NSArray *)imgs{
-    CGFloat strH = [str heightWithWidth:CGRectGetWidth([UIScreen mainScreen].bounds) - 40 font:14];
-    CGFloat cellH = strH + 120;
+    CGFloat strH = [str heightWithWidth:CGRectGetWidth([UIScreen mainScreen].bounds) - 40 font:MomentFontSize];
+    CGFloat cellH = strH + 120 + 8;
     NSInteger row = imgs.count / 3;
     if (imgs.count) {
         if ( imgs.count % 3 !=0) {
@@ -332,6 +332,8 @@
         
         UIButton *btn = [[UIButton alloc] init];
         
+        btn.titleLabel.textAlignment = NSTextAlignmentCenter;
+
         btn.titleLabel.font = [UIFont systemFontOfSize:12];
         
         [btn setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
@@ -342,27 +344,33 @@
 
         [btn setImage:[UIImage imageNamed:@"评论"] forState:UIControlStateNormal];
         
-
         [btn addTarget:self action:@selector(gotoCommentView) forControlEvents:UIControlEventTouchUpInside];
+        
         [self.contentView addSubview:btn];
         
         _replyCountView = btn;
     }
-    
     return _replyCountView;
 }
 
 -(void)gotoCommentView{
+    
     if([[UserInfoManager share] hasLogin] == NO){
         [UserInfoManager needLogin];
         return;
     }
+    
     ZZTCommentViewController *commentView = [[ZZTCommentViewController alloc] init];
+//    [commentView hiddenTitleView];
     ZZTNavigationViewController *nav = [[ZZTNavigationViewController alloc] initWithRootViewController:commentView];
     commentView.isFind = YES;
     commentView.chapterId = _model.id;
     commentView.cartoonType = @"3";
+//    commentView.ishiddenTitleView = YES;
+    commentView.hiddenTitleView = YES;
+    commentView.ishiddenTitleView = YES;
     [[self myViewController].navigationController presentViewController:nav animated:YES completion:nil];
-    [commentView hiddenTitleView];
+//    [commentView hiddenTitleView];
+    
 }
 @end

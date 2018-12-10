@@ -94,28 +94,15 @@
     }
 }
 
-
-
--(void)setReportData:(ZZTMyZoneModel *)reportData{
-    _reportData = reportData;
-    NSString *reportString = [NSString stringWithFormat:@"@%@:%@",reportData.nickName,reportData.content];
-    
+-(void)setModel:(ZZTReportModel *)model{
+    _model = model;
+    NSString *reportString = [NSString stringWithFormat:@"@%@:%@",model.name,model.content];
     //数字紫色  zb 黑色 大小不同
     NSMutableAttributedString *attriStr1 = [[NSMutableAttributedString alloc] initWithString:reportString];
-    [attriStr1 addAttribute:NSForegroundColorAttributeName value:ZZTSubColor range:NSMakeRange(0, reportData.nickName.length + 2)];
+    [attriStr1 addAttribute:NSForegroundColorAttributeName value:ZZTSubColor range:NSMakeRange(0, model.name.length + 2)];
     _reportStr = attriStr1;
 }
 
--(void)setReplyData:(ZZTCircleModel *)replyData{
-    _replyData = replyData;
-    
-    NSString *reportString = [NSString stringWithFormat:@"@%@:%@",replyData.customer.nickName,replyData.content];
-
-    //数字紫色  zb 黑色 大小不同
-    NSMutableAttributedString *attriStr1 = [[NSMutableAttributedString alloc] initWithString:reportString];
-    [attriStr1 addAttribute:NSForegroundColorAttributeName value:ZZTSubColor range:NSMakeRange(0, replyData.customer.nickName.length + 2)];
-    _reportStr = attriStr1;
-}
 
 
 @end

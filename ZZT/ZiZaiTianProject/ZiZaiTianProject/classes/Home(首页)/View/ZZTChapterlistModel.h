@@ -42,6 +42,8 @@
     NSInteger wordNum;
     
     NSInteger listTotal;
+
+    NSInteger chapterMoney;
 }
 
 @property(nonatomic,assign)NSInteger id;
@@ -77,5 +79,10 @@
 @property(nonatomic,assign)NSInteger wordNum;
 
 @property(nonatomic,assign)NSInteger listTotal;
+
+@property(nonatomic,strong)NSString *ifbuy;
+
+@property(nonatomic,assign)NSInteger chapterMoney;
+
 
 @end

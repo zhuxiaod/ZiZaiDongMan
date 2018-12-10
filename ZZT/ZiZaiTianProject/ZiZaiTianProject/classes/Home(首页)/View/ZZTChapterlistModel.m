@@ -28,6 +28,8 @@
 @synthesize xuhuaNum;
 @synthesize wordNum;
 @synthesize listTotal;
+@synthesize chapterMoney;
+
 
 // 归档属性
 - (void)encodeWithCoder:(nonnull NSCoder *)aCoder {

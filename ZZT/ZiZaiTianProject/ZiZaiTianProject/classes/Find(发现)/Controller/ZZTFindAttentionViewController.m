@@ -13,7 +13,7 @@
 #import "ZZTFindAttentionView.h"
 #import "ZZTMyZoneViewController.h"
 
-@interface ZZTFindAttentionViewController ()<UITableViewDelegate,UITableViewDataSource>
+@interface ZZTFindAttentionViewController ()<UITableViewDelegate,UITableViewDataSource,ZZTReportBtnDelegate>
 
 @property (nonatomic,strong) UITableView *contentView;
 @property (nonatomic,strong) NSMutableArray *dataArray;
@@ -210,39 +210,45 @@ static NSString *findCommentCell = @"findCommentCell";
 #pragma mark - 内容设置
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     ZZTFindCommentCell *cell = [tableView dequeueReusableCellWithIdentifier:findCommentCell forIndexPath:indexPath];
-    cell.model = self.dataArray[indexPath.row];
-    cell.LongPressBlock = ^(ZZTMyZoneModel *message) {
-        [self reportUserData:message];
-    };
+    ZZTMyZoneModel *model = self.dataArray[indexPath.row];
+    model.index = indexPath.row;
+    cell.model = model;
+    cell.reportBtn.delegate = self;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
 
--(void)reportUserData:(ZZTMyZoneModel *)messageData{
-    //弹出举报框
-    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-    UIAlertAction *reportBtn = [UIAlertAction actionWithTitle:@"举报" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-        
-//        NSLog(@"%@ : %@",messageData.nickName,messageData.content);
-        [self gotoReportVCWithModel:messageData];
-
-    }];
-    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        NSLog(@"点击了取消");
-    }];
-    
-    [actionSheet addAction:reportBtn];
-    [actionSheet addAction:action2];
-    
-    
-    [self presentViewController:actionSheet animated:YES completion:nil];
+-(void)shieldingMessage:(NSInteger)index{
+    ZZTMyZoneModel *model = _dataArray[index];
+    [_dataArray removeObject:model];
+    [self.contentView reloadData];
 }
 
--(void)gotoReportVCWithModel:(ZZTMyZoneModel *)reportMessage{
-    ZZTReportViewController *reportVC = [[ZZTReportViewController alloc] init];
-    reportVC.reportData = reportMessage;
-    [self.navigationController pushViewController:reportVC animated:YES];
-}
+//-(void)reportUserData:(ZZTMyZoneModel *)messageData{
+//    //弹出举报框
+//    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+//    UIAlertAction *reportBtn = [UIAlertAction actionWithTitle:@"举报" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+//
+////        NSLog(@"%@ : %@",messageData.nickName,messageData.content);
+//        [self gotoReportVCWithModel:messageData];
+//
+//    }];
+//    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+//        NSLog(@"点击了取消");
+//    }];
+//
+//    [actionSheet addAction:reportBtn];
+//    [actionSheet addAction:action2];
+//
+//
+//    [self presentViewController:actionSheet animated:YES completion:nil];
+//}
+//
+//-(void)gotoReportVCWithModel:(ZZTMyZoneModel *)reportMessage{
+//    ZZTReportViewController *reportVC = [[ZZTReportViewController alloc] init];
+//    reportVC.reportData = reportMessage;
+//    [self.navigationController pushViewController:reportVC animated:YES];
+//}
 
 #pragma mark 高度设置
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {

@@ -186,6 +186,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     if([startBtn.titleLabel.text isEqualToString:@"开始阅读"] && self.wordList.count > 0){
         //此书第一章节的数据
         model = self.startReadData;
+        model.cartoonId = self.ctDetail.id;
         cartoonDetailVC.indexRow = 0;
         cartoonDetailVC.dataModel = model;
     }else if([startBtn.titleLabel.text isEqualToString:@"继续阅读"] && self.wordList.count > 0){
@@ -246,7 +247,8 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
                                 @"type":self.cartoonDetail.type,//1.漫画 剧本
                                 @"cartoonType":self.cartoonDetail.cartoonType, //1 独创 2 众创
                                 @"pageNum":pageNum,
-                                @"pageSize":@"5"
+                                @"pageSize":@"5",
+                                @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id]
                                 };
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     EncryptionTools *tool = [[EncryptionTools alloc]init];
@@ -378,6 +380,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     ZZTChapterlistModel *model = self.wordList[indexPath.row];
+    model.cartoonId = self.ctDetail.id;
     //跳页
     ZZTCartoonDetailViewController *cartoonDetailVC = [[ZZTCartoonDetailViewController alloc] init];
     //书模型 cartoonDetail.id
@@ -566,28 +569,28 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 
 -(void)loadData{
 
-         if(self.isId == YES){
-             //上部分View
-             [self loadtopData:self.cartoonDetail.id];
-         }else{
-             [self loadtopData:self.cartoonDetail.cartoonId];
-         }
+     if(self.isId == YES){
+         //上部分View
+         [self loadtopData:self.cartoonDetail.id];
+     }else{
+         [self loadtopData:self.cartoonDetail.cartoonId];
+     }
 
-    
-  
-        NSLog(@"sekf ppp :%@",self.chooseNum);
-        if(self.isId == YES){
-            //如果有记录的值 那么请求记录哪一行
-            if(self.chooseNum){
-                [self loadListData:self.cartoonDetail.id pageNum:self.chooseNum isFirst:YES];
 
-            }else{
-                [self loadListData:self.cartoonDetail.id pageNum:@"1" isFirst:YES];
 
-            }
+    NSLog(@"sekf ppp :%@",self.chooseNum);
+    if(self.isId == YES){
+        //如果有记录的值 那么请求记录哪一行
+        if(self.chooseNum){
+            [self loadListData:self.cartoonDetail.id pageNum:self.chooseNum isFirst:YES];
+
         }else{
-            [self loadListData:self.cartoonDetail.cartoonId pageNum:@"1" isFirst:YES];
+            [self loadListData:self.cartoonDetail.id pageNum:@"1" isFirst:YES];
+
         }
+    }else{
+        [self loadListData:self.cartoonDetail.cartoonId pageNum:@"1" isFirst:YES];
+    }
 
 }
 

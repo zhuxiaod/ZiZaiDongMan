@@ -17,6 +17,10 @@
 //世界评论页
 @property (nonatomic,assign) BOOL isFind;
 
--(void)hiddenTitleView;
+@property (nonatomic,assign) BOOL hiddenTitleView;
+
+@property (nonatomic,assign) BOOL ishiddenTitleView;
+
+//-(void)hiddenTitleView;
 
 @end

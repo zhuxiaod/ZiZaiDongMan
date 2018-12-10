@@ -10,4 +10,10 @@
 
 @implementation ZZTUserModel
 
+-(NSString *)intro{
+    if(!_intro){
+        _intro = @"";
+    }
+    return _intro;
+}
 @end

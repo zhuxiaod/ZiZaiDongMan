@@ -33,7 +33,9 @@
     NSMutableArray *muArray = [NSMutableArray array];
     if(_circleModelArray.count > 0){
         for (int i = 0; i < self.circleModelArray.count; i++) {
+            
             ZZTCircleModel *circleModel = self.circleModelArray[i];
+            
             circleModel.nameLabelHeight = SectionHeaderNameLabelHeight;//20
             
             circleModel.contentLabelHeight = [self calculateStringHeight:circleModel.content];

@@ -139,7 +139,6 @@
         make.centerX.equalTo(self.viewNavBar.mainView);
         make.width.mas_equalTo(SCREEN_WIDTH * 0.34);
         make.height.mas_equalTo(30);
-//        make.bottom.equalTo(self.viewNavBar.mainView).offset(-10);
         make.centerY.equalTo(self.viewNavBar.rightButton.mas_centerY);
     }];
     
@@ -176,10 +175,10 @@
 }
 
 -(void)gotoVipView{
-    ZZTChapterPayViewController *CPVC = [[ZZTChapterPayViewController alloc] init];
-    ZZTNavigationViewController *nav = [[ZZTNavigationViewController alloc] initWithRootViewController:CPVC];
-    nav.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-    [self presentViewController:nav animated:YES completion:nil];
+//    ZZTChapterPayViewController *CPVC = [[ZZTChapterPayViewController alloc] init];
+//    ZZTNavigationViewController *nav = [[ZZTNavigationViewController alloc] initWithRootViewController:CPVC];
+//    nav.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+//    [self presentViewController:nav animated:YES completion:nil];
 }
 
 -(void)gotoTopupView{
@@ -210,7 +209,7 @@
 -(void)showZoneView{
 
     self.viewNavBar.leftButton.hidden = YES;
-    self.mommentBtn.hidden = NO;
+    self.mommentBtn.hidden = YES;
     [self.titleView selectBtn:self.titleView.rightBtn];
 }
 

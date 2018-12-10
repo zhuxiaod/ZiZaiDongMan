@@ -19,7 +19,7 @@ static const CGFloat MJDuration = 1.0;
 
 static NSString *myZoneCell = @"myZoneCell";
 
-@interface ZZTMyZoneViewController ()<UITableViewDataSource,UITableViewDelegate>
+@interface ZZTMyZoneViewController ()<UITableViewDataSource,UITableViewDelegate,ZZTReportBtnDelegate>
 
 @property (nonatomic,strong)UITableView * tabelView;
 
@@ -278,43 +278,26 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
 }
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    ZZTMyZoneCell * cell = [tableView dequeueReusableCellWithIdentifier:myZoneCell forIndexPath:indexPath];
+    ZZTMyZoneCell *cell = [tableView dequeueReusableCellWithIdentifier:myZoneCell forIndexPath:indexPath];
     cell.update = ^{
         [self loadData];
     };
-    cell.LongPressBlock = ^(ZZTMyZoneModel *message) {
-        message.nickName = self.userData.nickName;
-        [self reportUserData:message];
-    };
-    cell.model = _dataArray[indexPath.row];
+    cell.reportBtn.delegate = self;
+    
+    ZZTMyZoneModel *model = _dataArray[indexPath.row];
+    model.index = indexPath.row;
+    model.nickName = self.userData.nickName;
+    cell.model = model;
+    
     return cell;
 }
 
--(void)reportUserData:(ZZTMyZoneModel *)messageData{
-    //弹出举报框
-    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-    UIAlertAction *reportBtn = [UIAlertAction actionWithTitle:@"举报" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-        
-//        NSLog(@"%@ : %@",messageData.nickName,messageData.content);
-        [self gotoReportVCWithModel:messageData];
-
-    }];
-    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        NSLog(@"点击了取消");
-    }];
-    
-    [actionSheet addAction:reportBtn];
-    [actionSheet addAction:action2];
-    
-    [self presentViewController:actionSheet animated:YES completion:nil];
-    
+-(void)shieldingMessage:(NSInteger)index{
+    ZZTMyZoneModel *model = _dataArray[index];
+    [_dataArray removeObject:model];
+    [self.tabelView reloadData];
 }
 
--(void)gotoReportVCWithModel:(ZZTMyZoneModel *)reportMessage{
-    ZZTReportViewController *reportVC = [[ZZTReportViewController alloc] init];
-    reportVC.reportData = reportMessage;
-    [self.navigationController pushViewController:reportVC animated:YES];
-}
 
 -(void)startCreate{
     ZZTCreationCartoonTypeViewController *view = [[ZZTCreationCartoonTypeViewController alloc] init];

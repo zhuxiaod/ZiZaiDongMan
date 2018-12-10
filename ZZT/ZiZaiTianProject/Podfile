@@ -10,7 +10,7 @@ pod ‘UITableView+FDTemplateLayoutCell’
 pod ‘MJRefresh’
 pod ‘Masonry’
 pod 'UITableView+FDTemplateLayoutCell'
-
+pod 'AvoidCrash'
 pod "RTRootNavigationController"
 pod 'FDFullscreenPopGesture'
 pod 'MBProgressHUD', '~> 1.1.0'

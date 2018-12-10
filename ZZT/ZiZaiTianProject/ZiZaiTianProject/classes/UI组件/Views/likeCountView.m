@@ -55,25 +55,32 @@ static NSString * const pressedImageName = @"catoonDetail_like_select";
     [self setTitleEdgeInsets:UIEdgeInsetsMake(0,8, 0, 0)];
     
     self.titleLabel.font = [UIFont systemFontOfSize:12];
-    self.islike = false;
+    
     
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
     
-    //点赞的地方  添加
-    [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.mas_left).offset(2);
-        make.centerY.equalTo(self);
-    }];
+    [self setTitle:@"" forState:UIControlStateNormal];
+
+    [self setImage:[[UIImage imageNamed:normalImageName] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
+
+//    //点赞的地方  添加
+//    [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.equalTo(self.mas_left).offset(2);
+//        make.centerY.equalTo(self);
+//    }];
     
-    //点赞的地方  添加
-    [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.imageView.mas_right).offset(2);
-        make.centerY.equalTo(self);
-        make.height.mas_offset(18);
-    }];
+//    //点赞的地方  添加
+//    [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.equalTo(self.imageView.mas_right).offset(2);
+//        make.centerY.equalTo(self);
+//        make.height.mas_offset(18);
+//    }];
     
     [self setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
+    
     [self setContentVerticalAlignment:UIControlContentVerticalAlignmentBottom];
+    
+    self.islike = false;
 
 }
 
@@ -88,11 +95,17 @@ static NSString * const pressedImageName = @"catoonDetail_like_select";
     
     [self setImage:[[UIImage imageNamed:imageName] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
     
+    [self.imageView setContentMode:UIViewContentModeScaleAspectFit];
+    
     UIColor *textColor = self.islike ? ZZTSubColor : [UIColor lightGrayColor];
     
     [self setTitleColor:textColor forState:UIControlStateNormal];
     
-
+    //点赞的地方  添加
+    [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.mas_left).offset(2);
+        make.centerY.equalTo(self);
+    }];
 }
 
 
@@ -115,15 +128,13 @@ static NSString * const pressedImageName = @"catoonDetail_like_select";
         width = [title getTextWidthWithFont:self.titleLabel.font] + MyWidth;
 
     }
-//
-//    if (self.translatesAutoresizingMaskIntoConstraints) {
-//        [self setWidth:width];
-//    }else {
-//        [self mas_updateConstraints:^(MASConstraintMaker *make) {
-//            make.width.equalTo(@(width));
-//        }];
-//    }
-    
+    //点赞的地方  添加
+    [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.imageView.mas_right).offset(2);
+        make.centerY.equalTo(self);
+        make.height.mas_offset(18);
+        make.right.equalTo(self.mas_right);
+    }];
 }
 
 - (void)like {

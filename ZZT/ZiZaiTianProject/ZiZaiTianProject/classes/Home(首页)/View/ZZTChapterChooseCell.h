@@ -9,12 +9,15 @@
 #import <UIKit/UIKit.h>
 
 @class ZZTChapterChooseModel;
+@class ZZTChapterVipItemModel;
 
 @interface ZZTChapterChooseCell : UICollectionViewCell
 
 @property (nonatomic,strong) NSNumber *isChangeStyle;
 
 @property (nonatomic,strong) ZZTChapterChooseModel *model;
+
+@property (nonatomic,strong) ZZTChapterVipItemModel *vipModel;
 
 @property (nonatomic,strong) NSString *str;
 

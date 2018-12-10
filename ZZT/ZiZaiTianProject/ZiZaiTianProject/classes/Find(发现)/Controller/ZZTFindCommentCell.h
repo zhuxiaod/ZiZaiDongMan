@@ -24,6 +24,8 @@ typedef void (^LongPressBlock) (ZZTMyZoneModel *message);
 
 @property (nonatomic,copy) LongPressBlock LongPressBlock;
 
+//举报
+@property (strong, nonatomic) ZZTReportBtn *reportBtn;
 
 + (CGFloat)cellHeightWithStr:(NSString *)str imgs:(NSArray *)imgs;
 

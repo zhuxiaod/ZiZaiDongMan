@@ -14,7 +14,7 @@
 const CGFloat SectionHeaderHorizontalSpace = 8; //水平方向控件之间的间隙距离
 const CGFloat SectionHeaderVerticalSpace = 8; //竖直方向控件之间的间隙距离
 const CGFloat SectionHeaderTopSpace = 12; //顶部的空白距离
-const CGFloat SectionHeaderBottomSpace = 5; //底部的空白距离
+const CGFloat SectionHeaderBottomSpace = 12; //底部的空白距离
 const CGFloat SectionHeaderPictureSpace = 5; //图片之间的间隙距离
 const CGFloat SectionHeaderLineSpace = 2; //文本行间距
 const CGFloat SectionHeaderBigFontSize = 16;

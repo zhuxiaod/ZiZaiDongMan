@@ -9,17 +9,25 @@
 #import <Foundation/Foundation.h>
 @class customer;
 @interface ZZTCircleModel : NSObject
+
 @property(nonatomic,strong) NSString *contentId;
+
 @property(nonatomic,strong) NSString *content;
+
 @property(nonatomic,strong) NSString *id;
+
 @property(nonatomic,strong) NSString *parentCommentId;
+
 @property(nonatomic,strong) NSString *customerId;
+
 @property(nonatomic,strong) NSString *chapterId;
 
 @property(nonatomic,assign) NSInteger state;
+
 @property(nonatomic,assign) NSInteger type;
 
 @property(nonatomic,strong) NSString *commentDate;
+
 @property(nonatomic,strong) NSString *commentTime;
 
 @property(nonatomic,strong) customer *customer;

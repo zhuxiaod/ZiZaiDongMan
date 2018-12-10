@@ -211,6 +211,10 @@
     }];
     [self.likeImg setImage:[UIImage imageNamed:@"catoonDetail_like"]];
     
+    //VIP章节
+    if(model.ifrelease == 2){
+        self.VIPChapterImg.hidden = NO;
+    }
     
 }
 

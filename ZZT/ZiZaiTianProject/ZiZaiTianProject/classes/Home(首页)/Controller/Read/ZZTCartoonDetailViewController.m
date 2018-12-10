@@ -35,8 +35,9 @@
 #import "ZZTStatusCell.h"
 #import "ZZTStatusFooterView.h"
 #import "ZZTStoryModel.h"
+#import "ZZTChapterPayViewController.h"
 
-@interface ZZTCartoonDetailViewController ()<UITableViewDelegate,UITableViewDataSource,CircleCellDelegate,ZZTCommentHeaderViewDelegate,UITextViewDelegate,NSURLSessionDataDelegate,ZZTCartoonContentCellDelegate,ZZTStoryDetailCellDelegate,ZZTStatusCellDelegate,ZZTStatusFooterViewDelegate>
+@interface ZZTCartoonDetailViewController ()<UITableViewDelegate,UITableViewDataSource,CircleCellDelegate,ZZTCommentHeaderViewDelegate,UITextViewDelegate,NSURLSessionDataDelegate,ZZTCartoonContentCellDelegate,ZZTStoryDetailCellDelegate,ZZTStatusCellDelegate,ZZTStatusFooterViewDelegate,ZZTReportBtnDelegate,ZZTChapterPayViewDelegate>
 
 @property (nonatomic,strong) NSMutableArray *cartoonDetailArray;
 
@@ -281,6 +282,14 @@ static bool needHide = false;
     
     //评论下拉刷新
     [self setupMJRefresh];
+    
+
+}
+
+-(void)chapterPayViewDismissLastViewController{
+
+    [self.navigationController popViewControllerAnimated:YES];
+
 }
 
 -(void)setupMJRefresh{
@@ -430,6 +439,7 @@ static bool needHide = false;
     //输入View
     self.kTextView = [UITextView new];
     _kTextView.backgroundColor = [UIColor whiteColor];
+    _kTextView.font = [UIFont systemFontOfSize:MomentFontSize];
     _kTextView.layer.cornerRadius = 5;
     _kTextView.text = @"赶紧评论秀才华~";
     _kTextView.textColor = [UIColor grayColor];
@@ -834,6 +844,7 @@ static bool needHide = false;
     //设置总数 方便进行下一页判断
     self.listTotal = dataModel.listTotal;
 }
+
 -(void)setCartoonModel:(ZZTCarttonDetailModel *)cartoonModel{
     _cartoonModel = cartoonModel;
 }
@@ -943,6 +954,7 @@ static bool needHide = false;
             self.statusCell.delegate = self;
             model.indexRow = section - 3;
             self.statusCell.model = model;
+            [self.tableView.mj_footer setHidden:NO];
             return _statusCell;
         }
     }
@@ -995,16 +1007,21 @@ static bool needHide = false;
             footerView.delegate = self;
             footerView.update = ^{
                 //更新评论数据
-          
-                    [self loadCommentData];
-
+                [self loadCommentData];
             };
+            footerView.reportBtn.delegate = self;
             footerView.bookId = self.cartoonModel.id;
             ZZTCircleModel *model = self.commentArray[section - 3];
             footerView.model = model;
             return footerView;
         }
     }
+}
+
+-(void)shieldingMessage:(NSInteger)index{
+    ZZTCircleModel *model = self.commentArray[index];
+    [self.commentArray removeObject:model];
+    [self.tableView reloadData];
 }
 
 //设置高度
@@ -1042,7 +1059,8 @@ static bool needHide = false;
                           @"cartoonId":self.cartoonModel.id,//书ID
                           @"chapterId":self.dataModel.chapterId,//章节ID
                           @"upDown":upDown,//1.下 2.上
-                          @"code":code//1.漫画 2.章节
+                          @"code":code,//1.漫画 2.章节
+                          @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id]
                           };
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getupDown"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
@@ -1062,12 +1080,14 @@ static bool needHide = false;
             self.dataModel.chapterPage = model.chapterPage;
             self.dataModel.chapterName = model.chapterName;
             self.dataModel.chapterId = model.chapterId;
+            self.dataModel.ifbuy = model.ifbuy;
             //清空当前存储的章节历史信息
             self.chapterModel = nil;
             //通过书id 找到这本书的id
             self.testModel = [self getJuXuYueDuModelWithBookId:self.cartoonModel.id];
             [self.navbar.centerButton setTitle:self.dataModel.chapterName forState:UIControlStateNormal];
             [self loadContent];
+            [self viewWillAppear:YES];
         }else{
             //显示错误信息
             [MBProgressHUD showError:@"已经没有章节"];
@@ -1458,6 +1478,17 @@ static bool needHide = false;
     
     self.navigationController.navigationBar.alpha = 0;
     [self.navigationController setNavigationBarHidden:YES animated:NO];
+    
+    //是否购买 0没购买
+    if([_dataModel.ifbuy isEqualToString:@"0"] && _dataModel.ifrelease == 2){
+        NSLog(@"没有购买 弹出界面");
+        ZZTChapterPayViewController *CPVC = [[ZZTChapterPayViewController alloc] init];
+        CPVC.delegate = self;
+        CPVC.model = self.dataModel;
+        ZZTNavigationViewController *nav = [[ZZTNavigationViewController alloc] initWithRootViewController:CPVC];
+        nav.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+        [self presentViewController:nav animated:YES completion:nil];
+    }
 }
 
 #pragma mark - SectionHeaderViewDelegate

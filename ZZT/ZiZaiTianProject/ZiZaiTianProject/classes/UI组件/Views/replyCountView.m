@@ -38,7 +38,8 @@
 
     [self setTitle:@"0" forState:UIControlStateNormal];
     
-    
+//    self.titleLabel.textAlignment = NSTextAlignmentCenter;
+
     [self setTitleColor:ZZTSubColor forState:UIControlStateNormal];
     
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -54,6 +55,7 @@
         make.left.equalTo(self.imageView.mas_right).offset(2);
         make.centerY.equalTo(self);
         make.height.mas_offset(18);
+        make.right.equalTo(self.mas_right);
     }];
     
     [self setImage:[[UIImage imageNamed:@"wordDetail_comment"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];

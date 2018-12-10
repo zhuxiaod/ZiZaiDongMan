@@ -109,8 +109,8 @@
 }
 
 -(void)textFieldDidEndEditing:(UITextField *)textField{
-    if(self.textFieldEndEditing){
-        self.textFieldEndEditing(textField.tag);
+    if(self.textFieldChange){
+        self.textFieldChange(textField.tag);
     }
 }
 

@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ZZTReportModel.h"
+
 @class ZZTMyZoneModel;
 @class ZZTCircleModel;
 
@@ -16,5 +18,6 @@
 
 @property (nonatomic,strong) ZZTCircleModel *replyData;
 
+@property (nonatomic,strong) ZZTReportModel *model;
 
 @end

@@ -25,14 +25,14 @@
 //    return instance;
 //}
 
-- (instancetype)init
-{
-    self = [super init]; //用于初始化父类
-    if (self) {
-//        self.algorithm = kCCAlgorithmAES;
-    }
-    return self;
-}
+//- (instancetype)init
+//{
+//    self = [super init]; //用于初始化父类
+//    if (self) {
+////        self.algorithm = kCCAlgorithmAES;
+//    }
+//    return self;
+//}
 
 - (void)setAlgorithm:(uint32_t)algorithm
 {

@@ -8,6 +8,24 @@
 
 #import <UIKit/UIKit.h>
 
+#import "ZZTChapterPayViewController.h"
+
+@class ZZTChapterlistModel;
+
+@protocol ZZTChapterPayViewDelegate <NSObject>
+
+@optional
+
+- (void)chapterPayViewDismissLastViewController;
+
+@end
+
 @interface ZZTChapterPayViewController : BaseViewController
+
+@property(nonatomic,weak)id<ZZTChapterPayViewDelegate>   delegate;
+
+@property (nonatomic,strong) ZZTChapterlistModel *model;
+
+
 
 @end

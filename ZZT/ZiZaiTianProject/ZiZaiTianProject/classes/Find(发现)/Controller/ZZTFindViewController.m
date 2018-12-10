@@ -349,12 +349,12 @@ NSString *SuggestionView3 = @"SuggestionView";
     }
 }
 
+
+
 //图片选择控制器
 #pragma mark - TZImagePickerController
 - (void)pushTZImagePickerController {
-
-    //有的话  就生成选择页面
-    //最大选择数     最大显示照片
+    //最大选择数   最大显示照片
     TZImagePickerController *imagePickerVc = [[TZImagePickerController alloc] initWithMaxImagesCount:9 columnNumber:4 delegate:self pushPhotoPickerVc:YES];
     // imagePickerVc.navigationBar.translucent = NO;
     

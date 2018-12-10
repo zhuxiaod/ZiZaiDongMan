@@ -49,6 +49,7 @@
 
 @property (nonatomic,strong) ZZTNavBarTitleView *titleView;
 
+
 @end
 
 @implementation ZZTCommentViewController
@@ -71,6 +72,14 @@
 
     //初始化 没有对人回复
     self.isReply = NO;
+    
+//    self.ishiddenTitleView = NO;
+    
+    if(self.ishiddenTitleView == YES){
+        self.titleView.hidden = YES;
+        [self.navbar.centerButton setTitle:@"评论" forState:UIControlStateNormal];
+    }
+    
 }
 
 -(void)setupMainView{
@@ -194,6 +203,7 @@
     }];
     //输入View
     self.kTextView = [UITextView new];
+    _kTextView.font = [UIFont systemFontOfSize:MomentFontSize];
     _kTextView.backgroundColor = [UIColor whiteColor];
     _kTextView.layer.cornerRadius = 5;
     _kTextView.text = @"请输入评论";
@@ -321,7 +331,7 @@
         [self deleteReplyActionView:@"1" comentId:circleItem.id];
     }else{
         //举报
-        [self reportUserData:circleItem];
+//        [self reportUserData:circleItem];
     }
 }
 
@@ -335,6 +345,8 @@
         [self gotoReportVCWithModel:messageData];
         
     }];
+
+
     UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         NSLog(@"点击了取消");
     }];
@@ -344,6 +356,8 @@
     
     [self presentViewController:actionSheet animated:YES completion:nil];
 }
+
+
 
 -(void)gotoReportVCWithModel:(ZZTCircleModel *)reportMessage{
     ZZTReportViewController *reportVC = [[ZZTReportViewController alloc] init];
@@ -549,9 +563,19 @@
     _cartoonType = cartoonType;
 }
 
--(void)hiddenTitleView{
-    self.titleView.hidden = YES;
+//-(void)hiddenTitleView{
+//    self.titleView.hidden = YES;
+////    self.ishiddenTitleView = YES;
+//}
+
+-(void)setHiddenTitleView:(BOOL)hiddenTitleView{
+    _hiddenTitleView = hiddenTitleView;
 }
+
+-(void)setIshiddenTitleView:(BOOL)ishiddenTitleView{
+    _ishiddenTitleView = ishiddenTitleView;
+}
+
 
 -(void)setIsFind:(BOOL)isFind{
     _isFind = isFind;

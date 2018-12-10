@@ -156,4 +156,27 @@
 //
 //}
 
+-(void)loadUserInfoData{
+    if([[UserInfoManager share] hasLogin] == NO)return;
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    NSDictionary *paramDict = @{
+                                @"userId":[NSString stringWithFormat:@"%ld",self.userData.id]
+                                };
+    [manager POST:[ZZTAPI stringByAppendingString:@"login/usersInfo"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+        
+        NSArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
+        
+        if(array.count != 0){
+            UserInfo *model = array[0];
+            model.isLogin = YES;
+            self.userData = model;
+            //存一下数据
+            [Utilities SetNSUserDefaults:model];
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
+}
 @end

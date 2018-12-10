@@ -29,25 +29,14 @@ static NSString *const AES_IV_PARAMETER = @"A-16-Byte-String";
 
 - (NSString*)aci_decryptWithAES {
     NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding];
-    NSData *baseData_GTM = [self decodeBase64Data:data];
+    NSData *baseData_GTM = [data base64EncodedDataWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
+//    NSData *baseData_GTM = [self decodeBase64Data:data];
     NSData *baseData = [[NSData alloc]initWithBase64EncodedString:self options:0];
     NSData *AESData_GTM = [self AES128operation:kCCDecrypt data:baseData_GTM key:PSW_AES_KEY iv:AES_IV_PARAMETER];
     NSData *AESData = [self AES128operation:kCCDecrypt data:baseData key:PSW_AES_KEY iv:AES_IV_PARAMETER];
     NSString *decStr_GTM = [[NSString alloc] initWithData:AESData_GTM encoding:NSUTF8StringEncoding];
 //    NSLog(@"decStr_GTM : %@",decStr_GTM);
     NSString *decStr = [[NSString alloc] initWithData:AESData encoding:NSUTF8StringEncoding];
-  
-//    NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding];
-//    NSData *AESData = [self AES128operation:kCCEncrypt
-//                                       data:data
-//                                        key:PSW_AES_KEY
-//                                         iv:AES_IV_PARAMETER];
-//    NSString *baseStr_GTM = [self encodeBase64Data:AESData];
-//    NSString *decStr = [AESData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
-    
-//    NSLog(@"*****************\nGTMBase:%@\n*****************", baseStr_GTM);
-//    NSLog(@"*****************\niOSCode:%@\n*****************", baseStr);
-    
     
     return decStr;
     

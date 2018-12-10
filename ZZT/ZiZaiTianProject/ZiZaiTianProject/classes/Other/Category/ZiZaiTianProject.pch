@@ -107,7 +107,8 @@
 #import "SYQiniuUpload.h"
 #import "UIView+BAAnimation.h"
 #import "ZZTReportViewController.h"
-
+#import "customer.h"
+#import "ZZTReportBtn.h"
 
 #define BanerHeight SCREEN_HEIGHT * 0.3
 
@@ -127,7 +128,10 @@
 #define SCREEN_BOUNDS [UIScreen mainScreen].bounds
 #define Screen_Width [UIScreen mainScreen].bounds.size.width
 #define Screen_Height [UIScreen mainScreen].bounds.size.height
-
+//左右安全区 12
+//上次间隔  12 8
+#define SafetyW 12
+#define MomentFontSize 16
 //全局背景色
 #define ZZTBGColor [UIColor colorWithHexString:@"#F5F5F5"]
 #define keyStr @"ZIZAITIAN@666666"
@@ -160,12 +164,12 @@
 
 
 //测试环境
-//#define ZZTAPI @"http://192.168.0.165:8888/"
+#define ZZTAPI @"http://192.168.0.165:8888/"
 //#define ZZTBucket @"image"
 //#define imageHost @"http://p872ue3rt.bkt.clouddn.com"
 
 //测试
-#define ZZTAPI @"http://192.168.0.142:8888/"
+//#define ZZTAPI @"http://192.168.0.142:8888/"
 
 //#define BaseUrl(url)  [NSString stringWithFormat:@"http://192.168.0.142:8888/%@",(url)]
 

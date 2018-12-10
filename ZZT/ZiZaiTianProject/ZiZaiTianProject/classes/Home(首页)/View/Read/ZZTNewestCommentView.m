@@ -14,7 +14,7 @@
 #import "ZZTStatusFooterView.h"
 #import "ZZTCommentOpenCell.h"
 
-@interface ZZTNewestCommentView () <UITableViewDataSource,UITableViewDelegate,CircleCellDelegate,UITextViewDelegate,ZZTStatusFooterViewDelegate,ZZTStatusCellDelegate>
+@interface ZZTNewestCommentView () <UITableViewDataSource,UITableViewDelegate,CircleCellDelegate,UITextViewDelegate,ZZTStatusFooterViewDelegate,ZZTStatusCellDelegate,ZZTReportBtnDelegate>
 {
     NSInteger page_num;
 }
@@ -411,6 +411,7 @@ static NSString *const airView = @"airView";
         ZZTCircleModel *model = self.commentArray[section];
         self.statusCell = [[ZZTStatusCell alloc] initWithReuseIdentifier:statusHeaderReuseIdentifier];
         self.statusCell.delegate = self;
+        model.indexRow = section;
         self.statusCell.model = model;
         return _statusCell;
     }else{
@@ -441,6 +442,7 @@ static NSString *const airView = @"airView";
         if(!footerView){
             footerView = [[ZZTStatusFooterView alloc] initWithReuseIdentifier:statusFooterView];
         }
+        footerView.reportBtn.delegate = self;
         footerView.delegate = self;
         footerView.isFind = self.isFind;
         footerView.bookId = self.chapterId;
@@ -452,6 +454,7 @@ static NSString *const airView = @"airView";
             }
             [self update];
         };
+
         ZZTCircleModel *model = self.commentArray[section];
         footerView.model = model;
         return footerView;
@@ -459,6 +462,12 @@ static NSString *const airView = @"airView";
         UIView *footerView = [[UIView alloc] init];
         return footerView;
     }
+}
+
+-(void)shieldingMessage:(NSInteger)index{
+    ZZTCircleModel *model = self.commentArray[index];
+    [self.commentArray removeObject:model];
+    [self reloadData];
 }
 
 - (void)StatusFooterView:(ZZTStatusFooterView *)StatusFooterView didClickCommentButton:(ZZTCircleModel *)model{
@@ -489,5 +498,6 @@ static NSString *const airView = @"airView";
 -(void)setIsFind:(BOOL)isFind{
     _isFind = isFind;
 }
+
 
 @end

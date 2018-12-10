@@ -6,8 +6,8 @@
 //  Copyright © 2018年 zxd. All rights reserved.
 //
 
-#define imgHeight  (CGRectGetWidth([UIScreen mainScreen].bounds) - 80)/3
-
+#define imgHeight  (CGRectGetWidth([UIScreen mainScreen].bounds) - 24 - 24)/3
+#define imgRowW  (CGRectGetWidth([UIScreen mainScreen].bounds))
 #import "ZZTFindCommentCell.h"
 #import "ZZTMyZoneModel.h"
 #import "AttentionButton.h"
@@ -37,8 +37,7 @@
 @property (strong, nonatomic) likeCountView *likeCountView;
 //图片View
 @property (strong, nonatomic) UICollectionView *collectionView;
-//举报
-@property (strong, nonatomic) UIButton *reportBtn;
+
 
 @end
 
@@ -104,7 +103,7 @@
     
     
     //内容
-    _contentLab = [GlobalUI createLabelFont:14 titleColor:[UIColor blackColor] bgColor:[UIColor whiteColor]];
+    _contentLab = [GlobalUI createLabelFont:MomentFontSize titleColor:[UIColor blackColor] bgColor:[UIColor whiteColor]];
     _contentLab.numberOfLines = 0;
     
 
@@ -121,11 +120,8 @@
     _dataLab = [GlobalUI createLabelFont:14 titleColor:[UIColor grayColor] bgColor:[UIColor whiteColor]];
     
     //举报
-    _reportBtn = [[UIButton alloc] init];
-    [_reportBtn setImage:[[UIImage imageNamed:@"commentReport"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
-    [_reportBtn setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
-    [_reportBtn addTarget:self action:@selector(cellLongPress:) forControlEvents:UIControlEventTouchUpInside];
-    [_reportBtn setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+    _reportBtn = [[ZZTReportBtn alloc] init];
+
     [self.contentView addSubview:_reportBtn];
     
     [self.contentView addSubview:_headBtn];
@@ -140,21 +136,8 @@
     _bottomView.backgroundColor = [UIColor colorWithRGB:@"239,239,239"];
     [self.contentView addSubview:_bottomView];
     
-    //长按手势
-//    UILongPressGestureRecognizer * longPressGesture =[[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(cellLongPress:)];
-    
-//    longPressGesture.minimumPressDuration=1.0f;//设置长按 时间
-//    [self addGestureRecognizer:longPressGesture];
 }
 
--(void)cellLongPress:(UILongPressGestureRecognizer *)gesture{
-    //代理出去
-    if(![[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id] isEqualToString:self.model.userId]){
-        if(self.LongPressBlock){
-            self.LongPressBlock(self.model);
-        }
-    }
-}
 
 #pragma mark - 创建流水布局
 -(UICollectionViewFlowLayout *)setupCollectionViewFlowLayout{
@@ -197,12 +180,13 @@
 
 - (void)layoutSubviews{
     [super layoutSubviews];
-    CGFloat space = 8;
-    CGFloat distance = 4;
+    CGFloat space = SafetyW;
+    CGFloat distance = 8;
+    
     //头像
     [_headBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.equalTo(self.contentView).offset(space);
-        make.height.width.mas_equalTo(40);
+        make.height.width.mas_equalTo(50);
     }];
     
     [_attentionBtn mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -236,7 +220,7 @@
     }
     
     //这里是没有数据的
-    CGFloat collectionW = imgHeight * 3 + 20;
+    CGFloat collectionW = SCREEN_WIDTH - 24;
     
     [_collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.contentLab.mas_bottom).offset(space);
@@ -295,7 +279,7 @@
     //举报
     [self.reportBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.dataLab);
-        make.right.equalTo(self.likeCountView.mas_left).offset(-64);
+        make.right.equalTo(self.likeCountView.mas_left).offset(-54);
         make.height.mas_equalTo(20);
     }];
     
@@ -314,11 +298,12 @@
     }];
     
     _contentLab.text = model.content;
+    [_contentLab setFont:[UIFont systemFontOfSize:MomentFontSize]];
     //时间
     _dataLab.text = [NSString compareCurrentTime:model.publishtime];
     
     //更新内容高度
-    CGFloat contentHeight = [_contentLab.text heightWithWidth:CGRectGetWidth(self.contentView.bounds) - 16 font:14];
+    CGFloat contentHeight = [_contentLab.text heightWithWidth:CGRectGetWidth(self.contentView.bounds) - 32 font:MomentFontSize];
     contentHeight += 10;
     [_contentLab mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(contentHeight);
@@ -378,6 +363,12 @@
     if([model.userId isEqualToString:[NSString stringWithFormat:@"%ld",user.id]]){
         _attentionBtn.hidden = YES;
     }
+    
+    _reportBtn.hidden = NO;
+    _reportBtn.zoneModel = model;
+    if([Utilities GetNSUserDefaults].id == [self.model.userId integerValue]){
+        _reportBtn.hidden = YES;
+    }
 }
 
 -(void)gotoCommentView{
@@ -390,14 +381,17 @@
     commentView.isFind = YES;
     commentView.chapterId = _model.id;
     commentView.cartoonType = @"3";
+    commentView.ishiddenTitleView = YES;
     [[self myViewController].navigationController presentViewController:nav animated:YES completion:nil];
-    [commentView hiddenTitleView];
+//    [commentView hiddenTitleView];
 }
 
 //时间显示过大了
 + (CGFloat)cellHeightWithStr:(NSString *)str imgs:(NSArray *)imgs{
-    CGFloat strH = [str heightWithWidth:CGRectGetWidth([UIScreen mainScreen].bounds) - 40 font:14];
-    CGFloat cellH = strH + 110;
+    //内容高度
+    CGFloat strH = [str heightWithWidth:CGRectGetWidth([UIScreen mainScreen].bounds) - 32 font:MomentFontSize];
+//    16 + 40+16+strH+16
+    CGFloat cellH = strH + 110 + 16 + 8;
     NSInteger row = imgs.count / 3;
     if (imgs.count) {
         if (imgs.count % 3 !=0) {

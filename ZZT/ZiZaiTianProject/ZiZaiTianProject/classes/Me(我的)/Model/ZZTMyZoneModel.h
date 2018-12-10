@@ -40,4 +40,6 @@
 
 @property (nonatomic,assign) NSInteger praisecount;
 
+@property (nonatomic,assign) NSInteger index;
+
 @end

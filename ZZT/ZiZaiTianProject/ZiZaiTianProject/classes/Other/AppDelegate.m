@@ -16,7 +16,12 @@
 #import <UserNotifications/UserNotifications.h>
 #import <UMCommonLog/UMCommonLogManager.h>
 
+
 #import <UMShare/UMShare.h>
+
+//异常处理
+#import <AvoidCrash.h>
+
 @interface AppDelegate ()<UNUserNotificationCenterDelegate>
 
 @end
@@ -69,7 +74,39 @@
     // 启动图片延时: 1秒
     [NSThread sleepForTimeInterval:2];
     
+    //异常处理
+//    [self avoidCrash];
+
     return YES;
+}
+//异常处理
+- (void)avoidCrash {
+    
+    /*
+     * 项目初期不需要对"unrecognized selector sent to instance"错误进行处理，因为还没有相关的崩溃的类
+     * 后期出现后，再使用makeAllEffective方法，把所有对应崩溃的类添加到数组中，避免崩溃
+     * 对于正式线可以启用该方法，测试线建议关闭该方法
+     */
+    [AvoidCrash becomeEffective];
+    
+    
+    //    [AvoidCrash makeAllEffective];
+    //    NSArray *noneSelClassStrings = @[
+    //                                     @"NSString"
+    //                                     ];
+    //    [AvoidCrash setupNoneSelClassStringsArr:noneSelClassStrings];
+    
+    
+    //监听通知:AvoidCrashNotification, 获取AvoidCrash捕获的崩溃日志的详细信息
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dealwithCrashMessage:) name:AvoidCrashNotification object:nil];
+}
+
+- (void)dealwithCrashMessage:(NSNotification *)notification {
+    /*
+     * 在这边对避免的异常进行一些处理，比如上传到日志服务器等。
+     */
+    NSString *error = notification.object;
+    NSLog(@"%@",error);
 }
 
 void uncaughtExceptionHandler(NSException *exception) {

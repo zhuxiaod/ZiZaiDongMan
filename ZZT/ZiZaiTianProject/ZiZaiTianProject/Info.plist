@@ -8,6 +8,8 @@
 	<string></string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleGetInfoString</key>
+	<string></string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -17,7 +19,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.3</string>
+	<string>1.0.5</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -176,11 +178,11 @@
 	<key>NSCameraUsageDescription</key>
 	<string>自在漫画需要您的同意,才能在使用期间访问相机,如果拒绝将无法进行拍照功能</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>自在漫画需要您的同意,才能在使用期间访问相机,如果拒绝将无法进行视频功能</string>
+	<string>自在漫画需要您的同意,才能在使用期间访问麦克风,如果拒绝将无法进行语音功能</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>自在漫画需要您的同意,才能在使用期间访问相册,如果拒绝将无法保存图片到您的手机</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>自在漫画需要您的同意,才能在使用期间访问相册,如果拒绝将无法进行上传图片</string>
+	<string>自在漫画需要您的同意,才能在使用期间访问相册,如果拒绝将无法选择系统相册图片发送动态</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

@@ -13,10 +13,12 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ZZTChapterPayViewController">
             <connections>
+                <outlet property="VIPTotalPrice" destination="MZB-mo-wY3" id="iPO-8h-J5Y"/>
                 <outlet property="ZbLab" destination="6AD-iX-yVd" id="pCD-gE-0m7"/>
                 <outlet property="buyOptionView" destination="yq1-2e-ZuZ" id="cZV-r0-fLY"/>
                 <outlet property="moneyView" destination="RIU-iQ-Kpf" id="y81-60-xCm"/>
                 <outlet property="payBtn" destination="ZcJ-cq-wVW" id="fQC-sU-75t"/>
+                <outlet property="totalPrice" destination="16X-ok-Z1n" id="2Rw-dz-ay7"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -42,6 +44,9 @@
                             </constraints>
                             <fontDescription key="fontDescription" type="system" pointSize="24"/>
                             <state key="normal" title="确定支付"/>
+                            <connections>
+                                <action selector="payBtnTarget:" destination="-1" eventType="touchUpInside" id="Ybc-wL-Bf3"/>
+                            </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LlT-cG-4q2">
                             <rect key="frame" x="26" y="124" width="323" height="41"/>

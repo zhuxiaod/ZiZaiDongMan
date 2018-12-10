@@ -450,6 +450,11 @@
     imagePickerVc.showPhotoCannotSelectLayer = YES;
     //    无法选择图层颜色
     imagePickerVc.cannotSelectLayerColor = [[UIColor whiteColor] colorWithAlphaComponent:0.8];
+    
+    imagePickerVc.naviBgColor = [UIColor blackColor];
+    imagePickerVc.naviTitleColor = [UIColor blackColor];
+    imagePickerVc.barItemTextColor = [UIColor blackColor];
+    
     //设置照片选择器页面UI配置块
     [imagePickerVc setPhotoPickerPageUIConfigBlock:^(UICollectionView *collectionView, UIView *bottomToolBar, UIButton *previewButton, UIButton *originalPhotoButton, UILabel *originalPhotoLabel, UIButton *doneButton, UIImageView *numberImageView, UILabel *numberLabel, UIView *divideLine) {
         [doneButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
@@ -474,7 +479,7 @@
     NSInteger top = (self.view.height - widthHeight) / 2;
     imagePickerVc.cropRect = CGRectMake(left, top, widthHeight, widthHeight);
 
-    imagePickerVc.statusBarStyle = UIStatusBarStyleLightContent;
+    imagePickerVc.statusBarStyle = UIStatusBarStyleDefault;
     
     // 设置是否显示图片序号
     imagePickerVc.showSelectedIndex = YES;

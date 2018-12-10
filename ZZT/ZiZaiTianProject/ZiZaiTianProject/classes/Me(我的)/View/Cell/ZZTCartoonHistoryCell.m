@@ -222,7 +222,7 @@
 //}
 
 + (CGFloat)cellHeightWithStr:(NSString *)str imgs:(NSArray *)imgs{
-    CGFloat strH = [str heightWithWidth:CGRectGetWidth([UIScreen mainScreen].bounds) - 40 font:14];
+    CGFloat strH = [str heightWithWidth:CGRectGetWidth([UIScreen mainScreen].bounds) - 40 font:MomentFontSize];
     CGFloat cellH = strH + 100;
     NSInteger row = imgs.count / 3;
     if (imgs.count) {

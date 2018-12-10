@@ -28,6 +28,8 @@
 		0404A11721521EDB003BC1CC /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0404A11621521EDB003BC1CC /* CoreGraphics.framework */; };
 		0404A11921521EF3003BC1CC /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0404A11821521EF3003BC1CC /* Photos.framework */; };
 		04091E6C21B6A038006727B9 /* UUWaveView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04091E6B21B6A038006727B9 /* UUWaveView.m */; };
+		040961EF21BA942800D40523 /* ZZTReportBtn.m in Sources */ = {isa = PBXBuildFile; fileRef = 040961EE21BA942800D40523 /* ZZTReportBtn.m */; };
+		040961F221BA983700D40523 /* ZZTReportModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 040961F121BA983700D40523 /* ZZTReportModel.m */; };
 		040A03AD20FD8406000FAE13 /* ZZTStoryDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 040A03AC20FD8406000FAE13 /* ZZTStoryDetailView.m */; };
 		040A03B120FD8706000FAE13 /* ZZTStoryDetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 040A03AF20FD8706000FAE13 /* ZZTStoryDetailCell.m */; };
 		040A03B620FDDAEA000FAE13 /* ZZTWritePlayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 040A03B420FDDAEA000FAE13 /* ZZTWritePlayViewController.m */; };
@@ -204,6 +206,12 @@
 		046683C020F49AA00095C6BC /* CaiNiXiHuanCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 046683BF20F49AA00095C6BC /* CaiNiXiHuanCell.m */; };
 		046683C320F49CCB0095C6BC /* ZZTJiuGongGeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 046683C220F49CCB0095C6BC /* ZZTJiuGongGeView.m */; };
 		046683C620F4BC990095C6BC /* ZZTCartoonHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 046683C520F4BC990095C6BC /* ZZTCartoonHeaderView.m */; };
+		046936CC21BE18DF00ED2F5B /* ZZTChapterVipModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 046936CB21BE18DF00ED2F5B /* ZZTChapterVipModel.m */; };
+		046936CF21BE1AF100ED2F5B /* ZZTChapterVipItemModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 046936CE21BE1AF100ED2F5B /* ZZTChapterVipItemModel.m */; };
+		046936E821BE9FCF00ED2F5B /* IAPHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 046936E121BE9FCF00ED2F5B /* IAPHelper.m */; };
+		046936E921BE9FCF00ED2F5B /* IAPShare.m in Sources */ = {isa = PBXBuildFile; fileRef = 046936E321BE9FCF00ED2F5B /* IAPShare.m */; };
+		046936EA21BE9FCF00ED2F5B /* NSString+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 046936E521BE9FCF00ED2F5B /* NSString+Base64.m */; };
+		046936EB21BE9FCF00ED2F5B /* SFHFKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 046936E721BE9FCF00ED2F5B /* SFHFKeychainUtils.m */; };
 		046DE4E021B0DA5C006D71D3 /* ZZTChapterPayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 046DE4DE21B0DA5C006D71D3 /* ZZTChapterPayViewController.m */; };
 		046DE4E121B0DA5C006D71D3 /* ZZTChapterPayViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 046DE4DF21B0DA5C006D71D3 /* ZZTChapterPayViewController.xib */; };
 		046FF6592101797B005DED73 /* MainTabbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 046FF6572101797B005DED73 /* MainTabbar.m */; };
@@ -432,6 +440,10 @@
 		0404A11821521EF3003BC1CC /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		04091E6A21B6A038006727B9 /* UUWaveView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UUWaveView.h; sourceTree = "<group>"; };
 		04091E6B21B6A038006727B9 /* UUWaveView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UUWaveView.m; sourceTree = "<group>"; };
+		040961ED21BA942800D40523 /* ZZTReportBtn.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTReportBtn.h; sourceTree = "<group>"; };
+		040961EE21BA942800D40523 /* ZZTReportBtn.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTReportBtn.m; sourceTree = "<group>"; };
+		040961F021BA983700D40523 /* ZZTReportModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTReportModel.h; sourceTree = "<group>"; };
+		040961F121BA983700D40523 /* ZZTReportModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTReportModel.m; sourceTree = "<group>"; };
 		040A03AB20FD8406000FAE13 /* ZZTStoryDetailView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTStoryDetailView.h; sourceTree = "<group>"; };
 		040A03AC20FD8406000FAE13 /* ZZTStoryDetailView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTStoryDetailView.m; sourceTree = "<group>"; };
 		040A03AE20FD8706000FAE13 /* ZZTStoryDetailCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTStoryDetailCell.h; sourceTree = "<group>"; };
@@ -757,6 +769,18 @@
 		046683C220F49CCB0095C6BC /* ZZTJiuGongGeView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTJiuGongGeView.m; sourceTree = "<group>"; };
 		046683C420F4BC990095C6BC /* ZZTCartoonHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTCartoonHeaderView.h; sourceTree = "<group>"; };
 		046683C520F4BC990095C6BC /* ZZTCartoonHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTCartoonHeaderView.m; sourceTree = "<group>"; };
+		046936CA21BE18DF00ED2F5B /* ZZTChapterVipModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTChapterVipModel.h; sourceTree = "<group>"; };
+		046936CB21BE18DF00ED2F5B /* ZZTChapterVipModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTChapterVipModel.m; sourceTree = "<group>"; };
+		046936CD21BE1AF100ED2F5B /* ZZTChapterVipItemModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTChapterVipItemModel.h; sourceTree = "<group>"; };
+		046936CE21BE1AF100ED2F5B /* ZZTChapterVipItemModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTChapterVipItemModel.m; sourceTree = "<group>"; };
+		046936E021BE9FCF00ED2F5B /* IAPHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPHelper.h; sourceTree = "<group>"; };
+		046936E121BE9FCF00ED2F5B /* IAPHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IAPHelper.m; sourceTree = "<group>"; };
+		046936E221BE9FCF00ED2F5B /* IAPShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPShare.h; sourceTree = "<group>"; };
+		046936E321BE9FCF00ED2F5B /* IAPShare.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IAPShare.m; sourceTree = "<group>"; };
+		046936E421BE9FCF00ED2F5B /* NSString+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Base64.h"; sourceTree = "<group>"; };
+		046936E521BE9FCF00ED2F5B /* NSString+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Base64.m"; sourceTree = "<group>"; };
+		046936E621BE9FCF00ED2F5B /* SFHFKeychainUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SFHFKeychainUtils.h; sourceTree = "<group>"; };
+		046936E721BE9FCF00ED2F5B /* SFHFKeychainUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SFHFKeychainUtils.m; sourceTree = "<group>"; };
 		046DE4DD21B0DA5C006D71D3 /* ZZTChapterPayViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTChapterPayViewController.h; sourceTree = "<group>"; };
 		046DE4DE21B0DA5C006D71D3 /* ZZTChapterPayViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTChapterPayViewController.m; sourceTree = "<group>"; };
 		046DE4DF21B0DA5C006D71D3 /* ZZTChapterPayViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ZZTChapterPayViewController.xib; sourceTree = "<group>"; };
@@ -1086,6 +1110,7 @@
 		04EC770421AFEB4000C54CB5 /* NSString+AES.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+AES.m"; sourceTree = "<group>"; };
 		04F9D7962168A17800EF953D /* ZZTColorPickerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTColorPickerView.h; sourceTree = "<group>"; };
 		04F9D7972168A17800EF953D /* ZZTColorPickerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTColorPickerView.m; sourceTree = "<group>"; };
+		0C084C18C317A39A31EF0154 /* Pods-ZiZaiTianProject.adhoc.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZiZaiTianProject.adhoc.xcconfig"; path = "Pods/Target Support Files/Pods-ZiZaiTianProject/Pods-ZiZaiTianProject.adhoc.xcconfig"; sourceTree = "<group>"; };
 		749399599CA48ED07BA87311 /* Pods-ZiZaiTianProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZiZaiTianProject.release.xcconfig"; path = "Pods/Target Support Files/Pods-ZiZaiTianProject/Pods-ZiZaiTianProject.release.xcconfig"; sourceTree = "<group>"; };
 		8E61AC85E4D70CE81268AC0F /* Pods-ZiZaiTianProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZiZaiTianProject.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ZiZaiTianProject/Pods-ZiZaiTianProject.debug.xcconfig"; sourceTree = "<group>"; };
 		BA8586C54F8E7A26D9A888C6 /* libPods-ZiZaiTianProject.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ZiZaiTianProject.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1471,6 +1496,21 @@
 			path = "ZiZaiTianProject/classes/Home(首页)/View";
 			sourceTree = SOURCE_ROOT;
 		};
+		046936DF21BE9FCF00ED2F5B /* IAPHelper */ = {
+			isa = PBXGroup;
+			children = (
+				046936E021BE9FCF00ED2F5B /* IAPHelper.h */,
+				046936E121BE9FCF00ED2F5B /* IAPHelper.m */,
+				046936E221BE9FCF00ED2F5B /* IAPShare.h */,
+				046936E321BE9FCF00ED2F5B /* IAPShare.m */,
+				046936E421BE9FCF00ED2F5B /* NSString+Base64.h */,
+				046936E521BE9FCF00ED2F5B /* NSString+Base64.m */,
+				046936E621BE9FCF00ED2F5B /* SFHFKeychainUtils.h */,
+				046936E721BE9FCF00ED2F5B /* SFHFKeychainUtils.m */,
+			);
+			path = IAPHelper;
+			sourceTree = "<group>";
+		};
 		046FF65221017900005DED73 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -1669,6 +1709,8 @@
 				04A30FC421379C0200FAC781 /* ToolBtn.m */,
 				042A0CBA21743F4900FC013B /* ImageLeftBtn.h */,
 				042A0CBB21743F4900FC013B /* ImageLeftBtn.m */,
+				040961ED21BA942800D40523 /* ZZTReportBtn.h */,
+				040961EE21BA942800D40523 /* ZZTReportBtn.m */,
 			);
 			path = btn;
 			sourceTree = "<group>";
@@ -1758,6 +1800,8 @@
 				04E9FAD52153D2DD005A3986 /* UserInfoContext.m */,
 				04E9FADA2154E0AE005A3986 /* ZZTMyZoneTotalModel.h */,
 				04E9FADB2154E0AE005A3986 /* ZZTMyZoneTotalModel.m */,
+				040961F021BA983700D40523 /* ZZTReportModel.h */,
+				040961F121BA983700D40523 /* ZZTReportModel.m */,
 			);
 			name = Model;
 			path = "ZiZaiTianProject/classes/Me(我的)/Model";
@@ -1872,6 +1916,7 @@
 			children = (
 				8E61AC85E4D70CE81268AC0F /* Pods-ZiZaiTianProject.debug.xcconfig */,
 				749399599CA48ED07BA87311 /* Pods-ZiZaiTianProject.release.xcconfig */,
+				0C084C18C317A39A31EF0154 /* Pods-ZiZaiTianProject.adhoc.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -2068,6 +2113,10 @@
 				0428E8AF21787D0A00702225 /* ZZTChapterModel.m */,
 				04A803ED2188616900E81C5E /* ZZTChapterChooseModel.h */,
 				04A803EE2188616900E81C5E /* ZZTChapterChooseModel.m */,
+				046936CA21BE18DF00ED2F5B /* ZZTChapterVipModel.h */,
+				046936CB21BE18DF00ED2F5B /* ZZTChapterVipModel.m */,
+				046936CD21BE1AF100ED2F5B /* ZZTChapterVipItemModel.h */,
+				046936CE21BE1AF100ED2F5B /* ZZTChapterVipItemModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -2147,6 +2196,7 @@
 		F7C04C0920DF3E9E0055E7A8 /* Other */ = {
 			isa = PBXGroup;
 			children = (
+				046936DF21BE9FCF00ED2F5B /* IAPHelper */,
 				0404A0E92151FED7003BC1CC /* Macro */,
 				047ECEB72128148D008D1E82 /* btn */,
 				0466838720F314860095C6BC /* Tools */,
@@ -2465,6 +2515,7 @@
 				0484E7D6210ABBFD00C39369 /* ZZTEditImageViewModel.m in Sources */,
 				04C39F522136C47A00F4CB4A /* ZZTWritingSequelViewController.m in Sources */,
 				04CF259D2105CDE20026EC8F /* ZZTMaterialTypeView.m in Sources */,
+				046936CC21BE18DF00ED2F5B /* ZZTChapterVipModel.m in Sources */,
 				0466839620F314A00095C6BC /* NSString+Extension.m in Sources */,
 				0466837B20F3096A0095C6BC /* navBarTitleView.m in Sources */,
 				042221812170831A00E67F59 /* CircleCell.m in Sources */,
@@ -2476,6 +2527,7 @@
 				04DD53CA21A5102700910D5A /* ZZTAboutUsViewController.m in Sources */,
 				042D1475218AA86400BE05F6 /* NSBundle+TZImagePicker.m in Sources */,
 				0471A8A320FC8F5A00ABFF35 /* ZZTCartoonDetailFoot.m in Sources */,
+				046936EA21BE9FCF00ED2F5B /* NSString+Base64.m in Sources */,
 				0422218A21709D5C00E67F59 /* NSString+SKYExtension.m in Sources */,
 				0498B5DB212E46B0005BD26D /* ZZTCartoonDetailViewController.m in Sources */,
 				041EE0AF20EB767B0012FEDF /* ZZTNoTypeCell.m in Sources */,
@@ -2562,6 +2614,7 @@
 				0498B5DE212E6123005BD26D /* ZZTMulWordDetailViewController.m in Sources */,
 				040A03AD20FD8406000FAE13 /* ZZTStoryDetailView.m in Sources */,
 				049A99D320E32F2F00ED27C9 /* ZZTLoginRegisterViewController.m in Sources */,
+				040961EF21BA942800D40523 /* ZZTReportBtn.m in Sources */,
 				044244D620EA3B0B0044502C /* ZZTSignButton.m in Sources */,
 				0442952320E5DFE400D1AABF /* ZZTCartoonViewController.m in Sources */,
 				04DA745321B2A0FE003EE081 /* HZWaitingView.m in Sources */,
@@ -2591,6 +2644,7 @@
 				04A0C0A221804B8500D08F6C /* LxGridViewFlowLayout.m in Sources */,
 				042BA0C820EA0A1D003E279A /* ZZTSignInView.m in Sources */,
 				040A040C2100B231000FAE13 /* ZZTUpdatePageViewController.m in Sources */,
+				046936E821BE9FCF00ED2F5B /* IAPHelper.m in Sources */,
 				041A8C9721A42FF3006465FE /* ZXDSearchViewController.m in Sources */,
 				0465691221B4D7FB000A30C6 /* UIColor+PYSearchExtension.m in Sources */,
 				0471A89D20FC40F900ABFF35 /* ZZTCartoonModel.m in Sources */,
@@ -2641,9 +2695,11 @@
 				046FF66A2101E029005DED73 /* ZZTCreatCartoonViewController.m in Sources */,
 				04E9FAD32153D28E005A3986 /* UserInfo.m in Sources */,
 				046683BD20F4817D0095C6BC /* ZZTEasyBtnModel.m in Sources */,
+				046936CF21BE1AF100ED2F5B /* ZZTChapterVipItemModel.m in Sources */,
 				043D06C62192C4AB00016748 /* ZZTFindBannerView.m in Sources */,
 				0471A86B20F72FB700ABFF35 /* ZZTWordCell.m in Sources */,
 				040A03B120FD8706000FAE13 /* ZZTStoryDetailCell.m in Sources */,
+				046936EB21BE9FCF00ED2F5B /* SFHFKeychainUtils.m in Sources */,
 				047ECEBA212814D3008D1E82 /* ColorInButton.m in Sources */,
 				046FF66E2101E0D5005DED73 /* ZZTCreationEntranceModel.m in Sources */,
 				0471A83120F5926A00ABFF35 /* ZZTCreationTableView.m in Sources */,
@@ -2656,6 +2712,7 @@
 				0471A84E20F5E1CC00ABFF35 /* ZZTWordsDetailViewController.m in Sources */,
 				046683B620F45C7C0095C6BC /* ZZTFirstViewBtn.m in Sources */,
 				04A0C0E82180AB6A00D08F6C /* UITableView+ZFTableViewSnapshot.m in Sources */,
+				046936E921BE9FCF00ED2F5B /* IAPShare.m in Sources */,
 				F7C04C2D20DF4F8F0055E7A8 /* UIImage+ColorWithImage.m in Sources */,
 				04DD53D421A5932500910D5A /* SBPersonalSettingCell.m in Sources */,
 				0495DC3B2191DFD700761EE8 /* ZZTCommentOpenCell.m in Sources */,
@@ -2725,6 +2782,7 @@
 				04A803EC21884D7100E81C5E /* ZZTChapterChooseView.m in Sources */,
 				042D147A218AA86400BE05F6 /* TZImageManager.m in Sources */,
 				042D1480218AA86400BE05F6 /* TZPhotoPreviewController.m in Sources */,
+				040961F221BA983700D40523 /* ZZTReportModel.m in Sources */,
 				0471A84B20F59C0600ABFF35 /* ZZTSecondBtn.m in Sources */,
 				0421C02A2119CA600068AD21 /* RectangleView.m in Sources */,
 				047720F52106CBB900FC97B5 /* ZZTTypeModel.m in Sources */,
@@ -2815,7 +2873,7 @@
 		};
 		0429469921B7DE0600972D2A /* adHoc */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 749399599CA48ED07BA87311 /* Pods-ZiZaiTianProject.release.xcconfig */;
+			baseConfigurationReference = 0C084C18C317A39A31EF0154 /* Pods-ZiZaiTianProject.adhoc.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;

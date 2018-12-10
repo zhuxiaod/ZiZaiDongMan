@@ -8,6 +8,7 @@
 
 #import "ZZTChapterChooseCell.h"
 #import "ZZTChapterChooseModel.h"
+#import "ZZTChapterVipItemModel.h"
 
 @interface ZZTChapterChooseCell ()
 
@@ -67,5 +68,11 @@
         _label.layer.borderColor = [UIColor grayColor].CGColor;
         _label.textColor = [UIColor grayColor];
     }
+}
+
+-(void)setVipModel:(ZZTChapterVipItemModel *)vipModel{
+    _vipModel = vipModel;
+    _label.text = vipModel.ItemStr;
+
 }
 @end

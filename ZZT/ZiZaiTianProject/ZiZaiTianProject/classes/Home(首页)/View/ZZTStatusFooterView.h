@@ -11,6 +11,8 @@
 @class ZZTCircleModel;
 @class ZZTStatusFooterView;
 
+typedef void (^LongPressBlock) (ZZTCircleModel *message);
+
 @protocol ZZTStatusFooterViewDelegate <NSObject>
 
 - (void)StatusFooterView:(ZZTStatusFooterView *)StatusFooterView didClickCommentButton:(ZZTCircleModel *)model;
@@ -28,5 +30,10 @@
 @property (nonatomic,assign) BOOL isFind;
 
 @property (nonatomic,copy) void (^update)(void);
+
+@property (nonatomic,copy) LongPressBlock LongPressBlock;
+
+//举报
+@property (strong, nonatomic) ZZTReportBtn *reportBtn;
 
 @end

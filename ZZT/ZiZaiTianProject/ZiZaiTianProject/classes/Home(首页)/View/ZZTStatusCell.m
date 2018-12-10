@@ -30,7 +30,7 @@
 
 @end
 
-static CGFloat iconSize = 40;
+static CGFloat iconSize = 50;
 
 @implementation ZZTStatusCell
 
@@ -41,10 +41,13 @@ static CGFloat iconSize = 40;
 
 //更新数据
 - (void)updateUIWithModel:(ZZTCircleModel *)model {
+    
     customer *customer = model.customer;
+    
     [self.userAuthenticationIcon sd_setBackgroundImageWithURL:[NSURL URLWithString:customer.headimg] forState:UIControlStateNormal];
     
     self.userNameLabel.text = customer.nickName;
+    [self.userNameLabel setFont:[UIFont systemFontOfSize:18]];
     
     //内容
     self.contentTextLabel.text = model.content;
@@ -63,8 +66,8 @@ static CGFloat iconSize = 40;
     
     self.contentView.backgroundColor = [UIColor whiteColor];
     
-    CGFloat spaceing = SPACEING;
-    CGFloat margin = 4;
+    CGFloat spaceing = SafetyW;
+    CGFloat margin = 8;
     
     //头像 40*40
     [self.userAuthenticationIcon mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -75,8 +78,8 @@ static CGFloat iconSize = 40;
     //用户名
     [self.userNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.userAuthenticationIcon.mas_right).offset(margin);
-        make.top.equalTo(self.userAuthenticationIcon.mas_top);
-        make.height.mas_equalTo(20);
+        make.centerY.equalTo(self.userAuthenticationIcon.mas_centerY);
+        make.height.mas_equalTo(30);
         make.right.equalTo(self.contentView);
     }];
     

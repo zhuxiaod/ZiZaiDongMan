@@ -24,5 +24,7 @@ typedef void (^LongPressBlock) (ZZTMyZoneModel *message);
 
 + (ZZTMyZoneCell *)dynamicCellWithTable:(UITableView *)table;
 
+//举报
+@property (strong, nonatomic) ZZTReportBtn *reportBtn;
 
 @end

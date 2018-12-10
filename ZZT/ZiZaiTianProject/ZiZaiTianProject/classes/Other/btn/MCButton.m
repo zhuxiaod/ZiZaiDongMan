@@ -20,7 +20,6 @@
         self.buttonStyle = imageLeft;
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
     }
-
     return self;
 }
 

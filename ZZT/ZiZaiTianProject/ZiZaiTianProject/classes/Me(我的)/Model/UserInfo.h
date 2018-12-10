@@ -72,6 +72,7 @@
 //连续签到数+
 @property (nonatomic,assign)NSInteger signCount;
 
+
 +(instancetype)initAuthorWithUserId:(NSString *)userId headImg:(NSString *)headImg nikeName:(NSString *)nikeName;
 
 @end
