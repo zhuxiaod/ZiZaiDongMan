@@ -97,11 +97,11 @@
 #pragma mark - ================ SKRequestDelegate =================
 
 - (void)requestDidFinish:(SKRequest *)request {
-    if ([request isKindOfClass:[SKReceiptRefreshRequest class]]) {
-        NSURL *receiptUrl = [[NSBundle mainBundle] appStoreReceiptURL];
-        NSData *receiptData = [NSData dataWithContentsOfURL:receiptUrl];
-        [_delegate successedWithReceipt:receiptData transactionId:self.productId];
-    }
+//    if ([request isKindOfClass:[SKReceiptRefreshRequest class]]) {
+//        NSURL *receiptUrl = [[NSBundle mainBundle] appStoreReceiptURL];
+//        NSData *receiptData = [NSData dataWithContentsOfURL:receiptUrl];
+//        [_delegate successedWithReceipt:receiptData transactionId:self.productId];
+//    }
 }
 
 

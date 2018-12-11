@@ -17,8 +17,8 @@
 #import "MLIAPManager.h"
 #import <SVProgressHUD.h>
 #import "ZZTZBView.h"
-#import "IAPHelper.h"
-#import "IAPShare.h"
+
+#import "MLIAPManager.h"
 
 @interface ZZTMeWalletViewController ()<UITableViewDelegate,UITableViewDataSource,MLIAPManagerDelegate,SKPaymentTransactionObserver,SKRequestDelegate,SKProductsRequestDelegate>
 
@@ -65,14 +65,12 @@ NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
       
         [self setupArray];
         
-   
-        
         self.ZbLab.text = [NSString stringWithFormat:@"%ld", (long)[Utilities GetNSUserDefaults].zzbNum];
         
-//        //启动回调
-//        [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
-//
-//        self.isBuy = NO;
+        //启动回调
+        [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+
+        self.isBuy = NO;
         
         CGFloat bannerH;
         if(SCREEN_WIDTH == 414){
@@ -118,30 +116,15 @@ NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
 -(void)viewBtn:(ZZTZBView *)btn{
     ZZTFreeBiModel *model = self.dataArray[btn.tag];
     _buyModel = model;
-//    if([SKPaymentQueue canMakePayments]){
-//        [self requestProductData:model.goodsOrder];
-//        //必须是点击后
-//        self.isBuy = YES;
-//    }else{
-//        NSLog(@"不允许程序内付费");
-//    }
-    
-
+    if([SKPaymentQueue canMakePayments]){
+        [self requestProductData:model.goodsOrder];
+        //必须是点击后
+        self.isBuy = YES;
+    }else{
+        NSLog(@"不允许程序内付费");
+    }
     [SVProgressHUD showWithStatus:nil];
 
- 
-    
-    
-//    [[MLIAPManager sharedManager] requestProductWithId:model.productId];
-//
-//    self.productId = model.productId;
-//    //内购代理
-//    [MLIAPManager sharedManager].delegate = self;
-//
-////    [self refreshBtnClicked];
-//
-//    //菊花 开始
-//    [SVProgressHUD showWithStatus:nil];
 }
 
 //请求商品
@@ -239,19 +222,17 @@ NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
 // 苹果内购支付成功
 - (void)buyAppleStoreProductSucceedWithPaymentTransactionp:(SKPaymentTransaction *)transactionReceipt {
     
-    
     NSURL *recepitURL = [[NSBundle mainBundle] appStoreReceiptURL];
     NSData *receipt = [NSData dataWithContentsOfURL:recepitURL];
-    NSString *transactionReceiptString = [receipt base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
-
-    
+    NSString *transactionReceiptString = [receipt base64EncodedStringWithOptions:0];
 
     NSLog(@"transactionReceiptString:%@",transactionReceiptString);
     if ([transactionReceiptString length] > 0) {
-    
+
+
 //         获取网络管理者
         AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-
+        manager.requestSerializer = [AFJSONRequestSerializer serializer];
         // 发出请求
         UserInfo *user = [Utilities GetNSUserDefaults];
         NSDictionary *dict = @{
@@ -261,24 +242,18 @@ NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
                                };
         [manager POST:[ZZTAPI stringByAppendingString:@"iosBuy/recharge"]  parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             NSLog(@"responseObject = %@", responseObject);
-//            [self completeTransaction:transactionReceipt];
+            [self completeTransaction:transactionReceipt];
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-//            [self completeTransaction:transactionReceipt];
+            [self completeTransaction:transactionReceipt];
         }];
-        NSDictionary *dd = @{
-                             @"receipt-data":transactionReceiptString,
-                             @"password":transactionReceipt.payment.productIdentifier
-                             };
-        [manager POST:@"https://sandbox.itunes.apple.com/verifyReceipt" parameters:dd progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            NSLog(@"responseObject :%@",responseObject);
-        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            
-        }];
+
         //交易成功后  刷新个人资料
         //创建通知
         [self loadUserData];
     }
 }
+
+
 
 -(void)loadUserData{
     
@@ -376,25 +351,25 @@ NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
 //    }
 //}
 //
-- (void)successedWithReceipt:(NSData *)transactionReceipt transactionId:(NSString *)transactionId{
+//- (void)successedWithReceipt:(NSData *)transactionReceipt transactionId:(NSString *)transactionId{
 //    [SVProgressHUD dismiss];
 //    NSLog(@"购买成功");
 //
-    NSString  *transactionReceiptString = [transactionReceipt base64EncodedStringWithOptions:0];
+//    NSString  *transactionReceiptString = [transactionReceipt base64EncodedStringWithOptions:0];
 //    NSLog(@"transactionReceiptString:%@",transactionReceiptString);
 //    if ([transactionReceiptString length] > 0) {
-        // 向自己的服务器验证购买凭证（此处应该考虑将凭证本地保存,对服务器有失败重发机制）
-        /**
-         服务器要做的事情:
-         接收ios端发过来的购买凭证。
-         判断凭证是否已经存在或验证过，然后存储该凭证。
-         将该凭证发送到苹果的服务器验证，并将验证结果返回给客户端。
-         如果需要，修改用户相应的会员权限
-         */
-        
-        // 设置请求参数(key是苹果规定的)
-        
-        // 获取网络管理者
+////         向自己的服务器验证购买凭证（此处应该考虑将凭证本地保存,对服务器有失败重发机制）
+//        /**
+//         服务器要做的事情:
+//         接收ios端发过来的购买凭证。
+//         判断凭证是否已经存在或验证过，然后存储该凭证。
+//         将该凭证发送到苹果的服务器验证，并将验证结果返回给客户端。
+//         如果需要，修改用户相应的会员权限
+//         */
+//
+////         设置请求参数(key是苹果规定的)
+////
+////         获取网络管理者
 //        // 设置请求参数(key是苹果规定的)
 //
 //        // 获取网络管理者
@@ -407,24 +382,15 @@ NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
 //                               @"Payload":transactionReceiptString,//票据
 //                               @"userId":[NSString stringWithFormat:@"%ld",user.id]
 //                               };
-//        [manager POST:[ZZTAPI stringByAppendingString:@"iosBuy/recharge"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-//            NSLog(@"responseObject:%@",responseObject);
-        
-//        [manager POST:@"https://sandbox.itunes.apple.com/verifyReceipt" parameters:param progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id _Nullable responseObject) {
-//
+//        [manager POST:[ZZTAPI stringByAppendingString:@"iosBuy/recharge"]  parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
 //            NSLog(@"responseObject = %@", responseObject);
-//
+////            [self completeTransaction:transactionReceipt];
 //        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-
-        
-        /**
-         if (凭证校验成功) {
-         [[MLIAPManager sharedManager] finishTransaction];
-         }
-         */
+////            [self completeTransaction:transactionReceipt];
+//        }];
 //    }
 //}
-
+//
 //- (void)failedPurchaseWithError:(NSString *)errorDescripiton {
 //    [SVProgressHUD dismiss];
 //    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
@@ -436,7 +402,7 @@ NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
 //    }]];
 //    //弹出提示框；
 //    [self presentViewController:alert animated:true completion:nil];
-}
+//}
 
 -(void)failedPurchaseReminder{
 //    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];

@@ -243,21 +243,21 @@
     if ([transactionReceiptString length] > 0) {
         
         //         获取网络管理者
-        //        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-        //
-        //        // 发出请求
-        //        UserInfo *user = [Utilities GetNSUserDefaults];
-        //        NSDictionary *dict = @{
-        //                               @"TransactionID":transactionReceipt.transactionIdentifier,//订单号
-        //                               @"Payload":transactionReceiptString,//票据
-        //                               @"userId":[NSString stringWithFormat:@"%ld",user.id]
-        //                               };
-        //        [manager POST:[ZZTAPI stringByAppendingString:@"iosBuy/recharge"]  parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        //            NSLog(@"responseObject = %@", responseObject);
-        //            [self completeTransaction:transactionReceipt];
-        //        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                    [self completeTransaction:transactionReceipt];
-        //        }];
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+
+        // 发出请求
+        UserInfo *user = [Utilities GetNSUserDefaults];
+        NSDictionary *dict = @{
+                               @"TransactionID":transactionReceipt.transactionIdentifier,//订单号
+                               @"Payload":transactionReceiptString,//票据
+                               @"userId":[NSString stringWithFormat:@"%ld",user.id]
+                               };
+        [manager POST:[ZZTAPI stringByAppendingString:@"iosBuy/recharge"]  parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            NSLog(@"responseObject = %@", responseObject);
+            [self completeTransaction:transactionReceipt];
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+            [self completeTransaction:transactionReceipt];
+        }];
         [self loadUserData];
     }
 }
