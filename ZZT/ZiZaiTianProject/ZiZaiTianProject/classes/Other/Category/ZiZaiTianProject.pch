@@ -109,6 +109,7 @@
 #import "ZZTReportViewController.h"
 #import "customer.h"
 #import "ZZTReportBtn.h"
+#import "SBPersonalSettingCell.h"
 
 #define BanerHeight SCREEN_HEIGHT * 0.3
 

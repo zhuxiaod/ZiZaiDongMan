@@ -16,6 +16,15 @@
 #import "ZZTZBView.h"
 #import "ZZTFreeBiModel.h"
 
+
+NSString *XYStoreErrorDomain = @"com.quvideo.store";
+
+NSString *SBCachePreferenceKeyPrefix = @"sb_cache_pre_key_prefix";
+
+NSString *XYStoreiTunesVerifyReceiptURL = @"https://buy.itunes.apple.com/verifyReceipt";
+
+NSString *XYStoreiTunesSandboxVerifyReceiptURL = @"https://sandbox.itunes.apple.com/verifyReceipt";
+
 @interface ZZTVIPViewController () <MLIAPManagerDelegate,SKProductsRequestDelegate,SKPaymentTransactionObserver>
 @property (weak, nonatomic) IBOutlet UILabel *VipDate;
 @property (weak, nonatomic) IBOutlet UIImageView *headImg;
@@ -33,6 +42,9 @@
 @property (strong, nonatomic) NSArray *dataArray;
 
 @property (weak, nonatomic) IBOutlet UIImageView *userImg;
+
+//缓存
+@property (nonatomic, strong) NSMutableDictionary *verifiedReceipts;
 
 @end
 
@@ -63,7 +75,7 @@
         
 //        [self setUpTopUpBtn];
         
-        //启动回调
+        //启动内购回调
         [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
         
         self.isBuy = NO;
@@ -141,6 +153,7 @@
 }
 
 
+
 //请求商品
 - (void)requestProductData:(NSString *)type{
     NSLog(@"-------------请求对应的产品信息----------------");
@@ -203,23 +216,17 @@
             case SKPaymentTransactionStatePurchased:
                 NSLog(@"交易完成");
                 NSLog(@"发送后台验证");
-                if(self.isBuy == YES){
                     [self buyAppleStoreProductSucceedWithPaymentTransactionp:tran];
-                    // 订阅特殊处理
-                    if(tran.originalTransaction){
-                        // 如果是自动续费的订单originalTransaction会有内容
-                    }else{
-                        // 普通购买，以及 第一次购买 自动订阅
-                    }
-                }else{
-                    [self completeTransaction:tran];
-                }
+
+//                [self completeTransaction:tran];
+
                 break;
             case SKPaymentTransactionStatePurchasing:
                 NSLog(@"商品添加进列表");
                 break;
             case SKPaymentTransactionStateRestored:
                 NSLog(@"已经购买过商品");
+                [self completeTransaction:tran];
                 break;
             case SKPaymentTransactionStateFailed:
                 NSLog(@"交易失败");
@@ -239,12 +246,10 @@
     NSData *receipt = [NSData dataWithContentsOfURL:recepitURL];
     NSString  *transactionReceiptString = [receipt base64EncodedStringWithOptions:0];
     
-    NSLog(@"transactionReceiptString:%@",transactionReceiptString);
-    if ([transactionReceiptString length] > 0) {
+    [self verifyRequestData:transactionReceiptString url:XYStoreiTunesSandboxVerifyReceiptURL transaction:transactionReceipt success:^{
+        NSLog(@"OK~");
         
-        //         获取网络管理者
         AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-
         // 发出请求
         UserInfo *user = [Utilities GetNSUserDefaults];
         NSDictionary *dict = @{
@@ -258,8 +263,10 @@
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             [self completeTransaction:transactionReceipt];
         }];
-        [self loadUserData];
-    }
+        
+    } failure:^(NSError *error) {
+        [self completeTransaction:transactionReceipt];
+    }];
 }
 
 -(void)loadUserData{
@@ -296,5 +303,127 @@
 - (void)dealloc{
     [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
 }
+
+- (void)verifyRequestData:(NSString *)base64Data
+                      url:(NSString *)url
+              transaction:(SKPaymentTransaction *)transaction
+                  success:(void (^)(void))successBlock
+                  failure:(void (^)(NSError *error))failureBlock
+{
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setValue:base64Data forKey:@"receipt-data"];
+    [params setValue:@"9a55a967740f41bcbb659a6872ceeb51" forKey:@"password"];
+    
+    NSError *jsonError;
+    NSData *josonData = [NSJSONSerialization dataWithJSONObject:params
+                                                        options:NSJSONWritingPrettyPrinted
+                                                          error:&jsonError];
+    //如果请求失败
+    if (jsonError) {
+        NSLog(@"验证请求失败: error = %@", jsonError);
+    }
+    
+    //对什么环境测试
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
+    request.HTTPBody = josonData;
+    static NSString *requestMethod = @"POST";
+    request.HTTPMethod = requestMethod;
+    
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSError *error;
+        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:&error];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            //没有返回数据
+            if (!data) {
+                NSLog(@"出错！！！ 没有数据");
+                //返回错误
+                //                if (failureBlock != nil) failureBlock(wrapperError);
+                return;
+            }
+            
+            NSError *jsonError;
+            NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
+            NSLog(@"responseJSONresponseJSONresponseJSONresponseJSON:%@",responseJSON);
+            
+            if (!responseJSON) {
+                NSLog(@"苹果没有返回你想要的数据");
+                if (failureBlock != nil) failureBlock(jsonError);
+            }
+            
+            static NSString *statusKey = @"status";
+            NSInteger statusCode = [responseJSON[statusKey] integerValue];
+            
+            static NSInteger successCode = 0;
+            static NSInteger sandboxCode = 21007;
+            if (statusCode == successCode) {
+                NSLog(@"验证成功！！！！");
+                [weakSelf saveVerifiedReceipts:transaction response:responseJSON];
+                if (successBlock != nil) successBlock();
+            } else if (statusCode == sandboxCode) {
+                //如果是沙盒
+                [weakSelf sandboxVerify:base64Data
+                            transaction:transaction
+                                success:successBlock
+                                failure:failureBlock];
+            } else {
+                //验证失败
+                NSLog(@"Verification Failed With Code %ld", (long)statusCode);
+                NSError *serverError = [NSError errorWithDomain:XYStoreErrorDomain code:statusCode userInfo:nil];
+                if (failureBlock != nil) failureBlock(serverError);
+            }
+        });
+    });
+}
+
+// 缓存票据校验结果
+- (void)saveVerifiedReceipts:(SKPaymentTransaction *)transaction
+                    response:(NSDictionary *)response
+{
+    if (!transaction) {
+        return;
+    }
+    
+    NSString *key = [self verifiedReceiptPrefrenceKey:transaction.payment.productIdentifier
+                                  applicationUsername:transaction.payment.applicationUsername];
+    NSLog(@"我想看看KEY：%@",key);
+    [self.verifiedReceipts setValue:response forKey:key];
+    NSLog(@"我想看看response：%@",response);
+    [[NSUserDefaults standardUserDefaults] setValue:response forKey:key];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+// 存储对应的key
+- (NSString *)verifiedReceiptPrefrenceKey:(NSString *)productId
+                      applicationUsername:(NSString *)applicationUsername
+{
+    NSString *userName = applicationUsername;
+    if ([applicationUsername isEqual:NULL] || [applicationUsername isKindOfClass:[NSNull class]] || !applicationUsername) {
+        userName = @"";
+    }
+    return [NSString stringWithFormat:@"%@_%@%@", SBCachePreferenceKeyPrefix, userName, productId];
+}
+
+- (void)sandboxVerify:(NSString *)base64Data
+          transaction:(SKPaymentTransaction *)transaction
+              success:(void (^)(void))successBlock
+              failure:(void (^)(NSError *error))failureBlock
+{
+    NSLog(@"Verifying Sandbox Receipt");
+    [self verifyRequestData:base64Data
+                        url:XYStoreiTunesSandboxVerifyReceiptURL
+                transaction:transaction
+                    success:successBlock failure:failureBlock];
+}
+
+- (NSMutableDictionary *)verifiedReceipts
+{
+    if (!_verifiedReceipts) {
+        _verifiedReceipts = [NSMutableDictionary dictionary];
+    }
+    
+    return _verifiedReceipts;
+}
+
 
 @end

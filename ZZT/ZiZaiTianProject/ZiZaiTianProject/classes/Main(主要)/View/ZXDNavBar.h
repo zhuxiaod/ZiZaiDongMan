@@ -14,7 +14,6 @@
 #define Screen_Height [[UIScreen mainScreen] bounds].size.height #define Screen_Width [[UIScreen mainScreen] bounds].size.width
 
 @interface ZXDNavBar : UIView
-
 // 主视图
 @property (nonatomic, strong) UIView *mainView;
 // 左边第一个按钮

@@ -368,6 +368,8 @@
 		04DE14AC20E4E691009DF030 /* ZZTCartoonCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04DE14AA20E4E691009DF030 /* ZZTCartoonCell.xib */; };
 		04DE14B020E5015F009DF030 /* ZZTPlayCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04DE14AE20E5015F009DF030 /* ZZTPlayCell.m */; };
 		04DE14B120E50160009DF030 /* ZZTPlayCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04DE14AF20E5015F009DF030 /* ZZTPlayCell.xib */; };
+		04E1FA0121C12B5900096A0D /* ZZTAuthorCertificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E1FA0021C12B5900096A0D /* ZZTAuthorCertificationViewController.m */; };
+		04E1FA0421C132D000096A0D /* ZZTMeInputOneCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E1FA0321C132CF00096A0D /* ZZTMeInputOneCell.m */; };
 		04E49F93213D5C57007EE617 /* ZZTJiXuYueDuModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E49F92213D5C57007EE617 /* ZZTJiXuYueDuModel.m */; };
 		04E49F95213EB2D8007EE617 /* ZZTShoppingHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04E49F94213EB2D8007EE617 /* ZZTShoppingHeaderView.xib */; };
 		04E6D49520EC6B4E00116085 /* ZZTMeEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E6D49320EC6B4E00116085 /* ZZTMeEditViewController.m */; };
@@ -1055,6 +1057,10 @@
 		04DE14AD20E5015F009DF030 /* ZZTPlayCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTPlayCell.h; sourceTree = "<group>"; };
 		04DE14AE20E5015F009DF030 /* ZZTPlayCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTPlayCell.m; sourceTree = "<group>"; };
 		04DE14AF20E5015F009DF030 /* ZZTPlayCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ZZTPlayCell.xib; sourceTree = "<group>"; };
+		04E1F9FF21C12B5900096A0D /* ZZTAuthorCertificationViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTAuthorCertificationViewController.h; sourceTree = "<group>"; };
+		04E1FA0021C12B5900096A0D /* ZZTAuthorCertificationViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTAuthorCertificationViewController.m; sourceTree = "<group>"; };
+		04E1FA0221C132CF00096A0D /* ZZTMeInputOneCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTMeInputOneCell.h; sourceTree = "<group>"; };
+		04E1FA0321C132CF00096A0D /* ZZTMeInputOneCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTMeInputOneCell.m; sourceTree = "<group>"; };
 		04E49F91213D5C57007EE617 /* ZZTJiXuYueDuModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTJiXuYueDuModel.h; sourceTree = "<group>"; };
 		04E49F92213D5C57007EE617 /* ZZTJiXuYueDuModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTJiXuYueDuModel.m; sourceTree = "<group>"; };
 		04E49F94213EB2D8007EE617 /* ZZTShoppingHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ZZTShoppingHeaderView.xib; sourceTree = "<group>"; };
@@ -1248,6 +1254,8 @@
 				04E9FAC621537661005A3986 /* ZZTMyZoneCell.m */,
 				0457EAB82160BE4400BD7373 /* ZZTMEXuHuaCell.h */,
 				0457EAB92160BE4400BD7373 /* ZZTMEXuHuaCell.m */,
+				04E1FA0221C132CF00096A0D /* ZZTMeInputOneCell.h */,
+				04E1FA0321C132CF00096A0D /* ZZTMeInputOneCell.m */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -2162,6 +2170,8 @@
 				0465691721B535EF000A30C6 /* ZZTReportViewController.h */,
 				0465691821B535EF000A30C6 /* ZZTReportViewController.m */,
 				0465691921B535EF000A30C6 /* ZZTReportViewController.xib */,
+				04E1F9FF21C12B5900096A0D /* ZZTAuthorCertificationViewController.h */,
+				04E1FA0021C12B5900096A0D /* ZZTAuthorCertificationViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -2692,6 +2702,7 @@
 				0421C033211AC6910068AD21 /* ZZTFangKuangModel.m in Sources */,
 				042D147D218AA86400BE05F6 /* TZLocationManager.m in Sources */,
 				04DD53CE21A52B2500910D5A /* ZZTFeedBackViewController.m in Sources */,
+				04E1FA0421C132D000096A0D /* ZZTMeInputOneCell.m in Sources */,
 				047ECF04212A583B008D1E82 /* ZZTCreationButtonView.m in Sources */,
 				0422F6A02124120100A8BDBB /* GTMBase64.m in Sources */,
 				0428E8B92179765800702225 /* ZZTUserAgreementViewController.m in Sources */,
@@ -2734,6 +2745,7 @@
 				04A32767216EDE0F00542C65 /* NSDate+UTF8.m in Sources */,
 				042D148E218B337400BE05F6 /* CommentSectionHeadView.m in Sources */,
 				042D147F218AA86400BE05F6 /* TZPhotoPreviewCell.m in Sources */,
+				04E1FA0121C12B5900096A0D /* ZZTAuthorCertificationViewController.m in Sources */,
 				040A03BD2100201B000FAE13 /* ZZTMoreViewController.m in Sources */,
 				04EC76EF21AFB90F00C54CB5 /* SBDatePickerView.m in Sources */,
 				049D636E21995820008EF62F /* ZZTReadHomeViewController.m in Sources */,

@@ -15,6 +15,7 @@
 #import <UMPush/UMessage.h>
 #import <UserNotifications/UserNotifications.h>
 #import <UMCommonLog/UMCommonLogManager.h>
+#import "MLIAPManager.h"
 
 
 #import <UMShare/UMShare.h>
@@ -22,7 +23,7 @@
 //异常处理
 #import <AvoidCrash.h>
 
-@interface AppDelegate ()<UNUserNotificationCenterDelegate>
+@interface AppDelegate ()<UNUserNotificationCenterDelegate,SKPaymentTransactionObserver>
 
 @end
 
@@ -77,6 +78,9 @@
     //异常处理
 //    [self avoidCrash];
 
+    //启动内购回调
+    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+    
     return YES;
 }
 //异常处理
@@ -167,6 +171,9 @@ void uncaughtExceptionHandler(NSException *exception) {
     }
     return result;
 }
+//被关闭时
+-(void)applicationWillTerminate:(UIApplication *)application{
+    [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
 
-
+}
 @end
