@@ -56,8 +56,6 @@
         make.bottom.equalTo(self.cartoonName.mas_top).offset(-4);
     }];
     
-   
-    
     self.image.layer.cornerRadius = 12;
     self.image.layer.masksToBounds = YES;
 //    self.image.backgroundColor = [UIColor orangeColor];

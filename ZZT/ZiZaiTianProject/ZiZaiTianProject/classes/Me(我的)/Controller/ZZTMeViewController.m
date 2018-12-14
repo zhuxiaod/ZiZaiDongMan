@@ -28,6 +28,8 @@
 #import "ZZTAboutUsViewController.h"
 #import "ZZTFeedBackViewController.h"
 #import "ZZTAuthorCertificationViewController.h"
+#import "ZZTAuthorBookRoomViewController.h"
+#import "ZZTAuthorCreationController.h"
 
 @interface ZZTMeViewController ()<UITableViewDataSource,UITableViewDelegate,ZZTSignInViewDelegate>
 
@@ -287,8 +289,15 @@ NSString *bannerID = @"MeCell";
                 [UserInfoManager needLogin];
                 return;
             }
+            //作者认证
             ZZTAuthorCertificationViewController *authorCerVC = [[ZZTAuthorCertificationViewController alloc] init];
+            authorCerVC.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:authorCerVC animated:YES];
+            
+            //作者书库
+            
+//            ZZTAuthorCreationController *authorCtionVC = [[ZZTAuthorCreationController alloc] init];
+//            [self.navigationController pushViewController:authorCtionVC animated:YES];
         }else{
             //关注
             if([[UserInfoManager share] hasLogin] == NO){

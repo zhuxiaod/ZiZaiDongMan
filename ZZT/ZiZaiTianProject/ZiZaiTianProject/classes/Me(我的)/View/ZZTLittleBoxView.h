@@ -7,6 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+@class ZZTLittleBoxView;
+@protocol ZZTLittleBoxViewDelegate <NSObject>
+
+@optional
+
+- (void)clickLittleBoxView:(ZZTLittleBoxView *)littleBoxView selectState:(NSString *)selectState;
+
+@end
 
 typedef void (^LittleBoxBlock) (BOOL isSelect);
 
@@ -15,6 +23,8 @@ typedef void (^LittleBoxBlock) (BOOL isSelect);
 @property (nonatomic,strong) UIButton *button;
 
 @property (nonatomic,assign) BOOL isSelect;
+
+@property(nonatomic,weak)id<ZZTLittleBoxViewDelegate>  delegate;
 
 @property (nonatomic,copy) LittleBoxBlock LittleBoxBlock;
 

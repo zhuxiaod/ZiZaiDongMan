@@ -164,10 +164,13 @@
     if(self.text.length >= self.maxTextNum){
         return;
     }
-    NSLog(@"self.text.length%ld  maxTextNum%ld",self.text.length,_maxTextNum);
+    //得到改变的内容
+    if(_contentChangedBlock){
+        self.contentChangedBlock(self.text);
+    }
     
     NSInteger height = ceilf([self sizeThatFits:CGSizeMake(self.bounds.size.width, MAXFLOAT)].height);
-    NSLog(@"height %ld _maxTextH %ld",(long)height,(long)_maxTextH);
+
     if (_textH != height) { // 高度不一样，就改变了高度
         
         // 当高度大于最大高度时，需要滚动

@@ -8,7 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol ZZTAuthorAttestationViewDelegate <NSObject>
+
+@optional
+
+- (void)getBoxStateWithTag:(NSInteger)tag state:(NSString *)state;
+
+@end
+
 @interface ZZTAuthorAttestationView : UIView
+
+@property(nonatomic,weak)id<ZZTAuthorAttestationViewDelegate>   delegate;
 
 +(instancetype)AuthorAttestationView;
 

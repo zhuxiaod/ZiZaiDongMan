@@ -16,6 +16,8 @@
 
 - (void)changeCellHeight:(ZZTMeInputOneCell *)cell textHeight:(CGFloat)textHeight index:(NSInteger)index;
 
+- (void)contentChange:(ZZTMeInputOneCell *)cell content:(NSString *)content index:(NSInteger)index;
+
 @end
 
 

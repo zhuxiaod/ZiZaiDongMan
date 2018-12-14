@@ -49,6 +49,7 @@
  判断当前是否可以连接到网络
  */
 + (BOOL) connectedToNetwork;
-
+//验证邮箱是否正确
++ (BOOL)validateEmail:(NSString *)strEmail;
 
 @end

@@ -63,8 +63,11 @@
     }else{
         _imageView.image = [UIImage imageNamed:@"Me_littlebox"];
     }
-    if(self.LittleBoxBlock){
-        self.LittleBoxBlock(_button.selected);
+    if (self.delegate && [self.delegate respondsToSelector:@selector(clickLittleBoxView:selectState:)])
+    {
+        // 调用代理方法
+        [self.delegate clickLittleBoxView:self selectState:[NSString stringWithFormat:@"%d",_button.selected]];
     }
+  
 }
 @end

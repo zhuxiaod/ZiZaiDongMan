@@ -120,4 +120,11 @@
     return ((isReachable && !needsConnection) || nonWifi || moveNet) ? YES : NO;
 }
 
++ (BOOL)validateEmail:(NSString *)strEmail {
+    NSString *regex = @"^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$";
+    
+    NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
+    
+    return [emailTest evaluateWithObject:strEmail];
+}
 @end

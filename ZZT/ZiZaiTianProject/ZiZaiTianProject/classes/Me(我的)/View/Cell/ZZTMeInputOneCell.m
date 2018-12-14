@@ -49,6 +49,13 @@
         }
         
     };
+    textView.contentChangedBlock = ^(NSString *text) {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(contentChange:content:index:)])
+        {
+            // 调用代理方法
+            [self.delegate contentChange:self content:text index:self.index];
+        }
+    };
     
     [self addSubview:textView];
     

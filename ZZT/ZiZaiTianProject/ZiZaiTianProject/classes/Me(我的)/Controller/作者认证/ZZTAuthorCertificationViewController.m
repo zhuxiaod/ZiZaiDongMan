@@ -17,7 +17,7 @@ static NSString *AuthorCertificationCellOne = @"AuthorCertificationCellOne";
 static NSString *AuthorMeInputOneCell = @"AuthorMeInputOneCell";
 
 
-@interface ZZTAuthorCertificationViewController ()<UITableViewDataSource,UITableViewDelegate,ZZTMeInputOneCellDelegate>{
+@interface ZZTAuthorCertificationViewController ()<UITableViewDataSource,UITableViewDelegate,ZZTMeInputOneCellDelegate,ZZTAuthorAttestationViewDelegate>{
     CGFloat _cellHeight[2];
 }
 
@@ -39,8 +39,12 @@ static NSString *AuthorMeInputOneCell = @"AuthorMeInputOneCell";
 @property (nonatomic,strong) NSString *emailAddress;
 //个人介绍
 @property (nonatomic,strong) NSString *userIntro;
-//邮箱地址
+//作品介绍
 @property (nonatomic,strong) NSString *workIntro;
+//是否提交邮箱
+@property (nonatomic,strong) NSString *isCommitMail;
+//同意协议
+@property (nonatomic,strong) NSString *isAgreement;
 
 @property (nonatomic,strong) ZZTMeInputOneCell *userIntroCell;
 
@@ -67,22 +71,112 @@ static NSString *AuthorMeInputOneCell = @"AuthorMeInputOneCell";
     self.emailAddress = @"";
     self.userIntro = @"";
     self.workIntro = @"";
-
+    self.isCommitMail = @"0";
+    self.isAgreement = @"0";
+    
     _sectionOne = [NSArray arrayWithObjects:[ZZTCell initCellModelWithTitle:@"真实姓名" cellDetail:@"用于实名认证"],[ZZTCell initCellModelWithTitle:@"身份证" cellDetail:@"居民身份证号码"],[ZZTCell initCellModelWithTitle:@"邮箱地址" cellDetail:@"与提交作品一致的邮箱地址"], nil];
     _sectionTwo = [NSArray arrayWithObjects:[ZZTCell initCellModelWithTitle:@"个人介绍" cellDetail:@"个人创作风格,擅长方向,代表作等..."],[ZZTCell initCellModelWithTitle:@"首次提交作品介绍" cellDetail:@"简单介绍提交的作品名称、内容、风格等..."], nil];
     
     //创建tabView
     [self setupTableView];
     //提交申请
+    [self setupCommitBtn];
     self.TextH = 100;
     //40加字体大小加
     _cellHeight[0] = 100;
     _cellHeight[1] = 100;
+    
+
+}
+
+-(void)setupCommitBtn{
+    
+    UIButton *button = [[UIButton alloc]init];
+    [button setBackgroundImage:[UIImage createImageWithColor:ZZTSubColor] forState:UIControlStateNormal];
+    [button setTitle:@"提交申请" forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(commitApply) forControlEvents:UIControlEventTouchUpInside];
+    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.view addSubview:button];
+    
+    [button mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(self.view).offset(0);
+        make.right.left.equalTo(self.view).offset(0);
+        make.height.mas_equalTo(64);
+    }];
+}
+
+-(void)commitApply{
+    //数据判断
+    BOOL isName = NO;
+    BOOL isID = NO;
+    BOOL isMail = NO;
+    BOOL isCommit = NO;
+    BOOL isAgree = NO;
+
+    //姓名判断
+    if([ZXDCheckContent checkUserName:self.realName]){
+        isName = YES;
+       
+    }else{
+        NSLog(@"姓名格式不正确,请填写正确的姓名");
+        [MBProgressHUD showError:@"姓名格式不正确,请填写正确的姓名"];
+        return;
+    }
+    
+    //'身份证号'正则表达式筛选
+    
+    NSString *identificationNumberPattern =@"\\d{17}[[0-9],0-9xX]";
+    
+    NSPredicate *identificationNumberPredicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@",identificationNumberPattern];
+    
+    if(![identificationNumberPredicate evaluateWithObject:self.IdCard]){
+        
+        NSLog(@"身份证格式不正确,请检查后重试!");
+        [MBProgressHUD showError:@"身份证格式不正确,请填写正确的身份证"];
+        return;
+    }else{
+        isID = YES;
+    }
+    
+    //邮箱验证
+    if([Utilities validateEmail:self.emailAddress]){
+        isMail = YES;
+    }else{
+        
+        NSLog(@"邮箱不正确");
+        [MBProgressHUD showError:@"邮箱地址格式不正确,请填写正确的邮箱地址"];
+        return;
+    }
+    
+    self.userIntro = @"";
+    self.workIntro = @"";
+    //有无勾选协议
+    if([self.isCommitMail isEqualToString:@"0"]){
+        NSLog(@"请提交作品到邮箱");
+        [MBProgressHUD showError:@"请提交作品到邮箱"];
+        return;
+    }else{
+        isCommit = YES;
+    }
+    
+    if([self.isAgreement isEqualToString:@"0"]){
+        NSLog(@"请仔细阅读协议");
+        [MBProgressHUD showError:@"请阅读并同意《自在动漫作者协议》"];
+        return;
+    }else{
+        isAgree = YES;
+    }
+    
+    if(isName && isID && isCommit && isAgree){
+        //请求接口
+        //已经提交申请
+    }
+
 }
 
 -(void)setupTableView{
     CGFloat navbarH = Height_NavBar;
-    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, Height_NavBar , self.view.bounds.size.width, self.view.bounds.size.height - navbarH) style:UITableViewStyleGrouped];
+    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, Height_NavBar , self.view.bounds.size.width, self.view.bounds.size.height - navbarH - 64) style:UITableViewStyleGrouped];
     _tableView.backgroundColor = [UIColor whiteColor];
     _tableView.contentInset = UIEdgeInsetsMake(Height_TabbleViewInset, 0, 0, 0);
     _tableView.sectionHeaderHeight = 0;
@@ -153,6 +247,7 @@ static NSString *AuthorMeInputOneCell = @"AuthorMeInputOneCell";
         return cell;
     }else{
         ZZTMeInputOneCell *cell = [tableView dequeueReusableCellWithIdentifier:AuthorMeInputOneCell];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.cellTextView.layer.borderColor = [UIColor clearColor].CGColor;
         cell.index = indexPath.row;
         cell.delegate = self;
@@ -170,6 +265,37 @@ static NSString *AuthorMeInputOneCell = @"AuthorMeInputOneCell";
         return cell;
     }
 
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    if(indexPath.section == 0){
+        SBPersonalSettingCell *cell = (SBPersonalSettingCell *)[tableView cellForRowAtIndexPath:indexPath];
+        [cell.textField becomeFirstResponder];
+    }else{
+        ZZTMeInputOneCell *cell = (ZZTMeInputOneCell *)[tableView cellForRowAtIndexPath:indexPath];
+        [cell.cellTextView becomeFirstResponder];
+    }
+}
+
+-(void)textFieldChange:(NSInteger)tag{
+    if(tag == 1){
+        UITextField *textView = (UITextField *)[self.view viewWithTag:tag];
+        self.realName = textView.text;
+    }else if (tag == 2){
+        UITextField *textView = (UITextField *)[self.view viewWithTag:tag];
+        self.IdCard = textView.text;
+    }else if (tag == 3){
+        UITextField *textView = (UITextField *)[self.view viewWithTag:tag];
+        self.emailAddress = textView.text;
+    }
+}
+
+-(void)contentChange:(ZZTMeInputOneCell *)cell content:(NSString *)content index:(NSInteger)index{
+    if(index == 0){
+        self.userIntro = content;
+    }else{
+        self.workIntro = content;
+    }
 }
 
 -(void)changeCellHeight:(ZZTMeInputOneCell *)cell textHeight:(CGFloat)textHeight index:(NSInteger)index{
@@ -196,10 +322,20 @@ static NSString *AuthorMeInputOneCell = @"AuthorMeInputOneCell";
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     if(section == 2){
-        ZZTAuthorAttestationView *aaView = [ZZTAuthorAttestationView AuthorAttestationView];
+        ZZTAuthorAttestationView *aaView = [[ZZTAuthorAttestationView alloc]init];
+        aaView.delegate = self;
         return aaView;
     }
     return nil;
+}
+
+-(void)getBoxStateWithTag:(NSInteger)tag state:(NSString *)state
+{
+    if(tag == 0){
+        self.isCommitMail = state;
+    }else{
+        self.isAgreement = state;
+    }
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
@@ -210,9 +346,13 @@ static NSString *AuthorMeInputOneCell = @"AuthorMeInputOneCell";
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
-    UIView *footerView = [[UIView alloc] init];
-    footerView.backgroundColor = [UIColor colorWithHexString:@"#DCDCDC"];
-    return footerView;
+    if(section == 2){
+        return nil;
+    }else{
+        UIView *footerView = [[UIView alloc] init];
+        footerView.backgroundColor = [UIColor colorWithHexString:@"#DCDCDC"];
+        return footerView;
+    }
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
@@ -222,8 +362,5 @@ static NSString *AuthorMeInputOneCell = @"AuthorMeInputOneCell";
     return 4;
 }
 
--(void)textFieldChange:(NSInteger)tag{
 
-
-}
 @end
