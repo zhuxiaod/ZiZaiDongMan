@@ -245,15 +245,13 @@ NSString *bannerID = @"MeCell";
             
             NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
             
-            NSArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
-            if(array.count != 0){
-                UserInfo *model = array[0];
-                model.isLogin = YES;
-                self.userData = model;
-                [self setupTopView];
-                //存一下数据
-                [Utilities SetNSUserDefaults:model];
-            }
+            UserInfo *model = [UserInfo mj_objectWithKeyValues:dic];
+            model.isLogin = YES;
+            self.userData = model;
+            [self setupTopView];
+            //存一下数据
+            [Utilities SetNSUserDefaults:model];
+
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             
         }];

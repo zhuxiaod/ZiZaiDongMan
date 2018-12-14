@@ -723,11 +723,10 @@ static NSString *personalCellThree = @"personalCellThree";
         
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         
-        NSArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
-        if(array.count != 0){
-            UserInfo *model = array[0];
-            [Utilities SetNSUserDefaults:model];
-        }
+        UserInfo *model= [UserInfo mj_objectWithKeyValues:dic];
+
+        [Utilities SetNSUserDefaults:model];
+
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];

@@ -28,6 +28,7 @@
 @property (nonatomic,copy) void (^textFieldEndEditing)(NSInteger tag);
 
 @property (nonatomic, strong) NSString *textFieldText;
+@property (nonatomic, strong) NSString *textFieldPlaceholder;
 
 
 @end

@@ -393,13 +393,12 @@ NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
         
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         
-        NSArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
-        if(array.count != 0){
-            UserInfo *model = array[0];
-            //存一下数据
-            [Utilities SetNSUserDefaults:model];
-            self.ZbLab.text = [NSString stringWithFormat:@"%ld", (long)[Utilities GetNSUserDefaults].zzbNum];
-        }
+        UserInfo *model = [UserInfo mj_objectWithKeyValues:dic];
+
+        //存一下数据
+        [Utilities SetNSUserDefaults:model];
+        self.ZbLab.text = [NSString stringWithFormat:@"%ld", (long)[Utilities GetNSUserDefaults].zzbNum];
+
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];

@@ -92,9 +92,14 @@
 -(void)setTextFieldText:(NSString *)textFieldText{
     _textFieldText = textFieldText;
     if([textFieldText isEqualToString:@""]){
-        textFieldText = @"未填写";
+        self.textField.placeholder = @"未填写";
     }
     self.textField.text = textFieldText;
+}
+
+-(void)setTextFieldPlaceholder:(NSString *)textFieldPlaceholder{
+    _textFieldPlaceholder = textFieldPlaceholder;
+    self.textField.placeholder = textFieldPlaceholder;
 }
 
 - (BOOL)textField:(UITextField*)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString*)string {
@@ -129,7 +134,7 @@
         [self.mainView addSubview:_bottomLine];
         [_bottomLine mas_makeConstraints:^(MASConstraintMaker *make) {
             make.right.bottom.mas_equalTo(0);
-            make.height.mas_equalTo(0.5);
+            make.height.mas_equalTo(1);
             make.left.mas_equalTo(0);
         }];
     }
@@ -143,7 +148,7 @@
         [self.mainView addSubview:_topLine];
         [_topLine mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.right.top.mas_equalTo(0);
-            make.height.mas_equalTo(0.5);
+            make.height.mas_equalTo(1);
         }];
     }
     return _topLine;

@@ -10,4 +10,10 @@
 
 @implementation ZZTCell
 
++(instancetype)initCellModelWithTitle:(NSString *)cellTitle cellDetail:(NSString *)cellDetail{
+    ZZTCell *cell = [[ZZTCell alloc] init];
+    cell.cellTitle = cellTitle;
+    cell.cellDetail = cellDetail;
+    return cell;
+}
 @end

@@ -401,16 +401,12 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
         
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         
-        NSArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
-        if(array.count != 0){
-            UserInfo *model = array[0];
-            self.userData = model;
-            self.zoneHeadView.user = model;
-            [self.tabelView reloadData];
-        }else{
-            self.userData = nil;
-            [self.tabelView reloadData];
-        }
+        UserInfo *model= [UserInfo mj_objectWithKeyValues:dic];
+
+        self.userData = model;
+        self.zoneHeadView.user = model;
+        [self.tabelView reloadData];
+
         [self.tabelView.mj_header endRefreshing];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [self.tabelView.mj_header endRefreshing];

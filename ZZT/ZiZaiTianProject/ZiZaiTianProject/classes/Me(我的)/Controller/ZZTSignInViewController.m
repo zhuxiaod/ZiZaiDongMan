@@ -122,8 +122,7 @@
     [manager POST:[ZZTAPI stringByAppendingString:@"login/usersInfo"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         NSLog(@"%@",dic);
-        NSArray *array = [ZZTUserModel mj_objectArrayWithKeyValuesArray:dic];
-        ZZTUserModel *model = array[0];
+        ZZTUserModel *model = [ZZTUserModel mj_objectWithKeyValues:dic];
         self.userData = model;
         [self isget:model.signCount isSign:model.ifsign];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

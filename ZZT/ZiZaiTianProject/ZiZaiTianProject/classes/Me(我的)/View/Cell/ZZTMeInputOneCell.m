@@ -7,8 +7,13 @@
 //
 
 #import "ZZTMeInputOneCell.h"
+#import "CMInputView.h"
 
 @interface ZZTMeInputOneCell ()<UITextViewDelegate>
+
+@property (nonatomic,assign) CGFloat kInputHeight;
+
+@property (nonatomic,strong) UIView *bottomView;
 
 @end
 
@@ -29,9 +34,22 @@
     [self addSubview:titleLab];
     
     //介绍信息
-    UITextView *textView = [[UITextView alloc] init];
+    CMInputView *textView = [[CMInputView alloc] init];
+    textView.textViewFont = [UIFont systemFontOfSize:18];
+//    textView.maxTextNum = 200;
     self.cellTextView = textView;
-    textView.delegate = self;
+    textView.maxNumberOfLines = 4;
+    textView.placeholderFont = [UIFont systemFontOfSize:18];
+    textView.textChangedBlock = ^(NSString *text, CGFloat textHeight) {
+
+        if (self.delegate && [self.delegate respondsToSelector:@selector(changeCellHeight:textHeight:index:)])
+        {
+            // 调用代理方法
+            [self.delegate changeCellHeight:self textHeight:textHeight + 40 index:self.index];
+        }
+        
+    };
+    
     [self addSubview:textView];
     
     NSMutableParagraphStyle *paragraphStyle = [NSMutableParagraphStyle new];
@@ -40,6 +58,21 @@
                                  NSFontAttributeName:[UIFont systemFontOfSize:18], NSParagraphStyleAttributeName:paragraphStyle
                                  };
     textView.typingAttributes = attributes;
+    
+    //bottomView
+    UIView *bottomView = [[UIView alloc] init];
+    bottomView.backgroundColor = [UIColor colorWithHexString:@"#DCDCDC"];
+    _bottomView = bottomView;
+    [self addSubview:bottomView];
+}
+
+- (UITableView *)tableView
+{
+    UIView *tableView = self.superview;
+    while (![tableView isKindOfClass:[UITableView class]] && tableView) {
+        tableView = tableView.superview;
+    }
+    return (UITableView *)tableView;
 }
 
 -(void)layoutSubviews{
@@ -59,69 +92,30 @@
         make.bottom.equalTo(self.mas_bottom);
     }];
     
+    [self.bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(self.mas_bottom).offset(-1);
+        make.right.left.equalTo(self);
+        make.height.mas_offset(1);
+    }];
 }
 
-- (void)textViewDidBeginEditing:(UITextView *)textView {
-    if ([textView.text isEqualToString:self.placeHolderStr]) {
-        self.cellTextView.text = @"";
-        self.cellTextView.textColor = [UIColor blackColor];
-    }
+-(void)setPlaceHolderStr:(NSString *)placeHolderStr{
+    _placeHolderStr = placeHolderStr;
+    self.cellTextView.placeholderColor = [UIColor lightGrayColor];
+    self.cellTextView.placeholder = placeHolderStr;
 }
 
-- (void)textViewDidEndEditing:(UITextView *)textView {
-    if (textView.text.length == 0) {
-        self.cellTextView.text = self.placeHolderStr;
-        self.cellTextView.textColor = [UIColor lightGrayColor];
-    }
-}
-
-#pragma mark - UITextViewDelegate
-- (void)textViewDidChange:(UITextView *)textView {
-    if (textView.text.length > 200) { // 限制5000字内
-        textView.text = [textView.text substringToIndex:200];
-    }
-    static CGFloat maxHeight = 36 + 24 * 3;//初始高度为36，每增加一行，高度增加24
-    CGRect frame = textView.frame;
-    CGSize constraintSize = CGSizeMake(frame.size.width, MAXFLOAT);
-    CGSize size = [textView sizeThatFits:constraintSize];
-    if (size.height >= maxHeight) {
-        size.height = maxHeight;
-        textView.scrollEnabled = YES;   // 允许滚动
-    } else {
-        textView.scrollEnabled = NO;    // 不允许滚动
-    }
+- (CGFloat)myHeight {
     
-//    if ((ceil(size.height) + 14) != self.kInputHeight) {
-//        CGPoint offset = self.nowTableView.contentOffset;
-//        CGFloat delta = ceil(size.height) + 14 - self.kInputHeight;
-//        offset.y += delta;
-//        if (offset.y < 0) {
-//            offset.y = 0;
-//        }
-//        [self.nowTableView setContentOffset:offset animated:NO];
-//        self.kInputHeight = ceil(size.height) + 14;
-//        [self.kInputView mas_updateConstraints:^(MASConstraintMaker *make) {
-//            make.height.equalTo(@(ceil(size.height) + 14));
-//        }];
-//    }
+    [self setNeedsLayout];
+    [self layoutIfNeeded];
+    
+    return 40 + self.kInputHeight;
 }
 
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
-//    if ([text isEqualToString:@"\n"]){
-//        //大于0 才能发送信息
-//        if (self.kTextView.text.length > 0) {     // send Text
-//            //            [self sendMessage:self.kTextView.text];
-//        }
-//        [self.kInputView mas_updateConstraints:^(MASConstraintMaker *make) {
-//            make.height.equalTo(@50);
-//        }];
-//        [self.kTextView setText:@""];
-//        self.kInputHeight = 50;
-//        return NO;
-//    }
-    return YES;
+-(void)setHiddenBottomView:(BOOL)hiddenBottomView{
+    _hiddenBottomView = hiddenBottomView;
+    self.bottomView.hidden = YES;
 }
-
-
 
 @end

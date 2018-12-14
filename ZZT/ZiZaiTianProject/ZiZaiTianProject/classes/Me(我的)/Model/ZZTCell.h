@@ -10,6 +10,10 @@
 
 @interface ZZTCell : NSObject
 
-@property (nonatomic ,copy)NSString * name;
+@property (nonatomic ,copy)NSString *cellTitle;
+
+@property (nonatomic ,copy)NSString *cellDetail;
+
++(instancetype)initCellModelWithTitle:(NSString *)cellTitle cellDetail:(NSString *)cellDetail;
 
 @end

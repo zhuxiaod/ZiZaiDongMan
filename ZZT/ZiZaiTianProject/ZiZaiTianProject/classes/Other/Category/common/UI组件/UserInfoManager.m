@@ -166,15 +166,13 @@
         
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         
-        NSArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
+        UserInfo *model = [UserInfo mj_objectWithKeyValues:dic];
         
-        if(array.count != 0){
-            UserInfo *model = array[0];
-            model.isLogin = YES;
-            self.userData = model;
-            //存一下数据
-            [Utilities SetNSUserDefaults:model];
-        }
+        model.isLogin = YES;
+        self.userData = model;
+        //存一下数据
+        [Utilities SetNSUserDefaults:model];
+
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];

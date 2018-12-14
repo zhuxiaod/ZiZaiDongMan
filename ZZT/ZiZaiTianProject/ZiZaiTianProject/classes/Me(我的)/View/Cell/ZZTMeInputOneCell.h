@@ -8,12 +8,31 @@
 
 #import <UIKit/UIKit.h>
 
+@class CMInputView;
+@class ZZTMeInputOneCell;
+@protocol ZZTMeInputOneCellDelegate <NSObject>
+
+@optional
+
+- (void)changeCellHeight:(ZZTMeInputOneCell *)cell textHeight:(CGFloat)textHeight index:(NSInteger)index;
+
+@end
+
+
 @interface ZZTMeInputOneCell : UITableViewCell
 
 @property (nonatomic,strong) UILabel *titleLab;
 
-@property (nonatomic,strong) UITextView *cellTextView;
+@property (nonatomic,strong) CMInputView *cellTextView;
 
 @property (nonatomic,strong) NSString *placeHolderStr;
+
+@property (nonatomic,assign) NSInteger index;
+
+@property (nonatomic,assign) BOOL hiddenBottomView;
+
+@property (nonatomic,weak)id<ZZTMeInputOneCellDelegate>   delegate;
+
+- (CGFloat)myHeight ;
 
 @end
