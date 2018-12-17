@@ -265,6 +265,7 @@
 		04772101210823EC00FC97B5 /* ZZTImageEditView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04772100210823EC00FC97B5 /* ZZTImageEditView.m */; };
 		047721032108545B00FC97B5 /* b.png in Resources */ = {isa = PBXBuildFile; fileRef = 047721022108545B00FC97B5 /* b.png */; };
 		04799F2921ABD9A800FD1769 /* ZZTZBView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04799F2821ABD9A800FD1769 /* ZZTZBView.m */; };
+		047E3B1A21C4F4A200117D87 /* ZZTCartCoverSetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 047E3B1921C4F4A200117D87 /* ZZTCartCoverSetView.m */; };
 		047ECEBA212814D3008D1E82 /* ColorInButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 047ECEB9212814D3008D1E82 /* ColorInButton.m */; };
 		047ECEBC212814E3008D1E82 /* ColorInButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 047ECEBB212814E3008D1E82 /* ColorInButton.xib */; };
 		047ECF04212A583B008D1E82 /* ZZTCreationButtonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 047ECF03212A583B008D1E82 /* ZZTCreationButtonView.m */; };
@@ -339,6 +340,9 @@
 		04A32767216EDE0F00542C65 /* NSDate+UTF8.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A32766216EDE0F00542C65 /* NSDate+UTF8.m */; };
 		04A803EC21884D7100E81C5E /* ZZTChapterChooseView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A803EB21884D7100E81C5E /* ZZTChapterChooseView.m */; };
 		04A803EF2188616900E81C5E /* ZZTChapterChooseModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A803EE2188616900E81C5E /* ZZTChapterChooseModel.m */; };
+		04AD3FEB21C749E10080A6D5 /* ZZTChapterPriceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04AD3FEA21C749E10080A6D5 /* ZZTChapterPriceView.m */; };
+		04AD3FEE21C7500B0080A6D5 /* ZZTChapterPriceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04AD3FED21C7500B0080A6D5 /* ZZTChapterPriceCell.m */; };
+		04AD3FF121C7968D0080A6D5 /* ZZTChapterPriceModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 04AD3FF021C7968D0080A6D5 /* ZZTChapterPriceModel.m */; };
 		04B4250321227CB600FDEE58 /* ZZTBubbleImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04B4250121227CB500FDEE58 /* ZZTBubbleImageView.m */; };
 		04B9FF4120E506FC007CC582 /* ZZTChildCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04B9FF3F20E506FB007CC582 /* ZZTChildCollectionView.m */; };
 		04C39F4E2136493900F4CB4A /* ZZTFindCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C39F4C2136493900F4CB4A /* ZZTFindCommentCell.m */; };
@@ -881,6 +885,8 @@
 		047721022108545B00FC97B5 /* b.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = b.png; sourceTree = "<group>"; };
 		04799F2721ABD9A800FD1769 /* ZZTZBView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTZBView.h; sourceTree = "<group>"; };
 		04799F2821ABD9A800FD1769 /* ZZTZBView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTZBView.m; sourceTree = "<group>"; };
+		047E3B1821C4F4A200117D87 /* ZZTCartCoverSetView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTCartCoverSetView.h; sourceTree = "<group>"; };
+		047E3B1921C4F4A200117D87 /* ZZTCartCoverSetView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTCartCoverSetView.m; sourceTree = "<group>"; };
 		047ECEB8212814D3008D1E82 /* ColorInButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColorInButton.h; sourceTree = "<group>"; };
 		047ECEB9212814D3008D1E82 /* ColorInButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColorInButton.m; sourceTree = "<group>"; };
 		047ECEBB212814E3008D1E82 /* ColorInButton.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ColorInButton.xib; sourceTree = "<group>"; };
@@ -1015,6 +1021,12 @@
 		04A803EB21884D7100E81C5E /* ZZTChapterChooseView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTChapterChooseView.m; sourceTree = "<group>"; };
 		04A803ED2188616900E81C5E /* ZZTChapterChooseModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTChapterChooseModel.h; sourceTree = "<group>"; };
 		04A803EE2188616900E81C5E /* ZZTChapterChooseModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTChapterChooseModel.m; sourceTree = "<group>"; };
+		04AD3FE921C749E10080A6D5 /* ZZTChapterPriceView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTChapterPriceView.h; sourceTree = "<group>"; };
+		04AD3FEA21C749E10080A6D5 /* ZZTChapterPriceView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTChapterPriceView.m; sourceTree = "<group>"; };
+		04AD3FEC21C7500B0080A6D5 /* ZZTChapterPriceCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTChapterPriceCell.h; sourceTree = "<group>"; };
+		04AD3FED21C7500B0080A6D5 /* ZZTChapterPriceCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTChapterPriceCell.m; sourceTree = "<group>"; };
+		04AD3FEF21C7968D0080A6D5 /* ZZTChapterPriceModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTChapterPriceModel.h; sourceTree = "<group>"; };
+		04AD3FF021C7968D0080A6D5 /* ZZTChapterPriceModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTChapterPriceModel.m; sourceTree = "<group>"; };
 		04B4250121227CB500FDEE58 /* ZZTBubbleImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZZTBubbleImageView.m; sourceTree = "<group>"; };
 		04B4250221227CB600FDEE58 /* ZZTBubbleImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZTBubbleImageView.h; sourceTree = "<group>"; };
 		04B9FF3F20E506FB007CC582 /* ZZTChildCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ZZTChildCollectionView.m; path = "ZiZaiTianProject/classes/Me(我的)/View/ZZTChildCollectionView.m"; sourceTree = SOURCE_ROOT; };
@@ -1249,6 +1261,12 @@
 			children = (
 				041BAC0921C3B3DD007F0AB1 /* ZZTAuthorDraftCell.h */,
 				041BAC0A21C3B3DD007F0AB1 /* ZZTAuthorDraftCell.m */,
+				047E3B1821C4F4A200117D87 /* ZZTCartCoverSetView.h */,
+				047E3B1921C4F4A200117D87 /* ZZTCartCoverSetView.m */,
+				04AD3FE921C749E10080A6D5 /* ZZTChapterPriceView.h */,
+				04AD3FEA21C749E10080A6D5 /* ZZTChapterPriceView.m */,
+				04AD3FEC21C7500B0080A6D5 /* ZZTChapterPriceCell.h */,
+				04AD3FED21C7500B0080A6D5 /* ZZTChapterPriceCell.m */,
 			);
 			path = "作者认证";
 			sourceTree = "<group>";
@@ -1840,6 +1858,8 @@
 				04E9FADB2154E0AE005A3986 /* ZZTMyZoneTotalModel.m */,
 				040961F021BA983700D40523 /* ZZTReportModel.h */,
 				040961F121BA983700D40523 /* ZZTReportModel.m */,
+				04AD3FEF21C7968D0080A6D5 /* ZZTChapterPriceModel.h */,
+				04AD3FF021C7968D0080A6D5 /* ZZTChapterPriceModel.m */,
 			);
 			name = Model;
 			path = "ZiZaiTianProject/classes/Me(我的)/Model";
@@ -2609,6 +2629,7 @@
 				0466837A20F3096A0095C6BC /* ListView.m in Sources */,
 				04DE149220E46E88009DF030 /* UIBarButtonItem+Item.m in Sources */,
 				0495DC382191A04900761EE8 /* ZZTStatusFooterView.m in Sources */,
+				04AD3FF121C7968D0080A6D5 /* ZZTChapterPriceModel.m in Sources */,
 				0466839C20F336590095C6BC /* UIImageView+Extension.m in Sources */,
 				0471A89320F89C8E00ABFF35 /* ZZTReaderViewController.m in Sources */,
 				0434BC86212BF74300AC43E0 /* ZZTRankViewController.m in Sources */,
@@ -2737,6 +2758,7 @@
 				040FD51920EF4B1000004C71 /* ZZTShoppingHeaderView.m in Sources */,
 				041EE0BA20EB90180012FEDF /* ZZTSettingModel.m in Sources */,
 				046FF66A2101E029005DED73 /* ZZTCreatCartoonViewController.m in Sources */,
+				047E3B1A21C4F4A200117D87 /* ZZTCartCoverSetView.m in Sources */,
 				04E9FAD32153D28E005A3986 /* UserInfo.m in Sources */,
 				046683BD20F4817D0095C6BC /* ZZTEasyBtnModel.m in Sources */,
 				046936CF21BE1AF100ED2F5B /* ZZTChapterVipItemModel.m in Sources */,
@@ -2772,6 +2794,7 @@
 				0428E8B92179765800702225 /* ZZTUserAgreementViewController.m in Sources */,
 				042BA0B720E9BF2F003E279A /* ZZTAttentionCell.m in Sources */,
 				0456F154219041800077739A /* ZZTNavBarTitleView.m in Sources */,
+				04AD3FEB21C749E10080A6D5 /* ZZTChapterPriceView.m in Sources */,
 				0466837C20F3096A0095C6BC /* ProgressHUD.m in Sources */,
 				04C39F4E2136493900F4CB4A /* ZZTFindCommentCell.m in Sources */,
 				041F5CD421AE61AA00527A8F /* MaskView.m in Sources */,
@@ -2825,6 +2848,7 @@
 				0428E8BE2179B2B100702225 /* SectionFooterView.m in Sources */,
 				04A803EC21884D7100E81C5E /* ZZTChapterChooseView.m in Sources */,
 				042D147A218AA86400BE05F6 /* TZImageManager.m in Sources */,
+				04AD3FEE21C7500B0080A6D5 /* ZZTChapterPriceCell.m in Sources */,
 				042D1480218AA86400BE05F6 /* TZPhotoPreviewController.m in Sources */,
 				040961F221BA983700D40523 /* ZZTReportModel.m in Sources */,
 				0471A84B20F59C0600ABFF35 /* ZZTSecondBtn.m in Sources */,

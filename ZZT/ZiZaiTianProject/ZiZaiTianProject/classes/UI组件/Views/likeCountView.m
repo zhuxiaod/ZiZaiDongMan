@@ -97,7 +97,7 @@ static NSString * const pressedImageName = @"catoonDetail_like_select";
     
     [self.imageView setContentMode:UIViewContentModeScaleAspectFit];
     
-    UIColor *textColor = self.islike ? ZZTSubColor : [UIColor lightGrayColor];
+    UIColor *textColor = self.islike ? ZZTSubColor : ZZTSubColor;
     
     [self setTitleColor:textColor forState:UIControlStateNormal];
     

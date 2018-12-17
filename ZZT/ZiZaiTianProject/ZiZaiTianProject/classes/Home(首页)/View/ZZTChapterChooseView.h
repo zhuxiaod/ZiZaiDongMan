@@ -25,6 +25,9 @@
 
 @property (nonatomic,assign) NSInteger total;
 
+@property (nonatomic,strong) NSString *title;
+
+
 - (CGFloat)myHeight;
 
 @end

@@ -8,7 +8,7 @@
 
 #import "CMInputView.h"
 
-@interface CMInputView ()
+@interface CMInputView ()<UITextViewDelegate>
 /**
  *  UITextView作为placeholderView，使placeholderView等于UITextView的大小，字体重叠显示，方便快捷，解决占位符问题.
  */
@@ -135,6 +135,7 @@
     self.enablesReturnKeyAutomatically = YES;
     self.layer.borderWidth = 1;
     self.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    self.delegate = self;
     
     //实时监听textView值得改变
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textDidChange) name:UITextViewTextDidChangeNotification object:self];
@@ -161,9 +162,12 @@
     // 根据文字内容决定placeholderView是否隐藏
     self.placeholderView.hidden = self.text.length > 0;
     
-    if(self.text.length >= self.maxTextNum){
-        return;
+    if ([self.text length] > self.maxTextNum) {
+    self.text = [self.text substringWithRange:NSMakeRange(0, self.maxTextNum)];
+    [self becomeFirstResponder];
+    return;
     }
+
     //得到改变的内容
     if(_contentChangedBlock){
         self.contentChangedBlock(self.text);
@@ -188,6 +192,13 @@
     }
 }
 
+-(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
+    if (self.text.length > self.maxTextNum){
+        return NO;
+    }else{
+        return YES;
+    }
+}
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];

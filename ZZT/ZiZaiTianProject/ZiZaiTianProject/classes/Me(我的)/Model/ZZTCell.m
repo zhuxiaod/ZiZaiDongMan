@@ -16,4 +16,11 @@
     cell.cellDetail = cellDetail;
     return cell;
 }
+
++(instancetype)initPriceItemModelWithChapterMoney:(NSString *)chapterMoney id:(NSString *)id{
+    ZZTCell *priceItemModel = [[ZZTCell alloc] init];
+    priceItemModel.chapterMoney = chapterMoney;
+    priceItemModel.id = id;
+    return priceItemModel;
+}
 @end

@@ -110,7 +110,8 @@
 #import "customer.h"
 #import "ZZTReportBtn.h"
 #import "SBPersonalSettingCell.h"
-
+#import "CMInputView.h"
+#import "ZZTCell.h"
 #define BanerHeight SCREEN_HEIGHT * 0.3
 
 #define   SCREEN_MAX_LENGTH   (MAX(SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -124,6 +125,7 @@
 #define MyLog(...) NSLog(__VA_ARGS__);
 #define ZZTColor(r, g, b) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:1.0]
 #define ZZTSubColor [UIColor colorWithRed:137.0/255.0 green:134.0/255.0 blue:219.0/255.0 alpha:1.0]
+#define ZZTLineColor [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:1.0]
 
 /** 屏幕尺寸 */
 #define SCREEN_BOUNDS [UIScreen mainScreen].bounds

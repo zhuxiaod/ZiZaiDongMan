@@ -84,5 +84,6 @@
 
 @property(nonatomic,assign)NSInteger chapterMoney;
 
+@property(nonatomic,assign)NSInteger isSelect;
 
 @end

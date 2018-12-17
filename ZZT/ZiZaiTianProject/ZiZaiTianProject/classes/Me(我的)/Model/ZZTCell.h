@@ -13,7 +13,14 @@
 @property (nonatomic ,copy)NSString *cellTitle;
 
 @property (nonatomic ,copy)NSString *cellDetail;
+//价格属性
+@property (nonatomic ,copy) NSString *chapterMoney;
+
+@property (nonatomic ,copy) NSString *id;
 
 +(instancetype)initCellModelWithTitle:(NSString *)cellTitle cellDetail:(NSString *)cellDetail;
+
+
++(instancetype)initPriceItemModelWithChapterMoney:(NSString *)chapterMoney id:(NSString *)id;
 
 @end

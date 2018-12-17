@@ -31,6 +31,23 @@
 @end
 
 @implementation ZZTChapterChooseView
+
+-(void)setTitle:(NSString *)title{
+    _title = title;
+    _mainText.text = title;
+
+}
+
+//-(UILabel *)mainText{
+//    if(!_mainText){
+//        //正篇lab
+//        _mainText = [[UILabel alloc] init];
+//
+//        [self.backView addSubview:_mainText];
+//    }
+//    return _mainText;
+//}
+
 //点击样式
 -(NSMutableArray *)itemStyleArray{
     if(!_itemStyleArray){
@@ -77,6 +94,7 @@
     [self.contentView addSubview:mainText];
     
     UICollectionViewFlowLayout *layout = [self setupCollectionViewFlowLayout];
+    
     [self setupCollectionView:layout];
     
     //按钮View
@@ -97,9 +115,9 @@
     [openButton setImage:[UIImage imageNamed:@"wordsDetail_open"] forState:UIControlStateNormal];
     [openButton setImage:[UIImage imageNamed:@"wordsDetail_close"] forState:UIControlStateSelected];
     _openBtn = openButton;
-    openButton.enabled = NO;
+//    openButton.enabled = NO;
     [openButton addTarget:self action:@selector(openOrClose:) forControlEvents:UIControlEventTouchUpInside];
-//    [bottom addSubview:openButton];
+    [self.contentView addSubview:openButton];
     
     UIView *bottomView = [[UIView alloc] init];
     bottomView.backgroundColor = [UIColor colorWithRGB:@"239,239,239"];
@@ -124,10 +142,11 @@
     //3.2行以上
     
     //正篇
-    [_mainText mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.mainText mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.backView.mas_top).offset(8);
-        make.left.equalTo(self.backView.mas_left).offset(8);
+        make.left.equalTo(self.backView.mas_left).offset(12);
         make.height.mas_equalTo(30);
+//        make.right.equalTo(self.backView.mas_right).offset(-8);
     }];
     //没有设置高度
     [_collectionView mas_makeConstraints:^(MASConstraintMaker *make) {

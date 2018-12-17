@@ -150,12 +150,12 @@
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
 }
 
--(void)viewDidDisappear:(BOOL)animated{
-    [super viewDidDisappear:animated];
-    //电池白
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
-
-}
+//-(void)viewDidDisappear:(BOOL)animated{
+//    [super viewDidDisappear:animated];
+//    //电池白
+//    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
+//
+//}
 
 //滑动展示清空按钮
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
