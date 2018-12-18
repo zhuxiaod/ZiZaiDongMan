@@ -7,9 +7,13 @@
 //
 
 #import "ZZTLittleBoxView.h"
+
 @interface ZZTLittleBoxView ()
+
 @property (nonatomic,strong) UIImageView *imageView;
+
 @end
+
 @implementation ZZTLittleBoxView
 
 - (id)initWithFrame:(CGRect)frame{

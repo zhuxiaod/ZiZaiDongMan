@@ -162,6 +162,8 @@
     // 根据文字内容决定placeholderView是否隐藏
     self.placeholderView.hidden = self.text.length > 0;
     
+    NSLog(@"self.text:%@",self.text);
+    
     if ([self.text length] > self.maxTextNum) {
     self.text = [self.text substringWithRange:NSMakeRange(0, self.maxTextNum)];
     [self becomeFirstResponder];
@@ -205,5 +207,6 @@
     
     [self removeObserver:self forKeyPath:NSStringFromSelector(@selector(text))];
 }
+
 
 @end

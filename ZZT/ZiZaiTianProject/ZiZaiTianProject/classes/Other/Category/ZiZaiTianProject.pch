@@ -112,6 +112,8 @@
 #import "SBPersonalSettingCell.h"
 #import "CMInputView.h"
 #import "ZZTCell.h"
+#import "ZZTCarttonDetailModel.h"
+
 #define BanerHeight SCREEN_HEIGHT * 0.3
 
 #define   SCREEN_MAX_LENGTH   (MAX(SCREEN_WIDTH, SCREEN_HEIGHT))

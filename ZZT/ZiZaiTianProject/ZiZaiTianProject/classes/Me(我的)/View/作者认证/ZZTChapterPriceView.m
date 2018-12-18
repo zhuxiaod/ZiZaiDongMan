@@ -11,7 +11,7 @@
 #import "ZZTChapterlistModel.h"
 #import "ZZTLittleBoxView.h"
 
-@interface ZZTChapterPriceView ()<UICollectionViewDataSource,UICollectionViewDelegate,TTTAttributedLabelDelegate>
+@interface ZZTChapterPriceView ()<UICollectionViewDataSource,UICollectionViewDelegate,TTTAttributedLabelDelegate,ZZTLittleBoxViewDelegate,UITextFieldDelegate>
 
 @property (nonatomic,strong) UICollectionView *collectionView;
 
@@ -19,7 +19,7 @@
 
 @property (nonatomic,strong) NSMutableArray *itemStyleArray;
 
-@property (nonatomic,strong) UILabel *chapterPrice;
+@property (nonatomic,strong) TTTAttributedLabel *chapterPrice;
 
 @property (nonatomic,strong) UIImageView *imageView;
 
@@ -77,9 +77,9 @@
     [self setupCollectionView:layout];
     
     //lab
-    UILabel *chapterPrice = [[UILabel alloc] init];
+    TTTAttributedLabel *chapterPrice = [TTTAttributedLabel new];
+    chapterPrice.textColor = [UIColor lightGrayColor];
     chapterPrice.text = @"点击设定章节付费,单章价格为";
-    [chapterPrice setTextColor:[UIColor lightGrayColor]];
     CGFloat labW = [chapterPrice.text getTextWidthWithFont:chapterPrice.font];
     CGFloat labSpace = (SCREEN_WIDTH - labW - 96) / 2;
     _labSpace = labSpace;
@@ -96,35 +96,38 @@
     
     //金额输入框
     UITextField *priceTF = [[UITextField alloc] init];
+    priceTF.keyboardType = UIKeyboardTypeDecimalPad;
     _priceTF = priceTF;
+    [priceTF setTextColor:[UIColor lightGrayColor]];
+    priceTF.delegate = self;
     priceTF.borderStyle = UITextBorderStyleRoundedRect;
     priceTF.layer.borderColor = [UIColor lightGrayColor].CGColor;
     [self addSubview:priceTF];
     
     //小box
     ZZTLittleBoxView *box = [[ZZTLittleBoxView alloc] init];
+    box.delegate = self;
     _littleBox = box;
     [self addSubview:box];
+    
     //lab
     TTTAttributedLabel *payChapterLab = [TTTAttributedLabel new];
+    payChapterLab.textColor = [UIColor lightGrayColor];
     payChapterLab.lineSpacing = SectionHeaderLineSpace;
     payChapterLab.font = [UIFont systemFontOfSize:16];
     NSString *commitToMailStr = @"新章节默认设定为付费章节";
-    _payChapterLabW = (SCREEN_WIDTH - (20 + 4 + [payChapterLab.text getTextWidthWithFont:payChapterLab.font])) / 2;
+    _payChapterLabW = (SCREEN_WIDTH - (20 + 4 + [commitToMailStr getTextWidthWithFont:payChapterLab.font])) / 2;
     // 没有点击时候的样式
     payChapterLab.linkAttributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:16],
                                        (NSString *)kCTForegroundColorAttributeName:[UIColor lightGrayColor],
                                        (NSString *)kCTUnderlineStyleAttributeName: [NSNumber numberWithInt:kCTUnderlineStyleNone]};
-    
+//
     payChapterLab.activeLinkAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
                                             [UIColor lightGrayColor],(NSString *)kCTForegroundColorAttributeName,nil];
     
     NSRange selRange1 = [commitToMailStr rangeOfString:@"新章节默认设定为付费章节"];
     
-    [payChapterLab setText:commitToMailStr afterInheritingLabelAttributesAndConfiguringWithBlock:^NSMutableAttributedString *(NSMutableAttributedString *mutableAttributedString) {
-        [mutableAttributedString addAttribute:(NSString*)kCTForegroundColorAttributeName value:(id)[UIColor colorWithRed:137.0/255.0 green:134.0/255.0 blue:219.0/255.0 alpha:1.0] range:selRange1];
-        return mutableAttributedString;
-    }];
+    payChapterLab.text = commitToMailStr;
     
     [payChapterLab addLinkToTransitInformation:@{@"select":@"新章节默认设定为付费章节"} withRange:selRange1];
     
@@ -212,8 +215,8 @@
 //设置分组数
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
     return 1;
-    
 }
+
 //设置每个分组个数
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
     return _dataArray.count;
@@ -237,6 +240,7 @@
         
         model.ifrelease = 2;
         
+        
     }else{
         
         model.ifrelease = 1;
@@ -253,7 +257,6 @@
         // 调用代理方法
         [self.delegate setChapterPriceViewModel:model];
     }
-
 }
 
 //cell 大小
@@ -263,4 +266,16 @@
     return CGSizeMake((SCREEN_WIDTH - 40)/ 5 - 4 , 40);
 }
 
+- (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithTransitInformation:(NSDictionary *)components {
+    [self.littleBox btnTarget];
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField{
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(setupPriceEnding:)])
+    {
+        // 调用代理方法
+        [self.delegate setupPriceEnding:textField.text];
+    }
+}
 @end

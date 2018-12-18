@@ -35,11 +35,16 @@
     
     //介绍信息
     CMInputView *textView = [[CMInputView alloc] init];
+    
     textView.textViewFont = [UIFont systemFontOfSize:18];
+    
 //    textView.maxTextNum = 200;
     self.cellTextView = textView;
+    
     textView.maxNumberOfLines = 4;
+    
     textView.placeholderFont = [UIFont systemFontOfSize:18];
+    
     textView.textChangedBlock = ^(NSString *text, CGFloat textHeight) {
 
         if (self.delegate && [self.delegate respondsToSelector:@selector(changeCellHeight:textHeight:index:)])
@@ -47,8 +52,8 @@
             // 调用代理方法
             [self.delegate changeCellHeight:self textHeight:textHeight + 40 index:self.index];
         }
-        
     };
+    
     textView.contentChangedBlock = ^(NSString *text) {
         if (self.delegate && [self.delegate respondsToSelector:@selector(contentChange:content:index:)])
         {
@@ -100,7 +105,7 @@
     }];
     
     [self.bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(self.mas_bottom).offset(-1);
+        make.bottom.equalTo(self.mas_bottom).offset(0);
         make.right.left.equalTo(self);
         make.height.mas_offset(1);
     }];

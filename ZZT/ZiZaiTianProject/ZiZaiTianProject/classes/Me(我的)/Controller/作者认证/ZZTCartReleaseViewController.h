@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@class ZZTCarttonDetailModel;
+
 @interface ZZTCartReleaseViewController : BaseViewController
+
+@property (nonatomic,strong) ZZTCarttonDetailModel *model;
 
 @end

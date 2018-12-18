@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+@class ZZTCarttonDetailModel;
+
 @interface ZZTCartCoverSetView : UIView
+
+@property (nonatomic,strong) ZZTCarttonDetailModel *imgModel;
+
 
 @end

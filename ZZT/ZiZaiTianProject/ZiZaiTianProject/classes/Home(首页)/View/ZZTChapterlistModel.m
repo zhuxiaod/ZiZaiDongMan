@@ -29,7 +29,7 @@
 @synthesize wordNum;
 @synthesize listTotal;
 @synthesize chapterMoney;
-
+@synthesize isSelect;
 
 // 归档属性
 - (void)encodeWithCoder:(nonnull NSCoder *)aCoder {

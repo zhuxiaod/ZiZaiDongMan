@@ -28,4 +28,6 @@ typedef void (^LittleBoxBlock) (BOOL isSelect);
 
 @property (nonatomic,copy) LittleBoxBlock LittleBoxBlock;
 
+-(void)btnTarget;
+
 @end

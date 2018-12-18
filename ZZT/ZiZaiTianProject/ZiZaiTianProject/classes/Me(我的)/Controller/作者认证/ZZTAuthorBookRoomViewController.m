@@ -7,6 +7,7 @@
 //
 
 #import "ZZTAuthorBookRoomViewController.h"
+#import "ZZTCartReleaseViewController.h"
 
 @interface ZZTAuthorBookRoomViewController ()<UIScrollViewDelegate,UICollectionViewDelegate,UICollectionViewDataSource>
 
@@ -19,6 +20,10 @@
 @property (nonatomic,strong) UICollectionView *collectionView;
 
 @property (nonatomic,strong) NSMutableArray *dataArray;
+
+@property (nonatomic,assign) NSInteger pageNumber;
+
+@property (nonatomic,assign) NSInteger pageSize;
 
 @end
 
@@ -34,6 +39,11 @@
 //书库
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.pageNumber = 1;
+    
+    self.pageSize = 10;
+    
     self.view.backgroundColor = [UIColor redColor];
     
     UICollectionViewFlowLayout *layout = [self setupCollectionViewFlowLayout];
@@ -42,6 +52,91 @@
     [self setupCollectionView:layout];
     
     //读取数据
+    [self loadNewData];
+    
+    [self setupMJRefresh];
+}
+
+-(void)setupMJRefresh{
+    self.collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        [self loadNewData];
+    }];
+    
+    self.collectionView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        [self loadData];
+    }];
+}
+
+-(void)loadNewData{
+    NSDictionary *dict = @{
+                           @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id],
+                           @"ifrelease":@"1",
+                           @"pageNum":@"1",
+                           @"pageSize":[NSString stringWithFormat:@"%ld",self.pageSize]
+                           };
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getAuthorCartoon"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+        
+        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
+        
+        self.dataArray = array;
+        
+        [self.collectionView.mj_header endRefreshing];
+        
+        NSInteger total = [[NSString stringWithFormat:@"%@",[dic objectForKey:@"total"]] integerValue];
+
+        if(self.dataArray.count >= total){
+            [self.collectionView.mj_footer endRefreshingWithNoMoreData];
+        }
+        
+        [self.collectionView reloadData];
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [self.collectionView.mj_header endRefreshing];
+
+    }];
+
+}
+
+-(void)loadData{
+    [self.collectionView.mj_footer resetNoMoreData];
+
+    NSDictionary *dict = @{
+                           @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id],
+                           @"ifrelease":@"1",
+                           @"pageNum":[NSString stringWithFormat:@"%ld",self.pageNumber],
+                           @"pageSize":@"10"
+                           };
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getAuthorCartoon"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+        
+        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
+        
+        [self.dataArray addObjectsFromArray:array];
+        
+        NSInteger total = [[NSString stringWithFormat:@"%@",[dic objectForKey:@"total"]] integerValue];
+        
+        if(self.dataArray.count >= total){
+            
+            [self.collectionView.mj_footer endRefreshingWithNoMoreData];
+            
+        }else{
+            
+            [self.collectionView.mj_footer endRefreshing];
+            
+        }
+        
+        [self.collectionView reloadData];
+        
+        self.pageNumber++;
+        
+        self.pageSize += 10;
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [self.collectionView.mj_footer endRefreshing];
+    }];
 }
 
 #pragma mark - 创建流水布局
@@ -86,20 +181,13 @@
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    ZZTCarttonDetailModel *md = self.dataArray[indexPath.row];
-    if([md.cartoonType isEqualToString:@"1"]){
-        ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
-        detailVC.isId = NO;
-        detailVC.cartoonDetail = md;
-        detailVC.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:detailVC animated:YES];
-    }else{
-        ZZTMulWordDetailViewController *detailVC = [[ZZTMulWordDetailViewController alloc]init];
-        detailVC.isId = NO;
-        detailVC.cartoonDetail = md;
-        detailVC.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:detailVC animated:YES];
-    }
+    ZZTCarttonDetailModel *car = self.dataArray[indexPath.row];
+
+    //点击跳转漫画发布页
+    ZZTCartReleaseViewController *cartReleaseVC = [[ZZTCartReleaseViewController alloc] init];
+    cartReleaseVC.model = car;
+    cartReleaseVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:cartReleaseVC animated:YES];
 }
 
 //边距设置:整体边距的优先级，始终高于内部边距的优先级

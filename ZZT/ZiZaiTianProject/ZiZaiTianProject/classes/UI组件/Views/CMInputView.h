@@ -55,5 +55,5 @@ typedef void(^CM_textChangedBlock)(NSString *text);
 
 - (void)textValueDidChanged:(CM_textHeightChangedBlock)block;
 
-
+- (void)textDidChange;
 @end

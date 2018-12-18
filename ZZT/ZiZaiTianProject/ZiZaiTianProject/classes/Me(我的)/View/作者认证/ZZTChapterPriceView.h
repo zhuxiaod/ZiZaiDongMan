@@ -17,6 +17,8 @@
 
 - (void)setChapterPriceViewModel:(ZZTChapterlistModel *)model;
 
+- (void)setupPriceEnding:(NSString *)price;
+
 @end
 
 @interface ZZTChapterPriceView : UIView

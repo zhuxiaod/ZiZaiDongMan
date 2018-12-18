@@ -8,6 +8,7 @@
 
 #import "ZZTAuthorAttestationView.h"
 #import "ZZTLittleBoxView.h"
+#import "ZZTWorkInstructionsViewController.h"
 
 @interface ZZTAuthorAttestationView ()<TTTAttributedLabelDelegate,ZZTLittleBoxViewDelegate>
 
@@ -18,6 +19,10 @@
 @property (nonatomic, strong) ZZTLittleBoxView *boxOne;
 
 @property (nonatomic, strong) ZZTLittleBoxView *boxTwo;
+
+@property (nonatomic, assign) CGFloat labW;
+
+@property (nonatomic, strong) UIButton *labBtn;
 
 @end
 
@@ -77,8 +82,7 @@
     commitToMailLab.font = [UIFont systemFontOfSize:16];
     NSString *commitToMailStr = @"已提交了作品预览到邮箱";
     // 没有点击时候的样式
-    commitToMailLab.linkAttributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:16],
-                                (NSString *)kCTForegroundColorAttributeName:[UIColor blackColor],
+    commitToMailLab.linkAttributes = @{
                                 (NSString *)kCTUnderlineStyleAttributeName: [NSNumber numberWithInt:kCTUnderlineStyleNone]};
     
     commitToMailLab.activeLinkAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -86,10 +90,12 @@
     
     NSRange selRange1 = [commitToMailStr rangeOfString:@"已提交了作品预览到邮箱"];
     
-    [commitToMailLab setText:commitToMailStr afterInheritingLabelAttributesAndConfiguringWithBlock:^NSMutableAttributedString *(NSMutableAttributedString *mutableAttributedString) {
-        [mutableAttributedString addAttribute:(NSString*)kCTForegroundColorAttributeName value:(id)[UIColor colorWithRed:137.0/255.0 green:134.0/255.0 blue:219.0/255.0 alpha:1.0] range:selRange1];
-        return mutableAttributedString;
-    }];
+    commitToMailLab.text = commitToMailStr;
+    
+//    [commitToMailLab setText:commitToMailStr afterInheritingLabelAttributesAndConfiguringWithBlock:^NSMutableAttributedString *(NSMutableAttributedString *mutableAttributedString) {
+//        [mutableAttributedString addAttribute:(NSString*)kCTForegroundColorAttributeName value:(id)[UIColor colorWithRed:137.0/255.0 green:134.0/255.0 blue:219.0/255.0 alpha:1.0] range:selRange1];
+//        return mutableAttributedString;
+//    }];
     
     [commitToMailLab addLinkToTransitInformation:@{@"select":@"已提交了作品预览到邮箱"} withRange:selRange1];
     
@@ -105,6 +111,11 @@
     agreeLab.lineSpacing = SectionHeaderLineSpace;
     agreeLab.font = [UIFont systemFontOfSize:16];
     NSString *agreeLabStr = @"我已阅读并同意《自在动漫作者协议》";
+    NSString *agreeStr = @"我已经阅读并同";
+    
+    _labW = [agreeStr getTextWidthWithFont:agreeLab.font];
+
+    
     // 没有点击时候的样式
     agreeLab.linkAttributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:16],
                                        (NSString *)kCTForegroundColorAttributeName:ZZTSubColor,
@@ -124,6 +135,17 @@
     agreeLab.textColor = [UIColor colorWithRGB:@"111,111,111"];
     self.agreeLab = agreeLab;
     [self addSubview:agreeLab];
+    
+    //labButton
+    UIButton *labBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [labBtn addTarget:self action:@selector(clickLabBtn) forControlEvents:UIControlEventTouchUpInside];
+//    labBtn.backgroundColor = [UIColor redColor];
+    _labBtn = labBtn;
+    [self addSubview:labBtn];
+}
+
+-(void)clickLabBtn{
+    [self.boxTwo btnTarget];
 }
 
 //点击按钮 获得状态
@@ -151,10 +173,15 @@
         NSLog(@"点击了邮箱");
     }else if ([string isEqualToString:@"已提交了作品预览到邮箱"]){
         NSLog(@"已提交了作品预览到邮箱");
+        [self.boxOne btnTarget];
     }else if ([string isEqualToString:@"我已阅读并同意"]){
         NSLog(@"我已阅读并同意");
+        [self.boxTwo btnTarget];
     }else{
         NSLog(@"《自在动漫作者协议》");
+        ZZTWorkInstructionsViewController *workVC = [[ZZTWorkInstructionsViewController alloc] init];
+        
+        [[self myViewController].navigationController pushViewController:workVC animated:YES];
     }
 }
 
@@ -192,6 +219,13 @@
         make.height.mas_equalTo(self.boxTwo);
         make.centerY.equalTo(self.boxTwo);
         make.right.equalTo(self).offset(-10);
+    }];
+    
+    [self.labBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.boxTwo.mas_right).offset(10);
+        make.height.mas_equalTo(self.boxTwo);
+        make.centerY.equalTo(self.boxTwo);
+        make.width.mas_equalTo(self.labW);
     }];
 }
 

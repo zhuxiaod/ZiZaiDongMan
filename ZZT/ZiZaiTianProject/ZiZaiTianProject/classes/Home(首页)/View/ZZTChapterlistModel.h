@@ -44,6 +44,8 @@
     NSInteger listTotal;
 
     NSInteger chapterMoney;
+    
+    NSInteger isSelect;
 }
 
 @property(nonatomic,assign)NSInteger id;

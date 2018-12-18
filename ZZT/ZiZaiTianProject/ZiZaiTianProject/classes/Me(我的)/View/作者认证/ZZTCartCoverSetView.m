@@ -9,7 +9,7 @@
 #import "ZZTCartCoverSetView.h"
 #import "replyCountView.h"
 
-@interface ZZTCartCoverSetView ()
+@interface ZZTCartCoverSetView ()<TZImagePickerControllerDelegate>
 
 @property (nonatomic,strong) UIImageView *coverImgView;
 
@@ -26,6 +26,8 @@
 @property (strong, nonatomic) replyCountView *replyCountView;
 //点赞
 @property (strong, nonatomic) likeCountView *likeCountView;
+
+@property (assign, nonatomic) NSInteger imageType;
 
 @end
 
@@ -64,6 +66,9 @@
     //1080 * 650
     UIImageView *bannerImgView = [[UIImageView alloc] init];
     bannerImgView.backgroundColor = [UIColor blueColor];
+    [bannerImgView setContentMode:UIViewContentModeScaleAspectFill];
+    
+    bannerImgView.clipsToBounds = YES;
     _bannerImgView = bannerImgView;
     [self addSubview:bannerImgView];
     
@@ -92,6 +97,7 @@
     [self addSubview:bottomView];
     
     //点击图片btn
+    self.imageType = 0;
 }
 
 -(void)layoutSubviews{
@@ -152,14 +158,93 @@
 }
 
 -(void)clickCoverImgView{
+    self.imageType = 1;
     NSLog(@"clickCoverImgView");
+    //打开照片选择
+    //如果选择张片是540 * 390 那么上传
+    [self pushTZImagePickerController];
+
 }
 
 -(void)clickBannerImgView{
+    self.imageType = 2;
+
     NSLog(@"clickBannerImgView");
+    [self pushTZImagePickerController];
 }
 
-
+//图片选择控制器
+#pragma mark - TZImagePickerController
+- (void)pushTZImagePickerController {
+    //最大选择数   最大显示照片
+    TZImagePickerController *imagePickerVc = [[TZImagePickerController alloc] initWithMaxImagesCount:1 columnNumber:4 delegate:self pushPhotoPickerVc:YES];
+    // imagePickerVc.navigationBar.translucent = NO;
+    
+    imagePickerVc.naviBgColor = [UIColor grayColor];
+    
+#pragma mark - 五类个性化设置，这些参数都可以不传，此时会走默认设置
+    imagePickerVc.isSelectOriginalPhoto = YES;
+    
+    [imagePickerVc setUiImagePickerControllerSettingBlock:^(UIImagePickerController *imagePickerController) {
+        imagePickerController.videoQuality = UIImagePickerControllerQualityTypeHigh;
+    }];
+    
+    //主题颜色
+    imagePickerVc.iconThemeColor = [UIColor colorWithRed:31 / 255.0 green:185 / 255.0 blue:34 / 255.0 alpha:1.0];
+    //显示照片不能选择图层
+    imagePickerVc.showPhotoCannotSelectLayer = YES;
+    //    无法选择图层颜色
+    imagePickerVc.cannotSelectLayerColor = [[UIColor whiteColor] colorWithAlphaComponent:0.8];
+    
+    imagePickerVc.naviBgColor = [UIColor blackColor];
+    imagePickerVc.naviTitleColor = [UIColor blackColor];
+    imagePickerVc.barItemTextColor = [UIColor blackColor];
+    
+    //设置照片选择器页面UI配置块
+    [imagePickerVc setPhotoPickerPageUIConfigBlock:^(UICollectionView *collectionView, UIView *bottomToolBar, UIButton *previewButton, UIButton *originalPhotoButton, UILabel *originalPhotoLabel, UIButton *doneButton, UIImageView *numberImageView, UILabel *numberLabel, UIView *divideLine) {
+        [doneButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+    }];
+    
+    // 3. 设置是否可以选择视频/图片/原图
+    imagePickerVc.allowPickingImage = YES;
+    imagePickerVc.allowPickingOriginalPhoto = YES;
+    
+    // 4. 照片排列按修改时间升序
+    imagePickerVc.sortAscendingByModificationDate = YES;
+    
+    imagePickerVc.statusBarStyle = UIStatusBarStyleDefault;
+    
+    // 设置是否显示图片序号
+    imagePickerVc.showSelectedIndex = YES;
+    
+#pragma mark - 到这里为止
+    
+    // 你可以通过block或者代理，来得到用户选择的照片.
+    [imagePickerVc setDidFinishPickingPhotosHandle:^(NSArray<UIImage *> *photos, NSArray *assets, BOOL isSelectOriginalPhoto) {
+        
+        UIImage *img = photos[0];
+        if(self.imageType == 1){
+            if(img.size.width == 390 && img.size.height == 540){
+                self.coverImgView.image = img;
+            }else{
+                NSLog(@"图片不符合标准");
+            }
+        }
+        if(self.imageType == 2){
+            if(img.size.width == 1080 && img.size.height == 650){
+                self.bannerImgView.image = img;
+            }else{
+                NSLog(@"图片不符合标准");
+            }
+        }
+       
+        
+        
+        self.imageType = 0;
+    }];
+    
+    [[self myViewController] presentViewController:imagePickerVc animated:YES completion:nil];
+}
 
 
 
@@ -215,6 +300,16 @@
         _likeCountView = lcv;
     }
     return _likeCountView;
+}
+
+-(void)setImgModel:(ZZTCarttonDetailModel *)imgModel{
+    _imgModel = imgModel;
+    
+    [self.bannerImgView sd_setImageWithURL:[NSURL URLWithString:imgModel.lbCover] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+    }];
+    
+    [self.coverImgView sd_setImageWithURL:[NSURL URLWithString:imgModel.cover] placeholderImage:nil options:0];
+
 }
 
 @end

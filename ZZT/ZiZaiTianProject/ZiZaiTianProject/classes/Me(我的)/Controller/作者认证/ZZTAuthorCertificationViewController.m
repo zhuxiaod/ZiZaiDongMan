@@ -116,40 +116,40 @@ static NSString *AuthorMeInputOneCell = @"AuthorMeInputOneCell";
     //姓名判断
     if([ZXDCheckContent checkUserName:self.realName]){
         isName = YES;
-       
+
     }else{
         NSLog(@"姓名格式不正确,请填写正确的姓名");
         [MBProgressHUD showError:@"姓名格式不正确,请填写正确的姓名"];
         return;
     }
-    
+
     //'身份证号'正则表达式筛选
-    
+
     NSString *identificationNumberPattern =@"\\d{17}[[0-9],0-9xX]";
-    
+
     NSPredicate *identificationNumberPredicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@",identificationNumberPattern];
-    
+
     if(![identificationNumberPredicate evaluateWithObject:self.IdCard]){
-        
+
         NSLog(@"身份证格式不正确,请检查后重试!");
         [MBProgressHUD showError:@"身份证格式不正确,请填写正确的身份证"];
         return;
     }else{
         isID = YES;
     }
-    
+
     //邮箱验证
     if([Utilities validateEmail:self.emailAddress]){
         isMail = YES;
     }else{
-        
+
         NSLog(@"邮箱不正确");
         [MBProgressHUD showError:@"邮箱地址格式不正确,请填写正确的邮箱地址"];
         return;
     }
-    
-    self.userIntro = @"";
-    self.workIntro = @"";
+
+//    self.userIntro = @"";
+//    self.workIntro = @"";
     //有无勾选协议
     if([self.isCommitMail isEqualToString:@"0"]){
         NSLog(@"请提交作品到邮箱");
@@ -158,7 +158,7 @@ static NSString *AuthorMeInputOneCell = @"AuthorMeInputOneCell";
     }else{
         isCommit = YES;
     }
-    
+
     if([self.isAgreement isEqualToString:@"0"]){
         NSLog(@"请仔细阅读协议");
         [MBProgressHUD showError:@"请阅读并同意《自在动漫作者协议》"];
@@ -166,12 +166,32 @@ static NSString *AuthorMeInputOneCell = @"AuthorMeInputOneCell";
     }else{
         isAgree = YES;
     }
-    
+
     if(isName && isID && isCommit && isAgree){
         //请求接口
         //已经提交申请
+        NSDictionary *dict = @{
+                               @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id],
+                               @"userName":self.realName,
+                               @"email":self.emailAddress,
+                               @"userCar":self.IdCard,
+                               @"introduce":self.userIntro,
+                               @"production":self.workIntro
+                               };
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        [manager POST:[ZZTAPI stringByAppendingString:@"record/authorIdentification"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            NSString *code = responseObject[@"code"];
+            if([code integerValue] == 100){
+                [MBProgressHUD showSuccess:@"提交成功~"];
+                [self.navigationController popViewControllerAnimated:YES];
+            }else{
+                [MBProgressHUD showSuccess:@"审请重复提交~"];
+            }
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+            
+        }];
+        
     }
-
 }
 
 -(void)setupTableView{
@@ -192,8 +212,6 @@ static NSString *AuthorMeInputOneCell = @"AuthorMeInputOneCell";
     [_tableView registerClass:[SBPersonalSettingCell class] forCellReuseIdentifier:AuthorCertificationCellOne];
     
     [_tableView registerClass:[ZZTMeInputOneCell class] forCellReuseIdentifier:AuthorMeInputOneCell];
-    
-    
 }
 
 #pragma mark - tableView

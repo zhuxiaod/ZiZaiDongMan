@@ -349,6 +349,8 @@
         }
     }
     [self.collectionView reloadData];
+//    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+//    [self collectionView:self.collectionView didSelectItemAtIndexPath:indexPath];
 }
 
 - (CGFloat)myHeight {

@@ -190,9 +190,12 @@ NSString *bannerID = @"MeCell";
     if(indexPath.section == 0){
         NSString *rowName = _sectionOne[indexPath.row];
         cell.textLabel.text = rowName;
-//        if(indexPath.row == (_sectionOne.count - 1)){
+        if(indexPath.row == 1 && [[Utilities GetNSUserDefaults].userType isEqualToString:@"2"]){
+            cell.textLabel.text = @"作者书柜";
+        }
+        if(indexPath.row == (_sectionOne.count - 1)){
             [bottomView removeFromSuperview];
-//        }
+        }
         return cell;
     }else if(indexPath.section == 1){
         NSString *rowName = _sectionTwo[indexPath.row];
@@ -227,6 +230,7 @@ NSString *bannerID = @"MeCell";
         //userId已经有了
         [self loadUserData:userInfo.id];
     }
+    [self.tableView reloadData];
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -290,18 +294,17 @@ NSString *bannerID = @"MeCell";
                 [UserInfoManager needLogin];
                 return;
             }
-            //作者认证
-//            ZZTAuthorCertificationViewController *authorCerVC = [[ZZTAuthorCertificationViewController alloc] init];
-//            authorCerVC.hidesBottomBarWhenPushed = YES;
-//            [self.navigationController pushViewController:authorCerVC animated:YES];
-            
-            //作者书库
-            
-//            ZZTAuthorCreationController *authorCtionVC = [[ZZTAuthorCreationController alloc] init];
-//            [self.navigationController pushViewController:authorCtionVC animated:YES];
-            //点击跳转漫画发布页
-            ZZTCartReleaseViewController *cartReleaseVC = [[ZZTCartReleaseViewController alloc] init];
-            [self.navigationController pushViewController:cartReleaseVC animated:YES];
+            if([[Utilities GetNSUserDefaults].userType isEqualToString:@"2"]){
+                //作者书库
+                ZZTAuthorCreationController *authorCtionVC = [[ZZTAuthorCreationController alloc] init];
+                [self.navigationController pushViewController:authorCtionVC animated:YES];
+            }else{
+                //作者认证
+                ZZTAuthorCertificationViewController *authorCerVC = [[ZZTAuthorCertificationViewController alloc] init];
+                authorCerVC.hidesBottomBarWhenPushed = YES;
+                [self.navigationController pushViewController:authorCerVC animated:YES];
+            }
+
         }else{
             //关注
             if([[UserInfoManager share] hasLogin] == NO){
