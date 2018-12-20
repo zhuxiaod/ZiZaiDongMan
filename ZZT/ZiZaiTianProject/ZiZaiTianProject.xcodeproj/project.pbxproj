@@ -405,6 +405,10 @@
 		04EC76F221AFBE8900C54CB5 /* UIView+BAAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 04EC76F021AFBE8800C54CB5 /* UIView+BAAnimation.m */; };
 		04EC76F521AFBF4900C54CB5 /* CALayer+BAAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 04EC76F421AFBF4800C54CB5 /* CALayer+BAAnimation.m */; };
 		04EC770521AFEB4000C54CB5 /* NSString+AES.m in Sources */ = {isa = PBXBuildFile; fileRef = 04EC770421AFEB4000C54CB5 /* NSString+AES.m */; };
+		04F0262421CA163000A96C64 /* ZZTCartInfoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F0262321CA163000A96C64 /* ZZTCartInfoModel.m */; };
+		04F0263121CA417A00A96C64 /* NEUBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F0262B21CA417A00A96C64 /* NEUBase64.m */; };
+		04F0263221CA417A00A96C64 /* NEUSecurityUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F0262E21CA417A00A96C64 /* NEUSecurityUtil.m */; };
+		04F0263321CA417A00A96C64 /* NSData+NEUAES.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F0263021CA417A00A96C64 /* NSData+NEUAES.m */; };
 		04F9D7982168A17800EF953D /* ZZTColorPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F9D7972168A17800EF953D /* ZZTColorPickerView.m */; };
 		D9D2D4F33CB3B47DB08AD9C9 /* libPods-ZiZaiTianProject.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BA8586C54F8E7A26D9A888C6 /* libPods-ZiZaiTianProject.a */; };
 		F7C04BEE20DF3D190055E7A8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F7C04BEC20DF3D190055E7A8 /* Main.storyboard */; };
@@ -1141,6 +1145,15 @@
 		04EC76F421AFBF4800C54CB5 /* CALayer+BAAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CALayer+BAAnimation.m"; sourceTree = "<group>"; };
 		04EC770321AFEB4000C54CB5 /* NSString+AES.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+AES.h"; sourceTree = "<group>"; };
 		04EC770421AFEB4000C54CB5 /* NSString+AES.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+AES.m"; sourceTree = "<group>"; };
+		04F0262221CA163000A96C64 /* ZZTCartInfoModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTCartInfoModel.h; sourceTree = "<group>"; };
+		04F0262321CA163000A96C64 /* ZZTCartInfoModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTCartInfoModel.m; sourceTree = "<group>"; };
+		04F0262A21CA417A00A96C64 /* NEUBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NEUBase64.h; sourceTree = "<group>"; };
+		04F0262B21CA417A00A96C64 /* NEUBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NEUBase64.m; sourceTree = "<group>"; };
+		04F0262C21CA417A00A96C64 /* NEUDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NEUDefines.h; sourceTree = "<group>"; };
+		04F0262D21CA417A00A96C64 /* NEUSecurityUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NEUSecurityUtil.h; sourceTree = "<group>"; };
+		04F0262E21CA417A00A96C64 /* NEUSecurityUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NEUSecurityUtil.m; sourceTree = "<group>"; };
+		04F0262F21CA417A00A96C64 /* NSData+NEUAES.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+NEUAES.h"; sourceTree = "<group>"; };
+		04F0263021CA417A00A96C64 /* NSData+NEUAES.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+NEUAES.m"; sourceTree = "<group>"; };
 		04F9D7962168A17800EF953D /* ZZTColorPickerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTColorPickerView.h; sourceTree = "<group>"; };
 		04F9D7972168A17800EF953D /* ZZTColorPickerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTColorPickerView.m; sourceTree = "<group>"; };
 		0C084C18C317A39A31EF0154 /* Pods-ZiZaiTianProject.adhoc.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZiZaiTianProject.adhoc.xcconfig"; path = "Pods/Target Support Files/Pods-ZiZaiTianProject/Pods-ZiZaiTianProject.adhoc.xcconfig"; sourceTree = "<group>"; };
@@ -1481,6 +1494,7 @@
 		0466838720F314860095C6BC /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				04F0262821CA417A00A96C64 /* NEUSecurity */,
 				04EC76F621AFE4BA00C54CB5 /* AES */,
 				041F5CD821AE8F3D00527A8F /* 七牛 */,
 				041F5CCE21AE61A900527A8F /* ImageClip */,
@@ -1865,6 +1879,8 @@
 				040961F121BA983700D40523 /* ZZTReportModel.m */,
 				04AD3FEF21C7968D0080A6D5 /* ZZTChapterPriceModel.h */,
 				04AD3FF021C7968D0080A6D5 /* ZZTChapterPriceModel.m */,
+				04F0262221CA163000A96C64 /* ZZTCartInfoModel.h */,
+				04F0262321CA163000A96C64 /* ZZTCartInfoModel.m */,
 			);
 			name = Model;
 			path = "ZiZaiTianProject/classes/Me(我的)/Model";
@@ -1948,6 +1964,28 @@
 				04EC770421AFEB4000C54CB5 /* NSString+AES.m */,
 			);
 			path = AES;
+			sourceTree = "<group>";
+		};
+		04F0262821CA417A00A96C64 /* NEUSecurity */ = {
+			isa = PBXGroup;
+			children = (
+				04F0262921CA417A00A96C64 /* NEUBase64 */,
+				04F0262D21CA417A00A96C64 /* NEUSecurityUtil.h */,
+				04F0262E21CA417A00A96C64 /* NEUSecurityUtil.m */,
+				04F0262F21CA417A00A96C64 /* NSData+NEUAES.h */,
+				04F0263021CA417A00A96C64 /* NSData+NEUAES.m */,
+			);
+			path = NEUSecurity;
+			sourceTree = "<group>";
+		};
+		04F0262921CA417A00A96C64 /* NEUBase64 */ = {
+			isa = PBXGroup;
+			children = (
+				04F0262A21CA417A00A96C64 /* NEUBase64.h */,
+				04F0262B21CA417A00A96C64 /* NEUBase64.m */,
+				04F0262C21CA417A00A96C64 /* NEUDefines.h */,
+			);
+			path = NEUBase64;
 			sourceTree = "<group>";
 		};
 		6A89D7600687879961A023BD /* Frameworks */ = {
@@ -2619,6 +2657,7 @@
 				043B075F20EE2F1E00ED3F5B /* ZZTShoppingBtnModel.m in Sources */,
 				04B9FF4120E506FC007CC582 /* ZZTChildCollectionView.m in Sources */,
 				04DD53C721A4F2F100910D5A /* ZZTMeHomeViewController.m in Sources */,
+				04F0263321CA417A00A96C64 /* NSData+NEUAES.m in Sources */,
 				0466839120F314860095C6BC /* ModelCacheManager.m in Sources */,
 				F7C04C2A20DF4A1F0055E7A8 /* UIImage+ZZTimage.m in Sources */,
 				0466837420F3096A0095C6BC /* DCPicItem.m in Sources */,
@@ -2699,6 +2738,7 @@
 				046683C320F49CCB0095C6BC /* ZZTJiuGongGeView.m in Sources */,
 				04DD53DA21A59A7F00910D5A /* ZZTMePersonalView.m in Sources */,
 				F7C04C0C20DF3E9E0055E7A8 /* AppDelegate.m in Sources */,
+				04F0263121CA417A00A96C64 /* NEUBase64.m in Sources */,
 				043D06D22193D66400016748 /* ZZTFindLikeFooterView.m in Sources */,
 				0465691121B4D7FB000A30C6 /* PYSearchViewController.m in Sources */,
 				04A0C09F21803FCD00D08F6C /* ZZTZoneUpLoadViewController.m in Sources */,
@@ -2822,6 +2862,7 @@
 				049A99EA20E394BB00ED27C9 /* ZZTVIPTopView.m in Sources */,
 				040FD50220EF031900004C71 /* ZZTShoppingHeader.m in Sources */,
 				042D148B218AFB7100BE05F6 /* ZZTLikeCollectShareHeaderView.m in Sources */,
+				04F0263221CA417A00A96C64 /* NEUSecurityUtil.m in Sources */,
 				0498B5F0212ED33B005BD26D /* ZZTXuHuaBtn.m in Sources */,
 				040D282D2133F044002A3B72 /* ZZTCartoonHistoryCell.m in Sources */,
 				0465690D21B4D7FB000A30C6 /* NSBundle+PYSearchExtension.m in Sources */,
@@ -2865,6 +2906,7 @@
 				04D2AFA8212FB3E5008F6CCB /* ZZTCommentHeadView.m in Sources */,
 				04A30FC521379C0200FAC781 /* ToolBtn.m in Sources */,
 				04E9FAD92153D5BC005A3986 /* Utilities.m in Sources */,
+				04F0262421CA163000A96C64 /* ZZTCartInfoModel.m in Sources */,
 				041A8C8E21A3F6DB006465FE /* ZZTSearchCartoonCell.m in Sources */,
 				043B074220EDE5E800ED3F5B /* ZZTUserShoppingModel.m in Sources */,
 				0484E7DE210AFEF900C39369 /* ZZTDIYCellModel.m in Sources */,

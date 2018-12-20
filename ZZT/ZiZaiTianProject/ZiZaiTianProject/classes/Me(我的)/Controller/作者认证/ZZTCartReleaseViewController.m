@@ -19,6 +19,7 @@
 #import "ZZTChapterPriceModel.h"
 #import "ZZTLittleBoxView.h"
 #import "ZZTCarttonDetailModel.h"
+#import "ZZTCartInfoModel.h"
 
 static NSString *AuthorMeInputOneCell1 = @"AuthorMeInputOneCell1";
 
@@ -115,6 +116,7 @@ static NSString *AuthorMeInputOneCell1 = @"AuthorMeInputOneCell1";
     [self loadChapterDataWithCartID:@"9"];
     
     self.isPayChapter = @"0";
+    self.payPrice = @"0";
     //设置发布按钮
     [self setupReleseBtn];
 }
@@ -123,6 +125,7 @@ static NSString *AuthorMeInputOneCell1 = @"AuthorMeInputOneCell1";
     //漫画下架
     UIButton *soldOutBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [soldOutBtn setTitle:@"漫画下架" forState:UIControlStateNormal];
+    [soldOutBtn addTarget:self action:@selector(soldOutTarget) forControlEvents:UIControlEventTouchUpInside];
     [soldOutBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [soldOutBtn setBackgroundColor:[UIColor colorWithRGB:@"222,223,224"]];
     [self.view addSubview:soldOutBtn];
@@ -131,6 +134,7 @@ static NSString *AuthorMeInputOneCell1 = @"AuthorMeInputOneCell1";
     UIButton *releseBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [releseBtn setTitle:@"发布" forState:UIControlStateNormal];
     [releseBtn setBackgroundColor:ZZTSubColor];
+    [releseBtn addTarget:self action:@selector(releaseTarget) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:releseBtn];
     
     [soldOutBtn mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -146,6 +150,127 @@ static NSString *AuthorMeInputOneCell1 = @"AuthorMeInputOneCell1";
         make.height.mas_equalTo(66);
         make.width.equalTo(self.view.mas_width).multipliedBy(0.38);
     }];
+}
+
+-(void)soldOutTarget{
+    if([self.model.ifrelease isEqualToString:@"0"]){
+        [MBProgressHUD showSuccess:@"此作品已经下架！"];
+        return;
+    }
+    NSDictionary *dict = @{
+                           @"cartoonChapters":@"",
+                           @"bookName": @"",
+                           @"cartoonId":self.model.id,
+                           @"cover":@"",
+                           @"lbCover":@"",
+                           @"ifrelease":@"0",
+                           @"ifpay":@"",
+                           @"chapterMoney":@"",
+                           @"intro":@""
+                           };
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    [manager POST:[ZZTAPI stringByAppendingString:@"record/authorUpChapter"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [MBProgressHUD showSuccess:@"下架成功~"];
+        [self.navigationController popViewControllerAnimated:YES];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
+    
+}
+
+-(void)releaseTarget{
+    //发布
+    NSArray *modelArray = [_priceDict allValues];
+    
+    NSArray *dictArray = [ZZTChapterlistModel mj_keyValuesArrayWithObjectArray:modelArray];
+    
+    //判断名称是否超过八位数
+    if(self.wordName.length > 8){
+        [MBProgressHUD showSuccess:@"作品名称超过8个字符"];
+        return;
+    }
+    
+//    //判断有没有购买项
+//    for (NSInteger i = 0; i < dictArray.count; i++) {
+//
+//        ZZTChapterlistModel *model = dictArray[i];
+//        if(model.ifrelease = )
+//
+//    }
+//
+//    if(dictArray.count > 0){
+//        if([self.payPrice integerValue] <= 0){
+//            [MBProgressHUD showSuccess:@"请设置价格"];
+//            return;
+//        }
+//    }
+
+    NSString *s = [dictArray mj_JSONString];
+    
+    NSString *coverImgPath = [Utilities getCacheImagePath];
+    
+    [UIImagePNGRepresentation(self.coverView.coverImgView.image) writeToFile:coverImgPath atomically:YES];
+
+    NSString *bannerImgPath = [Utilities getCacheImagePath];
+    
+    [UIImagePNGRepresentation(self.coverView.bannerImgView.image) writeToFile:bannerImgPath atomically:YES];
+    
+    NSLog(@"coverImgPath:%@",coverImgPath);
+    
+    NSLog(@"bannerImgPath:%@",bannerImgPath);
+
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        
+        // 处理耗时操作的代码块...
+        NSString *coverImg = [SYQiniuUpload QiniuPutSingleImage:coverImgPath complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp) {
+
+        }];
+
+        NSString *bannerImg = [SYQiniuUpload QiniuPutSingleImage:bannerImgPath complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp) {
+
+        }];
+        //通知主线程刷新
+        dispatch_async(dispatch_get_main_queue(), ^{
+            //回调或者说是通知主线程刷新，
+            //发送请求 发布
+            [self sendPostRequestWithCartoonChapters:s cover:coverImg lbCover:bannerImg ifrelease:@"1"];
+        });
+        
+    });
+}
+//发布是1 下架是0
+-(void)sendPostRequestWithCartoonChapters:(NSString *)cartoonChapters cover:(NSString *)cover lbCover:(NSString *)lbCover ifrelease:(NSString *)ifrelease{
+    NSDictionary *dict = @{
+                           @"cartoonChapters":cartoonChapters,
+                               @"bookName": self.wordName,
+                               @"cartoonId":self.model.id,
+                               @"cover":cover,
+                               @"lbCover":lbCover,
+                               @"ifrelease":ifrelease,
+                               @"ifpay":self.isPayChapter,
+                               @"chapterMoney":self.payPrice,
+                               @"intro":self.wordIntro
+                           };
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    [manager POST:[ZZTAPI stringByAppendingString:@"record/authorUpChapter"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [MBProgressHUD showSuccess:@"发布成功~"];
+        [self.navigationController popViewControllerAnimated:YES];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+
+    }];
+    
+}
+
+-(void)upLoadQiNiuLoad:(NSArray *)array{
+    //多图上传
+    NSString * imageParms = @"";
+    if (array.count > 0) {
+        imageParms = [SYQiniuUpload QiniuPutImageArray:array complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp) {
+            NSLog(@"info == %@ \n resp === %@",info,resp);
+        }];
+    }
+    
+    //上传
 }
 
 -(void)loadChapterDataWithCartID:(NSString *)cartoonId{
@@ -242,9 +367,7 @@ static NSString *AuthorMeInputOneCell1 = @"AuthorMeInputOneCell1";
   
     ZZTCell *cellModel = self.sectionOne[indexPath.row];
     cell.cellTextView.font = [UIFont systemFontOfSize:16];
-    if(indexPath.row == 0){
-        cell.cellTextView.maxTextNum = 8;
-    }
+
     if(indexPath.row == 0){
         cell.cellTextView.text = self.wordName;
     }else{
@@ -252,7 +375,7 @@ static NSString *AuthorMeInputOneCell1 = @"AuthorMeInputOneCell1";
     }
     
     [cell.cellTextView textDidChange];
-    
+    cell.cellTextView.font = [UIFont systemFontOfSize:16];
     cell.titleLab.text = cellModel.cellTitle;
     cell.placeHolderStr = cellModel.cellDetail;
     return cell;
@@ -280,8 +403,7 @@ static NSString *AuthorMeInputOneCell1 = @"AuthorMeInputOneCell1";
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     if(section == 0){
-//        ZZTCartCoverSetView *coverView = [[ZZTCartCoverSetView alloc] init];
-//        coverView.imgModel = self.model;
+
         return _coverView;
     }
     else{
@@ -428,15 +550,6 @@ static NSString *AuthorMeInputOneCell1 = @"AuthorMeInputOneCell1";
         
         self.wordIntro = mode.intro;
 
-        
-        //设置封面
-//        [self.coverImgView sd_setImageWithURL:[NSURL URLWithString:mode.cover]];
-//
-//        //设置轮播图
-//        [self.bannerImgView sd_setImageWithURL:[NSURL URLWithString:mode.lbCover]];
-//
-//        //设置作品名称
-//        [self.];
         //设置作品介绍
         [self.tableView reloadData];
         

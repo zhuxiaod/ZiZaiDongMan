@@ -44,6 +44,7 @@
     //发布按钮
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     _button = button;
+    button.userInteractionEnabled = NO;
     [button setBackgroundColor:ZZTSubColor];
     [button setTitle:@"发布" forState:UIControlStateNormal];
     [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];

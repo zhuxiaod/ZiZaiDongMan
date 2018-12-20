@@ -127,4 +127,27 @@
     
     return [emailTest evaluateWithObject:strEmail];
 }
+
++(NSString *)getCacheImagePath{
+    NSString *imageName = [NSString getCurrentTimes];
+    
+    NSString *keyRandom = [self randomString];
+    
+    NSString *keyString = [NSString stringWithFormat:@"%@%@.jpg",imageName,keyRandom];
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    
+    NSString *filePath = [[paths objectAtIndex:0] stringByAppendingPathComponent:keyString];
+    
+    return filePath;
+}
+
++ (NSString *)randomString {
+    NSString *kRandomAlphabet = @"0123456789";
+    NSMutableString *randomString = [NSMutableString stringWithCapacity:10];
+    for (int i = 0; i < 10; i++) {
+        [randomString appendFormat: @"%C", [kRandomAlphabet characterAtIndex:arc4random_uniform((u_int32_t)[kRandomAlphabet length])]];
+    }
+    return randomString;
+}
 @end

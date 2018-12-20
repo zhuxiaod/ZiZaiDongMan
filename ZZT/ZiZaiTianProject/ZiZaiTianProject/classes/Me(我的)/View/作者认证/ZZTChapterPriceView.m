@@ -118,7 +118,7 @@
     NSString *commitToMailStr = @"新章节默认设定为付费章节";
     _payChapterLabW = (SCREEN_WIDTH - (20 + 4 + [commitToMailStr getTextWidthWithFont:payChapterLab.font])) / 2;
     // 没有点击时候的样式
-    payChapterLab.linkAttributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:16],
+    payChapterLab.linkAttributes = @{
                                        (NSString *)kCTForegroundColorAttributeName:[UIColor lightGrayColor],
                                        (NSString *)kCTUnderlineStyleAttributeName: [NSNumber numberWithInt:kCTUnderlineStyleNone]};
 //

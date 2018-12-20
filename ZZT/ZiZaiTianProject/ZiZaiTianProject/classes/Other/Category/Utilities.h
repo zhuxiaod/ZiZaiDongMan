@@ -45,6 +45,9 @@
 
 -(void)setupNavgationStyle:(UINavigationController *)nav;
 
+//获取存储图片的地址
++(NSString *)getCacheImagePath;
+
 /**
  判断当前是否可以连接到网络
  */

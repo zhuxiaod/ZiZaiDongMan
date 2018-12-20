@@ -14,5 +14,8 @@
 
 @property (nonatomic,strong) ZZTCarttonDetailModel *imgModel;
 
+@property (nonatomic,strong) UIImageView *coverImgView;
+
+@property (nonatomic,strong) UIImageView *bannerImgView;
 
 @end

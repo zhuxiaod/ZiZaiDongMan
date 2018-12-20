@@ -146,9 +146,8 @@ static NSString *personalCellThree = @"personalCellThree";
 -(void)dismissVC{
     
     [self dismissViewControllerAnimated:YES completion:nil];
+    
 }
-
-
 
 -(void)setupMainView{
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, Height_NavBar , SCREEN_WIDTH, SCREEN_HEIGHT - navHeight) style:UITableViewStyleGrouped];
@@ -308,8 +307,6 @@ static NSString *personalCellThree = @"personalCellThree";
         [cell.textField becomeFirstResponder];
     }
 }
-
-
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 50;
@@ -772,6 +769,7 @@ static NSString *personalCellThree = @"personalCellThree";
     //更新用户资料
     [UserInfoManager share].sex = sexStr;
     [self.tableView reloadData];
-
+    
 }
+
 @end

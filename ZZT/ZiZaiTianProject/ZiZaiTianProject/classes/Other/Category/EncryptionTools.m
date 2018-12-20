@@ -4,6 +4,7 @@
 
 #import "EncryptionTools.h"
 #import "NSString+AES.h"
+#import "NEUSecurityUtil.h"
 
 @interface EncryptionTools()
 @property (nonatomic, assign) int keySize;
@@ -173,10 +174,14 @@
 }
 
 -(NSDictionary *)decry:(NSString *)getData{
-    //解密
-    NSString *data = [getData aci_decryptWithAES];
-    NSData *jsonData = [data dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *decryptStr = [NEUSecurityUtil neu_decryptAESData:getData];
+    NSData *jsonData = [decryptStr mj_JSONData];
     NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:nil];
+
+//    //解密
+//    NSString *data = [getData aci_decryptWithAES];
+//    NSData *jsonData = [data dataUsingEncoding:NSUTF8StringEncoding];
+//    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:nil];
     return dic;
 }
 

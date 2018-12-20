@@ -52,7 +52,7 @@
     [self setupCollectionView:layout];
     
     //读取数据
-    [self loadNewData];
+//    [self loadNewData];
     
     [self setupMJRefresh];
 }
@@ -75,7 +75,18 @@
                            @"pageSize":[NSString stringWithFormat:@"%ld",self.pageSize]
                            };
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html",@"text/xml",@"text/json",@"text/plain",@"text/JavaScript",@"application/json",@"image/jpeg",@"image/png",@"application/octet-stream",nil];
+    
+//    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    // 设置超时时间
+
+//    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    //更改响应默认的解析方式为字符串解析
+//    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    
+
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getAuthorCartoon"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSLog(@"responseObject1111%@",responseObject);
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
@@ -125,7 +136,6 @@
         }else{
             
             [self.collectionView.mj_footer endRefreshing];
-            
         }
         
         [self.collectionView reloadData];
@@ -195,5 +205,9 @@
     return UIEdgeInsetsMake(0, 8, 8, 8);//分别为上、左、下、右
 }
 
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self.collectionView.mj_header beginRefreshing];
+}
 
 @end

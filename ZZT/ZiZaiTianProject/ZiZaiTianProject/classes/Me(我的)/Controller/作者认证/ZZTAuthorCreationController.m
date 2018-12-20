@@ -69,7 +69,7 @@
     [_authorDraftVC.view setFrame:CGRectMake(width, 0, width, height)];
     [_authorBookRoomVC.view setFrame:CGRectMake(0, 0, width, height)];
     
-    [self.mainView setContentOffset:CGPointMake(0, 0)];
+//    [self.mainView setContentOffset:CGPointMake(0, 0)];
 }
 
 -(void)setupChildView{

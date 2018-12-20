@@ -44,6 +44,8 @@
     [_cartoonImg sd_setImageWithURL:[NSURL URLWithString:dataModel.cover] placeholderImage:[UIImage imageNamed:@"bannerPlaceV"] options:0 completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
         if(!image)return ;
         CGFloat prop = image.size.height / (self.height - 15);
+        NSLog(@"name:%@ imageH:%lf",dataModel.bookName,image.size.height);
+        NSLog(@"prop:%lf",prop);
         CGFloat imageW = SCREEN_WIDTH / prop;
         self.imageW.constant = imageW;
     }];

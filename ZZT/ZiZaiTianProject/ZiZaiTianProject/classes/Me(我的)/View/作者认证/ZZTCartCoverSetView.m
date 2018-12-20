@@ -11,10 +11,6 @@
 
 @interface ZZTCartCoverSetView ()<TZImagePickerControllerDelegate>
 
-@property (nonatomic,strong) UIImageView *coverImgView;
-
-@property (nonatomic,strong) UIImageView *bannerImgView;
-
 @property (nonatomic,strong) SBStrokeLabel *coverLab;
 
 @property (nonatomic,strong) SBStrokeLabel *bannerLab;
@@ -228,6 +224,7 @@
                 self.coverImgView.image = img;
             }else{
                 NSLog(@"图片不符合标准");
+                [MBProgressHUD showSuccess:@"图片尺寸不符合标准" toView:[self myViewController].view];
             }
         }
         if(self.imageType == 2){
@@ -235,6 +232,7 @@
                 self.bannerImgView.image = img;
             }else{
                 NSLog(@"图片不符合标准");
+                [MBProgressHUD showSuccess:@"图片尺寸不符合标准" toView:[self myViewController].view];
             }
         }
        
