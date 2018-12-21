@@ -322,12 +322,21 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 
 //分享
 -(void)shareTextToPlatform:(UMSocialPlatformType)plaform{
+    //生成哪一张图片就行了
+    UIImage *shareImg = [UIImage imageNamed:@"shareImg"];
+    //轮播图
+    UIImage *bannerImg = [UIImage imageNamed:self.ctDetail.lbCover];
+    
+    UIImage *shareBannerImage = [self addImage:@"shareImg" withImage:self.ctDetail.lbCover];
+    
     UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
     
-    messageObject.text = @"友盟+";
-    
-    UMShareWebpageObject *shareObject = [UMShareWebpageObject shareObjectWithTitle:@"分享到标题" descr:@"分享的描述" thumImage:[UIImage imageNamed:@"3.png"]];
-    shareObject.webpageUrl = @"https://www.baidu.com/"; //分享消息对象设置分享内容对象
+    //创建图片内容对象
+    UMShareImageObject *shareObject = [[UMShareImageObject alloc] init];
+    //如果有缩略图，则设置缩略图
+    shareObject.thumbImage = [UIImage imageNamed:@"icon"];
+    [shareObject setShareImage:shareBannerImage];
+    //分享消息对象设置分享内容对象
     messageObject.shareObject = shareObject;
     
     [[UMSocialManager defaultManager] shareToPlatform:plaform messageObject:messageObject currentViewController:nil completion:^(id result, NSError *error) {
@@ -337,6 +346,30 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
             //success
         }
     }];
+}
+
+- (UIImage *)addImage:(NSString *)imageName1 withImage:(NSString *)imageName2 {
+    //分享图
+    UIImage *image1 = [UIImage imageNamed:imageName1];
+    //轮播图
+    NSData *resultData = [NSData dataWithContentsOfURL:[NSURL URLWithString:imageName2]];
+    
+    UIImage *image2 = [UIImage imageWithData:resultData];
+    
+    UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, NO, [UIScreen mainScreen].scale);
+
+    [image1 drawInRect:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    
+    //计算轮播图 应该显示多少高度
+    CGFloat bannerH = image2.size.height * SCREEN_WIDTH / image2.size.width;
+    
+    [image2 drawInRect:CGRectMake(0,0, SCREEN_WIDTH, bannerH)];
+    
+    UIImage *resultingImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return resultingImage;
 }
 
 

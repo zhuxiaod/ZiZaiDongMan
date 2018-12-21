@@ -54,16 +54,17 @@
     //读取数据
 //    [self loadNewData];
     
-    [self setupMJRefresh];
+    
 }
 
 -(void)setupMJRefresh{
     self.collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         [self loadNewData];
+//        [self loadNewData1];
     }];
     
     self.collectionView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
-        [self loadData];
+//        [self loadData];
     }];
 }
 
@@ -75,18 +76,9 @@
                            @"pageSize":[NSString stringWithFormat:@"%ld",self.pageSize]
                            };
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html",@"text/xml",@"text/json",@"text/plain",@"text/JavaScript",@"application/json",@"image/jpeg",@"image/png",@"application/octet-stream",nil];
     
-//    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    // 设置超时时间
-
-//    manager.requestSerializer = [AFJSONRequestSerializer serializer];
-    //更改响应默认的解析方式为字符串解析
-//    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    
-
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getAuthorCartoon"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"responseObject1111%@",responseObject);
+        
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
@@ -107,7 +99,42 @@
         [self.collectionView.mj_header endRefreshing];
 
     }];
+}
 
+-(void)loadNewData1{
+    NSDictionary *dict = @{
+                           @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id],
+                           @"ifrelease":@"0",
+                           @"pageNum":@"1",
+                           @"pageSize":[NSString stringWithFormat:@"%ld",self.pageSize]
+                           };
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    
+    
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getAuthorCartoon"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSLog(@"草稿%@",responseObject[@"result"]);
+        
+//        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+//
+//        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
+//
+//        self.dataArray = array;
+//
+//        [self.collectionView.mj_header endRefreshing];
+//
+//        NSInteger total = [[NSString stringWithFormat:@"%@",[dic objectForKey:@"total"]] integerValue];
+//
+//        if(self.dataArray.count >= total){
+//            [self.collectionView.mj_footer endRefreshingWithNoMoreData];
+//        }
+//
+//        [self.collectionView reloadData];
+//
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+//        [self.collectionView.mj_header endRefreshing];
+        
+    }];
+    
 }
 
 -(void)loadData{
@@ -207,6 +234,7 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    [self setupMJRefresh];
     [self.collectionView.mj_header beginRefreshing];
 }
 

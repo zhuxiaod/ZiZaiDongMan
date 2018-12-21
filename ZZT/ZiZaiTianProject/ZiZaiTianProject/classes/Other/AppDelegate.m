@@ -33,6 +33,7 @@
     
     [UMCommonLogManager setUpUMCommonLogManager];
     [UMConfigure setLogEnabled:NO];
+    
     //5ba096a35b5a55a35f0001bb
     [MobClick setCrashReportEnabled:YES];
     [UMConfigure initWithAppkey:@"5ba096a35b5a55a35f0001bb" channel:@"App Store"];
@@ -78,8 +79,8 @@
     //异常处理
 //    [self avoidCrash];
 
-    //启动内购回调
-    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+    /**启动IAP工具类*/
+    [[SBIAPManager manager] startManager];
     
     return YES;
 }
@@ -173,7 +174,8 @@ void uncaughtExceptionHandler(NSException *exception) {
 }
 //被关闭时
 -(void)applicationWillTerminate:(UIApplication *)application{
-    [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
+    /**结束IAP工具类*/
+    [[SBIAPManager manager] stopManager];
 
 }
 @end

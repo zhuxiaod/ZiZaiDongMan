@@ -52,22 +52,24 @@
     [self.view addSubview:mainView];
     
     self.mainView = mainView;
+    
+    //主页的位置
+    CGFloat height = self.view.height;
+    CGFloat width  = self.view.width;
+    [self.mainView setFrame:CGRectMake(0,0,width,height)];
+    //    self.mainView.contentSize  = CGSizeMake(width * 3, 0);
+    //    [self.mainView setFrame:CGRectMake(width,0,width,height)];
+    self.mainView.contentSize  = CGSizeMake(width * 2, 0);
 }
 
 #pragma mark - 设置滚动视图
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
-    CGFloat height = self.view.height;
-    CGFloat width  = self.view.width;
     
-    //主页的位置
-    [self.mainView setFrame:CGRectMake(0,0,width,height)];
-    //    self.mainView.contentSize  = CGSizeMake(width * 3, 0);
-    //    [self.mainView setFrame:CGRectMake(width,0,width,height)];
-    self.mainView.contentSize  = CGSizeMake(width * 2, 0);
     
-    [_authorDraftVC.view setFrame:CGRectMake(width, 0, width, height)];
-    [_authorBookRoomVC.view setFrame:CGRectMake(0, 0, width, height)];
+    
+    
+    
     
 //    [self.mainView setContentOffset:CGPointMake(0, 0)];
 }
@@ -77,13 +79,21 @@
     ZZTAuthorBookRoomViewController *authorBookRoomVC = [[ZZTAuthorBookRoomViewController alloc] init];
     [self addChildViewController:authorBookRoomVC];
     _authorBookRoomVC = authorBookRoomVC;
+    
     [self.mainView addSubview:authorBookRoomVC.view];
+    
     //每次进来的时候就要看一下数据 刷新一下
     ZZTAuthorDraftViewController *authorDraftVC = [[ZZTAuthorDraftViewController alloc] init];
     [self addChildViewController:authorDraftVC];
     _authorDraftVC = authorDraftVC;
-    [self.mainView addSubview:self.authorDraftVC.view];
     
+    [self.mainView addSubview:authorDraftVC.view];
+
+    CGFloat height = self.view.height;
+    CGFloat width  = self.view.width;
+    
+    [_authorDraftVC.view setFrame:CGRectMake(width, 0, width, height)];
+    [_authorBookRoomVC.view setFrame:CGRectMake(0, 0, width, height)];
     self.automaticallyAdjustsScrollViewInsets = NO;
 }
 

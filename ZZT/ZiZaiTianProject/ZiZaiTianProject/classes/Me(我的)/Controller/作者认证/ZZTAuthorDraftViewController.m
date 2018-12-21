@@ -20,7 +20,6 @@
 
 @property (nonatomic,assign) NSInteger pageSize;
 
-
 @end
 
 @implementation ZZTAuthorDraftViewController
@@ -66,13 +65,11 @@
                            @"pageNum":@"1",
                            @"pageSize":[NSString stringWithFormat:@"%ld",self.pageSize]
                            };
+
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html",@"text/xml",@"text/json",@"text/plain",@"text/JavaScript",@"application/json",@"image/jpeg",@"image/png",@"application/octet-stream",nil];
-    
-//    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
 
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getAuthorCartoon"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"responseObject222222222%@",responseObject);
+        NSLog(@"草稿%@",responseObject[@"result"]);
 
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         

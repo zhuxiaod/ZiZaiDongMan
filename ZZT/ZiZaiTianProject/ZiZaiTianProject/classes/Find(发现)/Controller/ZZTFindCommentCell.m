@@ -280,7 +280,8 @@
     [self.reportBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.dataLab);
         make.right.equalTo(self.likeCountView.mas_left).offset(-54);
-        make.height.mas_equalTo(20);
+        make.height.mas_equalTo(30);
+        make.width.mas_equalTo(30);
     }];
     
     [_bottomView mas_makeConstraints:^(MASConstraintMaker *make) {

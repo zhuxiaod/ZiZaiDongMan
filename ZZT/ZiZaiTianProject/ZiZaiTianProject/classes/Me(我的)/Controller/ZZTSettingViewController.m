@@ -344,7 +344,7 @@ NSString *ExitCell = @"ExitCell";
     
     messageObject.text = @"友盟+";
     
-    UMShareWebpageObject *shareObject = [UMShareWebpageObject shareObjectWithTitle:@"自在动漫" descr:@"自在动漫~自在~" thumImage:[UIImage imageNamed:@"我的-头像框"]];
+    UMShareWebpageObject *shareObject = [UMShareWebpageObject shareObjectWithTitle:@"嘿！推荐下载自在漫画！" descr:@"自在动漫~自在~" thumImage:[UIImage imageNamed:@"shareLogImg"]];
     shareObject.webpageUrl = @"http://www.zztian.cn/"; //分享消息对象设置分享内容对象
     messageObject.shareObject = shareObject;
     
