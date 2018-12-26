@@ -244,13 +244,17 @@ NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
                                };
         [manager POST:[ZZTAPI stringByAppendingString:@"iosBuy/recharge"]  parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             NSLog(@"responseObject = %@", responseObject);
+            
+            self.ZbLab.text = [NSString stringWithFormat:@"%ld", (long)[Utilities GetNSUserDefaults].zzbNum];
+            
             [self completeTransaction:transactionReceipt];
+            
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            [self completeTransaction:transactionReceipt];
+//            [self completeTransaction:transactionReceipt];
         }];
         
     } failure:^(NSError *error) {
-        [self completeTransaction:transactionReceipt];
+//        [self completeTransaction:transactionReceipt];
     }];
 
 

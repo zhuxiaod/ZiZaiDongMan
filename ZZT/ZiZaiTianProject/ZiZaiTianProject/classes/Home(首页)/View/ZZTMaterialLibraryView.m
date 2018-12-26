@@ -78,11 +78,11 @@
         self.backgroundColor = [UIColor colorWithHexString:@"#B1B1B1"];
         //素材库
         UICollectionViewFlowLayout *layout = [self setupCollectionViewFlowLayout];
-        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
+        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 60, Screen_Width, self.height - 60 - 5) collectionViewLayout:layout];
         _collectionView.backgroundColor = [UIColor colorWithHexString:@"#B1B1B1"];
         _collectionView.delegate = self;
         _collectionView.dataSource = self;
-        _collectionView.frame = CGRectMake(0, 60, Screen_Width, self.height - 60 - 5);
+//        _collectionView.frame = CGRectMake(0, 60, Screen_Width, self.height - 60 - 5);
         _collectionView.showsVerticalScrollIndicator = NO;
         [_collectionView registerClass:[ZZTMaterialLibraryCell class] forCellWithReuseIdentifier:@"cell"];
         [self addSubview:_collectionView];

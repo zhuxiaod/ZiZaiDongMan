@@ -9,6 +9,7 @@
 #import "ZXDLoginRegisterView.h"
 #import "ZXDLoginRegisterTextField.h"
 #import "ZXDLoginRegisterTextField.h"
+
 @interface ZXDLoginRegisterView()<UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UIButton *loginRegisterButton;
@@ -32,6 +33,7 @@
 +(instancetype)loginView{
     return [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass(self)  owner:nil options:nil] firstObject];
 }
+
 //登录注册
 - (IBAction)clickRegister:(id)sender {
     // 判断下这个block在控制其中有没有被实现
@@ -88,7 +90,7 @@
     [self.verificationBtn setBackgroundColor:[UIColor whiteColor]];
 
     [_verificationBtn setTitle:@"发送验证码" forState:UIControlStateNormal];
-    [_verificationBtn addTarget:self action:@selector(codeBtnVerification) forControlEvents:UIControlEventTouchUpInside];
+    [_verificationBtn addTarget:self action:@selector(codeBtnVerification:) forControlEvents:UIControlEventTouchUpInside];
     
     //账号栏
     _accountView.layer.cornerRadius = 8;
@@ -110,12 +112,27 @@
     if(self.phoneNumber1.text.length && self.verificationFild.text.length){
         self.loginRegisterButton.enabled = YES;
         self.loginRegisterButton.alpha = 1;
+
     }
+    
+   
 }
 
--(void)codeBtnVerification{
-    NSLog(@"Ok");
-    [_verificationBtn timeFailBeginFrom:60];
+-(void)codeBtnVerification:(GGVerifyCodeViewBtn *)sender{
+    
+    if([ZXDCheckContent checkTelNumber:self.phoneNumber1.text]){
+        NSLog(@"Ok");
+        if (self.buttonAction) {
+            // 调用block传入参数
+            self.buttonAction(sender);
+        }
+        [_verificationBtn timeFailBeginFrom:60];
+    }else{
+        [MBProgressHUD showSuccess:@"请输入正确的电话号码！"];
+    }
+    
+ 
+    
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {

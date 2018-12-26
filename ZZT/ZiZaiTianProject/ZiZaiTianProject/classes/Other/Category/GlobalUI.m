@@ -36,7 +36,17 @@
     [btn setImage:img forState:UIControlStateNormal];
     [btn setTitle:title forState:UIControlStateNormal];
     [btn setTitleColor:titleColor forState:UIControlStateNormal];
-    
+    [btn setTitleEdgeInsets:
+     UIEdgeInsetsMake(btn.frame.size.height/2,
+                      (btn.frame.size.width-btn.titleLabel.intrinsicContentSize.width)/2-btn.imageView.frame.size.width,
+                      0,
+                      (btn.frame.size.width-btn.titleLabel.intrinsicContentSize.width)/2)];
+    [btn setImageEdgeInsets:
+     UIEdgeInsetsMake(
+                      0,
+                      (btn.frame.size.width-btn.imageView.frame.size.width)/2,
+                      btn.titleLabel.intrinsicContentSize.height,
+                      (btn.frame.size.width-btn.imageView.frame.size.width)/2)];
     return  btn;
 }
 @end

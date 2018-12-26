@@ -25,7 +25,7 @@ static NSString * const XYStoreiTunesVerifyReceiptURL1 = @"https://buy.itunes.ap
 
 static NSString * const XYStoreiTunesSandboxVerifyReceiptURL1 = @"https://sandbox.itunes.apple.com/verifyReceipt";
 
-@interface ZZTVIPViewController () <MLIAPManagerDelegate,SKProductsRequestDelegate,SKPaymentTransactionObserver>
+@interface ZZTVIPViewController () <MLIAPManagerDelegate,SKProductsRequestDelegate,SKPaymentTransactionObserver,SBIAPManagerDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *VipDate;
 @property (weak, nonatomic) IBOutlet UIImageView *headImg;
 @property (weak, nonatomic) IBOutlet ZZTZBView *oneMonthXu;
@@ -69,8 +69,7 @@ static NSString * const XYStoreiTunesSandboxVerifyReceiptURL1 = @"https://sandbo
         [self.userImg sd_setImageWithURL:[NSURL URLWithString:[Utilities GetNSUserDefaults].headimg]];
         NSLog(@"aasasdasda:%@",[Utilities GetNSUserDefaults].headimg);
         //VIP到期时间
-        self.VIPDateLab.text = @"2018-12-12 到期";
-       
+        self.VIPDateLab.text = [NSString stringWithFormat:@"%@ 到期",[NSString timeWithStr:[Utilities GetNSUserDefaults].vipEndtime]];
         [self setupArray];
         
 //        [self setUpTopUpBtn];
@@ -135,7 +134,6 @@ static NSString * const XYStoreiTunesSandboxVerifyReceiptURL1 = @"https://sandbo
     [self.oneMonth.viewBtn addTarget:self action:@selector(viewBtn:) forControlEvents:UIControlEventTouchUpInside];
     [self.threeMonth.viewBtn addTarget:self action:@selector(viewBtn:) forControlEvents:UIControlEventTouchUpInside];
     [self.twelveMonth.viewBtn addTarget:self action:@selector(viewBtn:) forControlEvents:UIControlEventTouchUpInside];
-
 }
 
 -(void)viewBtn:(ZZTZBView *)btn{
@@ -144,18 +142,21 @@ static NSString * const XYStoreiTunesSandboxVerifyReceiptURL1 = @"https://sandbo
     _buyModel = model;
     
     [[SBIAPManager manager] requestProductWithId:model.goodsOrder];
+    
+    [SBIAPManager manager].delegate = self;
 
-//    if([SKPaymentQueue canMakePayments]){
-//        [self requestProductData:model.goodsOrder];
-//        //必须是点击后
-//        self.isBuy = YES;
-//    }else{
-//        NSLog(@"不允许程序内付费");
-//    }
-//    [SVProgressHUD showWithStatus:nil];
 }
 
+//成功完成购买
+-(void)successDonePurchase{
+    
+    [[UserInfoManager share] loadUserInfoDataSuccess:^{
+        
+        self.VIPDateLab.text = [NSString stringWithFormat:@"%@ 到期",[NSString timeWithStr:[Utilities GetNSUserDefaults].vipEndtime]];
 
+    }];
+    
+}
 
 ////请求商品
 //- (void)requestProductData:(NSString *)type{

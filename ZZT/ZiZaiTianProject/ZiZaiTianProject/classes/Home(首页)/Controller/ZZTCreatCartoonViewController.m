@@ -1638,7 +1638,6 @@
                                 @"modelType":modelType,
                                 @"modelSubtype":modelSubtype
                                 };
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"fodder/fodderList"] parameters:parameter progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];

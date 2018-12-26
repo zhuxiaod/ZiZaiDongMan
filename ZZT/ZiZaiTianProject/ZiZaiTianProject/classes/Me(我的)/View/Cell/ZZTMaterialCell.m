@@ -23,6 +23,10 @@
     
     self.imageView.clipsToBounds = YES;
     
+    self.imageView.layer.cornerRadius = 10.0f;
+    
+    self.imageView.layer.masksToBounds = YES;
+    
     self.imageView.userInteractionEnabled = YES;
 }
 

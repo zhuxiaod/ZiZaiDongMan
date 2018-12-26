@@ -20,6 +20,7 @@
     NSString *cover;//封面
     NSString *nickName;//昵称
     NSString *phone;//手机号
+    NSString *vipEndtime;// Vip结束时间
 }
 
 @property (nonatomic,assign)BOOL isLogin;
@@ -70,7 +71,9 @@
 //今天是否签到   0表示没签到，1表示签到+
 @property (nonatomic,assign)NSInteger ifsign;
 //连续签到数+
-@property (nonatomic,assign)NSInteger signCount;
+@property (nonatomic,assign) NSInteger signCount;
+
+@property (nonatomic,strong) NSString *vipEndtime;
 
 
 +(instancetype)initAuthorWithUserId:(NSString *)userId headImg:(NSString *)headImg nikeName:(NSString *)nikeName;

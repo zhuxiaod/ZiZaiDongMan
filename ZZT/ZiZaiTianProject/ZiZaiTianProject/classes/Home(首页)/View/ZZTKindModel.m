@@ -10,4 +10,10 @@
 
 @implementation ZZTKindModel
 
++(instancetype)initKindModelWith:(NSString *)kindTitle isSelect:(NSString *)isSelect{
+    ZZTKindModel *model = [[ZZTKindModel alloc] init];
+    model.kindTitle = kindTitle;
+    model.isSelect = isSelect;
+    return model;
+}
 @end

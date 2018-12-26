@@ -9,10 +9,16 @@
 #import <Foundation/Foundation.h>
 #import <StoreKit/StoreKit.h>
 
+
+@protocol SBIAPManagerDelegate <NSObject>
+
+- (void)successDonePurchase;
+
+@end
+
 @interface SBIAPManager : NSObject
 
-@property (nonatomic, weak)id<IApRequestResultsDelegate>delegate;
-
+@property (nonatomic, weak)id<SBIAPManagerDelegate>delegate;
 
 +(instancetype)manager;
 

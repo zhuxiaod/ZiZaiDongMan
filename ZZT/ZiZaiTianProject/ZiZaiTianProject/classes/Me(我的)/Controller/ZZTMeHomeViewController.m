@@ -13,6 +13,7 @@
 #import "ZZTVIPViewController.h"
 #import "ImageClipViewController.h"
 #import "ZZTChapterPayViewController.h"
+#import "ZZTCreatCartoonViewController.h"
 
 @interface ZZTMeHomeViewController ()<UIScrollViewDelegate>
 
@@ -175,6 +176,10 @@
 }
 
 -(void)gotoVipView{
+    ZZTEditorCartoonViewController *ecVC = [[ZZTEditorCartoonViewController alloc] init];
+    ecVC.hidesBottomBarWhenPushed = YES;
+    
+    [self.navigationController pushViewController:ecVC animated:YES];
 //    ZZTChapterPayViewController *CPVC = [[ZZTChapterPayViewController alloc] init];
 //    ZZTNavigationViewController *nav = [[ZZTNavigationViewController alloc] initWithRootViewController:CPVC];
 //    nav.modalPresentationStyle = UIModalPresentationOverCurrentContext;
@@ -183,7 +188,11 @@
 
 -(void)gotoTopupView{
     //钱包
-    ZZTMeWalletViewController *walletVC = [[ZZTMeWalletViewController alloc] init];
+//    ZZTMeWalletViewController *walletVC = [[ZZTMeWalletViewController alloc] init];
+//    walletVC.hidesBottomBarWhenPushed = YES;
+//    [self.navigationController pushViewController:walletVC animated:YES];
+    
+    ZZTCreatCartoonViewController *walletVC = [[ZZTCreatCartoonViewController alloc] init];
     walletVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:walletVC animated:YES];
 }

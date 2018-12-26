@@ -17,6 +17,11 @@
 
 @property (nonatomic,strong) NSString *code;
 
+@property (nullable,strong) NSString *isSelect;
+
+@property (nonatomic,strong) NSString *kindTitle;
+
++(instancetype)initKindModelWith:(NSString *)kindTitle isSelect:(NSString *)isSelect;
 
 @end
 

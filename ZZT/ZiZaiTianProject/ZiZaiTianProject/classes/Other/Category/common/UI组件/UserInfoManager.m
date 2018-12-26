@@ -156,7 +156,7 @@
 //
 //}
 
--(void)loadUserInfoData{
+-(void)loadUserInfoDataSuccess:(void (^)(void))successBlock{
     if([[UserInfoManager share] hasLogin] == NO)return;
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     NSDictionary *paramDict = @{
@@ -172,7 +172,9 @@
         self.userData = model;
         //存一下数据
         [Utilities SetNSUserDefaults:model];
-
+        
+        if (successBlock != nil) successBlock();
+        
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];

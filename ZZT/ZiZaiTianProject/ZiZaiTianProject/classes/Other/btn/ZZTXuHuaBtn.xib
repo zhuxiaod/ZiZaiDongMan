@@ -59,6 +59,13 @@
                         <constraint firstAttribute="height" constant="20" id="o8o-eK-l7O"/>
                     </constraints>
                 </view>
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8HM-Eo-vqm">
+                    <rect key="frame" x="0.0" y="0.0" width="80" height="77"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <inset key="titleEdgeInsets" minX="-20" minY="20" maxX="0.0" maxY="-1"/>
+                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="-58" maxY="32"/>
+                    <state key="normal" title="Button" image="往上一层"/>
+                </button>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
@@ -73,10 +80,11 @@
                 <constraint firstAttribute="trailing" secondItem="whH-SE-kxw" secondAttribute="trailing" constant="3" id="ii0-Ix-DK4"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="-76" y="88"/>
+            <point key="canvasLocation" x="-17" y="92"/>
         </view>
     </objects>
     <resources>
+        <image name="往上一层" width="19" height="21"/>
         <image name="我的-头像框" width="176" height="176"/>
         <image name="正文-点赞-已点赞" width="59" height="52"/>
     </resources>

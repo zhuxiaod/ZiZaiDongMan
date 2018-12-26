@@ -33,6 +33,16 @@
     return timeString;
 }
 
+//-(NSString *)vipEndtime{
+//    NSLog(@"vipEndtime:%@",vipEndtime);
+//    NSTimeInterval time = [vipEndtime floatValue];
+//    NSDate *d = [[NSDate alloc]initWithTimeIntervalSince1970:time/1000.0];
+//    NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
+//    [formatter setDateFormat:@"yyyy-MM-dd"];
+//    NSString *timeString=[formatter stringFromDate:d];
+//    return timeString;
+//}
+
 @synthesize isLogin;
 @synthesize phoneNumber;
 @synthesize cookie;
@@ -44,6 +54,7 @@
 @synthesize cover;
 @synthesize nickName;
 @synthesize phone;
+@synthesize vipEndtime;
 
 // 归档属性
 - (void)encodeWithCoder:(nonnull NSCoder *)aCoder {

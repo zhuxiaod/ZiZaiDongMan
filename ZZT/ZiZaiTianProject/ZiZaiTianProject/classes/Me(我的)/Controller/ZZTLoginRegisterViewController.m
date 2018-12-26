@@ -199,7 +199,6 @@
 {
     //验证码
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-    [manager.requestSerializer setValue:@"text/xml; charset=ut-8" forHTTPHeaderField:@"Content-Type"];
 
     NSDictionary *paramDict = @{
                                 @"phone":self.loginView.phoneNumber.text
@@ -222,9 +221,12 @@
 
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"login/loginApp"]  parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
-        [self loginAfterLoadUserDataWith:responseObject];
-
+        NSString *error = responseObject[@"code"];
+        if([error integerValue] == 200){
+            [MBProgressHUD showSuccess:@"验证码已失效,请重新输入"];
+        }else{
+            [self loginAfterLoadUserDataWith:responseObject];
+        }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];

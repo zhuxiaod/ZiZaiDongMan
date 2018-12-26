@@ -356,14 +356,28 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     
     UIImage *image2 = [UIImage imageWithData:resultData];
     
-    UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, NO, [UIScreen mainScreen].scale);
+    UIImage *logoImg = [UIImage imageNamed:@"logoImg"];
+    
+    CGFloat image1H;
+    if(SCREEN_WIDTH == 414){
+        image1H = 421;
+    }else{
+        image1H = 381;
+    }
+    
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(self.view.bounds.size.width, image1H), NO, 0);
 
-    [image1 drawInRect:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    [image1 drawInRect:CGRectMake(0, 0, SCREEN_WIDTH, image1H)];
     
     //计算轮播图 应该显示多少高度
     CGFloat bannerH = image2.size.height * SCREEN_WIDTH / image2.size.width;
     
     [image2 drawInRect:CGRectMake(0,0, SCREEN_WIDTH, bannerH)];
+    
+    //logo的大小
+    CGRect image2Rect = CGRectMake(0,0, SCREEN_WIDTH, bannerH);
+    //添加logo
+    [logoImg drawInRect:CGRectMake(CGRectGetMaxX(image2Rect) - 60, CGRectGetMaxY(image2Rect) - 60, 50, 50)];
     
     UIImage *resultingImage = UIGraphicsGetImageFromCurrentImageContext();
     

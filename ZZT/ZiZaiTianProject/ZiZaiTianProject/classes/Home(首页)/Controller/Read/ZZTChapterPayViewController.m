@@ -310,7 +310,7 @@
                               };
         [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/userBuyChapter"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             [MBProgressHUD showSuccess:@"购买成功"];
-            [[UserInfoManager share] loadUserInfoData];
+            [[UserInfoManager share] loadUserInfoDataSuccess:nil];
             //更新上一页的数据
             self.model.ifbuy = @"1";
             ZZTCartoonDetailViewController *carDetailVC = [[ZZTCartoonDetailViewController alloc] init];

@@ -183,8 +183,15 @@ dispatch_queue_t iap_queue() {
             case SKPaymentTransactionStatePurchased:
                 NSLog(@"交易完成");
                 NSLog(@"发送后台验证");
+                //没登录 不执行
                 if([Utilities GetNSUserDefaults].id != 0){
-                      [self buyAppleStoreProductSucceedWithPaymentTransactionp:tran];
+                    //订阅特殊处理
+                    if(tran.originalTransaction){
+                        //如果是自动续费的订单originalTransaction会有内容
+                    }else{
+                        //普通购买，以及 第一次购买 自动订阅
+                        [self buyAppleStoreProductSucceedWithPaymentTransactionp:tran];
+                    }
                 }
                 break;
             case SKPaymentTransactionStatePurchasing:
@@ -208,42 +215,56 @@ dispatch_queue_t iap_queue() {
 
 // 苹果内购支付成功
 - (void)buyAppleStoreProductSucceedWithPaymentTransactionp:(SKPaymentTransaction *)transactionReceipt {
-    
+    //获取凭证
     NSURL *recepitURL = [[NSBundle mainBundle] appStoreReceiptURL];
     NSData *receipt = [NSData dataWithContentsOfURL:recepitURL];
     NSString *transactionReceiptString = [receipt base64EncodedStringWithOptions:0];
     
+//    XYStoreiTunesVerifyReceiptURL2   XYStoreiTunesSandboxVerifyReceiptURL2
+    //验证凭证
     [self verifyRequestData:transactionReceiptString url:XYStoreiTunesSandboxVerifyReceiptURL2 transaction:transactionReceipt success:^{
         NSLog(@"OK~");
-        
+
         AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
         // 发出请求
         UserInfo *user = [Utilities GetNSUserDefaults];
         NSDictionary *dict = @{
-                            @"TransactionID":transactionReceipt.transactionIdentifier,//订单号
+                               @"TransactionID":transactionReceipt.transactionIdentifier,//订单号
                                @"Payload":transactionReceiptString,//票据
                                @"userId":[NSString stringWithFormat:@"%ld",user.id]
                                };
         [manager POST:[ZZTAPI stringByAppendingString:@"iosBuy/recharge"]  parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            NSLog(@"responseObject = %@", responseObject);
+
+            if (self.delegate && [self.delegate respondsToSelector:@selector(successDonePurchase)]) {
+                
+                [self.delegate successDonePurchase];
+
+            }
+//
+//            NSLog(@"responseObject = %@", responseObject);
+//
             [self completeTransaction:transactionReceipt];
+
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            [self completeTransaction:transactionReceipt];
+
+//            [self completeTransaction:transactionReceipt];
+
         }];
         
     } failure:^(NSError *error) {
-        [self completeTransaction:transactionReceipt];
+//        [self completeTransaction:transactionReceipt];
     }];
     
 }
 
-
+//苹果验证
 - (void)verifyRequestData:(NSString *)base64Data
                       url:(NSString *)url
               transaction:(SKPaymentTransaction *)transaction
                   success:(void (^)(void))successBlock
                   failure:(void (^)(NSError *error))failureBlock
 {
+    //发送苹果验证
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setValue:base64Data forKey:@"receipt-data"];
     [params setValue:@"9a55a967740f41bcbb659a6872ceeb51" forKey:@"password"];
@@ -278,7 +299,7 @@ dispatch_queue_t iap_queue() {
             
             NSError *jsonError;
             NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
-            NSLog(@"responseJSONresponseJSONresponseJSONresponseJSON:%@",responseJSON);
+            NSLog(@"responseJSO:%@",responseJSON);
             
             if (!responseJSON) {
                 NSLog(@"苹果没有返回你想要的数据");
@@ -292,10 +313,11 @@ dispatch_queue_t iap_queue() {
             static NSInteger sandboxCode = 21007;
             if (statusCode == successCode) {
                 NSLog(@"验证成功！！！！");
+                // 缓存票据校验结果
                 [weakSelf saveVerifiedReceipts:transaction response:responseJSON];
                 if (successBlock != nil) successBlock();
             } else if (statusCode == sandboxCode) {
-                //如果是沙盒
+                //沙盒验证
                 [weakSelf sandboxVerify:base64Data
                             transaction:transaction
                                 success:successBlock
@@ -322,12 +344,12 @@ dispatch_queue_t iap_queue() {
                                   applicationUsername:transaction.payment.applicationUsername];
     NSLog(@"我想看看KEY：%@",key);
     [self.verifiedReceipts setValue:response forKey:key];
-    NSLog(@"我想看看response：%@",response);
+
     [[NSUserDefaults standardUserDefaults] setValue:response forKey:key];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-// 存储对应的key
+//存储对应的key
 - (NSString *)verifiedReceiptPrefrenceKey:(NSString *)productId
                       applicationUsername:(NSString *)applicationUsername
 {
@@ -359,8 +381,6 @@ dispatch_queue_t iap_queue() {
     return _verifiedReceipts;
 }
 
-
-
 //交易结束
 - (void)completeTransaction:(SKPaymentTransaction *)transaction{
     NSLog(@"交易结束");
@@ -373,6 +393,6 @@ dispatch_queue_t iap_queue() {
     [MBProgressHUD showError:@"购买失败"];
 
     NSLog(@"购买失败");
-
+    
 }
 @end
