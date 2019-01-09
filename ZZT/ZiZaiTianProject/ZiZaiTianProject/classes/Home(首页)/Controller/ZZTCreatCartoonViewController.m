@@ -612,6 +612,8 @@
 #pragma mark 上一页
 - (IBAction)previousPage:(id)sender {
     //安全操作
+    NSLog(@"currentIndex:%ld",self.currentIndex);
+
     if(self.currentIndex == 0){
         NSLog(@"没有上一页");
         //最后一个  保存当前类型
@@ -636,6 +638,7 @@
 
 #pragma mark 下一页
 - (IBAction)nextPage:(id)sender {
+    NSLog(@"currentIndex:%ld",self.currentIndex);
     if(self.currentIndex == self.cartoonArray.count){
         //添加
         [self seveCurrentView];
@@ -1187,6 +1190,11 @@
     colorPickerView.delegate = self;
     _colorPickerView = colorPickerView;
     [self.view addSubview:colorPickerView];
+
+//    RectangleView *rectangleView = [self createFuangKuangViewWithModel:nil];
+//    //添加方框模型
+//    [self addFangKuangModelWithView:rectangleView];
+    
 }
 
 -(void)colorPickerViewWithColor:(ZZTColorPickerView *)view color:(UIColor *)color{
@@ -1405,7 +1413,8 @@
     imageView.type = self.curType;
     imageView.bubbleDelegate = self;
     imageView.superViewName = NSStringFromClass([self.mainView class]);
-    [imageView sd_setImageWithURL:[NSURL URLWithString:model.img]];
+//    [imageView sd_setImageWithURL:[NSURL URLWithString:model.img]];
+    imageView.image = [UIImage imageNamed:@"临时对话框"];
     //设置tag值
     imageView.tagNum = self.tagNum;
     self.tagNum = self.tagNum + 1;
@@ -1642,6 +1651,8 @@
     [manager POST:[ZZTAPI stringByAppendingString:@"fodder/fodderList"] parameters:parameter progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTFodderListModel mj_objectArrayWithKeyValuesArray:dic];
+        
+//        ZZTFodderListModel
         self.dataSource = array;
         self.materialLibraryView.dataSource = array;
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

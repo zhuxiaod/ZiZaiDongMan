@@ -42,4 +42,7 @@
 //更新数据
 -(void)loadUserInfoDataSuccess:(void (^)(void))successBlock;
 
+//登录游客模式
+-(void)loginVisitorModelSuccess:(void (^)(void))successBlock;
+
 @end

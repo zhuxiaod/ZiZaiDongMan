@@ -11,8 +11,11 @@
 
 //定义枚举类型
 typedef enum ZZTEditorImageViewType {
+    
     editorImageViewTypeChat  = 0,
-
+    
+    editorImageViewTypeNormal
+    
 } Editor_ImageViewType;
 
 @class ZZTEditorImageView;
@@ -22,6 +25,8 @@ typedef enum ZZTEditorImageViewType {
 @optional
 
 - (void)sendCurrentViewToDeskView:(ZZTEditorImageView *)imageView;
+
+- (void)showInputViewWithEditorImageView:(ZZTEditorImageView *)imageView;
 
 @end
 
@@ -33,7 +38,15 @@ typedef enum ZZTEditorImageViewType {
 @property (nonatomic,strong) NSString *imageUrl;
 
 @property (nonatomic,assign) Editor_ImageViewType type;
+//文本框中的文字
+@property (nonatomic,copy) NSString *inputText;
 
-@property(nonatomic,weak)id<ZZTEditorImageViewDelegate>   imageViewDelegate;
+@property(nonatomic,weak)id<ZZTEditorImageViewDelegate> imageViewDelegate;
+
+@property(nonatomic,strong) UIButton *closeImageView;
+
+@property(nonatomic,strong) UIImageView *imageView;
+
+-(void)draw;
 
 @end

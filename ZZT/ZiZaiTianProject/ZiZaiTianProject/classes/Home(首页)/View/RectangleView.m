@@ -244,6 +244,7 @@ int i = 0;
     mainView.backgroundColor = [UIColor whiteColor];
     self.mainView = mainView;
     [self addSubview:mainView];
+    
     //创建4条边
     UIView *topBorder = [[UIView alloc] init];
     topBorder.tag = 1;

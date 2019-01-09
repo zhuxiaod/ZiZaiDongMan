@@ -121,7 +121,7 @@ NSString *bannerID = @"MeCell";
     _tableView.showsVerticalScrollIndicator = NO;
     
     //添加头视图
-    ZZTMeTopView *top = [ZZTMeTopView meTopView];
+    ZZTMeTopView *top = [[ZZTMeTopView alloc] init];
     top.frame = CGRectMake(0, 0, ScreenW, SCREEN_HEIGHT * 0.36);
     _tableView.tableHeaderView = top;
     _topView = top;
@@ -218,6 +218,7 @@ NSString *bannerID = @"MeCell";
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
     [self.navigationController setNavigationBarHidden:YES animated:YES];
 
     //隐藏Bar
@@ -225,7 +226,17 @@ NSString *bannerID = @"MeCell";
     UserInfo *userInfo = [Utilities GetNSUserDefaults];
     //有id
     if(userInfo == nil){
-        [self loadUserData:0];
+        [[UserInfoManager share] loginVisitorModelSuccess:^{
+            
+            self.userData = [Utilities GetNSUserDefaults];
+            
+            //userId已经有了
+            [self loadUserData:self.userData.id];
+            
+            [self setupTopView];
+            
+        }];
+        
     }else{
         //userId已经有了
         [self loadUserData:userInfo.id];
@@ -237,32 +248,29 @@ NSString *bannerID = @"MeCell";
     [super viewDidAppear:animated];
 }
 
+
+
 -(void)loadUserData:(NSInteger)Id{
     NSString *userId = [NSString stringWithFormat:@"%ld",Id];
-    if([userId isEqualToString:@"0"]){
-        UserInfo *model = [[UserInfo alloc] init];
-        model.isLogin = NO;
+
+    NSDictionary *paramDict = @{
+                                @"userId":userId
+                                };
+    [self.manager POST:[ZZTAPI stringByAppendingString:@"login/usersInfo"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+        
+        UserInfo *model = [UserInfo mj_objectWithKeyValues:dic];
+        model.isLogin = YES;
         self.userData = model;
         [self setupTopView];
-    }else{
-        NSDictionary *paramDict = @{
-                                    @"userId":userId
-                                    };
-        [self.manager POST:[ZZTAPI stringByAppendingString:@"login/usersInfo"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            
-            NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
-            
-            UserInfo *model = [UserInfo mj_objectWithKeyValues:dic];
-            model.isLogin = YES;
-            self.userData = model;
-            [self setupTopView];
-            //存一下数据
-            [Utilities SetNSUserDefaults:model];
+        //存一下数据
+        [Utilities SetNSUserDefaults:model];
 
-        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            
-        }];
-    }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
+
 }
 
 -(void)tongzhi{
@@ -280,11 +288,11 @@ NSString *bannerID = @"MeCell";
 {
     if (indexPath.section == 0) {
         if(indexPath.row == 0){
-            //VIP
-            if([[UserInfoManager share] hasLogin] == NO){
-                [UserInfoManager needLogin];
-                return;
-            }
+//            //VIP
+//            if([[UserInfoManager share] hasLogin] == NO){
+//                [UserInfoManager needLogin];
+//                return;
+//            }
             ZZTVIPViewController *VIPVC = [[ZZTVIPViewController alloc] init];
             VIPVC.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:VIPVC animated:YES];

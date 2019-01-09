@@ -17,6 +17,7 @@
             <subviews>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AAM-QM-zLS">
                     <rect key="frame" x="0.0" y="0.0" width="375" height="190"/>
+                    <state key="normal" backgroundImage="Me_homeBackground"/>
                 </button>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jNy-lM-KLJ" customClass="ZZTUserHeadView">
                     <rect key="frame" x="287" y="132" width="66" height="66"/>
@@ -58,4 +59,7 @@
             <point key="canvasLocation" x="-102.5" y="98"/>
         </view>
     </objects>
+    <resources>
+        <image name="Me_homeBackground" width="360" height="216"/>
+    </resources>
 </document>

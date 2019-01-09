@@ -23,6 +23,15 @@
     return [NSKeyedUnarchiver unarchiveObjectWithData:data];
 }
 
++(void)removeUserData{
+    
+    NSUserDefaults *defaults=[NSUserDefaults standardUserDefaults];
+    
+    [defaults removeObjectForKey:@"user"];
+    
+    [defaults synchronize];
+}
+
 //存储单例models到NSUserDefaults
 +(void)SetJiXuYueDuDefaults:(ZZTJiXuYueDuModel *)userInfo{
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:userInfo];

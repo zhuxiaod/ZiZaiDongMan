@@ -306,6 +306,7 @@
     //更新内容高度
     CGFloat contentHeight = [_contentLab.text heightWithWidth:CGRectGetWidth(self.contentView.bounds) - 32 font:MomentFontSize];
     contentHeight += 10;
+    
     [_contentLab mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(contentHeight);
     }];
@@ -313,12 +314,18 @@
     //获取图片数组
     self.imgArray = [model.contentImg componentsSeparatedByString:@","];
     
-    NSInteger row = _imgArray.count / 3;// 多少行图片
-    if (_imgArray.count %3 !=0) {
-        ++row;
+    CGFloat bgH = 0.0f;
+    if(self.imgArray.count == 1){
+        bgH = ZZTLayoutDistance(720);
+        
+    }else{
+        NSInteger row = _imgArray.count / 3;// 多少行图片
+        if (_imgArray.count %3 !=0) {
+            ++row;
+        }
+        bgH = _imgArray.count ? row * imgHeight + (row-1) * 10 :0;
     }
     
-    CGFloat bgH = _imgArray.count ? row * imgHeight + (row-1) * 10 :0;
     [self.collectionView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(bgH);
     }];
@@ -330,7 +337,8 @@
     [self setNeedsLayout];
     [self layoutIfNeeded];
     
-    [_headBtn sd_setBackgroundImageWithURL:[NSURL URLWithString:model.headimg] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"peien"]];
+    [_headBtn sd_setBackgroundImageWithURL:[NSURL URLWithString:model.headimg] forState:UIControlStateNormal];
+    
     //名字位置刷新 vip的位置也刷新
     _userName.text = model.nickName;
     
@@ -391,10 +399,14 @@
 + (CGFloat)cellHeightWithStr:(NSString *)str imgs:(NSArray *)imgs{
     //内容高度
     CGFloat strH = [str heightWithWidth:CGRectGetWidth([UIScreen mainScreen].bounds) - 32 font:MomentFontSize];
-//    16 + 40+16+strH+16
+//  16 + 40+16+strH+16
     CGFloat cellH = strH + 110 + 16 + 8;
     NSInteger row = imgs.count / 3;
-    if (imgs.count) {
+    if (imgs.count == 1) {
+        cellH += ZZTLayoutDistance(720);
+    }else if (imgs.count == 0){
+//        cellH += 10;
+    }else{
         if (imgs.count % 3 !=0) {
             row += 1;
         }
@@ -474,10 +486,19 @@
 {
     NSString *imgStr = self.imgArray[indexPath.row];
     ZZTMaterialCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"wordImageCell" forIndexPath:indexPath];
+    cell.arrayCount = self.imgArray.count;
     //显示一张图  然后给他一张图
     cell.imageStr = imgStr;
 //    cell.selectImageView = self.groupImgArr[indexPath.row];
     return cell;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
+    if (_imgArray.count == 1) {
+        return CGSizeMake(imgHeight * 3 + 24,ZZTLayoutDistance(720));
+    }else{
+        return CGSizeMake(imgHeight,imgHeight);
+    }
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{

@@ -26,7 +26,7 @@
 -(void)setUserModel:(UserInfo *)userModel{
     _userModel = userModel;
     
-    [self.backgroundBtn sd_setImageWithURL:[NSURL URLWithString:userModel.cover] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"Me_homeBackground"]];
+    [self.backgroundBtn sd_setImageWithURL:[NSURL URLWithString:userModel.cover] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"Me_homeBackground"] options:0];
     
     [self.userHead setupUserHeadImg:userModel.headimg placeHeadImg:@"Me_topView_headImage"];
     
@@ -42,6 +42,21 @@
     self.userNameW.constant = replyCountWidth;
 }
 
+
+- (instancetype)initWithFrame:(CGRect)frame {
+    
+    self = [super initWithFrame:frame];
+    self = [[[NSBundle mainBundle] loadNibNamed:@"ZZTMeTopView" owner:self options:nil] lastObject];
+    if (self) {
+        self.frame = frame;
+        
+        [self.userHead setupUserHeadImg:@"Me_topView_headImage" placeHeadImg:@"Me_topView_headImage"];
+
+    }
+    return self;
+}
+
+
 +(instancetype)meTopView{
     return [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass(self) owner:nil options:nil] firstObject];
 }
@@ -50,7 +65,7 @@
 {
     [super awakeFromNib];
     
-    [self.backgroundBtn.imageView setImage:[UIImage imageNamed:@"Me_homeBackground"]];
+//    [self.backgroundBtn.imageView setImage:[UIImage imageNamed:@"Me_homeBackground"]];
 
     [self.backgroundBtn.imageView setContentMode:UIViewContentModeScaleAspectFill];
     
@@ -80,7 +95,7 @@
 
 - (void)buttonClick:(UIButton *)button{
     // 判断下这个block在控制其中有没有被实现
-    if (self.buttonAction && self.userModel.isLogin == YES) {
+    if (self.buttonAction && ![self.userModel.userType isEqualToString:@"3"]) {
         // 调用block传入参数
         self.buttonAction(button);
     }else{

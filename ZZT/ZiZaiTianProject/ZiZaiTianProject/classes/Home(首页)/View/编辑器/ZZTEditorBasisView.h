@@ -14,12 +14,27 @@
 
 @optional
 
+//将当前View传给桌面
 - (void)setupViewForCurrentView:(ZZTEditorBasisView *)view;
 
 @end
 
 @interface ZZTEditorBasisView : UIView
 
+//@property(nonatomic,strong) UIButton *deleteBtn;
+
 @property(nonatomic,weak)id<ZZTEditorBasisViewDelegate>   delegate;
+
+//禁止旋转
+-(void)Editor_BasisViewCloseRotateGesture;
+
+//禁止捏合
+-(void)Editor_BasisViewClosePichGesture;
+
+//禁止拖动
+-(void)Editor_BasisViewClosePanGesture;
+
+//允许拖动
+-(void)Editor_BasisViewAddPanGesture;
 
 @end

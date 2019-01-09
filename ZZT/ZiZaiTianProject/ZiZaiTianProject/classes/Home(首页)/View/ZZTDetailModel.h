@@ -10,7 +10,15 @@
 
 @interface ZZTDetailModel : NSObject
 
-@property (nonatomic,strong) NSString *detailCode;
+@property (nonatomic,assign) NSInteger id;
 
-@property (nonatomic,strong) NSString *detail;
+@property (nonatomic,strong) NSString *img;
+
+@property (nonatomic,strong) NSString *fodderType;
+
+@property (nonatomic,strong) NSString *owner;
+
+@property (nonatomic,strong) NSString *modelType;
+
+
 @end

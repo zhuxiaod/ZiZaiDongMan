@@ -70,8 +70,10 @@
     _model = model;
     if([model.isSelect isEqualToString:@"1"]){
         _whiteView.backgroundColor = [UIColor whiteColor];
+        [self.cellLab setTextColor:[UIColor whiteColor]];
     }else{
         _whiteView.backgroundColor = [UIColor clearColor];
+        [self.cellLab setTextColor:[UIColor lightGrayColor]];
     }
     self.cellLab.text = model.kindTitle;
 }

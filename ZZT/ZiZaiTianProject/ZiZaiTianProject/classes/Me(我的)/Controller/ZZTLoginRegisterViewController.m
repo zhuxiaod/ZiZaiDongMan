@@ -213,18 +213,20 @@
 }
 
 -(void)loginButtonClick:(UIButton *)button{
-    
+    [MBProgressHUD showMessage:@"正在登录..." toView:self.view];
     NSDictionary *paramDict = @{
                                 @"phone":self.loginView.phoneNumber.text,
                                 @"checkCode":self.loginView.verification.text
                                 };
-
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"login/loginApp"]  parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSString *error = responseObject[@"code"];
         if([error integerValue] == 200){
+            [MBProgressHUD hideHUDForView:self.view];
             [MBProgressHUD showSuccess:@"验证码已失效,请重新输入"];
         }else{
+            [MBProgressHUD hideHUDForView:self.view];
+            [MBProgressHUD showSuccess:@"登录成功"];
             [self loginAfterLoadUserDataWith:responseObject];
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -343,7 +345,11 @@
     UserInfo *user = array[0];
     //存
     [Utilities SetNSUserDefaults:user];
-
+    
+    if(self.completeBlock) {
+        self.completeBlock();
+    }
+    
     //关闭页面
     [self dismissViewControllerAnimated:YES completion:^{
         //创建通知
@@ -358,8 +364,6 @@
     UIViewController *rootVc = [self topViewControllerWithRootViewController:[[[[UIApplication sharedApplication] delegate] window] rootViewController]];
     
     ZZTLoginRegisterViewController *loginVc = [ZZTLoginRegisterViewController new];
-    
-//    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:loginVc];
     
     [rootVc presentViewController:loginVc animated:YES completion:^{
         

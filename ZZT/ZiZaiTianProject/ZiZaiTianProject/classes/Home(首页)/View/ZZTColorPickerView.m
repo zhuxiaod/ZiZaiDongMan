@@ -303,6 +303,16 @@
         make.height.mas_equalTo(20);
     }];
 }
+
+-(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event{
+    
+    UIView *view = [super hitTest:point withEvent:event];
+    
+    if(view == nil){
+        [self removeFromSuperview];
+    }
+    return view;
+}
 //#pragma mark - textFieldDelegate（别忘了遵守协议设置代理）
 //- (void)textFieldDidBeginEditing:(UITextField *)textField {
 //    self.y = self.y - 216;  //216是输入框在最底部时view移动的距离，具体移动多少距离，需要根据实际情况而定

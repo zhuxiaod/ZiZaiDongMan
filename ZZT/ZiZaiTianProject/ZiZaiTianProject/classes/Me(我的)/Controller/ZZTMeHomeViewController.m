@@ -176,11 +176,13 @@
 }
 
 -(void)gotoVipView{
+    
     ZZTEditorCartoonViewController *ecVC = [[ZZTEditorCartoonViewController alloc] init];
     ecVC.hidesBottomBarWhenPushed = YES;
-    
+
     [self.navigationController pushViewController:ecVC animated:YES];
-//    ZZTChapterPayViewController *CPVC = [[ZZTChapterPayViewController alloc] init];
+
+    //    ZZTChapterPayViewController *CPVC = [[ZZTChapterPayViewController alloc] init];
 //    ZZTNavigationViewController *nav = [[ZZTNavigationViewController alloc] initWithRootViewController:CPVC];
 //    nav.modalPresentationStyle = UIModalPresentationOverCurrentContext;
 //    [self presentViewController:nav animated:YES completion:nil];

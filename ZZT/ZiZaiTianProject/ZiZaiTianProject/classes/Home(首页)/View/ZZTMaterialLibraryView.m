@@ -137,13 +137,13 @@
 //3级视图创建时 触发
 -(void)btnIndex:(NSNotification *)text{
     for (ZZTDetailModel *model in self.typs) {
-        if ([model.detail isEqualToString:text.userInfo[@"text"]]){
-            self.modelSubtype = model.detailCode;
+//        if ([model.detail isEqualToString:text.userInfo[@"text"]]){
+//            self.modelSubtype = model.detailCode;
             //代理传出去
             [self getData:self.fodderType modelType:self.modelType modelSubtype:self.modelSubtype];
             break;
         }
-    }
+//    }
 }
 
 //布局 创建 。。。。传进来
@@ -226,16 +226,14 @@
 //还是数据源有问题  数据源先后
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return self.dataSource.count;
+    return 10;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     ZZTMaterialLibraryCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
     
-    ZZTFodderListModel *model = self.dataSource[indexPath.row];
-    
-    cell.imageURl = model.img;
+    cell.imageURl = @"http://img.cdn.zztian.cn/waterCube.jpg";
     
     return cell;
 }

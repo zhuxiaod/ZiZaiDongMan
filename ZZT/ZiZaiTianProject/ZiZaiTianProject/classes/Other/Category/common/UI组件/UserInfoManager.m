@@ -7,6 +7,7 @@
 //
 
 #import "UserInfoManager.h"
+#import <AdSupport/AdSupport.h>
 
 @interface UserInfoManager () <UIAlertViewDelegate>
 
@@ -66,29 +67,14 @@
 //登出用户
 - (void)logoutUserInfo{
     
-    self.hasLogin = NO;
+    [Utilities removeUserData];
     
-    self.ID = nil;
-    
-    self.avatar_url = nil;
-    
-    self.nickname = nil;
-    
-    self.phone = @"";
-    
-    self.intro = @"";
-    
-    _birthday = @"";
-    
-    UserInfo *user = [[UserInfo alloc] init];
-    
-    user.userId = @"";
-    
-    user.id = 0;
-    
-    [Utilities SetNSUserDefaults:user];
+//    [Utilities SetNSUserDefaults:user];
     //更新状态
     _userData = nil;
+    
+    //登录游客模式
+//    [self loginVisitorModelSuccess:nil];
 }
 
 //需要登录
@@ -103,6 +89,7 @@
 //        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"未登录" message:@"是否登录" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
 //        [alert show];
         [ZZTLoginRegisterViewController show];
+        
         return YES;
     }
     return NO;
@@ -175,6 +162,30 @@
         
         if (successBlock != nil) successBlock();
         
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
+}
+
+//登录游客模式
+-(void)loginVisitorModelSuccess:(void (^)(void))successBlock{
+    NSString *adId = [[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];
+//    NSLog(@"adId:%@",adId);
+    NSDictionary *paradict = @{
+                               @"phoneIMEI":adId
+                               };
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"/login/getTouristInfo"] parameters:paradict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSLog(@"responseObject:%@",responseObject);
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+        UserInfo *model = [[UserInfo alloc] init];
+        model.userType = [dic objectForKey:@"userType"];
+        model.id = [[dic objectForKey:@"id"] integerValue];
+        model.isLogin = NO;
+        [Utilities SetNSUserDefaults:model];
+
+        if (successBlock != nil) successBlock();
+
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];

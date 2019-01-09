@@ -8,7 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void(^loginCompleteBlock)(void);
+
 @interface ZZTLoginRegisterViewController : BaseViewController
+
+@property (nonatomic, copy) loginCompleteBlock completeBlock;
 
 + (void)show;
 

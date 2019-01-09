@@ -60,8 +60,8 @@
     CGFloat X = 5;
     for (int i = 0 ; i< index; i++) {
         ZZTDetailModel *model = self.buttonData[i];
-        CGSize size = [model.detail sizeWithAttributes:attrs];
-        size.width = size.width + 20;
+//        CGSize size = [model.detail sizeWithAttributes:attrs];
+//        size.width = size.width + 20;
         
         if(i == 0){
             X = 5;
@@ -76,11 +76,11 @@
         //Item top
         UIButton *btn = [[UIButton alloc] init];
         
-        [btn setTitle:model.detail forState:UIControlStateNormal];
+//        [btn setTitle:model.detail forState:UIControlStateNormal];
         //判断title字的数量 处理宽度
         [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [btn setBackgroundColor:[UIColor grayColor]];
-        btn.frame = CGRectMake(X, Y, size.width, H);
+//        btn.frame = CGRectMake(X, Y, size.width, H);
         btn.selected = NO;
         btn.tag = index;
         [btn addTarget:self action:@selector(buttonSelected:)

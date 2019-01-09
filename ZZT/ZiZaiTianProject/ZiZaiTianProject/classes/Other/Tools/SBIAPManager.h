@@ -32,6 +32,7 @@
  */
 - (void)stopManager;
 
+
 /**
  请求商品列表
  */

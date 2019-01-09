@@ -68,6 +68,8 @@
     
     self.cartoonName.text = cartoon.bookName;
     
+//    NSLog(@"self.cartoonName.text:%@",self.cartoonName.text);
+    
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:self.cartoonName.text attributes:@{NSKernAttributeName : @(1.5f)}];
 
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];

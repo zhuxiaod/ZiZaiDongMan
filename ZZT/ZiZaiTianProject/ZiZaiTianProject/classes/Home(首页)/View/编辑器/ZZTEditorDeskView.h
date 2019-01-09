@@ -10,9 +10,20 @@
 
 @class ZZTEditorBasisView;
 
+@protocol ZZTEditorDeskViewdelegate <NSObject>
+
+
+@optional
+
+- (void)tapEditorDeskView;
+
+@end
+
 @interface ZZTEditorDeskView : UIView
 
 @property (nonatomic,strong) ZZTEditorBasisView *currentView;
+
+@property(nonatomic,weak)id<ZZTEditorDeskViewdelegate>   delegate;
 
 -(void)Editor_addSubView:(UIView *)view;
 

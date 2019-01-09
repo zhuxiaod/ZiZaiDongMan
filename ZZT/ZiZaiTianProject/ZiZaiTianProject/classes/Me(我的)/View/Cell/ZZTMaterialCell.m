@@ -40,7 +40,15 @@
 
 -(void)setImageStr:(NSString *)imageStr{
     _imageStr = imageStr;
-    [self.imageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",imageStr]] placeholderImage:[UIImage imageNamed:@"worldPlaceV"] options:0];
+    if (_arrayCount == 1) {
+        [self.imageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",imageStr]] placeholderImage:[UIImage imageNamed:@"bannerPlaceV"] options:0];
+    }else{
+        [self.imageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",imageStr]] placeholderImage:[UIImage imageNamed:@"worldPlaceV"] options:0];
+
+    }
 }
 
+-(void)setArrayCount:(NSInteger)arrayCount{
+    _arrayCount = arrayCount;
+}
 @end

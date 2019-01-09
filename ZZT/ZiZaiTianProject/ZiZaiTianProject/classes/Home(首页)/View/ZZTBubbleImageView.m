@@ -270,7 +270,7 @@ textView 大小问题 和 输入输出问题
     textView.scrollEnabled = NO;
     textView.delegate = self;
     //键盘风格
-    textView.keyboardType  = UIKeyboardTypeASCIICapable;
+    textView.keyboardType  = UIKeyboardTypeDefault;
     //回城风格
     textView.returnKeyType = UIReturnKeyDone;
     //文字中央
@@ -385,7 +385,6 @@ textView 大小问题 和 输入输出问题
     if([self.bubbleDelegate respondsToSelector:@selector(bubbleViewDidBeginEditing:)]) {
         [self.bubbleDelegate bubbleViewDidBeginEditing:self];
     }
-  
     
     if ([text isEqualToString:@"\n"])
     {

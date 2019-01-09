@@ -30,6 +30,8 @@
 
 +(UserInfo *)GetNSUserDefaults;
 
++(void)removeUserData;
+
 +(void)SetJiXuYueDuDefaults:(ZZTJiXuYueDuModel *)userInfo;
 
 +(ZZTJiXuYueDuModel *)GetJiXuYueDuDefaults;

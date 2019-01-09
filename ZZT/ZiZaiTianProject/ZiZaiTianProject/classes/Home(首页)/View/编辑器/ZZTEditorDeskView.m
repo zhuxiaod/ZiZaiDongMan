@@ -24,7 +24,7 @@
 
 -(void)addUI{
     
-    self.backgroundColor = [UIColor blueColor];
+    self.backgroundColor = [UIColor colorWithRed:244 green:244 blue:244 alpha:1];
     
 }
 
@@ -89,4 +89,25 @@
     [self layoutIfNeeded];
 }
 
+
+//in every view .m overide those methods
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    
+    
+    UIView * view = [super hitTest:point withEvent:event];
+    
+    if(view == self){
+        //点击了本View
+        if (self.delegate && [self.delegate respondsToSelector:@selector(tapEditorDeskView)])
+        {
+            // 调用代理方法
+            [self.delegate tapEditorDeskView];
+        }
+        return self;
+    }
+    
+    return view;
+}
+
+//-(void)viewd
 @end

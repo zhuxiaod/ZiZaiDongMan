@@ -75,8 +75,8 @@
     
     // 启动图片延时: 1秒
 //    [NSThread sleepForTimeInterval:2];
-    
-    //异常处理
+//
+////    异常处理
 //    [self avoidCrash];
 
     /**启动IAP工具类*/

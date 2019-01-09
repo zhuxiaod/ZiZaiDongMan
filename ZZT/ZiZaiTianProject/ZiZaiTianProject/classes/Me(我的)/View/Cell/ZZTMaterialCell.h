@@ -20,4 +20,6 @@ typedef void (^tapImageBlock) (UIImageView *imageView);
 
 @property (strong, nonatomic) UIImageView *selectImageView;
 
+@property (assign, nonatomic) NSInteger arrayCount;
+
 @end

@@ -11,6 +11,7 @@
 
 @protocol ZZTColorPickerViewDelegate<NSObject>
 
+//得到颜色
 -(void)colorPickerViewWithColor:(ZZTColorPickerView *)view color:(UIColor *)color;
 
 

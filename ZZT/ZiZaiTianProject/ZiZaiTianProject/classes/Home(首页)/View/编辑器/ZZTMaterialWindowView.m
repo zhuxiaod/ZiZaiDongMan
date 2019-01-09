@@ -10,8 +10,9 @@
 #import "ZZTMaterialTypeCell.h"
 #import "ZZTKindModel.h"
 #import "ZZTMaterialCell.h"
+#import "ZZTDetailModel.h"
 
-@interface ZZTMaterialWindowView ()<UICollectionViewDataSource,UICollectionViewDelegate>
+@interface ZZTMaterialWindowView ()<UICollectionViewDataSource,UICollectionViewDelegate,ZZTMaterialWindowViewDelegate>
 
 @property(nonatomic , strong)UIView *topView;
 @property(nonatomic , strong)UIView *midView;
@@ -20,14 +21,14 @@
 @property (nonatomic ,strong)NSArray *typeArray;
 @property(nonatomic , strong) UICollectionView *contentCollectionView;
 @property(nonatomic , strong)UIView *midLine;
+@property(nonatomic , assign)NSInteger materialIndex;
+
 @end
 
 @implementation ZZTMaterialWindowView
 
 -(id)initWithFrame:(CGRect)frame{
     if(self = [super initWithFrame:frame]){
-        //添加UI
-        [self addUI];
         
         self.typeArray = @[[ZZTKindModel initKindModelWith:@"布局" isSelect:@"1"],
                            [ZZTKindModel initKindModelWith:@"场景" isSelect:@"0"],
@@ -35,18 +36,31 @@
                            [ZZTKindModel initKindModelWith:@"表情" isSelect:@"0"],
                            [ZZTKindModel initKindModelWith:@"效果" isSelect:@"0"],
                            [ZZTKindModel initKindModelWith:@"对话" isSelect:@"0"],
-                        ];
+                           ];
+        
+        self.delegate = self;
+        
+        //添加UI
+        [self addUI];
+
+        //直接传一个数组过来
+        self.materialIndex = 1;
     }
     return self;
 }
 
+-(void)setMaterialArray:(NSArray *)materialArray{
+    _materialArray = materialArray;
+    [self.contentCollectionView reloadData];
+}
+
 -(void)addUI{
-    self.backgroundColor = [UIColor colorWithHexString:@"#1C1522" alpha:0.3];
+//    self.backgroundColor = [UIColor colorWithHexString:@"#1C15 22" alpha:0.3];
     //3个部分
     //按钮区
     UIView *topView = [[UIView alloc] init];
     _topView = topView;
-    topView.backgroundColor = [UIColor redColor];
+    topView.backgroundColor = [UIColor clearColor];
     [self addSubview:topView];
     
     //收藏 相机
@@ -63,7 +77,7 @@
     //分类区
     UIView *midView = [[UIView alloc] init];
     _midView = midView;
-    midView.backgroundColor = [UIColor yellowColor];
+    midView.backgroundColor = [UIColor colorWithHexString:@"#1C1522" alpha:0.7];
     [self addSubview:midView];
     
     UIButton *favoritesBtn = [GlobalUI createButtonWithImg:[UIImage imageNamed:@"收藏夹"] title:nil titleColor:nil];
@@ -72,23 +86,34 @@
     
     UIView *midLine = [[UIView alloc] init];
     _midLine = midLine;
-    midLine.backgroundColor = [UIColor colorWithRGB:@"75,75,75"];
+    midLine.backgroundColor = [UIColor lightGrayColor];
     [midView addSubview:midLine];
     
     //选择区
     UIView *bottomView = [[UIView alloc] init];
     _bottomView = bottomView;
-    bottomView.backgroundColor = [UIColor brownColor];
+    bottomView.backgroundColor = [UIColor colorWithHexString:@"#1C1522" alpha:0.5];
     [self addSubview:bottomView];
     
     //创建UICollectionView：黑色
     [self setupCollectionView];
+
     
-  
+    //收藏数据按钮事件
+    [self.favoritesBtn addTarget:self action:@selector(favoriteTarget) forControlEvents:UIControlEventTouchUpInside];
+
 }
+
+//收藏事件
+-(void)favoriteTarget{
+    self.materialIndex = 0;
+    self.favoritesBlock();
+}
+
 
 -(void)layoutSubviews{
     [super layoutSubviews];
+    
     [self.topView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.right.left.equalTo(self);
         make.height.mas_equalTo(ZZTLayoutDistance(108));
@@ -182,7 +207,7 @@
     if(collectionView == self.typeCollectionView){
         return self.typeArray.count;
     }else{
-        return self.typeArray.count + 30;
+        return self.materialArray.count;
     }
  
 }
@@ -196,7 +221,8 @@
         return cell;
     }else{
         ZZTMaterialCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"materialCell" forIndexPath:indexPath];
-        cell.imageStr = @"http://img.cdn.zztian.cn/zmnmsy.jpg";
+        ZZTDetailModel *model = self.materialArray[indexPath.row];
+        cell.imageStr = model.img;
         return cell;
     }
    
@@ -237,6 +263,14 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 
     if(collectionView == self.typeCollectionView){
+        
+        self.materialIndex = indexPath.row + 1;
+        
+        if(self.delegate && [self.delegate respondsToSelector:@selector(materialTypeView:index:)]){
+            // 调用代理方法
+            [self.delegate materialTypeView:collectionView index:indexPath.row];
+        }
+        
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             for (NSInteger i = 0; i < self.typeArray.count; i++) {
                 ZZTKindModel *model = self.typeArray[i];
@@ -250,17 +284,12 @@
                 [self.typeCollectionView reloadData];
             });
         });
-        if (self.delegate && [self.delegate respondsToSelector:@selector(materialTypeView:index:)])
-        {
-            // 调用代理方法
-            [self.delegate materialTypeView:collectionView index:indexPath.row];
-        }
-   
     }else{
-        if (self.delegate && [self.delegate respondsToSelector:@selector(materialContentView:index:)])
+        if (self.delegate && [self.delegate respondsToSelector:@selector(materialContentView:materialModel:kindIndex:)])
         {
-            // 调用代理方法
-            [self.delegate materialContentView:collectionView index:indexPath.row];
+            ZZTDetailModel *model = self.materialArray[indexPath.row];
+            //模型 类型
+            [self.delegate materialContentView:collectionView materialModel:model kindIndex:self.materialIndex];
         }
     }
 
