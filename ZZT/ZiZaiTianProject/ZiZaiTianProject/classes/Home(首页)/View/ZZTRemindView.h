@@ -8,12 +8,22 @@
 
 #import <UIKit/UIKit.h>
 
-typedef void (^ReturnValueBlock) (UIButton *btn);
+typedef void (^ReturnTureBlock) (UIButton *btn);
 
-@interface ZZTRemindView : UIView
+typedef void (^ReturnCannelBlock) (UIButton *btn);
 
-@property (nonatomic,copy) ReturnValueBlock btnBlock;
+
+@interface ZZTRemindView : UIWindow
+
+@property (nonatomic,copy) ReturnTureBlock tureBlock;
+
+@property (nonatomic,copy) ReturnCannelBlock cannelBlock;
+
 
 @property (nonatomic,strong) NSString *viewTitle;
+
++(ZZTRemindView *)sharedInstance;
+
+-(void)show;
 
 @end

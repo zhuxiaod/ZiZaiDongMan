@@ -53,7 +53,6 @@
         _rotateRecognizer = rotateRecognizer;
         [self addGestureRecognizer:rotateRecognizer];
         
-        
         //拖动
         UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(selfMove:)];
         panGestureRecognizer.maximumNumberOfTouches = 1;
@@ -63,19 +62,10 @@
         
         //单击
         UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapView:)];
+        tapGestureRecognizer.delegate = self;
         _tapGestureRecognizer = tapGestureRecognizer;
         tapGestureRecognizer.numberOfTapsRequired = 1;
         [self addGestureRecognizer:tapGestureRecognizer];
-        
-//        self.backgroundColor = [UIColor redColor];
-        
-//        //删除按钮
-//        UIButton *deleteBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-//        _deleteBtn = deleteBtn;
-//        [deleteBtn setImage:[UIImage imageNamed:@"deletMartarel"] forState:UIControlStateNormal];
-//        [deleteBtn addTarget:self action:@selector(deleteSelf) forControlEvents:UIControlEventTouchUpInside];
-//        [self addSubview:deleteBtn];
-        
     }
     return self;
 }
@@ -86,15 +76,6 @@
     
 }
 
-//-(void)layoutSubviews{
-//
-//    [_deleteBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(self);
-//        make.right.equalTo(self);
-//        make.height.width.mas_equalTo(40);
-//    }];
-//}
-
 -(void)addUI{
     
 }
@@ -102,26 +83,35 @@
 #pragma mark 缩放
 -(void)handlePich:(UIPinchGestureRecognizer *)recognizer
 {
-    [self setupSelfForCurrentView];
 
-    //代理方法
-    //点击的是当前view
-    recognizer.view.transform = CGAffineTransformScale(recognizer.view.transform, recognizer.scale, recognizer.scale);
+    [self setupSelfForCurrentView];
+    
+//    if(_isImageView == YES){
+//        recognizer.view.transform = CGAffineTransformScale(recognizer.view.transform, recognizer.scale, recognizer.scale);
+//    }else{
+    self.bounds = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width * recognizer.scale, self.bounds.size.height * recognizer.scale);
+//    }
+
+    
+    if(self.delegate && [self.delegate respondsToSelector:@selector(editorBasisViewWithPich:)]){
+        [self.delegate editorBasisViewWithPich:recognizer];
+    }
     
     recognizer.scale = 1;
-
 }
 
 #pragma mark 旋转
 -(void)handleRotate:(UIRotationGestureRecognizer *)recognizer
 {
-
     [self setupSelfForCurrentView];
 
     recognizer.view.transform = CGAffineTransformRotate(recognizer.view.transform, recognizer.rotation);
 
+    if(self.delegate && [self.delegate respondsToSelector:@selector(editorBasisViewWithRotateGesture:)]){
+        [self.delegate editorBasisViewWithRotateGesture:recognizer];
+    }
+    
     recognizer.rotation = 0;
-
 }
 
 #pragma mark 移动
@@ -133,6 +123,10 @@
     
     self.center = CGPointMake(self.center.x + translation.x, self.center.y + translation.y);
 
+    if(self.delegate && [self.delegate respondsToSelector:@selector(editorBasisViewWithCenter:)]){
+        [self.delegate editorBasisViewWithCenter:self];
+    }
+    
     [gesture setTranslation:CGPointZero inView:self.superview];
     
     [self layoutSubviews];
@@ -158,6 +152,7 @@
     [self removeGestureRecognizer:self.rotateRecognizer];
 
 }
+
 //禁止捏合
 -(void)Editor_BasisViewClosePichGesture{
     
@@ -185,5 +180,9 @@
         [self.delegate setupViewForCurrentView:self];
         
     }
+}
+//判断是什么类型的
+-(void)setIsImageView:(BOOL)isImageView{
+    _isImageView = isImageView;
 }
 @end

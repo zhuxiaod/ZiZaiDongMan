@@ -9,14 +9,36 @@
 #import <UIKit/UIKit.h>
 #import "ZZTEditorBasisView.h"
 
-//定义枚举类型
-typedef enum ZZTEditorImageViewType {
+typedef NS_ENUM(NSInteger, Editor_ImageViewType) {
     
-    editorImageViewTypeChat  = 0,
+    editorImageViewTypeChat = 0 ,
+    
+    editorImageViewTypeDialogBox3  ,//九边形  当前0
+    
+    editorImageViewTypeDialogBox2 ,
+    
+    editorImageViewTypeDialogBox4 ,
+    
+    editorImageViewTypeDialogBoxCircle ,
+    
+    editorImageViewTypeDialogBox1 ,
+    
+    editorImageViewTypeDialogBox5 ,
+    
+    editorImageViewTypeDialogBox6 ,
+    
+    editorImageViewTypeDialogBox7 ,
+    
+    editorImageViewTypeDialogBox8 ,
+    
+    editorImageViewTypeDialogBox9 ,
+    
+    editorImageViewTypeDialogBox10 ,
     
     editorImageViewTypeNormal
     
-} Editor_ImageViewType;
+    
+};
 
 @class ZZTEditorImageView;
 
@@ -24,16 +46,17 @@ typedef enum ZZTEditorImageViewType {
 
 @optional
 
-- (void)sendCurrentViewToDeskView:(ZZTEditorImageView *)imageView;
+- (void)sendCurrentViewToDeskView:(ZZTEditorBasisView *)imageView;
 
-- (void)showInputViewWithEditorImageView:(ZZTEditorImageView *)imageView;
+- (void)showInputViewWithEditorImageView:(ZZTEditorImageView *)imageView hiddenState:(BOOL)state;
 
 @end
 
 @class ZZTEditorBasisView;
 
 @interface ZZTEditorImageView : ZZTEditorBasisView
-
+//文本
+@property(nonatomic,strong) UILabel *textLab;
 //设置数据
 @property (nonatomic,strong) NSString *imageUrl;
 
@@ -46,6 +69,10 @@ typedef enum ZZTEditorImageViewType {
 @property(nonatomic,strong) UIButton *closeImageView;
 
 @property(nonatomic,strong) UIImageView *imageView;
+
+@property (nonatomic,strong) NSString *fontColor;
+
+@property (nonatomic,strong) NSString *isLoad;
 
 -(void)draw;
 

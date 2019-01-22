@@ -19,5 +19,6 @@
 
 @property (nonatomic,strong) ZZTEditorImageView *curImageView;
 
+@property (nonatomic,strong) NSString *currentView;
 
 @end

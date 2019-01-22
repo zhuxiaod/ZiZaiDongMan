@@ -89,7 +89,6 @@
     [self layoutIfNeeded];
 }
 
-
 //in every view .m overide those methods
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
     

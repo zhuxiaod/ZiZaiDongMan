@@ -43,15 +43,27 @@
     
     self.nowBtnTag = 1;
 }
+
 //提交问题
 - (IBAction)SubmitQuestions:(UIButton *)sender {
     //显示提交成功
     [MBProgressHUD showMessage:@"正在提交" toView:self.view];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSDictionary *dic = @{
+                          @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id],
+                          @"problemTypes":[NSString stringWithFormat:@"%ld",self.nowBtnTag],
+                          @"description":self.problemStatementTextView.text,
+                          @"contactWay":self.contactTextView.text
+                          };
+    [manager POST:[ZZTAPI stringByAppendingString:@"record/insertOpinion"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [MBProgressHUD hideHUDForView:self.view];
         [MBProgressHUD showSuccess:@"提交成功"];
         [self.navigationController popViewControllerAnimated:YES];
-    });
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [MBProgressHUD hideHUDForView:self.view];
+        [MBProgressHUD showSuccess:@"提交失败"];
+    }];
 }
 
 - (IBAction)btnClickTarget:(UIButton *)sender {

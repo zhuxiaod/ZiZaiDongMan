@@ -195,7 +195,7 @@
 }
 
 -(CGFloat)heightWithWidth:(CGFloat)width font:(CGFloat)font{
-    UIFont * fonts = [UIFont systemFontOfSize:font];
+    UIFont *fonts = [UIFont systemFontOfSize:font];
     CGSize size  = CGSizeMake(width, 100000.0);
     NSDictionary * dict  = [NSDictionary dictionaryWithObjectsAndKeys:fonts,NSFontAttributeName ,nil];
     size = [self boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin attributes:dict context:nil].size;

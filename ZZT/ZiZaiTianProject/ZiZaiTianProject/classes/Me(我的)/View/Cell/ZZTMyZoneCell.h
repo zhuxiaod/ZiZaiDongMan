@@ -16,11 +16,11 @@ typedef void (^LongPressBlock) (ZZTMyZoneModel *message);
 
 @property (nonatomic,copy) LongPressBlock LongPressBlock;
 
+@property (nonatomic,assign) NSInteger indexRow;
+
 @property (nonatomic,strong) ZZTMyZoneModel *model;
 
 @property (nonatomic,copy) void (^update)(void);
-
-+ (CGFloat)cellHeightWithStr:(NSString *)str imgs:(NSArray *)imgs;
 
 + (ZZTMyZoneCell *)dynamicCellWithTable:(UITableView *)table;
 

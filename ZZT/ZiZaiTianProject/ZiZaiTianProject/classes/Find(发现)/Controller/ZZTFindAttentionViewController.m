@@ -78,7 +78,7 @@ static NSString *findCommentCell = @"findCommentCell";
 
     [self setupMJRefresh];
     
-    [self.contentView.mj_header beginRefreshing];
+    [self loadMoreData];
 
 
 }
@@ -136,12 +136,11 @@ static NSString *findCommentCell = @"findCommentCell";
         [self.contentView reloadData];
         
         if(self.dataArray.count >= total){
-            //            [self.contentView.mj_footer setHidden:YES];
             [self.contentView.mj_footer endRefreshingWithNoMoreData];
         }else{
             [self.contentView.mj_footer endRefreshing];
         }
-        self.pageSize++;
+        self.pageNumber++;
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [self.contentView.mj_footer endRefreshing];
         [self.contentView.mj_header endRefreshing];
@@ -253,8 +252,7 @@ static NSString *findCommentCell = @"findCommentCell";
 #pragma mark 高度设置
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     ZZTMyZoneModel *model = _dataArray[indexPath.row];
-    NSArray *imgs = [model.contentImg componentsSeparatedByString:@","];
-    return  [ZZTFindCommentCell cellHeightWithStr:model.content imgs:imgs];
+    return  [GlobalUI cellHeightWithModel:model];
 }
 
 

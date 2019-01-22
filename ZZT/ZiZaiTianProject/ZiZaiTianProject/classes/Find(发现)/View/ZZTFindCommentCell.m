@@ -14,6 +14,7 @@
 #import "ZZTMaterialCell.h"
 #import "HZPhotoBrowser.h"
 #import "replyCountView.h"
+#import "ZZTCommentImgView.h"
 
 @interface ZZTFindCommentCell ()<UIGestureRecognizerDelegate,UICollectionViewDataSource,UICollectionViewDelegate>
 
@@ -36,7 +37,7 @@
 //点赞
 @property (strong, nonatomic) likeCountView *likeCountView;
 //图片View
-@property (strong, nonatomic) UICollectionView *collectionView;
+@property (nonatomic,strong) ZZTCommentImgView  *bgImgsView; // 9张图片bgView
 
 
 @end
@@ -85,9 +86,9 @@
     //头像
     _headBtn = [[UIButton alloc] init];
     
-    [_headBtn.imageView  setContentMode:UIViewContentModeScaleAspectFill];
+    [_headBtn.imageView setContentMode:UIViewContentModeScaleAspectFill];
     
-    _headBtn.imageView .clipsToBounds = YES;
+    _headBtn.imageView.clipsToBounds = YES;
     
     [_headBtn addTarget:self action:@selector(clickHead) forControlEvents:UIControlEventTouchUpInside];
     _headBtn.adjustsImageWhenHighlighted = NO;
@@ -101,16 +102,14 @@
     _vipLab.layer.cornerRadius = 2.0f;
     _vipLab.backgroundColor = [UIColor purpleColor];
     
-    
     //内容
     _contentLab = [GlobalUI createLabelFont:MomentFontSize titleColor:[UIColor blackColor] bgColor:[UIColor whiteColor]];
     _contentLab.numberOfLines = 0;
     
-
     //使用collectionView
-    UICollectionViewFlowLayout *layout = [self setupCollectionViewFlowLayout];
-    
-    [self setupCollectionView:layout];
+    _bgImgsView = [[ZZTCommentImgView alloc] init];
+    [self.contentView addSubview:_bgImgsView];
+
     
     //关注
     _attentionBtn = [[AttentionButton alloc] init];
@@ -122,7 +121,6 @@
     _reportBtn = [[ZZTReportBtn alloc] init];
 
     [self.contentView addSubview:_reportBtn];
-    
     [self.contentView addSubview:_headBtn];
     [self.contentView addSubview:_userName];
     [self.contentView addSubview:_vipLab];
@@ -134,38 +132,6 @@
     _bottomView = [[UIView alloc] init];
     _bottomView.backgroundColor = [UIColor colorWithRGB:@"239,239,239"];
     [self.contentView addSubview:_bottomView];
-}
-
-
-#pragma mark - 创建流水布局
--(UICollectionViewFlowLayout *)setupCollectionViewFlowLayout{
-    
-    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-    //修改尺寸(控制)
-    layout.itemSize = CGSizeMake(imgHeight,imgHeight);
-    
-    layout.scrollDirection = UICollectionViewScrollDirectionVertical;
-    //行距
-    layout.minimumLineSpacing = 10;
-    
-    layout.minimumInteritemSpacing = 10;
-    
-    return layout;
-}
-
-#pragma mark - 创建CollectionView
--(void)setupCollectionView:(UICollectionViewFlowLayout *)layout
-{
-    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
-    collectionView.backgroundColor = [UIColor whiteColor];
-    self.collectionView = collectionView;
-    collectionView.dataSource = self;
-    collectionView.delegate = self;
-    collectionView.showsVerticalScrollIndicator = NO;
-    [self.contentView addSubview:self.collectionView];
-    
-    [self.collectionView registerNib:[UINib nibWithNibName:@"ZZTMaterialCell" bundle:nil]  forCellWithReuseIdentifier:@"wordImageCell"];
-
 }
 
 -(void)clickHead{
@@ -209,26 +175,26 @@
     [_contentLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.headBtn.mas_left);
         make.right.equalTo(self.attentionBtn.mas_right);
-        make.top.equalTo(self.headBtn.mas_bottom).offset(space);
+        make.top.equalTo(self.headBtn.mas_bottom).offset(distance);
     }];
     
     NSInteger row = _imgArray.count / 3;// 多少行图片
-    if (_imgArray.count %3 !=0) {
+    if (_imgArray.count % 3 !=0) {
         ++row;
     }
     
     //这里是没有数据的
     CGFloat collectionW = SCREEN_WIDTH - 24;
     
-    [_collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.contentLab.mas_bottom).offset(space);
+    [_bgImgsView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.contentLab.mas_bottom).offset(distance);
         make.width.mas_equalTo(collectionW);
         make.left.equalTo(self.headBtn.mas_left);
     }];
     
     [_dataLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.headBtn.mas_left);
-        make.top.equalTo(self.collectionView.mas_bottom).offset(space);
+        make.top.equalTo(self.bgImgsView.mas_bottom).offset(space);
         make.height.mas_equalTo(20);
         make.width.mas_equalTo(100);
     }];
@@ -263,10 +229,10 @@
 
 - (void)setModel:(ZZTMyZoneModel *)model{
     _model = model;
-    
+
     //更新时间
     [_dataLab mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.collectionView.mas_bottom).offset(8);
+        make.top.equalTo(self.bgImgsView.mas_bottom).offset(8);
     }];
     
     _contentLab.text = model.content;
@@ -276,37 +242,28 @@
     
     //更新内容高度
     CGFloat contentHeight = [_contentLab.text heightWithWidth:CGRectGetWidth(self.contentView.bounds) - 32 font:MomentFontSize];
+ 
+    
     contentHeight += 10;
+    
+    if([_contentLab.text isEqualToString:@""]){
+        contentHeight = 0;
+    }
     
     [_contentLab mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(contentHeight);
     }];
     
     //获取图片数组
-    self.imgArray = [model.contentImg componentsSeparatedByString:@","];
+    _bgImgsView.model = model;
     
-    CGFloat bgH = 0.0f;
-    if(self.imgArray.count == 1){
-        bgH = ZZTLayoutDistance(720);
-        
-    }else{
-        NSInteger row = _imgArray.count / 3;// 多少行图片
-        if (_imgArray.count %3 !=0) {
-            ++row;
-        }
-        bgH = _imgArray.count ? row * imgHeight + (row-1) * 10 :0;
-    }
+    _imgArray = [model.contentImg componentsSeparatedByString:@","];
     
-    [self.collectionView mas_updateConstraints:^(MASConstraintMaker *make) {
+    CGFloat bgH = [_bgImgsView getIMGHeight:_imgArray.count];
+    
+    [self.bgImgsView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(bgH);
     }];
-    
-    [self.collectionView reloadData];
-  
-    //先把时间搓换成nstime
-    
-    [self setNeedsLayout];
-    [self layoutIfNeeded];
     
     [_headBtn sd_setBackgroundImageWithURL:[NSURL URLWithString:model.headimg] forState:UIControlStateNormal];
     
@@ -324,7 +281,6 @@
     
     [self.replyCountView setTitle:replayCountText forState:UIControlStateNormal];
 
-
     //评论跳转
     [self.replyCountView addTarget:self action:@selector(gotoCommentView) forControlEvents:UIControlEventTouchUpInside];
 
@@ -332,7 +288,6 @@
     self.likeCountView.islike  = [model.ifpraise integerValue];
     self.likeCountView.requestID = model.userId;
     self.likeCountView.likeCount = model.praisecount;
-
 
     //关注
     _attentionBtn.hidden = NO;
@@ -363,27 +318,6 @@
     commentView.cartoonType = @"3";
     commentView.ishiddenTitleView = YES;
     [[self myViewController].navigationController presentViewController:nav animated:YES completion:nil];
-//    [commentView hiddenTitleView];
-}
-
-//时间显示过大了
-+ (CGFloat)cellHeightWithStr:(NSString *)str imgs:(NSArray *)imgs{
-    //内容高度
-    CGFloat strH = [str heightWithWidth:CGRectGetWidth([UIScreen mainScreen].bounds) - 32 font:MomentFontSize];
-//  16 + 40+16+strH+16
-    CGFloat cellH = strH + 110 + 16 + 8;
-    NSInteger row = imgs.count / 3;
-    if (imgs.count == 1) {
-        cellH += ZZTLayoutDistance(720);
-    }else if (imgs.count == 0){
-//        cellH += 10;
-    }else{
-        if (imgs.count % 3 !=0) {
-            row += 1;
-        }
-        cellH +=  row * imgHeight  + (row-1) * 10; // 图片高度 + 间隙
-    }
-    return  cellH;
 }
 
 //评论
@@ -441,50 +375,5 @@
     }];
 }
 
-//节
--(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
-    return 1;
-}
 
-//行
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
-{
-    return self.imgArray.count;
-}
-
-//cell
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    NSString *imgStr = self.imgArray[indexPath.row];
-    ZZTMaterialCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"wordImageCell" forIndexPath:indexPath];
-    cell.arrayCount = self.imgArray.count;
-    //显示一张图  然后给他一张图
-    cell.imageStr = imgStr;
-//    cell.selectImageView = self.groupImgArr[indexPath.row];
-    return cell;
-}
-
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
-    if (_imgArray.count == 1) {
-        return CGSizeMake(imgHeight * 3 + 24,ZZTLayoutDistance(720));
-    }else{
-        return CGSizeMake(imgHeight,imgHeight);
-    }
-}
-
--(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    
-    HZPhotoBrowser *browser = [[HZPhotoBrowser alloc] init];
-    
-    browser.isFullWidthForLandScape = YES;
-    
-    browser.isNeedLandscape = YES;
-    
-    browser.currentImageIndex = [[NSString stringWithFormat:@"%ld",indexPath.row] intValue];
-    
-    browser.imageArray = self.imgArray;
-    
-    [browser show];
-    
-}
 @end

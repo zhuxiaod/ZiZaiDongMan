@@ -40,7 +40,6 @@
 
 @property (nonatomic,strong) NSMutableArray *selectedAssets;
 
-
 @end
 
 @implementation ZZTZoneUpLoadViewController
@@ -82,11 +81,7 @@
     
     //照片View
     [self setupImageView];
-    
-    
-//    _selectedPhotos = [NSMutableArray array];
-//
-//    _selectedAssets = [NSMutableArray array];
+
 }
 
 -(void)setupImageView{
@@ -189,14 +184,23 @@
 //上传后台
 -(void)uploadSeverWithImageStr:(NSString *)str{
     UserInfo *user = [Utilities GetNSUserDefaults];
-//    NSString *str = [self.imageUrlArr componentsJoinedByString:@","];
+    NSNumber *high = @0;
+    NSNumber *wide = @0;
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-    NSDictionary *dict = @{
-                           @"userId":[NSString stringWithFormat:@"%ld",user.id],
-                           @"content":self.textView.text,
-                           @"contentImg":str,
-                           @"boardId":@"0"
-                           };
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    [dict setObject:[NSString stringWithFormat:@"%ld",user.id] forKey:@"userId"];
+    if([self.textView.text isEqualToString:@"这一刻的想法..."]){
+        self.textView.text = @"";
+    }
+    [dict setObject:self.textView.text forKey:@"content"];
+    [dict setObject:str forKey: @"contentImg"];
+    if(self.selectedPhotos.count == 1){
+        UIImage *imge = _selectedPhotos[0];
+        high = [NSNumber numberWithFloat:imge.size.height];
+        wide = [NSNumber numberWithFloat:imge.size.width];
+    }
+    [dict setObject:high forKey:@"high"];
+    [dict setObject:wide forKey:@"wide"];
     [manager POST:[ZZTAPI stringByAppendingString:@"record/issueFriends"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
         [self dismissViewControllerAnimated:YES completion:nil];
@@ -227,7 +231,6 @@
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-
 }
 
 //已经展示

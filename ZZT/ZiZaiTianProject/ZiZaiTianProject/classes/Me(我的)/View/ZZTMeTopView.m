@@ -27,11 +27,11 @@
     _userModel = userModel;
     
     [self.backgroundBtn sd_setImageWithURL:[NSURL URLWithString:userModel.cover] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"Me_homeBackground"] options:0];
-    
+
     [self.userHead setupUserHeadImg:userModel.headimg placeHeadImg:@"Me_topView_headImage"];
     
     //得到字的宽度 + 20距离
-    if(userModel.nickName == nil){
+    if(userModel.nickName == nil || [userModel.nickName isEqualToString:@""]){
         [self.userName setTitle:@"我要登录" forState:UIControlStateNormal];
     }else{
         [self.userName setTitle:userModel.nickName forState:UIControlStateNormal];
@@ -95,7 +95,7 @@
 
 - (void)buttonClick:(UIButton *)button{
     // 判断下这个block在控制其中有没有被实现
-    if (self.buttonAction && ![self.userModel.userType isEqualToString:@"3"]) {
+    if (self.buttonAction && ![self.userModel.userType isEqualToString:@"3"] && self.userModel != nil) {
         // 调用block传入参数
         self.buttonAction(button);
     }else{

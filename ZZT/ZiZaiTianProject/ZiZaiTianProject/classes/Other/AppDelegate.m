@@ -73,7 +73,7 @@
     //取
     [UserInfoContext sharedUserInfoContext].userInfo = [Utilities GetNSUserDefaults];
     
-    // 启动图片延时: 1秒
+//    // 启动图片延时: 1秒
 //    [NSThread sleepForTimeInterval:2];
 //
 ////    异常处理

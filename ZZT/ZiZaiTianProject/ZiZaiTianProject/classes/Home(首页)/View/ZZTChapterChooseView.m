@@ -149,12 +149,14 @@
 //        make.right.equalTo(self.backView.mas_right).offset(-8);
     }];
     //没有设置高度
-    [_collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.mainText.mas_bottom).offset(8);
-        make.right.equalTo(self.backView.mas_right).offset(-20);
-        make.left.equalTo(self.backView.mas_left).offset(20);
-//        make.height.equalTo(self.backView.mas_height).multipliedBy(0.7);
-    }];
+    if(_openBtn.selected == NO){
+        [_collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.mainText.mas_bottom).offset(8);
+            make.right.equalTo(self.backView.mas_right).offset(-20);
+            make.left.equalTo(self.backView.mas_left).offset(20);
+        }];
+    }
+
     
     [_bottom mas_makeConstraints:^(MASConstraintMaker *make) {
 //        make.bottom.equalTo(self.backView.mas_bottom).offset(0);
@@ -332,6 +334,14 @@
                 make.top.equalTo(self.collectionView.mas_bottom);
             }];
         }else{
+            if(_openBtn.selected == YES){
+                CGFloat collectionH = [self getCollectionViewHeight];
+                
+                [_collectionView mas_updateConstraints:^(MASConstraintMaker *make) {
+                    make.height.mas_equalTo(collectionH);
+                }];
+            }
+       
             //大于8的时候
             [_bottom mas_updateConstraints:^(MASConstraintMaker *make) {
                 make.top.equalTo(self.collectionView.mas_bottom).offset(4);
@@ -339,6 +349,7 @@
 //                make.height.mas_equalTo(0);
             }];
             //设置open按钮
+//            if(_openBtn.enabled)
             _openBtn.enabled = YES;
             [_openBtn mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.top.equalTo(self.mainText.mas_top);
@@ -371,17 +382,9 @@
             make.height.mas_equalTo(70);
         }];
     }else{
-        CGFloat collectionH;
-        //如果有余数加一行
-        //没有余数 就是三方
-        NSInteger rowNum = self.dataArray.count / 4;
-        if(self.dataArray.count % 4 == 0){
-            //没有余数
-            rowNum = rowNum - 2;
-        }else{
-            rowNum = rowNum - 2 + 1;
-        }
-        collectionH = 70 + 40 * rowNum;
+        
+        CGFloat collectionH = [self getCollectionViewHeight];
+    
         [_collectionView mas_updateConstraints:^(MASConstraintMaker *make) {
             make.height.mas_equalTo(collectionH);
         }];
@@ -399,5 +402,20 @@
         
         self.needReloadHeight();
     }
+}
+
+-(CGFloat)getCollectionViewHeight{
+    CGFloat collectionH;
+    //如果有余数加一行
+    //没有余数 就是三方
+    NSInteger rowNum = self.dataArray.count / 4;
+    if(self.dataArray.count % 4 == 0){
+        //没有余数
+        rowNum = rowNum - 2;
+    }else{
+        rowNum = rowNum - 2 + 1;
+    }
+    collectionH = 70 + 40 * rowNum;
+    return collectionH;
 }
 @end

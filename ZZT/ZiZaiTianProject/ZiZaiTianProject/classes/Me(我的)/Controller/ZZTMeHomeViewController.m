@@ -170,7 +170,7 @@
     [self.viewNavBar.rightButton setImage:[UIImage imageNamed:@"me_messageBtn"] forState:UIControlStateNormal];
     [self.viewNavBar.rightButton addTarget:self action:@selector(gotoVipView) forControlEvents:UIControlEventTouchUpInside];
 
-//    self.viewNavBar.rightButton.hidden = YES;
+    self.viewNavBar.rightButton.hidden = YES;
 //    self.viewNavBar.leftButton.hidden = YES;
 
 }
@@ -190,13 +190,13 @@
 
 -(void)gotoTopupView{
     //钱包
-//    ZZTMeWalletViewController *walletVC = [[ZZTMeWalletViewController alloc] init];
-//    walletVC.hidesBottomBarWhenPushed = YES;
-//    [self.navigationController pushViewController:walletVC animated:YES];
-    
-    ZZTCreatCartoonViewController *walletVC = [[ZZTCreatCartoonViewController alloc] init];
+    ZZTMeWalletViewController *walletVC = [[ZZTMeWalletViewController alloc] init];
     walletVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:walletVC animated:YES];
+    
+//    ZZTCreatCartoonViewController *walletVC = [[ZZTCreatCartoonViewController alloc] init];
+//    walletVC.hidesBottomBarWhenPushed = YES;
+//    [self.navigationController pushViewController:walletVC animated:YES];
 }
 
 //滑动展示清空按钮
@@ -215,6 +215,7 @@
     self.viewNavBar.leftButton.hidden = NO;
     self.mommentBtn.hidden = YES;
     [self.titleView selectBtn:self.titleView.leftBtn];
+    
 }
 
 -(void)showZoneView{
@@ -222,6 +223,7 @@
     self.viewNavBar.leftButton.hidden = YES;
     self.mommentBtn.hidden = YES;
     [self.titleView selectBtn:self.titleView.rightBtn];
+    
 }
 
 -(void)clickMenu:(UIButton *)btn{

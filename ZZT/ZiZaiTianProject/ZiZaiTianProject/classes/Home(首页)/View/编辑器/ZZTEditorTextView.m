@@ -8,7 +8,7 @@
 
 #import "ZZTEditorTextView.h"
 
-@interface ZZTEditorTextView (){
+@interface ZZTEditorTextView ()<ZZTEditorBasisViewDelegate>{
     CGPoint prevPoint;
     
     CGFloat selfX;
@@ -31,6 +31,11 @@
 
 @property (nonatomic,strong) UIView *leftBorder;
 
+@property (nonatomic,strong) UILabel *textLab;
+
+@property(nonatomic,strong) UIImageView *imageView;
+
+
 @end
 
 @implementation ZZTEditorTextView
@@ -45,13 +50,22 @@
         
         [self setupUI];
         
+        self.backgroundColor = [UIColor whiteColor];
+
+        self.delegate = self;
+        
+        self.fontSize = 17;
     }
     return self;
 }
 
 -(void)setupUI{
-    self.backgroundColor = [UIColor whiteColor];
 
+    UIImageView *imageView = [[UIImageView alloc] init];
+    imageView.userInteractionEnabled = YES;
+    _imageView = imageView;
+    [self addSubview:imageView];
+    
     //通过2条边 来控制自身的大小
     UIView *rightBorder = [[UIView alloc] init];
     _rightBorder = rightBorder;
@@ -68,9 +82,66 @@
     UIPanGestureRecognizer *borderGestureTwo = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(tapTarget:)];
     [rightBorder addGestureRecognizer:borderGestureOne];
     [leftBorder addGestureRecognizer:borderGestureTwo];
+    
+    //lab
+    UILabel *textLab = [[UILabel alloc] init];
+    textLab.numberOfLines = 0;
+    _textLab = textLab;
+    [self addSubview:textLab];
+//
+//    //点击可以添加文字
+//    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(editorText)];
+//    [textLab addGestureRecognizer:tapGesture];
+    
+    //边线
+    self.layer.cornerRadius = 10.0f;
+    self.layer.borderColor = [UIColor blackColor].CGColor;
+    self.layer.borderWidth = 1.0f;
+    
+    //删除按钮
+    UIButton *closeImageView = [UIButton buttonWithType:UIButtonTypeCustom];
+    [closeImageView setImage:[UIImage imageNamed:@"deletMartarel"] forState:UIControlStateNormal];
+    _closeImageView = closeImageView;
+    [self addSubview:closeImageView];
+    
+    [closeImageView addTarget:self action:@selector(deleteGesture) forControlEvents:UIControlEventTouchUpInside];
+
+}
+
+-(void)deleteGesture{
+    [self removeFromSuperview];
+}
+
+#pragma mark - 为视图添加文本
+-(void)editorText{
+ 
+    if (self.textViewDelegate && [self.textViewDelegate respondsToSelector:@selector(textViewShowInputView:)])
+    {
+        // 调用代理方法
+        [self.textViewDelegate textViewShowInputView:self];
+    }
+}
+
+//这个View被点击了
+-(void)setupViewForCurrentView:(ZZTEditorBasisView *)view{
+    
+    [self editorText];
+    
+    //将这个View传出去  告诉桌面是哪一个View
+    if (self.textViewDelegate && [self.textViewDelegate respondsToSelector:@selector(textViewForCurrentView:)])
+    {
+        // 调用代理方法
+        [self.textViewDelegate textViewForCurrentView:self];
+    }
 }
 
 -(void)layoutSubviews{
+    
+    [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.right.left.bottom.equalTo(self);
+    }];
+    
+    
     [self.rightBorder mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self);
         make.bottom.equalTo(self);
@@ -83,6 +154,19 @@
         make.bottom.equalTo(self);
         make.left.equalTo(self);
         make.width.mas_equalTo(30);
+    }];
+    
+    [self.textLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self);
+        make.bottom.equalTo(self);
+        make.right.mas_equalTo(-10);
+        make.left.mas_equalTo(10);
+    }];
+    
+    [self.closeImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self);
+        make.right.equalTo(self);
+        make.width.height.mas_equalTo(15);
     }];
 }
 
@@ -128,50 +212,28 @@
         
         //点到自己的位置
         if(panGesture.view.tag == 1){
+            
             width = selfW + point.x;
-            if (width >= self.superview.width - selfW) {
-                width = self.superview.width - selfW;
-            }
+
             width = [self minimumlimit:width];
             
         }else if(panGesture.view.tag == 2){
+            
             x = selfX + point.x;
+            
             point.x = [self oppositeNumber:point.x];
+            
             width = selfW + point.x;
 
-            if (width >= self.superview.width - selfX) {
-                width = self.width;
-            }
             width = [self minimumlimit:width];
             
-        }else if (panGesture.view.tag == 2){
-            x = selfX + point.x;
-            point.x = [self oppositeNumber:point.x];
-            width = selfW + point.x;
-            if (x < 1) {
-                x = 1;
-                width = self.width;
-            }
-            width = [self minimumlimit:width];
-            if(width == 100){
-                x = self.x;
-            }else{
-                x = selfX - point.x;
-            }
-        }else{
-            point.y = [self oppositeNumber:point.y];
-            height = selfH + point.y;
-            if (y < 1) {
-                y = 1;
-                height = self.height;
-            }
-            height = [self minimumlimit:height];
-            if(height == 100){
-                y = self.y;
-            }else{
-                y = selfY - point.y;
-            }
         }
+        
+        if(self.textLab.text){
+            height = [self.textLab.text heightWithWidth:width - 20 font:self.fontSize];
+            height += 20;
+        }
+        //得到当前的Width
         self.frame = CGRectMake(x, y, width, height);
     }
 }
@@ -194,4 +256,53 @@
     return number;
 }
 
+-(void)setInputText:(NSString *)inputText{
+    _inputText = inputText;
+    self.textLab.text = inputText;
+    
+    [self setupViewHeight];
+}
+
+-(void)setupViewHeight{
+    //适应高度
+    CGFloat height = [self.textLab.text heightWithWidth:self.width - 20 font:self.fontSize];
+    self.frame = CGRectMake(self.x, self.y, self.width, height + 20);
+    
+    if(_textLab.text.length == 0){
+        self.frame = CGRectMake(self.x, self.y, self.width, 30);
+    }
+}
+
+//设置样式
+-(void)setType:(editorTextViewType)type{
+    _type = type;
+    //背景透明的
+    if(type == editorTextViewTypeBGClear){
+        self.backgroundColor = [UIColor clearColor];
+    }else if (type == editorTextViewTypeBGWhite){
+        self.backgroundColor = [UIColor whiteColor];
+    }else{
+        //无边框  输入完成后
+        
+    }
+}
+
+//设置字体颜色
+-(void)setFontColor:(NSString *)fontColor{
+    _fontColor = fontColor;
+    self.textLab.textColor = [UIColor colorWithHexString:fontColor];
+}
+
+-(void)setFontSize:(CGFloat)fontSize{
+    _fontSize = fontSize;
+    self.textLab.font = [UIFont systemFontOfSize:fontSize];
+    
+    [self setupViewHeight];
+}
+
+-(void)setImageUrl:(NSString *)imageUrl{
+    _imageUrl = imageUrl;
+    [self.imageView sd_setImageWithURL:[NSURL URLWithString:imageUrl]];
+    //    [self.imageView setImage:[UIImage imageNamed:@"临时对话框"]];
+}
 @end

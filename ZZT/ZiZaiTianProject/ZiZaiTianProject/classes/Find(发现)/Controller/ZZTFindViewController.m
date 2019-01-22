@@ -233,10 +233,15 @@ NSString *SuggestionView3 = @"SuggestionView";
     }];
     [action2 setValue:[UIColor blackColor] forKey:@"_titleTextColor"];
     
-//    UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"进入编辑器" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//        
-//    }];
-//    [action3 setValue:[UIColor blackColor] forKey:@"_titleTextColor"];
+    UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"进入编辑器" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+        ZZTEditorCartoonViewController *ecVC = [[ZZTEditorCartoonViewController alloc] init];
+        ecVC.hidesBottomBarWhenPushed = YES;
+        
+        [self.navigationController pushViewController:ecVC animated:YES];
+        
+    }];
+    [action3 setValue:[UIColor blackColor] forKey:@"_titleTextColor"];
     
     UIAlertAction *action4 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         NSLog(@"点击了取消");
@@ -245,7 +250,7 @@ NSString *SuggestionView3 = @"SuggestionView";
     
     [actionSheet addAction:action1];
     [actionSheet addAction:action2];
-//    [actionSheet addAction:action3];
+    [actionSheet addAction:action3];
     [actionSheet addAction:action4];
     
     [self presentViewController:actionSheet animated:YES completion:nil];
@@ -324,12 +329,7 @@ NSString *SuggestionView3 = @"SuggestionView";
     if ([UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera]) {
         self.imagePickerVc.sourceType = sourceType;
         NSMutableArray *mediaTypes = [NSMutableArray array];
-        //        if (NO) {
-        //            [mediaTypes addObject:(NSString *)kUTTypeMovie];
-        //        }
-        //        if (NO) {
-        //            [mediaTypes addObject:(NSString *)kUTTypeImage];
-        //        }
+   
         if (mediaTypes.count) {
             _imagePickerVc.mediaTypes = mediaTypes;
         }
@@ -348,8 +348,6 @@ NSString *SuggestionView3 = @"SuggestionView";
         NSLog(@"location:%@",phAsset.location);
     }
 }
-
-
 
 //图片选择控制器
 #pragma mark - TZImagePickerController
@@ -433,8 +431,7 @@ NSString *SuggestionView3 = @"SuggestionView";
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-//    [self setupNavigationBarHidden:NO];
-//    [self.navigationController setNavigationBarHidden:NO animated:NO];
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -491,8 +488,6 @@ NSString *SuggestionView3 = @"SuggestionView";
         
         [self presentViewController:uploadVC animated:YES completion:nil];
     }];
-//    [picker dismissViewControllerAnimated:YES completion:^{
-    
-//    }];
+
 }
 @end

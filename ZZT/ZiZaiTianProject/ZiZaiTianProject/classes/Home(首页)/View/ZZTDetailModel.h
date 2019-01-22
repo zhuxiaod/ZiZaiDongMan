@@ -18,7 +18,7 @@
 
 @property (nonatomic,strong) NSString *owner;
 
-@property (nonatomic,strong) NSString *modelType;
+@property (nonatomic,assign) NSInteger modelType;
 
 
 @end

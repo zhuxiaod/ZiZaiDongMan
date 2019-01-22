@@ -120,6 +120,8 @@
 #import "ZZTEditorBasisView.h"
 
 #define BanerHeight SCREEN_HEIGHT * 0.3
+//九宫格尺寸
+#define imgHeight  (CGRectGetWidth([UIScreen mainScreen].bounds) - 24 - 24)/3
 
 #define   SCREEN_MAX_LENGTH   (MAX(SCREEN_WIDTH, SCREEN_HEIGHT))
 

@@ -8,6 +8,7 @@
 
 #import "UserInfoManager.h"
 #import <AdSupport/AdSupport.h>
+#import "UUIDTool.h"
 
 @interface UserInfoManager () <UIAlertViewDelegate>
 
@@ -45,7 +46,7 @@
      nikeName
      sex 1
      */
-    if([user.userId isEqualToString:@""] || user == nil){
+    if([user.userType isEqualToString:@"3"] || user == nil){
         self.hasLogin = NO;
     }else{
         self.hasLogin = YES;
@@ -85,7 +86,7 @@
 //是否需要登录 用一个值来判断
 - (BOOL)needLogin{
     UserInfo *user = [Utilities GetNSUserDefaults];
-    if (self.hasLogin == NO || [user.userId isEqualToString:@""] || [user.userId isEqualToString:@"0"]) {
+    if (self.hasLogin == NO || [user.userId isEqualToString:@""] || [user.userType isEqualToString:@"3"]) {
 //        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"未登录" message:@"是否登录" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
 //        [alert show];
         [ZZTLoginRegisterViewController show];
@@ -144,8 +145,9 @@
 //}
 
 -(void)loadUserInfoDataSuccess:(void (^)(void))successBlock{
-    if([[UserInfoManager share] hasLogin] == NO)return;
+    
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    
     NSDictionary *paramDict = @{
                                 @"userId":[NSString stringWithFormat:@"%ld",self.userData.id]
                                 };
@@ -169,8 +171,8 @@
 
 //登录游客模式
 -(void)loginVisitorModelSuccess:(void (^)(void))successBlock{
-    NSString *adId = [[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];
-//    NSLog(@"adId:%@",adId);
+    NSString *adId = [UUIDTool getUUIDInKeychain];
+
     NSDictionary *paradict = @{
                                @"phoneIMEI":adId
                                };

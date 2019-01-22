@@ -19,7 +19,7 @@ typedef void (^favoritesBtnBlock)(void);//给block重命名,方便调用
 
 - (void)materialTypeView:(UICollectionView *)materialTypeView index:(NSInteger)index;
 
-- (void)materialContentView:(UICollectionView *)materialContentView materialModel:(ZZTDetailModel *)model kindIndex:(NSInteger)index;
+- (void)materialContentView:(UICollectionView *)materialContentView materialModel:(ZZTDetailModel *)model kindIndex:(NSInteger)index materialIndex:(NSInteger)materialIndex materialImage:(UIImage *)materialImage;
 
 @end
 

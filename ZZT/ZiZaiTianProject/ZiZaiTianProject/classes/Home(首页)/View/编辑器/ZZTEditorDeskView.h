@@ -33,4 +33,6 @@
 
 -(void)Editor_removeAllView;
 
+-(NSInteger)getCurrentViewIndex:(ZZTEditorBasisView *)view;
+
 @end

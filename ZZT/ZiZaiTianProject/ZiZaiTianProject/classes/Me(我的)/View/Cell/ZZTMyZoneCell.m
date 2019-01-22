@@ -6,17 +6,18 @@
 //  Copyright © 2018年 zxd. All rights reserved.
 //
 
-#define imgHeight  (CGRectGetWidth([UIScreen mainScreen].bounds) - 24 - 24)/3
+
 
 #import "ZZTMyZoneCell.h"
 #import "ZZTMyZoneModel.h"
 #import "HZPhotoBrowser.h"
+#import "ZZTCommentImgView.h"
 
 @interface ZZTMyZoneCell ()
 
 @property (nonatomic,strong) UILabel *dateLab;
 @property (nonatomic,strong) UILabel *contentLab;
-@property (nonatomic,strong) UIView  *bgImgsView; // 9张图片bgView
+@property (nonatomic,strong) ZZTCommentImgView  *bgImgsView; // 9张图片bgView
 @property (nonatomic,strong) NSMutableArray * groupImgArr;
 @property (nonatomic,strong) NSArray *imgArray;
 @property (nonatomic,strong) UIView *bottomView;
@@ -26,6 +27,7 @@
 //点赞
 @property (strong, nonatomic) likeCountView *likeCountView;
 
+@property (assign, nonatomic) CGFloat bgH;
 
 @end
 
@@ -50,7 +52,8 @@
     _contentLab.numberOfLines = 0;
     
     //多图
-    _bgImgsView = [[UIView alloc]init];
+//    _bgImgsView = [[UIView alloc]init];
+    _bgImgsView = [[ZZTCommentImgView alloc] init];
     
     [self.contentView addSubview:_dateLab];
     [self.contentView addSubview:_contentLab];
@@ -62,18 +65,23 @@
     _bottomView.backgroundColor = [UIColor colorWithRGB:@"239,239,239"];
     [self.contentView addSubview:_bottomView];
     
-//    //长按手势
-//    UILongPressGestureRecognizer * longPressGesture =[[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(cellLongPress:)];
-//
-//    longPressGesture.minimumPressDuration=1.0f;//设置长按 时间
-//    [self addGestureRecognizer:longPressGesture];
-    
     //举报
     _reportBtn = [[ZZTReportBtn alloc] init];
     [self.contentView addSubview:_reportBtn];
-
+    
+    self.bgH = 0.0f;
+    
+    UILongPressGestureRecognizer *tapGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(delMomment)];
+    [self addGestureRecognizer:tapGesture];
 }
 
+-(void)delMomment{
+    //显示删除UI
+    //点击删除时  删除
+    if(self.LongPressBlock){
+        self.LongPressBlock(self.model);
+    }
+}
 
 -(void)layoutSubviews{
     [super layoutSubviews];
@@ -156,39 +164,19 @@
         make.height.mas_equalTo(contentHeight);
     }];
     
-    if (_groupImgArr.count) {
-        [_groupImgArr enumerateObjectsUsingBlock:^(UIImageView * obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            [obj removeFromSuperview];
-        }];
-        [_groupImgArr removeAllObjects];
-    }
+//    //图片
+    _bgImgsView.model = model;
+
     _imgArray = [model.contentImg componentsSeparatedByString:@","];
     
-    if (_imgArray.count) {
-        //拼接字符串
-        NSMutableArray *urlArray = [NSMutableArray array];
-        for(int i = 0; i < _imgArray.count;i++){
-            NSString *imgUrl = [NSString stringWithFormat:@"%@",_imgArray[i]];
-            [urlArray addObject:imgUrl];
-        }
-        _imgArray = urlArray;
-        [self setupImageGroupView];
-    }
-
-    //计算图片的高度
-    NSInteger row = _imgArray.count / 3;// 多少行图片
+    CGFloat bgH = [_bgImgsView getIMGHeight:_imgArray.count];
     
-    if (_imgArray.count %3 !=0) {
-        ++row;
-    }
-    
-    //更新图片View的高度
-    CGFloat bgH = _imgArray.count ? row * imgHeight + (row-1) * 10 :0;
-    
-    [_bgImgsView mas_updateConstraints:^(MASConstraintMaker *make) {
+    [self.bgImgsView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(bgH);
     }];
     
+//    [_bgImgsView reloadView];
+
     //时间戳显示
     NSString *time = [NSString timeWithStr:[NSString stringWithFormat:@"%@",model.publishtime]];
     
@@ -226,65 +214,6 @@
     //赋值
     [attribut addAttributes:dic range:pointRange];
     return attribut;
-}
-
-- (void)setupImageGroupView{
-    CGFloat w = imgHeight;
-    CGFloat h = imgHeight;
-    
-    CGFloat edge = 10;
-    for (int i = 0; i<_imgArray.count; i++) {
-        
-        int row = i / 3;
-        int loc = i % 3;
-        CGFloat x = (edge + w) * loc ;
-        CGFloat y = (edge + h) * row;
-        
-        UIImageView * img =[[UIImageView alloc]init];
-        img.contentMode = UIViewContentModeScaleAspectFill;
-        img.layer.masksToBounds = YES;
-        img.tag = i;
-        [img sd_setImageWithURL:[NSURL URLWithString:_imgArray[i]] placeholderImage:[UIImage imageNamed:@"worldPlaceV"] options:0];
-        img.backgroundColor = [UIColor whiteColor];
-        img.frame = CGRectMake(x, y, w, h);
-        img.userInteractionEnabled = YES;
-        UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(browerImage:)];
-        [img addGestureRecognizer:tap];
-        [_bgImgsView addSubview:img];
-        [_groupImgArr addObject:img];
-    }
-}
-
-#pragma mark - brower image
-- (void)browerImage:(UITapGestureRecognizer *)gest{
-    
-    HZPhotoBrowser *browser = [[HZPhotoBrowser alloc] init];
-    
-    browser.isFullWidthForLandScape = YES;
-    
-    browser.isNeedLandscape = YES;
-    
-    browser.currentImageIndex = [[NSString stringWithFormat:@"%ld",gest.view.tag] intValue];
-    
-    browser.imageArray = self.imgArray;
-    
-    [browser show];
-    
-}
-
-//高度有问题
-//时间显示过大了
-+ (CGFloat)cellHeightWithStr:(NSString *)str imgs:(NSArray *)imgs{
-    CGFloat strH = [str heightWithWidth:CGRectGetWidth([UIScreen mainScreen].bounds) - 40 font:MomentFontSize];
-    CGFloat cellH = strH + 120 + 8;
-    NSInteger row = imgs.count / 3;
-    if (imgs.count) {
-        if ( imgs.count % 3 !=0) {
-            row += 1;
-        }
-        cellH +=  row * imgHeight  + (row-1) * 10; // 图片高度 + 间隙
-    }
-    return  cellH;
 }
 
 - (likeCountView *)likeCountView {
@@ -370,7 +299,10 @@
     commentView.hiddenTitleView = YES;
     commentView.ishiddenTitleView = YES;
     [[self myViewController].navigationController presentViewController:nav animated:YES completion:nil];
-//    [commentView hiddenTitleView];
     
+}
+
+-(void)setIndexRow:(NSInteger)indexRow{
+    _indexRow = indexRow;
 }
 @end

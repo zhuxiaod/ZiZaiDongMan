@@ -16,12 +16,26 @@
 
 @implementation ZZTRemindView
 
++(ZZTRemindView *)sharedInstance{
+    static id sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[self alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    });
+    return sharedInstance;
+}
+
 #pragma mark 初始化
 -(instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
         [self addSomeUI];
     }
     return self;
+}
+
+-(void)show{
+    [self makeKeyWindow];
+    self.hidden = NO;
 }
 
 -(void)addSomeUI{
@@ -54,23 +68,28 @@
     
     //取消按钮
     UIButton *cancelBtn = [[UIButton alloc] initWithFrame:CGRectMake(self.width/2 + 10, self.height / 2, 100, 50)];
-    [cancelBtn addTarget:self action:@selector(cancel) forControlEvents:UIControlEventTouchUpInside];
+    [cancelBtn addTarget:self action:@selector(cancel:) forControlEvents:UIControlEventTouchUpInside];
     [cancelBtn setTitle:@"取消" forState:UIControlStateNormal];
     [cancelBtn setBackgroundImage:[UIImage imageNamed:@"按钮-取消"] forState:UIControlStateNormal];
     [self addSubview:cancelBtn];
 }
 
--(void)cancel{
-    [self removeFromSuperview];
+-(void)cancel:(UIButton *)button{
+    if (self.cannelBlock) {
+        // 调用block传入参数
+        self.cannelBlock(button);
+    }
+    self.hidden = YES;
 }
 
 -(void)tureTarget:(UIButton *)button{
+    self.hidden = YES;
+
     // 判断下这个block在控制其中有没有被实现
-    if (self.btnBlock) {
+    if (self.tureBlock) {
         // 调用block传入参数
-        self.btnBlock(button);
+        self.tureBlock(button);
     }
-    [self removeFromSuperview];
 }
 -(void)setViewTitle:(NSString *)viewTitle{
     [_titleView setText:viewTitle];

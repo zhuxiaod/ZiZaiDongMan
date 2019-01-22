@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "ZZTMyZoneModel.h"
+
 @interface GlobalUI : NSObject
 + (UIImageView *)createImageViewbgColor:(UIColor *)bgColor;
 
@@ -17,5 +19,6 @@
 
 + (UIButton *)createButtonWithTopImg:(UIImage *)img title:(NSString *)title titleColor:(UIColor *)titleColor;
 
++ (CGFloat)cellHeightWithModel:(ZZTMyZoneModel *)model;
 
 @end

@@ -681,15 +681,14 @@
 #pragma mark - 全部清空
 - (IBAction)empty:(id)sender {
     //可以恢复
-    ZZTRemindView *remindView = [[ZZTRemindView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    ZZTRemindView *remindView = [ZZTRemindView sharedInstance];
     _remindView = remindView;
     remindView.viewTitle = @"清空全部?";
-    remindView.btnBlock = ^(UIButton *btn) {
+    remindView.tureBlock = ^(UIButton *btn) {
         [self removeAll];
         [self.remindView removeFromSuperview];
     };
-    [self.view addSubview:remindView];
-  
+    [remindView show];
 }
 
 -(void)removeAll{
@@ -712,14 +711,14 @@
 
 #pragma mark 发布 未完成
 - (IBAction)commit:(id)sender {
-    ZZTRemindView *remindView = [[ZZTRemindView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    ZZTRemindView *remindView = [ZZTRemindView sharedInstance];
     remindView.viewTitle = @"确认发布";
     self.remindView = remindView;
-    remindView.btnBlock = ^(UIButton *btn) {
+    remindView.tureBlock = ^(UIButton *btn) {
         [self publish];
         [self.remindView removeFromSuperview];
     };
-    [self.view addSubview:remindView];
+    [remindView show];
 }
 
 -(void)publish{
@@ -1343,11 +1342,11 @@
 #pragma mark - 单页清空
 - (IBAction)emptyView:(id)sender {
     //先出是否单页清空
-    ZZTRemindView *reView = [[ZZTRemindView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    ZZTRemindView *reView = [ZZTRemindView sharedInstance];
     _remindView = reView;
     reView.viewTitle = @"单页清空？";
-    [self.view addSubview:reView];
-    reView.btnBlock = ^(UIButton *btn) {
+    [reView show];
+    reView.tureBlock = ^(UIButton *btn) {
         //当前cell的数据
         ZZTDIYCellModel *cellModel = self.cartoonEditArray[0];
         //清空cell中的数据
@@ -1615,6 +1614,7 @@
     }
     return model;
 }
+
 //隐藏其他View
 -(void)EditImageViewWithViewIncell:(EditImageView *)view{
     view.curType = self.curType;

@@ -17,6 +17,13 @@
 //将当前View传给桌面
 - (void)setupViewForCurrentView:(ZZTEditorBasisView *)view;
 
+- (void)editorBasisViewWithRotateGesture:(UIRotationGestureRecognizer *)gesture;
+
+- (void)editorBasisViewWithCenter:(ZZTEditorBasisView *)view;
+
+- (void)editorBasisViewWithPich:(UIPinchGestureRecognizer *)gesture;
+
+
 @end
 
 @interface ZZTEditorBasisView : UIView
@@ -24,6 +31,8 @@
 //@property(nonatomic,strong) UIButton *deleteBtn;
 
 @property(nonatomic,weak)id<ZZTEditorBasisViewDelegate>   delegate;
+
+@property(nonatomic,assign) BOOL isImageView;
 
 //禁止旋转
 -(void)Editor_BasisViewCloseRotateGesture;

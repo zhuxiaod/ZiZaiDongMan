@@ -375,9 +375,11 @@ static bool needHide = false;
     NSLog(@"height:%@",height);
     
     [self.tableView beginUpdates];
+    
     if(height > 0)[self.imageCellHeightCache replaceObjectAtIndex:indexRow withObject:height];
 
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:indexRow inSection:0];
+    
     [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
 
     [self.tableView endUpdates];

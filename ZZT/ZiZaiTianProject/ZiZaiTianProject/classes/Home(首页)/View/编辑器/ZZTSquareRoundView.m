@@ -8,6 +8,9 @@
 //
 
 #import "ZZTSquareRoundView.h"
+#import "CAShapeLayer+ViewMask.h"
+
+
 @interface ZZTSquareRoundView (){
     CGPoint prevPoint;
     
@@ -26,6 +29,7 @@
     CGFloat proportion;
 
 }
+
 //四条边
 @property (nonatomic,strong) UIView *topBorder;
 
@@ -34,15 +38,12 @@
 @property (nonatomic,strong) UIView *rightBorder;
 
 @property (nonatomic,strong) UIView *bottomBorder;
-
 //四个角落按钮
 @property (nonatomic,strong) UIView *leftOne;//左上
 
 @property (nonatomic,strong) UIView *leftTwo;//左下
 
-
 @property (nonatomic,strong) UIView *rightTwo;//右下
-
 //手势
 @property (nonatomic,strong) UIPanGestureRecognizer *borderGestureOne;
 
@@ -62,11 +63,11 @@
 
 @property (nonatomic,strong) UIButton *centerBtn;
 
-@property (nonatomic,strong) UIView *mainView;
-
 @property (nonatomic,strong) UITapGestureRecognizer *rightOnetapGesture;
 
 @property (nonatomic,assign) CGFloat scale;
+
+@property (nonatomic,strong) CAShapeLayer *editor_layer;
 
 @end
 
@@ -88,6 +89,9 @@
         
         self.scale = 1;
         
+        self.mainView.backgroundColor = [UIColor whiteColor];
+        
+        self.isImageView = NO;
     }
     return self;
 }
@@ -118,7 +122,6 @@
     [self.rightTwo removeGestureRecognizer:self.angle2];
     [self.leftOne removeGestureRecognizer:self.angle3];
     [self.leftTwo removeGestureRecognizer:self.angle4];
-    
 }
 
 //移除边手势
@@ -129,6 +132,7 @@
     [self.rightBorder removeGestureRecognizer:self.borderGestureThree];
     [self.bottomBorder removeGestureRecognizer:self.borderGestureFour];
 }
+
 -(void)setupUI{
     
     self.backgroundColor = [UIColor whiteColor];
@@ -242,16 +246,14 @@
 
     //边线
     self.layer.borderWidth = 2.0f;
-    
-   
+    self.layer.borderColor = [UIColor blackColor].CGColor;
+
 }
 
 -(void)layoutSubviews{
     [super layoutSubviews];
     
-    [self.mainView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.right.left.bottom.equalTo(self);
-    }];
+    self.mainView.frame = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height);
     
     //先定四个角  再定四条线
     [self.leftOne mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -340,18 +342,16 @@
         selfY = self.y;
         selfW = self.width;
         selfH = self.height;
+        
     }else if([gesture state] == UIGestureRecognizerStateChanged){
         //距离
         wChange = (point.x - prevPoint.x);
         hChange = (point.y - prevPoint.y);
         
-        
         CGFloat w = self.width, h = self.height;
         
         NSLog(@"w:%f h:%f",w,h);
         
-//        if(w > 100 || h > 100){
-
         CGFloat originalArea = w * h;
 
         //最小不能超过100
@@ -370,11 +370,6 @@
                 h += hChange;
             }
             
-            NSLog(@"CGRectGetMaxX(self.frame):%f CGRectGetMaxY(self.frame):%f",prevPoint.x,prevPoint.y);
-            
-            //右下x 不能超过x的值
-            //y不能超过y
-
         }else if (gesture.view.tag == 5){
             //左上
             NSLog(@"我是5");
@@ -391,12 +386,7 @@
             selfY += hChange;
             w -= wChange;
             h += hChange;
-//            if(w > h){
-//                h = w;
-//            }else{
-//                w = h;
-//            }
-//            self.frame = CGRectMake(selfX , self.y , w , h);
+
         }else if (gesture.view.tag == 7){
             //右上
             NSLog(@"我是7");
@@ -404,12 +394,6 @@
             selfY += hChange;
             w += wChange;
             h -= hChange;
-//            if(w > h){
-//                h = w;
-//            }else{
-//                w = h;
-//            }
-//            self.frame = CGRectMake(self.x, selfY , w , h);
         }
         
         CGFloat nowArea = w * h;
@@ -417,35 +401,12 @@
         CGFloat multiple = nowArea / originalArea;
         
         NSLog(@"multiple:%f",multiple);
+       self.bounds = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width * multiple, self.bounds.size.height * multiple);
         
-        if(multiple < 1){
-            multiple = 1 - multiple;
-            self.scale -= multiple;
-        }else{
-            multiple = multiple - 1;
-            self.scale += multiple;
-        }
-        
-//        multiple = multiple - 1;
-//        self.scale += multiple;
-        
-        if(self.scale > 0.5){
-//
-            self.transform = CGAffineTransformMakeScale(self.scale, self.scale);
-            
-            NSLog(@"self.scale:%f",self.scale);
-
-        }
-        
-//        self.transform = CGAffineTransformScale(self.transform, multiple, multiple);
-        
-//        CGAffineTransform transform = CGAffineTransformMakeScale(multiple, multiple);
-//
-//        self.transform = CGAffineTransformScale(transform, multiple, multiple);
+        self.mainView.transform = CGAffineTransformScale(self.mainView.transform, multiple, multiple);
         
         prevPoint = [gesture locationInView:self];
         
-//        }
     }else if([gesture state] == UIGestureRecognizerStateEnded){
         //开启手势
         [self Editor_BasisViewAddPanGesture];
@@ -587,7 +548,7 @@
 //            self.transform = CGAffineTransformScale(self.transform, proportion, proportion);
 //        }
    
-        if(pW < pH){
+        if(pW < pH || pW == pH){
             //圆
             proportion = self.superview.width / selfW;
             self.transform = CGAffineTransformScale(self.transform, proportion, proportion);
@@ -648,8 +609,11 @@
         [self addGesture];
         
         //如果是圆 禁止对边操作
-        if(self.type == squareRoundViewTypeRound){
+        if(self.type == squareRoundViewTypeSquare){
+            
+        }else{
             [self removeBorderGesture];
+
         }
         
         if (self.squareRounddelegate && [self.squareRounddelegate respondsToSelector:@selector(squareRoundViewDidEditorWithView:)])
@@ -668,7 +632,6 @@
 
 //添加素材
 -(void)Editor_addSubView:(UIView *)view{
-    
     [self.mainView addSubview:view];
 
 }
@@ -751,11 +714,22 @@
 -(void)setType:(squareRoundViewType)type{
     _type = type;
     
-    if(self.type == squareRoundViewTypeRound){
-        //变成圆形
-        self.layer.cornerRadius = self.width / 2;
-        //禁止边手势
+    if (self.type == squareRoundViewTypeStraightEllipse || self.type == squareRoundViewTypeTowardEllipse || self.type == squareRoundViewTypeRound){
+
+        //取消边线 （后面改）
+        self.layer.borderColor = [UIColor clearColor].CGColor;
+        
+        //正椭圆
         [self removeBorderGesture];
+
+        CAShapeLayer *editor_layer = [CAShapeLayer createStraightEllipseMaskLayerWithView:self];
+        //遮罩
+        self.mainView.layer.mask = editor_layer;
+        //线
+        CAShapeLayer *editorLayer = [CAShapeLayer createStraightEllipseBorderLayerWithView:self];
+        [self.mainView.layer addSublayer:editorLayer];
     }
+    self.backgroundColor = [UIColor clearColor];
+    self.layer.masksToBounds = YES;
 }
 @end

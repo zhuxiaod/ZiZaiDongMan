@@ -39,7 +39,7 @@
     materialBtn.titleLabel.font = [UIFont systemFontOfSize:12];
     [bottomView addSubview:materialBtn];
     
-//    往下一层
+//  往下一层
     UIButton *nextBtn = [GlobalUI createButtonWithImg:[UIImage imageNamed:@"往下一层"] title:@"下置一层" titleColor:[UIColor whiteColor]];
     _nextBtn = nextBtn;
     nextBtn.titleLabel.font = [UIFont systemFontOfSize:12];
@@ -145,5 +145,18 @@
                       (but.frame.size.width-but.imageView.frame.size.width)/2)];
 }
 
-
+//返回一个view来响应事件
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event{
+    UIView *view = [super hitTest:point withEvent:event];
+    if (view == nil){
+        //转换坐标
+        CGPoint tempPoint = [self.materialBtn convertPoint:point fromView:self];
+        //判断点击的点是否在按钮区域内
+        if (CGRectContainsPoint(self.materialBtn.bounds, tempPoint)){
+            //返回按钮
+            return self.materialBtn;
+        }
+    }
+    return view;
+}
 @end

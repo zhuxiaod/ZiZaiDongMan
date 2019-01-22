@@ -162,17 +162,18 @@
     if([[UserInfoManager share] hasLogin] == NO){
         return;
     }
-    [self.remindView removeFromSuperview];
-    ZZTRemindView *remindView = [[ZZTRemindView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    ZZTRemindView *remindView = [ZZTRemindView sharedInstance];
     self.remindView = remindView;
     remindView.viewTitle = @"是否清空?";
-    remindView.btnBlock = ^(UIButton *btn) {
+    remindView.tureBlock = ^(UIButton *btn) {
         NSString *string = [self.bookIdArray componentsJoinedByString:@","];
         if(self.bookIdArray.count){
             [self loadRemoveBook:string];
         }
     };
-    [self.view addSubview:remindView];
+    
+    [remindView show];
+//    [self.view addSubview:remindView];
 }
 
 -(void)addCartoonId:(NSMutableArray *)array{

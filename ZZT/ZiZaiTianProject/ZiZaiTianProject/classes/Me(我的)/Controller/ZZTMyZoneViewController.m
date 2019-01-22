@@ -271,16 +271,19 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-
-    ZZTMyZoneModel *model = _dataArray[indexPath.row];
-    NSArray *imgs = [model.contentImg componentsSeparatedByString:@","];
-    return  [ZZTMyZoneCell cellHeightWithStr:model.content imgs:imgs];
+    ZZTMyZoneModel *model = self.dataArray[indexPath.row];
+    return  [GlobalUI cellHeightWithModel:model];
 }
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     ZZTMyZoneCell *cell = [tableView dequeueReusableCellWithIdentifier:myZoneCell forIndexPath:indexPath];
+    cell.indexRow = indexPath.row;
     cell.update = ^{
         [self loadData];
+    };
+    cell.LongPressBlock = ^(ZZTMyZoneModel *message) {
+      //删除
+        [self delMomment:message];
     };
     cell.reportBtn.delegate = self;
     
@@ -288,8 +291,41 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     model.index = indexPath.row;
     model.nickName = self.userData.nickName;
     cell.model = model;
-    
     return cell;
+}
+
+-(void)delMomment:(ZZTMyZoneModel *)model
+{
+    //判断用户id
+    if(self.userId != [Utilities GetNSUserDefaults].id){
+        return;
+    }
+    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:@"是否删除这条动态" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"删除" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+       //删除接口
+        [self sendDelMommentRequest:model];
+    }];
+    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        NSLog(@"点击了取消");
+    }];
+    
+    //把action添加到actionSheet里
+    [actionSheet addAction:action1];
+    [actionSheet addAction:action2];
+    
+    //相当于之前的[actionSheet show];
+    [self presentViewController:actionSheet animated:YES completion:nil];
+}
+
+-(void)sendDelMommentRequest:(ZZTMyZoneModel *)model{
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSDictionary *dic = @{@"topicId":model.id};
+    [manager POST:[ZZTAPI stringByAppendingString:@"circle/delUserRoom"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [self loadData];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
 }
 
 -(void)shieldingMessage:(NSInteger)index{
@@ -313,7 +349,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     if(!_zoneHeadView){
         _zoneHeadView = [[ZZTMyZoneHeaderView alloc] initWithReuseIdentifier:zoneHeadViewIf];
     }
-//    UserInfo *user = [Utilities GetNSUserDefaults];
+
     self.zoneHeadView.user = self.userData;
 
     return _zoneHeadView;
@@ -377,7 +413,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
 -(void)setUserId:(NSString *)userId{
     _userId = userId;
     //请求个人资料
-    if([userId isEqualToString:@"0"]){
+    if([userId integerValue] == [Utilities GetNSUserDefaults].id && [[Utilities GetNSUserDefaults].userType isEqualToString:@"3"]){
    
         //添加一张图片
         self.underLineView.hidden = NO;

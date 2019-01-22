@@ -7,6 +7,7 @@
 //
 
 #import "GlobalUI.h"
+#import "NSString+Extension.h"
 
 @implementation GlobalUI
 
@@ -48,5 +49,48 @@
                       btn.titleLabel.intrinsicContentSize.height,
                       (btn.frame.size.width-btn.imageView.frame.size.width)/2)];
     return  btn;
+}
+
+//高度有问题
+//时间显示过大了
++ (CGFloat)cellHeightWithModel:(ZZTMyZoneModel *)model{
+    CGFloat strH = [model.content heightWithWidth:CGRectGetWidth([UIScreen mainScreen].bounds) - 32 font:MomentFontSize];
+    if([model.content isEqualToString:@""]){
+        strH = - 10;
+    }
+    CGFloat cellH = strH + 120;
+    
+    CGFloat bgH = 0.0f;
+    
+    NSArray *array = [model.contentImg componentsSeparatedByString:@","];
+    CGFloat high = [model.high floatValue];
+    CGFloat wide = [model.wide floatValue];
+    
+    if(array.count == 1){
+        if(wide > high){
+            bgH = 120;
+        }else{
+            CGFloat width = 120;
+            bgH = width * high / wide;
+        }
+        if(wide == 0 && high == 0){
+            bgH = 0;
+        }
+    }else if (array.count == 2){
+        bgH = (SCREEN_WIDTH - 24)/2;
+    }else if (array.count == 4){
+        bgH = SCREEN_WIDTH - SafetyW - SafetyW;
+    }else{
+        NSInteger row = array.count / 3;// 多少行图片
+        if (array.count % 3 != 0) {
+            ++row;
+        }
+        bgH = array.count ? row * imgHeight + (row - 1) * 10 :0;
+    }
+    
+    if (array.count) {
+        cellH += bgH;
+    }
+    return  cellH;
 }
 @end

@@ -109,8 +109,10 @@
 -(void)setCurImageView:(ZZTEditorImageView *)curImageView{
     _curImageView = curImageView;
     if(curImageView.type == editorImageViewTypeChat){
-        self.textMaxNum = 19;
+//        self.textMaxNum = 19;
     }
 }
+
+
 
 @end

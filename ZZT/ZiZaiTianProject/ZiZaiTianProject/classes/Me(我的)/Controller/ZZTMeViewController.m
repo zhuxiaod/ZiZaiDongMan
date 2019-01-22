@@ -224,22 +224,26 @@ NSString *bannerID = @"MeCell";
     //隐藏Bar
     //加载用户信息
     UserInfo *userInfo = [Utilities GetNSUserDefaults];
-    //有id
-    if(userInfo == nil){
+    //游客模式
+    if(userInfo == nil || [userInfo.userType isEqualToString:@"3"]){
         [[UserInfoManager share] loginVisitorModelSuccess:^{
             
             self.userData = [Utilities GetNSUserDefaults];
             
-            //userId已经有了
+            //获取游客信息
             [self loadUserData:self.userData.id];
             
             [self setupTopView];
             
+            [Utilities GetNSUserDefaults].isLogin = NO;
         }];
         
     }else{
         //userId已经有了
         [self loadUserData:userInfo.id];
+        
+        [Utilities GetNSUserDefaults].isLogin = YES;
+
     }
     [self.tableView reloadData];
 }
@@ -251,6 +255,7 @@ NSString *bannerID = @"MeCell";
 
 
 -(void)loadUserData:(NSInteger)Id{
+    
     NSString *userId = [NSString stringWithFormat:@"%ld",Id];
 
     NSDictionary *paramDict = @{
@@ -261,7 +266,6 @@ NSString *bannerID = @"MeCell";
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         
         UserInfo *model = [UserInfo mj_objectWithKeyValues:dic];
-        model.isLogin = YES;
         self.userData = model;
         [self setupTopView];
         //存一下数据

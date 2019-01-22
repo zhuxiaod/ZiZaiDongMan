@@ -109,6 +109,8 @@ dispatch_queue_t iap_queue() {
 - (void)requestProductWithId:(NSString *)productId {
     _productId = productId;
     
+//    [self removeAllUncompleteTransactionBeforeStartNewTransaction];
+    
     if([SKPaymentQueue canMakePayments]){
         
         [self requestProductData:productId];
@@ -127,10 +129,15 @@ dispatch_queue_t iap_queue() {
     NSArray *transactions = [SKPaymentQueue defaultQueue].transactions;
     if (transactions.count > 0) {
         //检测是否有未完成的交易
-        SKPaymentTransaction* transaction = [transactions firstObject];
-        if (transaction.transactionState == SKPaymentTransactionStatePurchased) {
-            [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-            return;
+        for (NSInteger i = 0; i < transactions.count; i++) {
+            SKPaymentTransaction* transaction = transactions[i];
+            if (transaction.transactionState == SKPaymentTransactionStatePurchased) {
+                [self buyAppleStoreProductSucceedWithPaymentTransactionp:transaction];
+                
+                [self completeTransaction:transaction];
+                
+                break;
+            }
         }
     }
 }
@@ -183,6 +190,9 @@ dispatch_queue_t iap_queue() {
     NSLog(@"发送购买请求");
     
     [[SKPaymentQueue defaultQueue] addPayment:payment];
+    
+//    [SVProgressHUD showWithStatus:nil];
+
 }
 
 //请求失败
@@ -204,15 +214,13 @@ dispatch_queue_t iap_queue() {
                 NSLog(@"交易完成");
                 NSLog(@"发送后台验证");
                 [self buyAppleStoreProductSucceedWithPaymentTransactionp:tran];
-
-                [self completeTransaction:tran];
                 break;
             case SKPaymentTransactionStatePurchasing:
                 NSLog(@"商品添加进列表");
                 break;
             case SKPaymentTransactionStateRestored:
                 NSLog(@"已经购买过商品");
-                [self completeTransaction:tran];
+                [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
                 break;
             case SKPaymentTransactionStateFailed:
                 NSLog(@"交易失败");
@@ -264,6 +272,7 @@ dispatch_queue_t iap_queue() {
     NSLog(@"交易结束");
     self.isBuy = NO;
     [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+    
 }
 
 

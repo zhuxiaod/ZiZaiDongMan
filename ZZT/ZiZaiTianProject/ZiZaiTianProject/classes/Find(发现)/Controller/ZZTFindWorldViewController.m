@@ -14,6 +14,7 @@
 #import "ZZTFindBannerView.h"
 #import "ZZTZoneImageView.h"
 #import "ZZTFindAttentionView.h"
+#import "Utilities.h"
 
 @interface ZZTFindWorldViewController ()<UITableViewDelegate,UITableViewDataSource,SDCycleScrollViewDelegate,UICollectionViewDelegate,ZZTReportBtnDelegate>
 
@@ -104,7 +105,9 @@ static NSString *findCommentCell = @"findCommentCell";
     
 //    [self loadCaiNiXiHuanData];
 
-    [self.contentView.mj_header beginRefreshing];
+//    [self.contentView.mj_header beginRefreshing];
+    
+    [self loadMoreData];
 
 }
 
@@ -206,7 +209,7 @@ static NSString *findCommentCell = @"findCommentCell";
         }else{
             [self.contentView.mj_footer endRefreshing];
         }
-        self.pageSize++;
+        self.pageNumber++;
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [self.contentView.mj_footer endRefreshing];
         [self.contentView.mj_header endRefreshing];
@@ -234,9 +237,6 @@ static NSString *findCommentCell = @"findCommentCell";
     model.index = indexPath.row;
     cell.model = model;
     cell.reportBtn.delegate = self;
-//    cell.LongPressBlock = ^(ZZTMyZoneModel *message) {
-//        [self reportUserData:message];
-//    };
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
@@ -251,7 +251,7 @@ static NSString *findCommentCell = @"findCommentCell";
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     ZZTMyZoneModel *model = _dataArray[indexPath.row];
     NSArray *imgs = [model.contentImg componentsSeparatedByString:@","];
-    return  [ZZTFindCommentCell cellHeightWithStr:model.content imgs:imgs];
+    return  [GlobalUI cellHeightWithModel:model];
 }
 
 #pragma mark - headView

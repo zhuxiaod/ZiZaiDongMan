@@ -86,10 +86,14 @@ static NSString * const XYStoreiTunesSandboxVerifyReceiptURL1 = @"https://sandbo
         }
         
         _bannerH.constant = bannerH;
+        
     }else{
         [self.view layoutIfNeeded];
+        
         UIView *whiteView = [[UIView alloc] initWithFrame:CGRectMake(0, Height_NavBar, SCREEN_WIDTH, SCREEN_HEIGHT)];
+        
         whiteView.backgroundColor = [UIColor whiteColor];
+        
         [self.view addSubview:whiteView];
 
     }
@@ -101,9 +105,13 @@ static NSString * const XYStoreiTunesSandboxVerifyReceiptURL1 = @"https://sandbo
     [self.userImg sd_setImageWithURL:[NSURL URLWithString:[Utilities GetNSUserDefaults].headimg]];
     
     if([Utilities GetNSUserDefaults].vipEndtime == nil){
+        
         self.VIPDateLab.text = [NSString stringWithFormat:@"非会员"];
+        
     }else{
+        
         self.VIPDateLab.text = [NSString stringWithFormat:@"%@ 到期",[NSString timeWithStr:[Utilities GetNSUserDefaults].vipEndtime]];
+        
     }
 }
 
@@ -129,11 +137,12 @@ static NSString * const XYStoreiTunesSandboxVerifyReceiptURL1 = @"https://sandbo
         
         [MBProgressHUD hideHUDForView:self.view];
         
+        [MBProgressHUD showSuccess:@"获取商品失败"];
     }];
-
 }
 
 -(void)setUpTopUpBtn{
+    
     self.oneMonthXu.VIPModel = self.dataArray[0];
     self.oneMonth.VIPModel = self.dataArray[1];
     self.threeMonth.VIPModel = self.dataArray[2];
@@ -159,22 +168,29 @@ static NSString * const XYStoreiTunesSandboxVerifyReceiptURL1 = @"https://sandbo
         ZZTVisitorPurchaseView *visPV = [ZZTVisitorPurchaseView initVisitorPurchaseViewWithLogin:^{
           //选择登录
           [UserInfoManager needLogin];
+            
             self.isLogin = YES;
 
         } visPurchase:^{
-            //选择直接购买
+            //游客购买
             [self purchaseTargetWithIndex:btn.tag];
+            
         }];
+        
         [visPV showVPAlert];
-//        return;
+        
     }else{
+        
         [self purchaseTargetWithIndex:btn.tag];
+        
     }
 }
+
 //购买商品
 -(void)purchaseTargetWithIndex:(NSInteger)index{
     //获取商品信息
     ZZTFreeBiModel *model = self.dataArray[index];
+    
     _buyModel = model;
     
     [[SBIAPManager manager] requestProductWithId:model.goodsOrder];

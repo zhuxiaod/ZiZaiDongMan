@@ -105,17 +105,16 @@ static NSString *circleCell = @"circleCell";
 }
 
 -(void)removeAllBook{
-    [self.remindView removeFromSuperview];
-    ZZTRemindView *remindView = [[ZZTRemindView alloc] initWithFrame:CGRectMake(0, navHeight, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    ZZTRemindView *remindView = [ZZTRemindView sharedInstance];
     remindView.viewTitle = @"是否清空?";
     self.remindView = remindView;
-    remindView.btnBlock = ^(UIButton *btn) {
+    remindView.tureBlock = ^(UIButton *btn) {
         NSString *string = [self.cartoonArray componentsJoinedByString:@","];
         if(self.cartoonArray.count){
             [self loadRemoveBook:string];
         }
     };
-    [self.view addSubview:remindView];
+    [remindView show];
 }
 
 //边距设置:整体边距的优先级，始终高于内部边距的优先级

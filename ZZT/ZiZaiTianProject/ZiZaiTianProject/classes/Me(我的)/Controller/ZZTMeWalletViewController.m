@@ -74,7 +74,7 @@ NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
     //登录后开关
     self.isLogin = NO;
     
-    NSLog(@"是否有网络：%d",[Utilities connectedToNetwork] );
+    NSLog(@"是否有网络：%d",[Utilities connectedToNetwork]);
     //我的模块  navbar 风格设置
     [self.viewNavBar.centerButton setTitle:@"充值" forState:UIControlStateNormal];
     
@@ -87,7 +87,7 @@ NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
         self.ZbLab.text = [NSString stringWithFormat:@"%ld", (long)[Utilities GetNSUserDefaults].zzbNum];
         
         //启动回调
-        [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+//        [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
 
         self.isBuy = NO;
         
@@ -141,7 +141,7 @@ NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
             self.isLogin = YES;
             
         } visPurchase:^{
-            //选择直接购买
+            //游客购买
             [self purchaseTargetWithIndex:btn.tag];
             
         }];
@@ -208,6 +208,9 @@ NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
         [MBProgressHUD hideHUDForView:self.view];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [MBProgressHUD hideHUDForView:self.view];
+        
+        [MBProgressHUD showSuccess:@"获取商品信息失败"];
+
     }];
 }
 

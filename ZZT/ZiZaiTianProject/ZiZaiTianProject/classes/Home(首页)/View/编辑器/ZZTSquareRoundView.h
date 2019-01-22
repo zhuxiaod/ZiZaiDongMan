@@ -8,18 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
-//定义枚举类型
-//typedef enum ZZTSquareRoundViewType {NSInteger,
-//    squareRoundViewTypeSquare  = 0,
-//    squareRoundViewTypeRound
-//
-//} squareRoundViewType;
-
-
 typedef NS_ENUM(NSInteger, squareRoundViewType) {
     squareRoundViewTypeSquare = 1,
-    squareRoundViewTypeRound = 2
-   
+    
+    squareRoundViewTypeRound = 2,
+    //正椭圆
+    squareRoundViewTypeStraightEllipse = 3,
+    //横椭圆
+    squareRoundViewTypeTowardEllipse = 4
 };
 
 @class ZZTSquareRoundView;
@@ -50,6 +46,9 @@ typedef NS_ENUM(NSInteger, squareRoundViewType) {
 @property (nonatomic,strong) UIImageView *rightOne;//右上
 
 @property (nonatomic,strong) ZZTEditorBasisView *currentView;
+
+@property (nonatomic,strong) UIView *mainView;
+
 
 
 -(void)tapGestureTarget;

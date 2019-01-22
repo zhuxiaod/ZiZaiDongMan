@@ -64,11 +64,11 @@
     [self addSubview:topView];
     
     //收藏 相机
-    UIButton *collectViewBtn = [GlobalUI createButtonWithImg:[UIImage imageNamed:@"预览"] title:nil titleColor:nil];
+    UIButton *collectViewBtn = [GlobalUI createButtonWithImg:[UIImage imageNamed:@"editor_noCollection"] title:nil titleColor:nil];
     _collectViewBtn = collectViewBtn;
     [topView addSubview:collectViewBtn];
     
-    UIButton *cameraBtn = [GlobalUI createButtonWithImg:[UIImage imageNamed:@"预览"] title:nil titleColor:nil];
+    UIButton *cameraBtn = [GlobalUI createButtonWithImg:[UIImage imageNamed:@"editor_camera"] title:nil titleColor:nil];
     _cameraBtn = cameraBtn;
     [topView addSubview:cameraBtn];
     
@@ -98,7 +98,6 @@
     //创建UICollectionView：黑色
     [self setupCollectionView];
 
-    
     //收藏数据按钮事件
     [self.favoritesBtn addTarget:self action:@selector(favoriteTarget) forControlEvents:UIControlEventTouchUpInside];
 
@@ -285,11 +284,14 @@
             });
         });
     }else{
-        if (self.delegate && [self.delegate respondsToSelector:@selector(materialContentView:materialModel:kindIndex:)])
+        ZZTMaterialCell *cell = (ZZTMaterialCell *)[collectionView cellForItemAtIndexPath:indexPath];
+        
+        if (self.delegate && [self.delegate respondsToSelector:@selector(materialContentView:materialModel:kindIndex:materialIndex:materialImage:)])
         {
+            
             ZZTDetailModel *model = self.materialArray[indexPath.row];
             //模型 类型
-            [self.delegate materialContentView:collectionView materialModel:model kindIndex:self.materialIndex];
+            [self.delegate materialContentView:collectionView materialModel:model kindIndex:self.materialIndex materialIndex:indexPath.row materialImage:cell.imageView.image];
         }
     }
 

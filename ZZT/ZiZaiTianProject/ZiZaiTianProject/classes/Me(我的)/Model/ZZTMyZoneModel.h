@@ -42,4 +42,12 @@
 
 @property (nonatomic,assign) NSInteger index;
 
+@property (nonatomic,assign) CGFloat oneImgH;
+
+@property (nonatomic,assign) NSInteger isLoad;
+
+@property (nonatomic,strong) NSString *high;
+
+@property (nonatomic,strong) NSString *wide;
+
 @end
