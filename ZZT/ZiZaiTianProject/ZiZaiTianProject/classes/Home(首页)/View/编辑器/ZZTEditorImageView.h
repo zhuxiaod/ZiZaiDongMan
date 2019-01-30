@@ -50,6 +50,10 @@ typedef NS_ENUM(NSInteger, Editor_ImageViewType) {
 
 - (void)showInputViewWithEditorImageView:(ZZTEditorImageView *)imageView hiddenState:(BOOL)state;
 
+- (void)hiddenInputView;
+
+- (void)EditorImageViewCannelCurrentView;
+
 @end
 
 @class ZZTEditorBasisView;
@@ -73,6 +77,16 @@ typedef NS_ENUM(NSInteger, Editor_ImageViewType) {
 @property (nonatomic,strong) NSString *fontColor;
 
 @property (nonatomic,strong) NSString *isLoad;
+
+@property (nonatomic,strong) NSString *imgId;
+
+@property (nonatomic,strong) NSString *ifCollect;
+
+@property (nonatomic,assign) NSInteger fodderId;
+
+@property (nonatomic,strong) NSString *kindIndex;
+
+@property (nonatomic,strong) NSString *modelType;
 
 -(void)draw;
 

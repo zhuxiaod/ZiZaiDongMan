@@ -17,11 +17,13 @@
 //将当前View传给桌面
 - (void)setupViewForCurrentView:(ZZTEditorBasisView *)view;
 
+- (void)setupTapGesture;
+
 - (void)editorBasisViewWithRotateGesture:(UIRotationGestureRecognizer *)gesture;
 
 - (void)editorBasisViewWithCenter:(ZZTEditorBasisView *)view;
 
-- (void)editorBasisViewWithPich:(UIPinchGestureRecognizer *)gesture;
+- (void)editorBasisViewWithPich:(UIPinchGestureRecognizer *)gesture isPinch:(BOOL)isPicnch;
 
 
 @end

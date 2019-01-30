@@ -98,8 +98,8 @@ static NSString *findCommentCell = @"findCommentCell";
     self.pageSize = 10;
 //    [self loadData];
     
-   //banner数据
-    self.imagesURLStrings = [NSArray arrayWithObjects: @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1535282045025&di=b648e41d5d5a3535e5518a545459d351&imgtype=0&src=http%3A%2F%2Fimg.mp.itc.cn%2Fupload%2F20161123%2Fbfa082e23cd94089a907a29b021946bf_th.jpeg",@"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1535282045025&di=d2ddcf88c11b57887d64db25c870bd4f&imgtype=0&src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20170919%2F210211af972f4e3c8c5a7fda0fda7493.jpeg", nil];
+//   //banner数据
+//    self.imagesURLStrings = [NSArray arrayWithObjects: @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1535282045025&di=b648e41d5d5a3535e5518a545459d351&imgtype=0&src=http%3A%2F%2Fimg.mp.itc.cn%2Fupload%2F20161123%2Fbfa082e23cd94089a907a29b021946bf_th.jpeg",@"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1535282045025&di=d2ddcf88c11b57887d64db25c870bd4f&imgtype=0&src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20170919%2F210211af972f4e3c8c5a7fda0fda7493.jpeg", nil];
     
     [self setupMJRefresh];
     
@@ -108,9 +108,24 @@ static NSString *findCommentCell = @"findCommentCell";
 //    [self.contentView.mj_header beginRefreshing];
     
     [self loadMoreData];
-
+    
+    [self loadBannerData];
 }
 
+-(void)loadBannerData{
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    weakself(self);
+    [manager POST:[ZZTAPI stringByAppendingString:@"homepage/banner"] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+        NSArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
+        weakSelf.imagesURLStrings = array;
+        [self.contentView reloadData];
+//        self.cycleView.imageArray = array;
+//        [self.collectionView reloadData];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
+}
 
 -(void)setupTableView{
     UITableView *contentView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, Screen_Height - 49) style:UITableViewStyleGrouped];
@@ -264,7 +279,7 @@ static NSString *findCommentCell = @"findCommentCell";
         if(!_bannerView){
             _bannerView = [[ZZTFindBannerView alloc] initWithReuseIdentifier:findBannerView];
         }
-        _bannerView.imageArray = @"1";
+        _bannerView.imageArray = self.imagesURLStrings;
         return _bannerView;
     }else{
         UIView *view = [[UIView alloc] init];

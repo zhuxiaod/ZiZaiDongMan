@@ -13,6 +13,9 @@
 
 typedef void (^favoritesBtnBlock)(void);//给block重命名,方便调用
 
+typedef void (^collectViewBtnBlock)(UIButton *btn);//给block重命名,方便调用
+
+
 @protocol ZZTMaterialWindowViewDelegate <NSObject>
 
 @optional
@@ -20,6 +23,8 @@ typedef void (^favoritesBtnBlock)(void);//给block重命名,方便调用
 - (void)materialTypeView:(UICollectionView *)materialTypeView index:(NSInteger)index;
 
 - (void)materialContentView:(UICollectionView *)materialContentView materialModel:(ZZTDetailModel *)model kindIndex:(NSInteger)index materialIndex:(NSInteger)materialIndex materialImage:(UIImage *)materialImage;
+
+- (void)createEditorMaterialDetailViewWithID:(NSInteger)materialId superModel:(ZZTDetailModel*)superModel kindIndex:(NSInteger)kindIndex;
 
 @end
 
@@ -32,9 +37,13 @@ typedef void (^favoritesBtnBlock)(void);//给block重命名,方便调用
 
 @property (nonatomic,strong)UIButton *favoritesBtn;
 
+
 @property (nonatomic,strong)NSArray *materialArray;
 
 @property (nonatomic, copy) favoritesBtnBlock favoritesBlock;//声明一个block属性
+
+@property (nonatomic, copy) collectViewBtnBlock collectViewBtnBlock;//声明一个block属性
+
 
 @property(nonatomic,weak)id<ZZTMaterialWindowViewDelegate>   delegate;
 

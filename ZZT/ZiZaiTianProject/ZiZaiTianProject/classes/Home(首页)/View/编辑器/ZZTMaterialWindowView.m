@@ -9,8 +9,8 @@
 #import "ZZTMaterialWindowView.h"
 #import "ZZTMaterialTypeCell.h"
 #import "ZZTKindModel.h"
-#import "ZZTMaterialCell.h"
 #import "ZZTDetailModel.h"
+#import "ZZTEditorImgCell.h"
 
 @interface ZZTMaterialWindowView ()<UICollectionViewDataSource,UICollectionViewDelegate,ZZTMaterialWindowViewDelegate>
 
@@ -22,6 +22,7 @@
 @property(nonatomic , strong) UICollectionView *contentCollectionView;
 @property(nonatomic , strong)UIView *midLine;
 @property(nonatomic , assign)NSInteger materialIndex;
+@property(nonatomic , assign)BOOL isCollect;
 
 @end
 
@@ -45,6 +46,8 @@
 
         //直接传一个数组过来
         self.materialIndex = 1;
+        
+        self.isCollect = NO;
     }
     return self;
 }
@@ -65,13 +68,13 @@
     
     //收藏 相机
     UIButton *collectViewBtn = [GlobalUI createButtonWithImg:[UIImage imageNamed:@"editor_noCollection"] title:nil titleColor:nil];
+    [collectViewBtn setImage:[UIImage imageNamed:@"editor_collect_select"] forState:UIControlStateSelected];
     _collectViewBtn = collectViewBtn;
     [topView addSubview:collectViewBtn];
     
     UIButton *cameraBtn = [GlobalUI createButtonWithImg:[UIImage imageNamed:@"editor_camera"] title:nil titleColor:nil];
     _cameraBtn = cameraBtn;
     [topView addSubview:cameraBtn];
-    
     /********************************************************************/
 
     //分类区
@@ -100,13 +103,13 @@
 
     //收藏数据按钮事件
     [self.favoritesBtn addTarget:self action:@selector(favoriteTarget) forControlEvents:UIControlEventTouchUpInside];
-
 }
 
 //收藏事件
 -(void)favoriteTarget{
     self.materialIndex = 0;
     self.favoritesBlock();
+    self.isCollect = YES;
 }
 
 
@@ -130,7 +133,7 @@
         make.width.height.mas_equalTo(ZZTLayoutDistance(93));
     }];
     
-    /********************************************************************/
+/********************************************************************/
     
     [self.midView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.left.equalTo(self);
@@ -157,7 +160,6 @@
         make.left.equalTo(self.midLine).offset(ZZTLayoutDistance(24));
         make.right.equalTo(self).offset(-10);
     }];
-    
     /********************************************************************/
 
     [self.bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -169,7 +171,6 @@
     [self.contentCollectionView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.right.left.bottom.equalTo(self.bottomView);
     }];
-    
 }
 
 #pragma mark - 创建CollectionView
@@ -198,7 +199,7 @@
     contentCollectionView.delegate = self;
     [self.bottomView addSubview:self.contentCollectionView];
     
-    [contentCollectionView registerNib:[UINib nibWithNibName:@"ZZTMaterialCell" bundle:nil] forCellWithReuseIdentifier:@"materialCell"];
+    [contentCollectionView registerClass:[ZZTEditorImgCell class] forCellWithReuseIdentifier:@"materialCell"];
 }
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
@@ -219,12 +220,11 @@
         cell.model = model;
         return cell;
     }else{
-        ZZTMaterialCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"materialCell" forIndexPath:indexPath];
+        ZZTEditorImgCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"materialCell" forIndexPath:indexPath];
         ZZTDetailModel *model = self.materialArray[indexPath.row];
-        cell.imageStr = model.img;
+        cell.model = model;
         return cell;
     }
-   
 }
 
 //定义每个UICollectionView 的大小
@@ -261,8 +261,10 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 
+
     if(collectionView == self.typeCollectionView){
-        
+        self.isCollect = NO;
+
         self.materialIndex = indexPath.row + 1;
         
         if(self.delegate && [self.delegate respondsToSelector:@selector(materialTypeView:index:)]){
@@ -284,19 +286,31 @@
             });
         });
     }else{
-        ZZTMaterialCell *cell = (ZZTMaterialCell *)[collectionView cellForItemAtIndexPath:indexPath];
-        
-        if (self.delegate && [self.delegate respondsToSelector:@selector(materialContentView:materialModel:kindIndex:materialIndex:materialImage:)])
-        {
-            
-            ZZTDetailModel *model = self.materialArray[indexPath.row];
-            //模型 类型
-            [self.delegate materialContentView:collectionView materialModel:model kindIndex:self.materialIndex materialIndex:indexPath.row materialImage:cell.imageView.image];
+        ZZTEditorImgCell *cell = (ZZTEditorImgCell *)[collectionView cellForItemAtIndexPath:indexPath];
+        //分2种  多种 和 单种
+        ZZTDetailModel *model = self.materialArray[indexPath.row];
+        if(model.flag == 1){
+            //多
+            if (self.delegate && [self.delegate respondsToSelector:@selector(createEditorMaterialDetailViewWithID:superModel:kindIndex:)])
+            {
+                if(self.isCollect == YES){
+                    model.id = model.fodderId;
+                }
+                [self.delegate createEditorMaterialDetailViewWithID:model.id superModel:model kindIndex:self.materialIndex];
+            }
+        }else{
+            //单
+            if (self.delegate && [self.delegate respondsToSelector:@selector(materialContentView:materialModel:kindIndex:materialIndex:materialImage:)])
+            {
+                //模型 类型
+                [self.delegate materialContentView:collectionView materialModel:model kindIndex:[model.fodderType
+                                                            integerValue]
+                        materialIndex:indexPath.row materialImage:cell.imageView.image];
+            }
         }
     }
-
-
 }
+
 
 -(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event{
     

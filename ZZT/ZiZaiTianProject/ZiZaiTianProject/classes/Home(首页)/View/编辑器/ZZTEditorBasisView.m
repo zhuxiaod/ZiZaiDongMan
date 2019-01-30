@@ -21,6 +21,10 @@
     CGPoint beginningCenter;
     
     CGRect beginBounds;
+    
+    CGFloat originalW;
+    
+    CGFloat originalH;
 }
 
 @property (nonatomic,strong) UIPinchGestureRecognizer *pinchGestureRecognizer;
@@ -39,8 +43,6 @@
     if (self = [super initWithFrame:frame]) {
         //可以进行交互
         self.userInteractionEnabled = YES;
-        //添加UI
-        [self addUI];
         //放大缩小
         UIPinchGestureRecognizer *pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc]initWithTarget:self action:@selector(handlePich:)];
         pinchGestureRecognizer.delegate = self;
@@ -66,6 +68,9 @@
         _tapGestureRecognizer = tapGestureRecognizer;
         tapGestureRecognizer.numberOfTapsRequired = 1;
         [self addGestureRecognizer:tapGestureRecognizer];
+        
+        originalW = 0.0f;
+        originalH = 0.0f;
     }
     return self;
 }
@@ -76,25 +81,34 @@
     
 }
 
--(void)addUI{
-    
+-(void)layoutSubviews{
+    if(originalW == 0 && originalH == 0){
+        originalW = self.frame.size.width;
+        originalH = self.frame.size.height;
+    }
+    NSLog(@"originalW:%f originalH:%f",originalW , originalH);
 }
 
 #pragma mark 缩放
 -(void)handlePich:(UIPinchGestureRecognizer *)recognizer
 {
-
     [self setupSelfForCurrentView];
     
-//    if(_isImageView == YES){
-//        recognizer.view.transform = CGAffineTransformScale(recognizer.view.transform, recognizer.scale, recognizer.scale);
-//    }else{
-    self.bounds = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width * recognizer.scale, self.bounds.size.height * recognizer.scale);
-//    }
-
+    CGFloat width = self.bounds.size.width * recognizer.scale;
+    CGFloat height = self.bounds.size.height * recognizer.scale;
     
-    if(self.delegate && [self.delegate respondsToSelector:@selector(editorBasisViewWithPich:)]){
-        [self.delegate editorBasisViewWithPich:recognizer];
+    BOOL isPinch = NO;
+    
+    if(width <= 50 || height <= 50){
+
+    }else{
+
+        isPinch = YES;
+         self.bounds = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, width, height);
+    }
+
+    if(self.delegate && [self.delegate respondsToSelector:@selector(editorBasisViewWithPich:isPinch:)]){
+        [self.delegate editorBasisViewWithPich:recognizer isPinch:isPinch];
     }
     
     recognizer.scale = 1;
@@ -138,6 +152,12 @@
   
     [self setupSelfForCurrentView];
     
+    if (self.delegate && [self.delegate respondsToSelector:@selector(setupTapGesture)])
+    {
+        // 调用代理方法
+        [self.delegate setupTapGesture];
+        
+    }
 }
 
 #pragma mark - 代理方法实现旋转 + 缩放捏合 可同时进行
@@ -165,6 +185,7 @@
     [self removeGestureRecognizer:self.panGestureRecognizer];
     
 }
+
 //允许拖动
 -(void)Editor_BasisViewAddPanGesture{
     

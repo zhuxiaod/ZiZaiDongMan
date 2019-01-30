@@ -133,7 +133,7 @@
 
 @end
 
-NSString *CartoonContentCellIdentifier = @"CartoonContentCellIdentifier";
+static NSString *CartoonContentCellIdentifier = @"CartoonContentCellIdentifier";
 
 NSString *Comment = @"Comment";
 

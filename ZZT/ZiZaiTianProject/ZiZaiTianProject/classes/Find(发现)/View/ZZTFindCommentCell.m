@@ -110,7 +110,6 @@
     _bgImgsView = [[ZZTCommentImgView alloc] init];
     [self.contentView addSubview:_bgImgsView];
 
-    
     //关注
     _attentionBtn = [[AttentionButton alloc] init];
 
@@ -128,7 +127,6 @@
     [self.contentView addSubview:_contentLab];
     [self.contentView addSubview:_dataLab];
 
-    
     _bottomView = [[UIView alloc] init];
     _bottomView.backgroundColor = [UIColor colorWithRGB:@"239,239,239"];
     [self.contentView addSubview:_bottomView];
@@ -149,33 +147,33 @@
     
     //头像
     [_headBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.left.equalTo(self.contentView).offset(space);
+        make.top.left.equalTo(self.contentView).offset(SafetyW);
         make.height.width.mas_equalTo(50);
     }];
     
     [_attentionBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.headBtn);
-        make.right.equalTo(self.contentView).offset(-space);
+        make.right.equalTo(self.contentView).offset(-SafetyW);
         make.width.height.mas_equalTo(36);
     }];
     
     //用户名   计算出宽度 然后在写vip
     [_userName mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.headBtn);
-        make.left.equalTo(self.headBtn.mas_right).offset(distance);
+        make.left.equalTo(self.headBtn.mas_right).offset(SafetyW);
         make.height.mas_equalTo(20);
     }];
     
     [_vipLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.headBtn);
-        make.left.equalTo(self.userName.mas_right).offset(distance);
+        make.left.equalTo(self.userName.mas_right).offset(SafetyW);
         make.height.width.mas_equalTo(16);
     }];
     
     [_contentLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.headBtn.mas_left);
         make.right.equalTo(self.attentionBtn.mas_right);
-        make.top.equalTo(self.headBtn.mas_bottom).offset(distance);
+        make.top.equalTo(self.headBtn.mas_bottom).offset(SafetyW);
     }];
     
     NSInteger row = _imgArray.count / 3;// 多少行图片
@@ -187,14 +185,14 @@
     CGFloat collectionW = SCREEN_WIDTH - 24;
     
     [_bgImgsView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.contentLab.mas_bottom).offset(distance);
+        make.top.equalTo(self.contentLab.mas_bottom).offset(SafetyW);
         make.width.mas_equalTo(collectionW);
         make.left.equalTo(self.headBtn.mas_left);
     }];
     
     [_dataLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.headBtn.mas_left);
-        make.top.equalTo(self.bgImgsView.mas_bottom).offset(space);
+        make.top.equalTo(self.bgImgsView.mas_bottom).offset(SafetyW);
         make.height.mas_equalTo(20);
         make.width.mas_equalTo(100);
     }];
@@ -208,7 +206,7 @@
     
     [self.likeCountView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.replyCountView);
-        make.right.equalTo(self.replyCountView.mas_left).offset(-space);
+        make.right.equalTo(self.replyCountView.mas_left).offset(-SafetyW);
         make.height.mas_equalTo(20);
         make.width.mas_equalTo(60);
     }];
@@ -232,7 +230,7 @@
 
     //更新时间
     [_dataLab mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.bgImgsView.mas_bottom).offset(8);
+        make.top.equalTo(self.bgImgsView.mas_bottom).offset(SafetyW);
     }];
     
     _contentLab.text = model.content;
@@ -241,13 +239,22 @@
     _dataLab.text = [NSString compareCurrentTime:model.publishtime];
     
     //更新内容高度
-    CGFloat contentHeight = [_contentLab.text heightWithWidth:CGRectGetWidth(self.contentView.bounds) - 32 font:MomentFontSize];
- 
+    CGFloat contentHeight = 0.0f;
     
-    contentHeight += 10;
+    [_contentLab mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.headBtn.mas_bottom).offset(SafetyW);
+        make.left.equalTo(self.contentView).offset(SafetyW);
+        make.right.equalTo(self.contentView).offset(-SafetyW);
+    }];
     
-    if([_contentLab.text isEqualToString:@""]){
+    if([model.content isEqualToString:@""]){
         contentHeight = 0;
+        [_contentLab mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.headBtn.mas_bottom);
+        }];
+    }else{
+        contentHeight = [_contentLab.text heightWithWidth:CGRectGetWidth(self.contentView.bounds) - 24 font:MomentFontSize];
+        contentHeight += 10;
     }
     
     [_contentLab mas_updateConstraints:^(MASConstraintMaker *make) {

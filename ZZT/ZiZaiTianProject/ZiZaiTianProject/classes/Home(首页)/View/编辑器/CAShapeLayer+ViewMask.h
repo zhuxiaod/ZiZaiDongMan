@@ -18,6 +18,9 @@
 + (instancetype)createStraightEllipseMaskLayerWithView : (UIView *)view;
 
 +(instancetype)createStraightEllipseBorderLayerWithView:(UIView *)view;
+
++(instancetype)addBottedlineWidth:(CGFloat)lineWidth lineColor:(UIColor *)lineColor view:(UIView *)view;
+
 //+ (instancetype)createTriangleMaskLayerWithView : (UIView *)view;
 //
 //+ (instancetype)createLayerWithView:(UIView *)view;

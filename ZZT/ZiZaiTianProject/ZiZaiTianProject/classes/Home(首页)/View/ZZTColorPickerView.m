@@ -41,7 +41,7 @@
     //色彩lab
     UILabel *hueLab = [[UILabel alloc] init];
 //    hueLab.backgroundColor = [UIColor redColor];
-    [hueLab setText:@"Hue [0-360]"];
+    [hueLab setText:@"色调 [0-360]"];
     [hueLab setTextColor:[UIColor grayColor]];
     _hueLab = hueLab;
     [self addSubview:hueLab];
@@ -74,7 +74,7 @@
     
     //色彩lab
     UILabel *saturationLab = [[UILabel alloc] init];
-    [saturationLab setText:@"Saturation [0-100]"];
+    [saturationLab setText:@"饱和度 [0-100]"];
     [saturationLab setTextColor:[UIColor grayColor]];
     _saturationLab = saturationLab;
     [self addSubview:saturationLab];
@@ -105,7 +105,7 @@
     
     //色彩lab
     UILabel *brightnessLab = [[UILabel alloc] init];
-    [brightnessLab setText:@"Brightness [0-100]"];
+    [brightnessLab setText:@"明度 [0-100]"];
     [brightnessLab setTextColor:[UIColor grayColor]];
     _brightnessLab = brightnessLab;
     [self addSubview:brightnessLab];
@@ -135,7 +135,7 @@
 
     //色彩lab
     UILabel *alphaLab = [[UILabel alloc] init];
-    [alphaLab setText:@"Alpha [0-255]"];
+    [alphaLab setText:@"透明度 [0-255]"];
     [alphaLab setTextColor:[UIColor grayColor]];
     _alphaLab = alphaLab;
     [self addSubview:alphaLab];
@@ -218,7 +218,7 @@
             break;
     }
     UIColor *color = [UIColor colorWithHue:(_hueSlider.value/360.0) saturation:(_saturationSlider.value/100.0) brightness:(_brightnessSlider.value/100.0) alpha:(_alphaSlider.value/255.0)];
-//    self.backgroundColor = color;
+
     //设置代理
     if (self.delegate && [self.delegate respondsToSelector:@selector(colorPickerViewWithColor:color:)]) {
         [self.delegate colorPickerViewWithColor:self color:color];
@@ -227,18 +227,21 @@
 
 -(void)layoutSubviews{
     [super layoutSubviews];
+    
     [_hueLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self).with.offset(10);
         make.left.equalTo(self).with.offset(10);
         make.right.equalTo(self).with.offset(-10);
         make.height.mas_equalTo(20);
     }];
+    
     [_hueSlider mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.hueLab.mas_bottom).with.offset(4);
         make.left.equalTo(self).with.offset(10);
         make.right.equalTo(self).with.offset(-70);
         make.height.mas_equalTo(20);
     }];
+    
     [_hueTF mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.hueLab.mas_bottom).with.offset(4);
         make.left.equalTo(self.hueSlider.mas_right).with.offset(10);
@@ -252,12 +255,14 @@
         make.right.equalTo(self).with.offset(-10);
         make.height.mas_equalTo(20);
     }];
+    
     [_saturationSlider mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.saturationLab.mas_bottom).with.offset(4);
         make.left.equalTo(self).with.offset(10);
         make.right.equalTo(self).with.offset(-70);
         make.height.mas_equalTo(20);
     }];
+    
     [_saturationTF mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.saturationLab.mas_bottom).with.offset(4);
         make.left.equalTo(self.saturationSlider.mas_right).with.offset(10);
@@ -277,6 +282,7 @@
         make.right.equalTo(self).with.offset(-70);
         make.height.mas_equalTo(20);
     }];
+    
     [_brightnessTF mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.brightnessLab.mas_bottom).with.offset(4);
         make.left.equalTo(self.brightnessSlider.mas_right).with.offset(10);
@@ -290,12 +296,14 @@
         make.right.equalTo(self).with.offset(-10);
         make.height.mas_equalTo(20);
     }];
+    
     [_alphaSlider mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.alphaLab.mas_bottom).with.offset(4);
         make.left.equalTo(self).with.offset(10);
         make.right.equalTo(self).with.offset(-70);
         make.height.mas_equalTo(20);
     }];
+    
     [_alphaTF mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.alphaLab.mas_bottom).with.offset(4);
         make.left.equalTo(self.alphaSlider.mas_right).with.offset(10);

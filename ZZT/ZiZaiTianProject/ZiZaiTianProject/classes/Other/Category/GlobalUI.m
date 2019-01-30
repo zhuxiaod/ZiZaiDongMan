@@ -54,9 +54,11 @@
 //高度有问题
 //时间显示过大了
 + (CGFloat)cellHeightWithModel:(ZZTMyZoneModel *)model{
-    CGFloat strH = [model.content heightWithWidth:CGRectGetWidth([UIScreen mainScreen].bounds) - 32 font:MomentFontSize];
+    CGFloat strH = [model.content heightWithWidth:CGRectGetWidth([UIScreen mainScreen].bounds) - 24 font:MomentFontSize];
     if([model.content isEqualToString:@""]){
-        strH = - 10;
+        strH = -12;
+    }else{
+        strH += 10;
     }
     CGFloat cellH = strH + 120;
     
@@ -77,7 +79,7 @@
             bgH = 0;
         }
     }else if (array.count == 2){
-        bgH = (SCREEN_WIDTH - 24)/2;
+        bgH = (SCREEN_WIDTH - 24 - 10)/2;
     }else if (array.count == 4){
         bgH = SCREEN_WIDTH - SafetyW - SafetyW;
     }else{

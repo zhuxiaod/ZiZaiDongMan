@@ -141,11 +141,11 @@
     HZPhotoBrowser *browser = [[HZPhotoBrowser alloc] init];
     
     browser.isFullWidthForLandScape = YES;
-    
+
     browser.isNeedLandscape = YES;
-    
+
     browser.currentImageIndex = [[NSString stringWithFormat:@"%ld",indexPath.row] intValue];
-    
+
     browser.imageArray = self.imgArray;
     
     [browser show];
@@ -164,9 +164,9 @@
             bgH = 0;
         }
     }else if (imgNum == 2){
-        bgH = (SCREEN_WIDTH - 24) / 2;
+        bgH = (SCREEN_WIDTH - 24 - 10) / 2;
     }else if (imgNum == 4){
-        bgH = (SCREEN_WIDTH - 24);
+        bgH = (SCREEN_WIDTH - 12 - 12);
     }else{
         NSInteger row = _imgArray.count / 3;// 多少行图片
         if (imgNum % 3 !=0) {

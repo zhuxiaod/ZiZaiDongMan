@@ -14,7 +14,6 @@
 
 @implementation ZZTMaterialCell
 
-
 -(void)awakeFromNib{
     
     [super awakeFromNib];
@@ -44,8 +43,14 @@
         [self.imageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",imageStr]] placeholderImage:[UIImage imageNamed:@"bannerPlaceV"] options:0];
     }else{
         [self.imageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",imageStr]] placeholderImage:[UIImage imageNamed:@"worldPlaceV"] options:0];
-
     }
+}
+
+-(void)setMaterialImageStr:(NSString *)materialImageStr{
+    _materialImageStr = materialImageStr;
+    [self.imageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",materialImageStr]] placeholderImage:[UIImage imageNamed:@"worldPlaceV"] options:0];
+    [self.imageView setContentMode:UIViewContentModeScaleAspectFit];
+
 }
 
 -(void)setArrayCount:(NSInteger)arrayCount{

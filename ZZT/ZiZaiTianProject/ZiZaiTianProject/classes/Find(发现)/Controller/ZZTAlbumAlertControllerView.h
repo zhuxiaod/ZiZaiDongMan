@@ -16,13 +16,11 @@
 
 @end
 
-
-
-
-
 @interface ZZTAlbumAlertControllerView : UIAlertController
 
 @property(nonatomic,weak)id <ZZTAlbumAlertControllerViewDelegate>   delegate;
+
+@property (nonatomic,assign) BOOL isImageClip;
 
 - (void)showZCAlert;
 

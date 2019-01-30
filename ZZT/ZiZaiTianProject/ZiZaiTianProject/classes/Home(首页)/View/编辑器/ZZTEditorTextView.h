@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 typedef NS_ENUM(NSInteger, editorTextViewType) {
-    editorTextViewTypeBGClear = 0,//背景透明
+    editorTextViewTypeBGClear = 12,//背景透明
     editorTextViewTypeBGWhite = 1,//背景不透明
     editorTextViewTypeNoBoder = 2 //无边框
 };
@@ -24,6 +24,8 @@ typedef NS_ENUM(NSInteger, editorTextViewType) {
 -(void)textViewShowInputView:(ZZTEditorTextView *)textView;
 
 -(void)textViewForCurrentView:(ZZTEditorBasisView *)textView;
+
+-(void)textViewHidden;
 
 @end
 
@@ -42,5 +44,12 @@ typedef NS_ENUM(NSInteger, editorTextViewType) {
 @property (nonatomic,strong) NSString *fontColor;
 
 @property (nonatomic,strong) NSString *imageUrl;
+
+@property (nonatomic,strong) NSString *kindIndex;
+
+
+-(void)textViewHiddenState;
+
+-(void)textViewShowState;
 
 @end

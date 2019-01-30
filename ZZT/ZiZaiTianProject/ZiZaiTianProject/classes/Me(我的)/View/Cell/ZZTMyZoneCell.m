@@ -52,7 +52,6 @@
     _contentLab.numberOfLines = 0;
     
     //多图
-//    _bgImgsView = [[UIView alloc]init];
     _bgImgsView = [[ZZTCommentImgView alloc] init];
     
     [self.contentView addSubview:_dateLab];
@@ -86,8 +85,6 @@
 -(void)layoutSubviews{
     [super layoutSubviews];
     
-    _dateLab.frame = CGRectMake(10, 10, 100, 50);
-    
     [_dateLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.contentView).offset(SafetyW);
         make.left.equalTo(self.contentView).offset(SafetyW);
@@ -96,7 +93,7 @@
     }];
     
     [_contentLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.dateLab.mas_bottom).offset(8);
+        make.top.equalTo(self.dateLab.mas_bottom).offset(SafetyW);
         make.left.equalTo(self.contentView).offset(SafetyW);
         make.right.equalTo(self.contentView).offset(-SafetyW);
     }];
@@ -110,7 +107,7 @@
     [self.replyCountView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.contentLab.mas_right);
         make.width.mas_equalTo(60);
-        make.top.equalTo(self.bgImgsView.mas_bottom).offset(8);
+        make.top.equalTo(self.bgImgsView.mas_bottom).offset(SafetyW);
         make.height.mas_equalTo(20);
     }];
     
@@ -158,13 +155,29 @@
     _contentLab.text = model.content;
     
     //更新内容高度
-    CGFloat contentHeight = [_contentLab.text heightWithWidth:CGRectGetWidth(self.contentView.bounds) - 24 font:MomentFontSize];
-    contentHeight += 10;
+    CGFloat contentHeight = 0.0f;
+    
+    [_contentLab mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.dateLab.mas_bottom).offset(SafetyW);
+        make.left.equalTo(self.contentView).offset(SafetyW);
+        make.right.equalTo(self.contentView).offset(-SafetyW);
+    }];
+    
+    if([model.content isEqualToString:@""]){
+        contentHeight = 0;
+        [_contentLab mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.dateLab.mas_bottom);
+        }];
+    }else{
+       contentHeight = [_contentLab.text heightWithWidth:CGRectGetWidth(self.contentView.bounds) - 24 font:MomentFontSize];
+        contentHeight += 10;
+    }
+    
     [_contentLab mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(contentHeight);
     }];
     
-//    //图片
+    //图片
     _bgImgsView.model = model;
 
     _imgArray = [model.contentImg componentsSeparatedByString:@","];
@@ -175,8 +188,6 @@
         make.height.mas_equalTo(bgH);
     }];
     
-//    [_bgImgsView reloadView];
-
     //时间戳显示
     NSString *time = [NSString timeWithStr:[NSString stringWithFormat:@"%@",model.publishtime]];
     

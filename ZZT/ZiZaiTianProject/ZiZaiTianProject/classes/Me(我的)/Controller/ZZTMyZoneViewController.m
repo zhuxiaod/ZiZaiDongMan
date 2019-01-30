@@ -282,7 +282,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
         [self loadData];
     };
     cell.LongPressBlock = ^(ZZTMyZoneModel *message) {
-      //删除
+        //删除
         [self delMomment:message];
     };
     cell.reportBtn.delegate = self;
@@ -297,7 +297,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
 -(void)delMomment:(ZZTMyZoneModel *)model
 {
     //判断用户id
-    if(self.userId != [Utilities GetNSUserDefaults].id){
+    if([self.userId integerValue] != [Utilities GetNSUserDefaults].id){
         return;
     }
     UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:@"是否删除这条动态" message:nil preferredStyle:UIAlertControllerStyleActionSheet];

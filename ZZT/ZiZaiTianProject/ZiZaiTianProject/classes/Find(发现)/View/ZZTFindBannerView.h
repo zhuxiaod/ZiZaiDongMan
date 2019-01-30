@@ -10,6 +10,6 @@
 
 @interface ZZTFindBannerView : UITableViewHeaderFooterView
 
-@property(nonatomic,strong) NSString *imageArray;
+@property(nonatomic,strong) NSArray *imageArray;
 
 @end

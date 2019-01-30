@@ -28,7 +28,8 @@ typedef NS_ENUM(NSInteger, squareRoundViewType) {
 - (void)squareRoundViewWillEditorWithView:(ZZTSquareRoundView *)squareRoundView;
 //编辑完成
 - (void)squareRoundViewDidEditorWithView:(ZZTSquareRoundView *)squareRoundView;
-
+//被放大
+- (void)squareRoundViewDidPinch:(ZZTSquareRoundView *)squareRoundView;
 
 @end
 
@@ -43,7 +44,7 @@ typedef NS_ENUM(NSInteger, squareRoundViewType) {
 
 @property(nonatomic,weak)id<ZZTSquareRoundViewDelegate>   squareRounddelegate;
 
-@property (nonatomic,strong) UIImageView *rightOne;//右上
+@property (nonatomic,strong) UIImageView *leftOne;//右上
 
 @property (nonatomic,strong) ZZTEditorBasisView *currentView;
 

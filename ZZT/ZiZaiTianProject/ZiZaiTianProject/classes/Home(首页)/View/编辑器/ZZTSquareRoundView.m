@@ -11,7 +11,7 @@
 #import "CAShapeLayer+ViewMask.h"
 
 
-@interface ZZTSquareRoundView (){
+@interface ZZTSquareRoundView ()<ZZTEditorBasisViewDelegate>{
     CGPoint prevPoint;
     
     CGFloat selfX;
@@ -39,7 +39,7 @@
 
 @property (nonatomic,strong) UIView *bottomBorder;
 //四个角落按钮
-@property (nonatomic,strong) UIView *leftOne;//左上
+@property (nonatomic,strong) UIView *rightOne;//左上
 
 @property (nonatomic,strong) UIView *leftTwo;//左下
 
@@ -69,6 +69,10 @@
 
 @property (nonatomic,strong) CAShapeLayer *editor_layer;
 
+@property (nonatomic,strong) UIPinchGestureRecognizer *pinchGesture;
+
+@property (nonatomic,strong) UIView *maskView;
+
 @end
 
 @implementation ZZTSquareRoundView
@@ -92,8 +96,33 @@
         self.mainView.backgroundColor = [UIColor whiteColor];
         
         self.isImageView = NO;
+        //添加捏合放大手势
+        [self addPinchGesture];
+        
+        self.delegate = self;
     }
     return self;
+}
+
+-(void)addPinchGesture{
+    UIPinchGestureRecognizer *pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchView:)];
+    [self addGestureRecognizer:pinchGesture];
+    _pinchGesture = pinchGesture;
+}
+
+-(void)removePinchGesture{
+    [self removeGestureRecognizer:_pinchGesture];
+}
+
+-(void)pinchView:(UIPinchGestureRecognizer *)gesture{
+    self.bounds = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width * gesture.scale, self.bounds.size.height *  gesture.scale);
+    
+    self.mainView.transform = CGAffineTransformScale(self.mainView.transform, gesture.scale, gesture.scale);
+    
+    self.maskView.transform = CGAffineTransformScale(self.maskView.transform, gesture.scale, gesture.scale);
+
+    
+    gesture.scale = 1;
 }
 
 -(void)addGesture{
@@ -141,6 +170,59 @@
     UIView *mainView = [[UIView alloc] init];
     self.mainView = mainView;
     [self addSubview:mainView];
+ 
+    //四个角落按钮
+    UIImageView *leftOne = [[UIImageView alloc] init];
+    [leftOne setImage:[UIImage imageNamed:@"deletMartarel"]];
+    leftOne.userInteractionEnabled = YES;
+    leftOne.contentMode = UIViewContentModeCenter;
+
+    self.leftOne = leftOne;
+
+//    [leftOne setBackgroundColor:[UIColor blueColor]];
+    leftOne.tag = 5;
+    [self addSubview:leftOne];
+    
+    UIView *leftTwo = [[UIView alloc] init];
+    self.leftTwo = leftTwo;
+//    [leftTwo setBackgroundColor:[UIColor blueColor]];
+    leftTwo.tag = 6;
+    [self addSubview:leftTwo];
+    
+//    UIView *rightOne = [[UIView alloc] init];
+////    [rightOne setBackgroundColor:[UIColor blueColor]];
+//    self.rightOne = rightOne;
+//    rightOne.tag = 7;
+//    [self addSubview:rightOne];
+    
+    UIView *rightOne = [[UIView alloc] init];
+    self.rightOne = rightOne;
+
+    rightOne.tag = 7;
+    [self addSubview:rightOne];
+    
+    UIView *rightTwo = [[UIView alloc] init];
+//    [rightTwo setBackgroundColor:[UIColor blueColor]];
+    self.rightTwo = rightTwo;
+    rightTwo.tag = 8;
+    [self addSubview:rightTwo];
+
+    //角手势
+    UIPanGestureRecognizer *rightOneGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(angleTarget:)];
+    UIPanGestureRecognizer *rightTwoGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(angleTarget:)];
+    UIPanGestureRecognizer *leftOneGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(angleTarget:)];
+    UIPanGestureRecognizer *leftTwoGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(angleTarget:)];
+
+    self.angle1 = rightOneGesture;
+    self.angle2 = rightTwoGesture;
+    self.angle3 = leftOneGesture;
+    self.angle4 = leftTwoGesture;
+    
+    //点击手势
+    UITapGestureRecognizer *rightOnetapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(deleteSelf)];
+    _rightOnetapGesture = rightOnetapGesture;
+
+    [self addGesture];
     
     //创建4条边
     UIView *topBorder = [[UIView alloc] init];
@@ -172,89 +254,43 @@
     UIPanGestureRecognizer *borderGestureTwo = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(tapTarget:)];
     UIPanGestureRecognizer *borderGestureThree = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(tapTarget:)];
     UIPanGestureRecognizer *borderGestureFour = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(tapTarget:)];
-
+    
     self.borderGestureOne = borderGestureOne;
     self.borderGestureTwo = borderGestureTwo;
     self.borderGestureThree = borderGestureThree;
     self.borderGestureFour = borderGestureFour;
-
-    //四个角落按钮
-    UIView *leftOne = [[UIView alloc] init];
-//    [leftOne setBackgroundColor:[UIColor blueColor]];
-    self.leftOne = leftOne;
-    leftOne.tag = 5;
-    [self addSubview:leftOne];
-    
-    UIView *leftTwo = [[UIView alloc] init];
-//    [leftTwo setBackgroundColor:[UIColor blueColor]];
-    self.leftTwo = leftTwo;
-    leftTwo.tag = 6;
-    [self addSubview:leftTwo];
-    
-//    UIView *rightOne = [[UIView alloc] init];
-////    [rightOne setBackgroundColor:[UIColor blueColor]];
-//    self.rightOne = rightOne;
-//    rightOne.tag = 7;
-//    [self addSubview:rightOne];
-    
-    UIImageView *rightOne = [[UIImageView alloc] init];
-    self.rightOne = rightOne;
-    rightOne.userInteractionEnabled = YES;
-    [rightOne setImage:[UIImage imageNamed:@"deletMartarel"]];
-    rightOne.contentMode = UIViewContentModeCenter;
-    rightOne.tag = 7;
-    [self addSubview:rightOne];
-    
-    UIView *rightTwo = [[UIView alloc] init];
-//    [rightTwo setBackgroundColor:[UIColor blueColor]];
-    self.rightTwo = rightTwo;
-    rightTwo.tag = 8;
-    [self addSubview:rightTwo];
-
-    //角手势
-    UIPanGestureRecognizer *rightOneGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(angleTarget:)];
-    UIPanGestureRecognizer *rightTwoGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(angleTarget:)];
-    UIPanGestureRecognizer *leftOneGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(angleTarget:)];
-    UIPanGestureRecognizer *leftTwoGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(angleTarget:)];
-
-    self.angle1 = rightOneGesture;
-    self.angle2 = rightTwoGesture;
-    self.angle3 = leftOneGesture;
-    self.angle4 = leftTwoGesture;
-    
-    //点击手势
-    UITapGestureRecognizer *rightOnetapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(deleteSelf)];
-    _rightOnetapGesture = rightOnetapGesture;
-
-    [self addGesture];
     
     //编辑按钮
     UIButton *centerBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [centerBtn setTitle:@"编辑" forState:UIControlStateNormal];
     [centerBtn setTintColor:[UIColor whiteColor]];
-    centerBtn.frame = CGRectMake( self.bounds.size.width / 2,self.bounds.size.height / 2, 100,  100);
     centerBtn.titleLabel.font = [UIFont systemFontOfSize:16];
     centerBtn.backgroundColor = [UIColor colorWithHexString:@"#91EDF2"];
     centerBtn.layer.borderColor = [UIColor colorWithHexString:@"#62C7AC"].CGColor;
     centerBtn.layer.borderWidth = 1.0f;
-    centerBtn.layer.cornerRadius = centerBtn.frame.size.height / 2;
+    centerBtn.layer.cornerRadius = 50 / 2;
     centerBtn.layer.masksToBounds = YES;
     _centerBtn = centerBtn;
     [self addSubview:centerBtn];
     
     [self.centerBtn addTarget:self action:@selector(tapGestureTarget) forControlEvents:UIControlEventTouchUpInside];
-
+    
     //边线
     self.layer.borderWidth = 2.0f;
     self.layer.borderColor = [UIColor blackColor].CGColor;
 
+    //创建一个专门装线的View
+    UIView *maskView = [[UIView alloc] init];
+    maskView.userInteractionEnabled = NO;
+    self.maskView = maskView;
+    [self addSubview:maskView];
 }
 
 -(void)layoutSubviews{
     [super layoutSubviews];
     
     self.mainView.frame = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height);
-    
+
     //先定四个角  再定四条线
     [self.leftOne mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.mas_top);
@@ -315,10 +351,12 @@
     [self.centerBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.mas_equalTo(self);
         make.centerY.mas_equalTo(self);
-        make.height.mas_equalTo(100);
-        make.width.mas_equalTo(100);
+        make.height.mas_equalTo(50);
+        make.width.mas_equalTo(50);
     }];
-    
+
+    self.maskView.frame = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height);
+
 }
 
 //拖动角的手势
@@ -401,9 +439,12 @@
         CGFloat multiple = nowArea / originalArea;
         
         NSLog(@"multiple:%f",multiple);
-       self.bounds = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width * multiple, self.bounds.size.height * multiple);
+        
+        self.bounds = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width * multiple, self.bounds.size.height * multiple);
         
         self.mainView.transform = CGAffineTransformScale(self.mainView.transform, multiple, multiple);
+        
+        self.maskView.transform = CGAffineTransformScale(self.maskView.transform, multiple, multiple);
         
         prevPoint = [gesture locationInView:self];
         
@@ -529,6 +570,7 @@
     
     //如果没有放大  那么放大
     if(self.isBig == NO){
+        [self removePinchGesture];
         //原来的大小
         selfH = self.height;
         selfW = self.width;
@@ -537,16 +579,6 @@
         
         lastTransform = self.transform;
         lastCenter = self.center;
-        
-//        if(self.type == squareRoundViewTypeRound || pW < pH){
-//            //圆
-//            proportion = self.superview.width / selfW;
-//            self.transform = CGAffineTransformScale(self.transform, proportion, proportion);
-//        }else{
-            //方型
-//            proportion = self.superview.height / selfH - ZZTLayoutDistance(100);
-//            self.transform = CGAffineTransformScale(self.transform, proportion, proportion);
-//        }
    
         if(pW < pH || pW == pH){
             //圆
@@ -580,13 +612,15 @@
         
         self.centerBtn.hidden = YES;
         
-        self.rightOne.hidden = YES;
+        self.leftOne.hidden = YES;
         
         //可以控制方框里面的视图
         self.mainView.userInteractionEnabled = YES;
 
         
     }else{
+        [self addPinchGesture];
+
         //计算比例
         NSLog(@"ppppp1%f",proportion);
         if(pW < pH){
@@ -595,7 +629,6 @@
             proportion = selfH/ (self.superview.height - ZZTLayoutDistance(100));
         }
         
-        NSLog(@"ppppp2%f",proportion);
         //变回原来的样子
         self.transform = CGAffineTransformScale(self.transform, proportion, proportion);
         
@@ -605,15 +638,13 @@
         
         //恢复移动
         [self Editor_BasisViewAddPanGesture];
-        //恢复手势
-        [self addGesture];
+   
         
         //如果是圆 禁止对边操作
         if(self.type == squareRoundViewTypeSquare){
-            
-        }else{
-            [self removeBorderGesture];
-
+            //方型
+            //恢复手势
+            [self addGesture];
         }
         
         if (self.squareRounddelegate && [self.squareRounddelegate respondsToSelector:@selector(squareRoundViewDidEditorWithView:)])
@@ -622,12 +653,12 @@
             [self.squareRounddelegate squareRoundViewDidEditorWithView:self];
         }
 
-        self.centerBtn.hidden = NO;
-        
+        self.centerBtn.hidden = YES;
+
         //不可触摸
         self.mainView.userInteractionEnabled = NO;
+        
     }
-
 }
 
 //添加素材
@@ -643,7 +674,7 @@
     UIView * view = [super hitTest:point withEvent:event];
     
     if(self.isBig == NO && [view isKindOfClass:[ZZTEditorBasisView class]]){
-        [self.rightOne setImage:[UIImage imageNamed:@"deletMartarel"]];
+        [self.leftOne setImage:[UIImage imageNamed:@"deletMartarel"]];
         return self;
     }
     
@@ -653,13 +684,13 @@
 //设置编辑按钮是否隐藏
 -(void)editorBtnHidden:(BOOL)isHidden{
     self.centerBtn.hidden = isHidden;
-    self.rightOne.hidden = isHidden;
+    self.leftOne.hidden = isHidden;
     
-    if(self.rightOne.hidden){
+    if(self.leftOne.hidden){
         //隐藏 去除点击
-        [self.rightOne removeGestureRecognizer:_rightOnetapGesture];
+        [self.leftOne removeGestureRecognizer:_rightOnetapGesture];
     }else{
-        [self.rightOne addGestureRecognizer:_rightOnetapGesture];
+        [self.leftOne addGestureRecognizer:_rightOnetapGesture];
     }
 }
 
@@ -667,6 +698,7 @@
 -(void)deleteSelf{
     
     [self removeFromSuperview];
+    
 }
 
 #pragma mark - 移动上下层
@@ -677,7 +709,7 @@
     NSInteger index = [self getCurrentViewIndex:self.currentView];
     //对换位置
     //判断是不是最后一层
-    if(index == self.subviews.count - 1){
+    if(index == self.mainView.subviews.count - 1){
         NSLog(@"不能上一层了");
     }else{
         [self.mainView exchangeSubviewAtIndex:index withSubviewAtIndex:index + 1];
@@ -718,18 +750,22 @@
 
         //取消边线 （后面改）
         self.layer.borderColor = [UIColor clearColor].CGColor;
-        
+
         //正椭圆
-        [self removeBorderGesture];
+        [self removeGesture];
 
         CAShapeLayer *editor_layer = [CAShapeLayer createStraightEllipseMaskLayerWithView:self];
         //遮罩
         self.mainView.layer.mask = editor_layer;
         //线
         CAShapeLayer *editorLayer = [CAShapeLayer createStraightEllipseBorderLayerWithView:self];
-        [self.mainView.layer addSublayer:editorLayer];
+
+        [self.maskView.layer addSublayer:editorLayer];
     }
+    
     self.backgroundColor = [UIColor clearColor];
-    self.layer.masksToBounds = YES;
+    
 }
+
+
 @end

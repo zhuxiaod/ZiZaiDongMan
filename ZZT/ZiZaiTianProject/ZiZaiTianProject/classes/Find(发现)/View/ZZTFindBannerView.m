@@ -17,9 +17,19 @@
 
 @property (nonatomic, strong) UUWaveView *WaveView;
 
+@property (nonatomic,strong) NSMutableArray *dataArray;
+
+
 @end
 
 @implementation ZZTFindBannerView
+
+-(NSMutableArray *)dataArray{
+    if(!_dataArray){
+        _dataArray = [NSMutableArray array];
+    }
+    return _dataArray;
+}
 
 - (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier{
     self = [super initWithReuseIdentifier:reuseIdentifier];
@@ -82,8 +92,36 @@
     }
     return _WaveView;
 }
--(void)setImageArray:(NSString *)imageArray{
+
+-(void)setImageArray:(NSArray *)imageArray{
     _imageArray = imageArray;
-    self.cycleScrollView.imageURLStringsGroup = [NSArray arrayWithObjects: @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1535282045025&di=b648e41d5d5a3535e5518a545459d351&imgtype=0&src=http%3A%2F%2Fimg.mp.itc.cn%2Fupload%2F20161123%2Fbfa082e23cd94089a907a29b021946bf_th.jpeg",@"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1535282045025&di=d2ddcf88c11b57887d64db25c870bd4f&imgtype=0&src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20170919%2F210211af972f4e3c8c5a7fda0fda7493.jpeg", nil];
+    if(imageArray.count != 0){
+        [self.dataArray removeAllObjects];
+        for (int i = 0; i < imageArray.count; i++) {
+            ZZTCarttonDetailModel *md = [imageArray objectAtIndex:i];
+            [self.dataArray addObject:md.cover];
+        }
+    }
+    //数组
+    self.cycleScrollView.imageURLStringsGroup = self.dataArray;
+    self.cycleScrollView.autoScrollTimeInterval = 5.0f;// 自动滚动时间间隔
+   
+}
+
+- (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index{
+    ZZTCarttonDetailModel *md = [self.imageArray objectAtIndex:index];
+    if([md.cartoonType isEqualToString:@"1"]){
+        ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
+        detailVC.isId = YES;
+        detailVC.cartoonDetail = md;
+        detailVC.hidesBottomBarWhenPushed = YES;
+        [[self myViewController].navigationController pushViewController:detailVC animated:YES];
+    }else{
+        ZZTMulWordDetailViewController *detailVC = [[ZZTMulWordDetailViewController alloc]init];
+        detailVC.isId = YES;
+        detailVC.cartoonDetail = md;
+        detailVC.hidesBottomBarWhenPushed = YES;
+        [[self myViewController].navigationController pushViewController:detailVC animated:YES];
+    }
 }
 @end

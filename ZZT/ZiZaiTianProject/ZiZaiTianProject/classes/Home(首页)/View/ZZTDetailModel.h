@@ -20,5 +20,10 @@
 
 @property (nonatomic,assign) NSInteger modelType;
 
+@property (nonatomic,assign) NSInteger flag;
+
+@property (nonatomic,assign) NSInteger ifCollect;
+
+@property (nonatomic,assign) NSInteger fodderId;
 
 @end

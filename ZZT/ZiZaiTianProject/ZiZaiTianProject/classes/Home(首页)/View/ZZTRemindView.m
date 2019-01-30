@@ -43,7 +43,7 @@
     UIButton *backgroundBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
     backgroundBtn.backgroundColor = [UIColor blackColor];
     backgroundBtn.alpha = 0.55;
-    [backgroundBtn addTarget:self action:@selector(cancel) forControlEvents:UIControlEventTouchUpInside];
+    [backgroundBtn addTarget:self action:@selector(cancel:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:backgroundBtn];
     
     //title

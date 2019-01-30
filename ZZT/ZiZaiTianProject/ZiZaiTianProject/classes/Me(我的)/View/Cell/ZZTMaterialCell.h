@@ -22,4 +22,6 @@ typedef void (^tapImageBlock) (UIImageView *imageView);
 
 @property (assign, nonatomic) NSInteger arrayCount;
 
+@property (nonatomic,strong) NSString *materialImageStr;
+
 @end

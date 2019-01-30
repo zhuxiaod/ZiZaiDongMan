@@ -26,6 +26,7 @@
     //遵守代理
     _picker.delegate = self;
     
+    _isImageClip = NO;
 }
 
 + (instancetype)initAlbumAlertControllerViewWithAlertAction:(void (^)(NSInteger index))alertAction;
@@ -221,19 +222,28 @@
     // 你可以通过block或者代理，来得到用户选择的照片.
     [imagePickerVc setDidFinishPickingPhotosHandle:^(NSArray<UIImage *> *photos, NSArray *assets, BOOL isSelectOriginalPhoto) {
         
-        //剪裁视图
-        ImageClipViewController *imageClip = [[ImageClipViewController alloc] init];
-        [imageClip setClipResult:^(BOOL isCancel, UIImage *image) {
-            if (self.delegate && [self.delegate respondsToSelector:@selector(albumAlertControllerViewWithImg:)] && isCancel == 0)
+        if(self.isImageClip == YES){
+            //剪裁视图
+            ImageClipViewController *imageClip = [[ImageClipViewController alloc] init];
+            [imageClip setClipResult:^(BOOL isCancel, UIImage *image) {
+                if (self.delegate && [self.delegate respondsToSelector:@selector(albumAlertControllerViewWithImg:)] && isCancel == 0)
+                {
+                    // 调用代理方法
+                    [self.delegate albumAlertControllerViewWithImg:image];
+                }
+            }];
+            imageClip.clipImage = photos[0];
+            imageClip.targetSize = CGSizeMake(SCREEN_WIDTH, SCREEN_WIDTH);
+            
+            [[self getCurrentVC] presentViewController:imageClip animated:YES completion:nil];
+        }else{
+            if (self.delegate && [self.delegate respondsToSelector:@selector(albumAlertControllerViewWithImg:)])
             {
                 // 调用代理方法
-                [self.delegate albumAlertControllerViewWithImg:image];
+                [self.delegate albumAlertControllerViewWithImg:photos[0]];
             }
-        }];
-        imageClip.clipImage = photos[0];
-        imageClip.targetSize = CGSizeMake(SCREEN_WIDTH, SCREEN_WIDTH);
-
-        [[self getCurrentVC] presentViewController:imageClip animated:YES completion:nil];
+        }
+        
     }];
     
     [[self getCurrentVC] presentViewController:imagePickerVc animated:YES completion:nil];
@@ -257,4 +267,7 @@
     }];
 }
 
+-(void)setIsImageClip:(BOOL)isImageClip{
+    _isImageClip = isImageClip;
+}
 @end

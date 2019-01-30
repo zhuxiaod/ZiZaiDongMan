@@ -105,7 +105,12 @@
             self.imageHeight = newHeight;
         }
     }];
+}
 
+-(void)setCartoonImg:(UIImage *)cartoonImg{
+    _cartoonImg = cartoonImg;
+    
+    _content.image = cartoonImg;
 }
 
 -(NSNumber *)getImgaeHeight{

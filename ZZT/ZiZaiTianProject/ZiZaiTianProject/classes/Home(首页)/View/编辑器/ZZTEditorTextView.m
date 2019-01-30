@@ -7,6 +7,8 @@
 //
 
 #import "ZZTEditorTextView.h"
+#import "UIView+DottedLine.h"
+#import "CAShapeLayer+ViewMask.h"
 
 @interface ZZTEditorTextView ()<ZZTEditorBasisViewDelegate>{
     CGPoint prevPoint;
@@ -26,6 +28,7 @@
     CGFloat proportion;
     
 }
+
 //2条控制边
 @property (nonatomic,strong) UIView *rightBorder;
 
@@ -35,6 +38,7 @@
 
 @property(nonatomic,strong) UIImageView *imageView;
 
+@property(nonatomic,strong) UIImageView *lineView;
 
 @end
 
@@ -43,10 +47,6 @@
 //旁白
 - (id)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
-        //禁止旋转
-        [self Editor_BasisViewCloseRotateGesture];
-        //禁止放大
-        [self Editor_BasisViewClosePichGesture];
         
         [self setupUI];
         
@@ -72,26 +72,23 @@
     rightBorder.tag = 1;
     [self addSubview:rightBorder];
     
-    UIView *leftBorder = [[UIView alloc] init];
-    _leftBorder = leftBorder;
-    leftBorder.tag = 2;
-    [self addSubview:leftBorder];
+//    UIView *leftBorder = [[UIView alloc] init];
+//    _leftBorder = leftBorder;
+//    leftBorder.tag = 2;
+//    [self addSubview:leftBorder];
     
     //边手势
     UIPanGestureRecognizer *borderGestureOne = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(tapTarget:)];
-    UIPanGestureRecognizer *borderGestureTwo = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(tapTarget:)];
+//    UIPanGestureRecognizer *borderGestureTwo = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(tapTarget:)];
     [rightBorder addGestureRecognizer:borderGestureOne];
-    [leftBorder addGestureRecognizer:borderGestureTwo];
+//    [leftBorder addGestureRecognizer:borderGestureTwo];
     
     //lab
     UILabel *textLab = [[UILabel alloc] init];
+    textLab.text = @"点击输入文字";
     textLab.numberOfLines = 0;
     _textLab = textLab;
     [self addSubview:textLab];
-//
-//    //点击可以添加文字
-//    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(editorText)];
-//    [textLab addGestureRecognizer:tapGesture];
     
     //边线
     self.layer.cornerRadius = 10.0f;
@@ -105,11 +102,21 @@
     [self addSubview:closeImageView];
     
     [closeImageView addTarget:self action:@selector(deleteGesture) forControlEvents:UIControlEventTouchUpInside];
-
+    
+    UIImageView *lineView = [[UIImageView alloc] init];
+    _lineView = lineView;
+    lineView.userInteractionEnabled = NO;
+    [self addSubview:lineView];
 }
 
 -(void)deleteGesture{
     [self removeFromSuperview];
+    
+    if (self.textViewDelegate && [self.textViewDelegate respondsToSelector:@selector(textViewHidden)])
+    {
+        // 调用代理方法
+        [self.textViewDelegate textViewHidden];
+    }
 }
 
 #pragma mark - 为视图添加文本
@@ -125,8 +132,6 @@
 //这个View被点击了
 -(void)setupViewForCurrentView:(ZZTEditorBasisView *)view{
     
-    [self editorText];
-    
     //将这个View传出去  告诉桌面是哪一个View
     if (self.textViewDelegate && [self.textViewDelegate respondsToSelector:@selector(textViewForCurrentView:)])
     {
@@ -141,20 +146,19 @@
         make.top.right.left.bottom.equalTo(self);
     }];
     
-    
     [self.rightBorder mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self);
         make.bottom.equalTo(self);
         make.right.equalTo(self);
-        make.width.mas_equalTo(30);
+        make.width.mas_equalTo(20);
     }];
     
-    [self.leftBorder mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self);
-        make.bottom.equalTo(self);
-        make.left.equalTo(self);
-        make.width.mas_equalTo(30);
-    }];
+//    [self.leftBorder mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.equalTo(self);
+//        make.bottom.equalTo(self);
+//        make.left.equalTo(self);
+//        make.width.mas_equalTo(20);
+//    }];
     
     [self.textLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self);
@@ -165,9 +169,11 @@
     
     [self.closeImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self);
-        make.right.equalTo(self);
-        make.width.height.mas_equalTo(15);
+        make.left.equalTo(self);
+        make.width.height.mas_equalTo(20);
     }];
+    
+    self.lineView.frame = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height);
 }
 
 #pragma mark - 对边操作
@@ -190,12 +196,15 @@
         selfW = self.width;
         selfH = self.height;
         
-    }else if(panGesture.state == UIGestureRecognizerStateEnded) {
+    }else if(panGesture.state == UIGestureRecognizerStateEnded){
         
         selfX = self.x;
         selfY = self.y;
         selfW = self.width;
         selfH = self.height;
+        
+        [self setNeedsDisplay];
+
         
     }else if (panGesture.state == UIGestureRecognizerStateChanged){
         
@@ -206,9 +215,9 @@
         
         CGPoint point = [panGesture translationInView:self.superview];
         //换算成中心点
-        point.x += panGesture.view.frame.size.width/2.0f - prevPoint.x;
-        
-        point.y += panGesture.view.frame.size.height/2.0f - prevPoint.y;
+//        point.x += panGesture.view.frame.size.width/2.0f - prevPoint.x;
+//
+//        point.y += panGesture.view.frame.size.height/2.0f - prevPoint.y;
         
         //点到自己的位置
         if(panGesture.view.tag == 1){
@@ -233,6 +242,10 @@
             height = [self.textLab.text heightWithWidth:width - 20 font:self.fontSize];
             height += 20;
         }
+        
+        NSLog(@"pointX:%f , pointY:%f",point.x,point.y);
+        NSLog(@"width:%f",width);
+        
         //得到当前的Width
         self.frame = CGRectMake(x, y, width, height);
     }
@@ -240,8 +253,11 @@
 
 //最小限制
 -(CGFloat)minimumlimit:(CGFloat)num{
-    if(num < 100){
-        num = 100;
+    //能放下当前一个字号 _fontSize
+    CGFloat replyCountWidth = [@"宽" getTextWidthWithFont:self.textLab.font];
+    replyCountWidth += 20;
+    if(num < replyCountWidth){
+        num = replyCountWidth;
     }
     return num;
 }
@@ -258,6 +274,7 @@
 
 -(void)setInputText:(NSString *)inputText{
     _inputText = inputText;
+    
     self.textLab.text = inputText;
     
     [self setupViewHeight];
@@ -266,6 +283,7 @@
 -(void)setupViewHeight{
     //适应高度
     CGFloat height = [self.textLab.text heightWithWidth:self.width - 20 font:self.fontSize];
+    
     self.frame = CGRectMake(self.x, self.y, self.width, height + 20);
     
     if(_textLab.text.length == 0){
@@ -278,7 +296,7 @@
     _type = type;
     //背景透明的
     if(type == editorTextViewTypeBGClear){
-        self.backgroundColor = [UIColor clearColor];
+//        [self setNeedsDisplay];
     }else if (type == editorTextViewTypeBGWhite){
         self.backgroundColor = [UIColor whiteColor];
     }else{
@@ -303,6 +321,27 @@
 -(void)setImageUrl:(NSString *)imageUrl{
     _imageUrl = imageUrl;
     [self.imageView sd_setImageWithURL:[NSURL URLWithString:imageUrl]];
-    //    [self.imageView setImage:[UIImage imageNamed:@"临时对话框"]];
 }
+
+-(void)setupTapGesture{
+    [self editorText];
+}
+
+-(void)textViewHiddenState
+{
+    [self.closeImageView setHidden:YES];
+    
+    self.layer.borderColor = [UIColor clearColor].CGColor;
+
+}
+
+-(void)textViewShowState
+{
+    [self.closeImageView setHidden:NO];
+    
+    self.layer.borderColor = [UIColor blackColor].CGColor;
+
+}
+
+ 
 @end

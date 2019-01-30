@@ -15,6 +15,7 @@
 - (void)cellHeightUpdataWithIndex:(NSUInteger)index Height:(CGFloat)height;
 
 - (void)saveImageUrl:(NSURL *)url index:(NSUInteger)index;
+
 @end
 
 @interface ZZTCartoonContentCell : UITableViewCell
@@ -24,6 +25,8 @@
 @property (nonatomic, weak) id <ZZTCartoonContentCellDelegate> delegate;
 
 @property (nonatomic,strong) ZZTCartoonModel *model;
+
+@property (nonatomic,strong) UIImage *cartoonImg;
 
 -(NSNumber *)getImgaeHeight;
 

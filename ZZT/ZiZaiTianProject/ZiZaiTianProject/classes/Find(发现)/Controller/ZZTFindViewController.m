@@ -189,7 +189,7 @@ NSString *SuggestionView3 = @"SuggestionView";
     }];
     
     //返回
-    [navBar.leftButton setImage:[UIImage imageNamed:@"find_home_addMoment"] forState:UIControlStateNormal];
+    [navBar.leftButton setImage:[UIImage imageNamed:@"editCellImg"] forState:UIControlStateNormal];
 //    navBar.leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 17);
     [navBar.leftButton addTarget:self action:@selector(addMoment) forControlEvents:UIControlEventTouchUpInside];
     
@@ -250,7 +250,7 @@ NSString *SuggestionView3 = @"SuggestionView";
     
     [actionSheet addAction:action1];
     [actionSheet addAction:action2];
-    [actionSheet addAction:action3];
+//    [actionSheet addAction:action3];
     [actionSheet addAction:action4];
     
     [self presentViewController:actionSheet animated:YES completion:nil];
