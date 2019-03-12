@@ -22,7 +22,6 @@
 @property (nonatomic,strong) ZZTWordsDetailHeadView *head;
 
 @property (nonatomic,strong) ZZTWordDescSectionHeadView *descHeadView;
-
 @property (nonatomic,strong) ZZTCarttonDetailModel *ctDetail;
 
 @property (nonatomic,strong) UITableView *contentView;
@@ -203,6 +202,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     _cartoonDetail.bookName = self.ctDetail.bookName;
     cartoonDetailVC.cartoonModel = _cartoonDetail;
     [self.navigationController pushViewController:cartoonDetailVC animated:YES];
+
 }
 
 -(void)setIsId:(BOOL)isId{
@@ -231,6 +231,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
         ZZTCarttonDetailModel *mode = [ZZTCarttonDetailModel mj_objectWithKeyValues:dic1];
         self.ctDetail = mode;
         self.head.detailModel = mode;
+        self.chapterChooseView.serializeStatus = [mode.serialize integerValue];
         [self.navbar.centerButton setTitle:mode.bookName forState:UIControlStateNormal];
         [self.contentView reloadData];
         
@@ -622,8 +623,6 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
      }else{
          [self loadtopData:self.cartoonDetail.cartoonId];
      }
-
-
 
     NSLog(@"sekf ppp :%@",self.chooseNum);
     if(self.isId == YES){

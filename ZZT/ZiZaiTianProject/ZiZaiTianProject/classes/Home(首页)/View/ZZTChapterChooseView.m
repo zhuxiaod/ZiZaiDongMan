@@ -27,6 +27,8 @@
 @property (nonatomic,strong) UILabel *mainText;
 
 @property (nonatomic,strong) UIView *bottomView;
+//连载中
+@property (nonatomic,strong) UILabel *serializeLab;
 
 @end
 
@@ -93,6 +95,14 @@
     _mainText = mainText;
     [self.contentView addSubview:mainText];
     
+    //连载中
+    UILabel *serializeLab = [[UILabel alloc] init];
+    serializeLab.font = [UIFont systemFontOfSize:14];
+    serializeLab.textColor = [UIColor colorWithHexString:@"#A7A8A9"];
+    serializeLab.text = @"(连载中)";
+    _serializeLab = serializeLab;
+    [self.contentView addSubview:serializeLab];
+    
     UICollectionViewFlowLayout *layout = [self setupCollectionViewFlowLayout];
     
     [self setupCollectionView:layout];
@@ -148,6 +158,13 @@
         make.height.mas_equalTo(30);
 //        make.right.equalTo(self.backView.mas_right).offset(-8);
     }];
+    
+    [self.serializeLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(self.mainText.mas_bottom);
+        make.left.equalTo(self.mainText.mas_right).offset(8);
+        make.height.equalTo(self.mainText);
+    }];
+    
     //没有设置高度
     if(_openBtn.selected == NO){
         [_collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -417,5 +434,12 @@
     }
     collectionH = 70 + 40 * rowNum;
     return collectionH;
+}
+
+-(void)setSerializeStatus:(NSInteger)serializeStatus{
+    _serializeStatus = serializeStatus;
+    if(_serializeStatus == 1){
+        _serializeLab.text = @"(已完结)";
+    }
 }
 @end

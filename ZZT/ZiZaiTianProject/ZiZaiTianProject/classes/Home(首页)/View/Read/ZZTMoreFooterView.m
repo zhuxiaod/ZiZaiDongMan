@@ -7,6 +7,8 @@
 //
 
 #import "ZZTMoreFooterView.h"
+#import "ZZTDetailModel.h"
+
 @interface ZZTMoreFooterView ()
 
 @property (nonatomic,strong) UIButton *moreBtn;
@@ -81,4 +83,27 @@
         make.width.mas_equalTo(BtnW);
     }];
 }
+
+-(void)loadDataWithPageNum:(NSInteger)pageNum url:(NSString *)url resultBlock:(void (^)(NSArray * array))resultBlock{
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    NSDictionary *dict = @{
+                           @"pageNum":[NSString stringWithFormat:@"%ld",(long)pageNum],
+                           @"pageSize":@"7",
+                           @"more":@"1"
+                           };
+    [manager POST:[ZZTAPI stringByAppendingString:url] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+        NSMutableArray *array1 = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
+        if(resultBlock){
+            resultBlock(array1);
+        }
+//        self.materialArray = array;
+//        self.resultBlock++;
+//        [self.collectionView reloadData];
+//        [self.collectionView.mj_header endRefreshing];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+//        [self.collectionView.mj_header endRefreshing];
+    }];
+}
+
 @end

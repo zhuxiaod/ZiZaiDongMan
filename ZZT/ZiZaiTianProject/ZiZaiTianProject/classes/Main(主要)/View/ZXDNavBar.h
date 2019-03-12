@@ -44,4 +44,6 @@
 
 @property (nonatomic, copy) void (^ rightTwoButtonBlock)(void);
 
+-(void)addMoment;
+
 @end

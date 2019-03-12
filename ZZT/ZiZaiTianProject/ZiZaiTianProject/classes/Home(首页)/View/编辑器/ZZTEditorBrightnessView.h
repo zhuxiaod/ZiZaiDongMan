@@ -8,7 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-static CGFloat BrightnessToolBarHeight = 80.0f;
+@class ZZTEditorImageView;
+
+static CGFloat BrightnessToolBarHeight = 130.0f;
 
 @protocol ZZTEditorBrightnessView <NSObject>
 
@@ -18,6 +20,18 @@ static CGFloat BrightnessToolBarHeight = 80.0f;
 
 @interface ZZTEditorBrightnessView : UIView
 
+@property (nonatomic,strong) UISlider *brightnessSlider;
+
+@property (nonatomic,strong) UISlider *saturationSlider;
+
+@property (nonatomic,strong) UISlider *contrastSlider;
+
+@property (nonatomic,strong) UISlider *hueSlider;
+
+@property (nonatomic,strong) UISlider *alphaSlider;
+
 @property (nonatomic,weak) id<ZZTEditorBrightnessView> delegate;
+
+@property (nonatomic,weak) ZZTEditorImageView *imageViewModel;
 
 @end

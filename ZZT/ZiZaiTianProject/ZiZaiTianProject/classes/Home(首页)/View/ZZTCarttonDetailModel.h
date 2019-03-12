@@ -54,6 +54,27 @@
 
 @property (nonatomic,strong) NSString *lbCover;
 
+@property (nonatomic,strong) NSString *ifauthor;
 
+@property (nonatomic,strong) NSString *serialize;
+
+//素材
+
+
+@property (nonatomic,strong) NSString *img;
+
+@property (nonatomic,strong) NSString *fodderType;
+
+@property (nonatomic,strong) NSString *owner;
+
+@property (nonatomic,assign) NSInteger modelType;
+
+@property (nonatomic,assign) NSInteger flag;
+
+@property (nonatomic,assign) NSInteger fodderId;
+
+@property (nonatomic,strong) NSString *money;
+
+@property (nonatomic,strong) NSString *fodderName;
 
 @end

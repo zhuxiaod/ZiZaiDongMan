@@ -9,6 +9,7 @@
 #import "ZZTAuthorAttestationView.h"
 #import "ZZTLittleBoxView.h"
 #import "ZZTWorkInstructionsViewController.h"
+#import "ZZTUserAgreementViewController.h"
 
 @interface ZZTAuthorAttestationView ()<TTTAttributedLabelDelegate,ZZTLittleBoxViewDelegate>
 
@@ -179,9 +180,10 @@
         [self.boxTwo btnTarget];
     }else{
         NSLog(@"《自在动漫作者协议》");
-        ZZTWorkInstructionsViewController *workVC = [[ZZTWorkInstructionsViewController alloc] init];
-        
-        [[self myViewController].navigationController pushViewController:workVC animated:YES];
+        //用户协议
+        ZZTUserAgreementViewController *userAgreementVC = [[ZZTUserAgreementViewController alloc] init];
+        userAgreementVC.hidesBottomBarWhenPushed = YES;
+        [[self myViewController].navigationController pushViewController:userAgreementVC animated:YES];
     }
 }
 

@@ -54,9 +54,7 @@
     _releaseBtn = releaseBtn;
     releaseBtn.layer.cornerRadius = 10;
     [self addSubview:releaseBtn];
-    
-  
-    
+ 
 }
 
 -(void)layoutSubviews{

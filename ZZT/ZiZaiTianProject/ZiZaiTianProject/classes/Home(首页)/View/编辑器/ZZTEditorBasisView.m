@@ -95,6 +95,7 @@
     [self setupSelfForCurrentView];
     
     CGFloat width = self.bounds.size.width * recognizer.scale;
+    
     CGFloat height = self.bounds.size.height * recognizer.scale;
     
     BOOL isPinch = NO;
@@ -176,7 +177,7 @@
 //禁止捏合
 -(void)Editor_BasisViewClosePichGesture{
     
-    [self removeGestureRecognizer:self.pinchGestureRecognizer];
+    [self removeGestureRecognizer:_pinchGestureRecognizer];
     
 }
 //禁止拖动

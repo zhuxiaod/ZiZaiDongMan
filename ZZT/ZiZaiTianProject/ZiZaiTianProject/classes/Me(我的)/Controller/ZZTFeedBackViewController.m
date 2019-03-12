@@ -81,7 +81,7 @@
     if(textView == _problemStatementTextView){
         if (textView.text.length == 0 )
         {
-            _problemStatementLab.text = @"更详细的描述问题,能让我们更快的为您解决问题。";
+//            _problemStatementLab.text = @"更详细的描述问题,能让我们更快的为您解决问题。";
         }
         else
         {
@@ -90,7 +90,7 @@
     }else{
         if (textView.text.length == 0 )
         {
-            _contactLab.text = @"便于我们联系您(QQ/微信/邮箱)";
+//            _contactLab.text = @"便于我们联系您(QQ/微信/邮箱)";
         }
         else
         {
@@ -99,6 +99,27 @@
     }
 }
 
+-(void)textViewDidEndEditing:(UITextView *)textView{
+    if(textView == _problemStatementTextView){
+        if (textView.text.length == 0 )
+        {
+            _problemStatementLab.text = @"更详细的描述问题,能让我们更快的为您解决问题。";
+        }
+    }else{
+        if (textView.text.length == 0 )
+        {
+            _contactLab.text = @"便于我们联系您(QQ/微信/邮箱)";
+        }
+    }
+}
+
+-(void)textViewDidBeginEditing:(UITextView *)textView{
+    if(textView == _problemStatementTextView){
+        _problemStatementLab.text = @"";
+    }else{
+        _contactLab.text = @"";
+    }
+}
 
 
 @end

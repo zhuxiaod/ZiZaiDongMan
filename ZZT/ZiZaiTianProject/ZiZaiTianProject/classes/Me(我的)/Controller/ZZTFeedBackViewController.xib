@@ -195,25 +195,25 @@
                     </connections>
                 </button>
                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zim-U7-l2b">
-                    <rect key="frame" x="0.0" y="506" width="375" height="114.5"/>
+                    <rect key="frame" x="20" y="506" width="355" height="114.5"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <attributedString key="attributedText"/>
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                 </textView>
                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kby-qr-5wR">
-                    <rect key="frame" x="0.0" y="310.5" width="375" height="149"/>
+                    <rect key="frame" x="20" y="310.5" width="355" height="149"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <attributedString key="attributedText"/>
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                 </textView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="便于我们联系您(QQ/微信/邮箱)" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6A3-6t-I7m">
-                    <rect key="frame" x="2" y="510" width="373" height="20.5"/>
+                    <rect key="frame" x="20" y="510" width="355" height="20.5"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <color key="textColor" red="0.72941176470588232" green="0.72941176470588232" blue="0.72941176470588232" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="更详细的描述问题,能让我们更快的为您解决问题。" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6HE-Xo-etx">
-                    <rect key="frame" x="2" y="314.5" width="373" height="41"/>
+                    <rect key="frame" x="20" y="314.5" width="355" height="41"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <color key="textColor" red="0.83137254901960789" green="0.83137254901960789" blue="0.83137254901960789" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
@@ -238,13 +238,13 @@
                 <constraint firstItem="o7a-gO-OFk" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="MzG-j9-Z5Z"/>
                 <constraint firstItem="1yd-Q4-gu6" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="QBe-Dn-sU9"/>
                 <constraint firstItem="6A3-6t-I7m" firstAttribute="top" secondItem="o7a-gO-OFk" secondAttribute="bottom" constant="4" id="S9O-vA-ke3"/>
-                <constraint firstItem="kby-qr-5wR" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="UGP-aZ-ZhF"/>
+                <constraint firstItem="kby-qr-5wR" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="20" id="UGP-aZ-ZhF"/>
                 <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="M82-wv-9OF" secondAttribute="trailing" id="UYL-k4-hSn"/>
                 <constraint firstItem="o7a-gO-OFk" firstAttribute="top" secondItem="kby-qr-5wR" secondAttribute="bottom" id="W7F-79-4js"/>
-                <constraint firstItem="Zim-U7-l2b" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="YCb-I7-qb4"/>
+                <constraint firstItem="Zim-U7-l2b" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="20" id="YCb-I7-qb4"/>
                 <constraint firstItem="G35-Xc-754" firstAttribute="top" secondItem="1yd-Q4-gu6" secondAttribute="bottom" id="YZj-ci-pqT"/>
                 <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="6A3-6t-I7m" secondAttribute="trailing" id="ZFW-E5-mnH"/>
-                <constraint firstItem="6HE-Xo-etx" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="2" id="ZMa-Iy-QTV"/>
+                <constraint firstItem="6HE-Xo-etx" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="20" id="ZMa-Iy-QTV"/>
                 <constraint firstItem="kby-qr-5wR" firstAttribute="top" secondItem="G35-Xc-754" secondAttribute="bottom" id="arn-y5-53f"/>
                 <constraint firstItem="1yd-Q4-gu6" firstAttribute="top" secondItem="ald-Q9-jzj" secondAttribute="bottom" id="gax-Qo-1Fo"/>
                 <constraint firstItem="o7a-gO-OFk" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="gik-8F-a7o"/>
@@ -256,7 +256,7 @@
                 <constraint firstItem="M82-wv-9OF" firstAttribute="top" secondItem="Zim-U7-l2b" secondAttribute="bottom" id="tga-8O-HF3"/>
                 <constraint firstItem="o7a-gO-OFk" firstAttribute="height" secondItem="G35-Xc-754" secondAttribute="height" id="wVy-Ib-XV6"/>
                 <constraint firstItem="M82-wv-9OF" firstAttribute="bottom" secondItem="Q5M-cg-NOt" secondAttribute="bottom" id="yn8-Uj-iB6"/>
-                <constraint firstItem="6A3-6t-I7m" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="2" id="zj7-CC-O9A"/>
+                <constraint firstItem="6A3-6t-I7m" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="20" id="zj7-CC-O9A"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
             <point key="canvasLocation" x="-313.5" y="35.5"/>

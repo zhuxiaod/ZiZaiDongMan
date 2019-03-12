@@ -100,16 +100,32 @@
 
 -(void)setModel:(ZZTDetailModel *)model{
     _model = model;
-    [self.imageView sd_setImageWithURL:[NSURL URLWithString:model.img] placeholderImage:[UIImage imageNamed:@"bannerPlaceV"] options:0];
     
+    if([model.img isEqualToString:@"editorUpload"]){
+        [self.imageView setImage:[UIImage imageNamed:model.img]];
+    }else{
+          [self.imageView sd_setImageWithURL:[NSURL URLWithString:model.img] placeholderImage:[UIImage imageNamed:@"bannerPlaceV"] options:SDWebImageProgressiveDownload | SDWebImageCacheMemoryOnly];
+    }
+
     _folderImg.hidden = YES;
     _collectImg.hidden = YES;
-    
+
     if(model.flag == 1){
         _folderImg.hidden = NO;
     }
     if(model.ifCollect == 1){
         _collectImg.hidden = NO;
     }
+    //通过判断显示不同的mode
+    
+}
+
+-(void)setImageStr:(NSString *)imageStr{
+    _imageStr = imageStr;
+    [self.imageView setImage:[UIImage imageNamed:imageStr]];
+//    [self.imageView setContentMode:UIViewContentModeScaleAspectFill];
+//    [self.imageView setContentMode:UIViewContentModeScaleAspectFit];
+
+
 }
 @end

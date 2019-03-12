@@ -174,10 +174,11 @@
 }
 
 -(NSDictionary *)decry:(NSString *)getData{
+    
     NSString *decryptStr = [NEUSecurityUtil neu_decryptAESData:getData];
     NSData *jsonData = [decryptStr mj_JSONData];
     NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:nil];
-
+    
 //    //解密
 //    NSString *data = [getData aci_decryptWithAES];
 //    NSData *jsonData = [data dataUsingEncoding:NSUTF8StringEncoding];

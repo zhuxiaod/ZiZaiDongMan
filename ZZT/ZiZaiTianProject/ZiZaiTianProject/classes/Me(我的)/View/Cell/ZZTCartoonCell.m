@@ -7,6 +7,8 @@
 //
 
 #import "ZZTCartoonCell.h"
+#import "ZZTDetailModel.h"
+
 @interface ZZTCartoonCell()
 
 @property (strong, nonatomic) UIImageView *image;
@@ -26,10 +28,10 @@
     return self;
 }
 
-
 -(void)setupUI{
     UIImageView *imageView = [[UIImageView alloc] init];
     _image = imageView;
+
     [self.contentView addSubview:imageView];
     
     UILabel *cartoonName = [[UILabel alloc] init];
@@ -37,10 +39,9 @@
     [self.contentView addSubview:cartoonName];
 }
 
-
 -(void)layoutSubviews{
     [super layoutSubviews];
-    CGFloat imageH = self.height * 0.8;
+    
     CGFloat nameH = 20;
     
     [_cartoonName mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -55,30 +56,65 @@
         make.right.left.equalTo(self.contentView).offset(0);
         make.bottom.equalTo(self.cartoonName.mas_top).offset(-4);
     }];
-    
-    self.image.layer.cornerRadius = 12;
-    self.image.layer.masksToBounds = YES;
 //    self.image.backgroundColor = [UIColor orangeColor];
 }
 
 -(void)setCartoon:(ZZTCarttonDetailModel *)cartoon{
     _cartoon = cartoon;
     
+    [self.image setContentMode:UIViewContentModeScaleAspectFill];
+
     [self.image sd_setImageWithURL:[NSURL URLWithString:cartoon.cover] placeholderImage:[UIImage imageNamed:@"chapterPlaceV"] options:0];
     
     self.cartoonName.text = cartoon.bookName;
     
+    [self setupImgStyle];
+
+    
 //    NSLog(@"self.cartoonName.text:%@",self.cartoonName.text);
     
-    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:self.cartoonName.text attributes:@{NSKernAttributeName : @(1.5f)}];
+//    [self addLineSpacing:self.cartoonName];
+}
 
+-(void)setMaterialModel:(ZZTDetailModel *)materialModel{
+    _materialModel = materialModel;
+    
+    [self.image sd_setImageWithURL:[NSURL URLWithString:materialModel.img] placeholderImage:nil options:SDWebImageProgressiveDownload completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+
+    }];
+    
+    //判断是什么类型 选择不同的显示方式
+    [self.image setContentMode:UIViewContentModeScaleAspectFill];
+
+
+
+    
+    self.cartoonName.text = materialModel.fodderName;
+    
+    [self setupImgStyle];
+    
+}
+
+-(void)setupImgStyle{
+    self.image.layer.cornerRadius = 12;
+    
+    self.image.layer.masksToBounds = YES;
+    
+    self.image.layer.borderColor = [UIColor blackColor].CGColor;
+    self.image.layer.borderWidth = 1.0f;
+}
+
+-(void)addLineSpacing:(UILabel *)label
+{
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:label.text attributes:@{NSKernAttributeName : @(1.5f)}];
+    
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     
-    [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, self.cartoonName.text.length)];
+    [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, label.text.length)];
     
-    [self.cartoonName setAttributedText:attributedString];
+    [label setAttributedText:attributedString];
     
-    self.cartoonName.lineBreakMode = NSLineBreakByTruncatingTail;
+    label.lineBreakMode = NSLineBreakByTruncatingTail;
 }
 
 @end

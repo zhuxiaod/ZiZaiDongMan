@@ -9,11 +9,19 @@
 #import <UIKit/UIKit.h>
 
 @class ZZTCarttonDetailModel;
+@class ZZTDetailModel;
 
 @interface ZZTSearchCartoonCell : UITableViewCell
 
 @property (nonatomic,strong) ZZTCarttonDetailModel *model;
 
-+ (instancetype)cellWithTableView:(UITableView *)tableView;
+@property (nonatomic,strong) ZZTDetailModel *materialModel;
+
+@property (nonatomic,strong) id mModel;
+
+
++ (instancetype)cellWithTableView:(UITableView *)tableView identify:(NSString *)identify;
+
++ (instancetype)materialCellWithTableView:(UITableView *)tableView identify:(NSString *)identify;
 
 @end

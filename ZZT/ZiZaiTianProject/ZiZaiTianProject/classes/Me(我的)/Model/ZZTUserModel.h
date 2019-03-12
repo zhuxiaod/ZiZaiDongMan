@@ -50,6 +50,9 @@
 @property (nonatomic,strong)NSString *cover;
 //今天是否签到   0表示没签到，1表示签到+
 @property (nonatomic,assign)NSInteger ifsign;
+
+@property (nonatomic,assign)NSInteger ifConcern;
+
 //连续签到数+
 @property (nonatomic,assign)NSInteger signCount;
 

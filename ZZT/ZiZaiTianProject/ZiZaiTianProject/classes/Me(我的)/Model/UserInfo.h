@@ -21,6 +21,10 @@
     NSString *nickName;//昵称
     NSString *phone;//手机号
     NSString *vipEndtime;// Vip结束时间
+    NSString *attentionNum;// 关注数量
+    NSString *fansNum;//粉丝数量
+    NSString *userVip;
+    
 }
 
 @property (nonatomic,assign)BOOL isLogin;
@@ -74,6 +78,12 @@
 @property (nonatomic,assign) NSInteger signCount;
 
 @property (nonatomic,strong) NSString *vipEndtime;
+
+@property (nonatomic,strong) NSString *attentionNum;
+
+@property (nonatomic,strong) NSString *fansNum;
+//是不是vip
+@property (nonatomic,strong) NSString *userVip;
 
 
 +(instancetype)initAuthorWithUserId:(NSString *)userId headImg:(NSString *)headImg nikeName:(NSString *)nikeName;

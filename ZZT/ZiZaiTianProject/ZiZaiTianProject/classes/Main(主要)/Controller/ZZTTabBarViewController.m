@@ -15,38 +15,27 @@
 //#import "BaseModel.h"
 #import "MainTabbar.h"
 #import "ZZTMeHomeViewController.h"
+#import "MCTabBar.h"
 
-@interface ZZTTabBarViewController ()
+@interface ZZTTabBarViewController ()<UITabBarControllerDelegate>
 
 @property (nonatomic,weak) MainTabbar *mainTabbar;
+
+@property (nonatomic, strong) MCTabBar *mcTabbar;
+//判断是不是第二模块
+@property (nonatomic, assign) BOOL isSelectFind;
+
 
 @end
 
 @implementation ZZTTabBarViewController
-//
-//+(void)load
-//{
-//    //获取那个类中的UITabBarItem
-//    UITabBarItem *item = [UITabBarItem appearanceWhenContainedInInstancesOfClasses:@[[UIView class]]];
-//    //设置按钮选中标题的颜色
-//    //创建一个描述文字属性的字典
-//    NSMutableDictionary *attrs = [NSMutableDictionary dictionary];
-//    attrs[NSForegroundColorAttributeName] = [UIColor whiteColor];
-//    [item setTitleTextAttributes:attrs forState:UIControlStateSelected];
-//    
-//    //字体只能在正常状态下设置
-//    NSMutableDictionary *attrsNor = [NSMutableDictionary dictionary];
-//    attrsNor[NSFontAttributeName] = [UIFont systemFontOfSize:20];
-//    
-//    [item setTitleTextAttributes:attrsNor forState:UIControlStateNormal];
-//    [item setTitlePositionAdjustment:UIOffsetMake(0, -10)];
-//   
-//}
 
 #pragma mark - 生命周期方法
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    //中间的按钮
+    [self seatupCenterBar];
+    //样式
     [self setupItem];
     
     [self setupAllChildViewController];
@@ -54,6 +43,56 @@
     [self setupAllTittleButton];
     
     [[UITabBar appearance] setBarTintColor:[UIColor whiteColor]];
+    
+    self.delegate = self;
+    
+    self.isSelectFind = NO;
+}
+
+#pragma mark - 设置中间的tabBar
+-(void)seatupCenterBar{
+    _mcTabbar = [[MCTabBar alloc] init];
+    [_mcTabbar.centerBtn addTarget:self action:@selector(buttonAction:) forControlEvents:UIControlEventTouchUpInside];
+    //利用KVC 将自己的tabbar赋给系统tabBar
+    [self setValue:_mcTabbar forKeyPath:@"tabBar"];
+    self.delegate = self;
+    
+    //选中时的颜色
+    self.mcTabbar.tintColor = [UIColor colorWithRed:251.0/255.0 green:199.0/255.0 blue:115/255.0 alpha:1];
+    //透明设置为NO，显示白色，view的高度到tabbar顶部截止，YES的话到底部
+    self.mcTabbar.translucent = YES;
+    
+    self.mcTabbar.position = MCTabBarCenterButtonPositionBulge;
+    self.mcTabbar.centerImage = [UIImage imageNamed:@"editorTabbar"];
+}
+
+//发现 按钮点击事件
+- (void)buttonAction:(UIButton *)button{
+    NSInteger count = self.viewControllers.count;
+    self.selectedIndex = count/2;//关联中间按钮
+    [self tabBarController:self didSelectViewController:self.viewControllers[self.selectedIndex]];
+}
+
+// 重写选中事件， 处理中间按钮选中问题
+- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController{
+    
+    //进来就是
+    _mcTabbar.centerBtn.selected = (tabBarController.selectedIndex == self.viewControllers.count/2);
+    
+    if(self.isSelectFind){
+        //弹出编辑
+        NSLog(@"打开编辑器");
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"addMomentTaget" object:nil];
+
+    }else{
+        self.isSelectFind = YES;
+
+    }
+}
+
+-(void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item{
+    self.isSelectFind = NO;
+
 }
 
 #pragma mark - 添加所有子控制器
@@ -86,21 +125,24 @@
     //2.2设置tabBar上按钮内容 ->由对应的子控制器
     //0:nav
     UINavigationController *nav = self.childViewControllers[0];
+    nav.tabBarItem.tag = 0;
+
 //    nav.tabBarItem.title = @"作品";
     nav.tabBarItem.image = [UIImage imageOriginalWithName:@"tabBar_reader"];
     UIImage *image = [UIImage imageOriginalWithName:@"tabBar_reader_select"];
     nav.tabBarItem.selectedImage = image;
     nav.tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
     
-    //1:nav1
-    UINavigationController *nav1 = self.childViewControllers[1];
-//    nav1.tabBarItem.title = @"发现";
-    nav1.tabBarItem.image = [UIImage imageOriginalWithName:@"tabbar_find"];
-    nav1.tabBarItem.selectedImage = [UIImage imageOriginalWithName:@"tabbar_find_select"];
-    nav1.tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
+    //发现 凸起
+//    UINavigationController *nav1 = self.childViewControllers[1];
+////    nav1.tabBarItem.title = @"发现";
+//    nav1.tabBarItem.image = [UIImage imageOriginalWithName:@"tabbar_find"];
+//    nav1.tabBarItem.selectedImage = [UIImage imageOriginalWithName:@"tabbar_find_select"];
+//    nav1.tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
 
     //2:nav2
     UINavigationController *nav2 = self.childViewControllers[2];
+    nav2.tabBarItem.tag = 2;
 //    nav2.tabBarItem.title = @"我的";
     nav2.tabBarItem.image = [UIImage imageOriginalWithName:@"me_me"];
     nav2.tabBarItem.selectedImage = [UIImage imageOriginalWithName:@"me_me_select"];

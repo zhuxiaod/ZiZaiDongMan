@@ -52,7 +52,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DV2-bE-JJw">
-                        <rect key="frame" x="215" y="93.5" width="97" height="97"/>
+                        <rect key="frame" x="215" y="51.5" width="97" height="97"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="排行榜图标-第1名" translatesAutoresizingMaskIntoConstraints="NO" id="8qy-Vy-hzN">
                                 <rect key="frame" x="0.0" y="0.0" width="97" height="97"/>
@@ -87,6 +87,7 @@
                     <constraint firstAttribute="trailing" secondItem="Xmq-tj-uTU" secondAttribute="trailing" constant="8" id="P9d-u3-je9"/>
                     <constraint firstAttribute="bottom" secondItem="FhO-wL-OX3" secondAttribute="bottom" id="SwE-l3-JFK"/>
                     <constraint firstItem="XjM-xy-uSC" firstAttribute="leading" secondItem="oVO-Ht-r6l" secondAttribute="trailing" constant="8" id="TYs-Z4-pWU"/>
+                    <constraint firstItem="DV2-bE-JJw" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="WIq-MN-RSP"/>
                     <constraint firstItem="Xmq-tj-uTU" firstAttribute="leading" secondItem="XjM-xy-uSC" secondAttribute="leading" id="YCJ-Ld-Mzq"/>
                     <constraint firstAttribute="trailing" secondItem="FhO-wL-OX3" secondAttribute="trailing" id="fx3-nw-B5S"/>
                     <constraint firstItem="oVO-Ht-r6l" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="gRJ-qA-f3m"/>
@@ -95,7 +96,6 @@
                     <constraint firstItem="oVO-Ht-r6l" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="qrM-V1-1rb"/>
                     <constraint firstItem="Xmq-tj-uTU" firstAttribute="top" secondItem="XjM-xy-uSC" secondAttribute="bottom" constant="4" id="sdE-2u-VbK"/>
                     <constraint firstItem="Xmq-tj-uTU" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="32" id="tLo-z7-zfp"/>
-                    <constraint firstItem="FhO-wL-OX3" firstAttribute="top" secondItem="DV2-bE-JJw" secondAttribute="bottom" constant="8" id="wtI-iO-KgS"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="aW0-zy-SZf"/>

@@ -55,6 +55,9 @@
 @synthesize nickName;
 @synthesize phone;
 @synthesize vipEndtime;
+@synthesize attentionNum;
+@synthesize fansNum;
+@synthesize userVip;
 
 // 归档属性
 - (void)encodeWithCoder:(nonnull NSCoder *)aCoder {

@@ -26,4 +26,11 @@
 
 @property (nonatomic,assign) NSInteger fodderId;
 
+@property (nonatomic,strong) NSString *money;
+
+@property (nonatomic,strong) NSString *fodderName;
+
+@property (nonatomic,strong) NSString *ifauthor;
+
++(instancetype)initDetailModelWith:(NSString *)img flag:(NSInteger)flag ifCollect:(NSInteger)ifCollect;
 @end

@@ -16,7 +16,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AAM-QM-zLS">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="190"/>
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="180"/>
                     <state key="normal" backgroundImage="Me_homeBackground"/>
                 </button>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jNy-lM-KLJ" customClass="ZZTUserHeadView">
@@ -37,21 +37,41 @@
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <state key="normal" title="我要登录"/>
                 </button>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="关注：" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AnG-u3-snc">
+                    <rect key="frame" x="240" y="184" width="37" height="12"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                    <color key="textColor" red="0.5450980392" green="0.54901960780000003" blue="0.87843137250000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="粉丝：" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oac-lu-lGC">
+                    <rect key="frame" x="193" y="184" width="37" height="12"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                    <color key="textColor" red="0.5450980392" green="0.54901960780000003" blue="0.87843137250000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
-                <constraint firstAttribute="bottom" secondItem="AAM-QM-zLS" secondAttribute="bottom" constant="10" id="92P-8f-yXf"/>
+                <constraint firstItem="AnG-u3-snc" firstAttribute="leading" secondItem="oac-lu-lGC" secondAttribute="trailing" constant="10" id="2La-4u-EYW"/>
+                <constraint firstAttribute="bottom" secondItem="AAM-QM-zLS" secondAttribute="bottom" constant="20" id="92P-8f-yXf"/>
+                <constraint firstItem="jNy-lM-KLJ" firstAttribute="leading" secondItem="AnG-u3-snc" secondAttribute="trailing" constant="10" id="B9F-ai-Pln"/>
                 <constraint firstItem="AAM-QM-zLS" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="BpW-59-tYM"/>
                 <constraint firstAttribute="bottom" secondItem="jNy-lM-KLJ" secondAttribute="bottom" constant="2" id="CIG-BF-i5Z"/>
+                <constraint firstItem="oac-lu-lGC" firstAttribute="top" secondItem="AAM-QM-zLS" secondAttribute="bottom" constant="4" id="TCy-xl-Rmv"/>
                 <constraint firstAttribute="trailing" secondItem="jNy-lM-KLJ" secondAttribute="trailing" constant="22" id="XYs-on-IEg"/>
+                <constraint firstAttribute="bottom" secondItem="oac-lu-lGC" secondAttribute="bottom" constant="4" id="aXj-a0-lEf"/>
                 <constraint firstItem="jNy-lM-KLJ" firstAttribute="centerY" secondItem="lBR-jf-2No" secondAttribute="centerY" id="fYS-fU-CD6"/>
                 <constraint firstItem="AAM-QM-zLS" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="qEa-NJ-BfT"/>
                 <constraint firstItem="jNy-lM-KLJ" firstAttribute="leading" secondItem="lBR-jf-2No" secondAttribute="trailing" constant="4" id="qxI-jd-0vP"/>
                 <constraint firstAttribute="trailing" secondItem="AAM-QM-zLS" secondAttribute="trailing" id="rtZ-ya-sd5"/>
+                <constraint firstAttribute="bottom" secondItem="AnG-u3-snc" secondAttribute="bottom" constant="4" id="wxu-Lf-wWo"/>
+                <constraint firstItem="AnG-u3-snc" firstAttribute="top" secondItem="AAM-QM-zLS" secondAttribute="bottom" constant="4" id="x6I-Ks-caK"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
+                <outlet property="attentionNum" destination="AnG-u3-snc" id="q7b-SC-HJh"/>
                 <outlet property="backgroundBtn" destination="AAM-QM-zLS" id="3fy-P7-uLh"/>
+                <outlet property="likeNum" destination="oac-lu-lGC" id="FWO-dq-xel"/>
                 <outlet property="userHead" destination="jNy-lM-KLJ" id="jBy-Ar-iSd"/>
                 <outlet property="userName" destination="lBR-jf-2No" id="79O-hD-tHI"/>
                 <outlet property="userNameW" destination="nR6-hn-beN" id="LhF-Ez-fZu"/>

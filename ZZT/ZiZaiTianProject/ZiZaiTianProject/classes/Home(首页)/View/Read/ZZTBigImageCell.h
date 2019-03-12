@@ -7,11 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ZZTDetailModel.h"
 
 @class ZZTCarttonDetailModel;
 
 @interface ZZTBigImageCell : UICollectionViewCell
 
 @property (nonatomic,strong) ZZTCarttonDetailModel *model;
+
+
+//@property (nonatomic,strong) ZZTMallListModel *ListModel;
 
 @end

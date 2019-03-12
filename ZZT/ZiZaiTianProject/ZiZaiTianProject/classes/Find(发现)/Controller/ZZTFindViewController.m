@@ -17,18 +17,13 @@
 #import "TZAssetModel.h"
 #import "ZZTZoneUpLoadViewController.h"
 
-@interface ZZTFindViewController ()<PYSearchViewControllerDelegate,PYSearchViewControllerDataSource,UINavigationControllerDelegate,UIImagePickerControllerDelegate,TZImagePickerControllerDelegate>{
-    NSMutableArray *_selectedPhotos;
-    NSMutableArray *_selectedAssets;
-}
+@interface ZZTFindViewController ()<PYSearchViewControllerDelegate,PYSearchViewControllerDataSource,UINavigationControllerDelegate>
 
 @property (nonatomic, weak) UIViewController *currentVC;
 @property (nonatomic,strong) UIButton *leftBtn;
 @property (nonatomic,strong) UIButton *rightBtn;
 @property (nonatomic,weak) PYSearchViewController *searchVC;
 @property (nonatomic,strong) NSMutableArray *searchSuggestionArray;
-@property (strong, nonatomic) CLLocation *location;
-@property (nonatomic, strong) UIImagePickerController *imagePickerVc;
 @property (nonatomic,strong) ZXDNavBar *navBar;
 
 @property (nonatomic,strong) UIScrollView *mainView;
@@ -38,6 +33,15 @@
 @property (nonatomic,strong) ZZTFindAttentionViewController *findVC;
 
 @property (nonatomic,strong) ZZTNavBarTitleView *titleView;
+//世界和关注的偏移量
+@property (nonatomic,assign) CGFloat worldOffset;
+
+@property (nonatomic,assign) CGFloat attentionOffset;
+//是否在世界VC
+@property (nonatomic,assign) BOOL isWorldVc;
+//观察者
+@property (nonatomic,weak) id observer;
+
 
 @end
 
@@ -60,13 +64,17 @@ NSString *SuggestionView3 = @"SuggestionView";
     //设置子页
     [self setupChildView];
     
-    _selectedPhotos = [NSMutableArray array];
-    _selectedAssets = [NSMutableArray array];
-    
     //设置nav
     [self setupNavbar];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNotification:) name:@"infoNotification" object:nil];
+    
+    _isWorldVc = YES;
+    
+    //跳转编辑器通知
+    _observer = [[NSNotificationCenter defaultCenter] addObserverForName:@"addMomentTaget" object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        [self addMomentTaget];
+    }];
 }
 
 #pragma mark - 设置主视图
@@ -133,6 +141,20 @@ NSString *SuggestionView3 = @"SuggestionView";
     NSDictionary *dic = [infoNotification userInfo];
     NSString *str = [dic objectForKey:@"navHidden"];
     CGFloat offsetY = [str floatValue];
+    
+    //offsetY 就是偏移量
+    if(_isWorldVc == YES){
+        _worldOffset = offsetY;
+    }else{
+        _attentionOffset = offsetY;
+    }
+    
+    
+    [self changeNavBarColorWithOffsetY:offsetY];
+    
+}
+
+-(void)changeNavBarColorWithOffsetY:(CGFloat)offsetY{
     if (offsetY < 64) {
         offsetY = 64;
     }
@@ -146,14 +168,13 @@ NSString *SuggestionView3 = @"SuggestionView";
         
         self.navBar.backgroundImageView.image = [UIImage createImageWithColor:color];
         
-        
     }else{
+        
         UIColor *color = [UIColor colorWithWhite:1 alpha:alpha];
         
         self.navBar.backgroundImageView.image = [UIImage createImageWithColor:color];
         
     }
-    
 }
 
 -(void)setupNavbar{
@@ -191,7 +212,7 @@ NSString *SuggestionView3 = @"SuggestionView";
     //返回
     [navBar.leftButton setImage:[UIImage imageNamed:@"editCellImg"] forState:UIControlStateNormal];
 //    navBar.leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 17);
-    [navBar.leftButton addTarget:self action:@selector(addMoment) forControlEvents:UIControlEventTouchUpInside];
+    [navBar.leftButton addTarget:self action:@selector(addMomentTaget) forControlEvents:UIControlEventTouchUpInside];
     
     [navBar.rightButton setImage:[UIImage imageNamed:@"find_home_search"] forState:UIControlStateNormal];
 //    navBar.rightButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, -33);
@@ -212,49 +233,10 @@ NSString *SuggestionView3 = @"SuggestionView";
     navBar.showBottomLabel = NO;
 }
 
--(void)addMoment{
-    
-    if([[UserInfoManager share] hasLogin] == NO){
-        [UserInfoManager needLogin];
-        return;
-    }
-    
-    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-
-    UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"手机拍摄" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        //打开相机
-        [self takePhoto];
-    }];
-    
-    [action1 setValue:[UIColor blackColor] forKey:@"_titleTextColor"];
-   
-    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"从手机相册选择" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [self pushTZImagePickerController];
-    }];
-    [action2 setValue:[UIColor blackColor] forKey:@"_titleTextColor"];
-    
-    UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"进入编辑器" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        
-        ZZTEditorCartoonViewController *ecVC = [[ZZTEditorCartoonViewController alloc] init];
-        ecVC.hidesBottomBarWhenPushed = YES;
-        
-        [self.navigationController pushViewController:ecVC animated:YES];
-        
-    }];
-    [action3 setValue:[UIColor blackColor] forKey:@"_titleTextColor"];
-    
-    UIAlertAction *action4 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        NSLog(@"点击了取消");
-    }];
-    [action4 setValue:[UIColor blackColor] forKey:@"_titleTextColor"];
-    
-    [actionSheet addAction:action1];
-    [actionSheet addAction:action2];
-//    [actionSheet addAction:action3];
-    [actionSheet addAction:action4];
-    
-    [self presentViewController:actionSheet animated:YES completion:nil];
+-(void)addMomentTaget{
+    [_navBar addMoment];
 }
+
 - (void)search{
     ZXDSearchViewController *searchVC = [[ZXDSearchViewController alloc] init];
     [self.navigationController pushViewController:searchVC animated:NO];
@@ -275,153 +257,57 @@ NSString *SuggestionView3 = @"SuggestionView";
 //滑动展示清空按钮
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     if(CGPointEqualToPoint(scrollView.contentOffset, CGPointMake(ScreenW, 0))){
-        //书柜
+        //当滑动到关注的时候
+//        记录世界的偏移量
+        //当滑动到世界的时候 刷新
+        //关注
         [self.titleView selectBtn:self.titleView.rightBtn];
+        _isWorldVc = NO;
+        [self changeNavBarColorWithOffsetY:_attentionOffset];
 
     }else{
         //首页
         [self.titleView selectBtn:self.titleView.leftBtn];
+        _isWorldVc = YES;
+        [self changeNavBarColorWithOffsetY:_worldOffset];
+
     }
 }
 
-#pragma mark - UIImagePickerController
-- (void)takePhoto {
-    AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
-    if (authStatus == AVAuthorizationStatusRestricted || authStatus == AVAuthorizationStatusDenied) {
-        // 无相机权限 做一个友好的提示
-        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"无法使用相机" message:@"请在iPhone的""设置-隐私-相机""中允许访问相机" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"设置", nil];
-        [alert show];
-    } else if (authStatus == AVAuthorizationStatusNotDetermined) {
-        // fix issue 466, 防止用户首次拍照拒绝授权时相机页黑屏
-        [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
-            if (granted) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self takePhoto];
-                });
-            }
-        }];
-        // 拍照之前还需要检查相册权限
-    } else if ([PHPhotoLibrary authorizationStatus] == 2) { // 已被拒绝，没有相册权限，将无法保存拍的照片
-        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"无法访问相册" message:@"请在iPhone的""设置-隐私-相册""中允许访问相册" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"设置", nil];
-        [alert show];
-    } else if ([PHPhotoLibrary authorizationStatus] == 0) { // 未请求过相册权限
-        [[TZImageManager manager] requestAuthorizationWithCompletion:^{
-            [self takePhoto];
-        }];
-    } else {
-        [self pushImagePickerController];
-    }
-}
+//#pragma mark - UIImagePickerController
+//- (void)takePhoto {
+//    AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+//    if (authStatus == AVAuthorizationStatusRestricted || authStatus == AVAuthorizationStatusDenied) {
+//        // 无相机权限 做一个友好的提示
+//        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"无法使用相机" message:@"请在iPhone的""设置-隐私-相机""中允许访问相机" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"设置", nil];
+//        [alert show];
+//    } else if (authStatus == AVAuthorizationStatusNotDetermined) {
+//        // fix issue 466, 防止用户首次拍照拒绝授权时相机页黑屏
+//        [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+//            if (granted) {
+//                dispatch_async(dispatch_get_main_queue(), ^{
+//                    [self takePhoto];
+//                });
+//            }
+//        }];
+//        // 拍照之前还需要检查相册权限
+//    } else if ([PHPhotoLibrary authorizationStatus] == 2) { // 已被拒绝，没有相册权限，将无法保存拍的照片
+//        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"无法访问相册" message:@"请在iPhone的""设置-隐私-相册""中允许访问相册" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"设置", nil];
+//        [alert show];
+//    } else if ([PHPhotoLibrary authorizationStatus] == 0) { // 未请求过相册权限
+//        [[TZImageManager manager] requestAuthorizationWithCompletion:^{
+//            [self takePhoto];
+//        }];
+//    } else {
+//        [self pushImagePickerController];
+//    }
+//}
 
-// 调用相机
-- (void)pushImagePickerController {
-    // 提前定位
-    __weak typeof(self) weakSelf = self;
-    [[TZLocationManager manager] startLocationWithSuccessBlock:^(NSArray<CLLocation *> *locations) {
-        __strong typeof(weakSelf) strongSelf = weakSelf;
-        strongSelf.location = [locations firstObject];
-    } failureBlock:^(NSError *error) {
-        __strong typeof(weakSelf) strongSelf = weakSelf;
-        strongSelf.location = nil;
-    }];
-    
-    UIImagePickerControllerSourceType sourceType = UIImagePickerControllerSourceTypeCamera;
-    if ([UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera]) {
-        self.imagePickerVc.sourceType = sourceType;
-        NSMutableArray *mediaTypes = [NSMutableArray array];
-   
-        if (mediaTypes.count) {
-            _imagePickerVc.mediaTypes = mediaTypes;
-        }
-        [self presentViewController:_imagePickerVc animated:YES completion:nil];
-    } else {
-        NSLog(@"模拟器中无法打开照相机,请在真机中使用");
-    }
-}
 
-- (void)refreshCollectionViewWithAddedAsset:(PHAsset *)asset image:(UIImage *)image {
-    [_selectedAssets addObject:asset];
-    [_selectedPhotos addObject:image];
-    
-    if ([asset isKindOfClass:[PHAsset class]]) {
-        PHAsset *phAsset = asset;
-        NSLog(@"location:%@",phAsset.location);
-    }
-}
 
-//图片选择控制器
-#pragma mark - TZImagePickerController
-- (void)pushTZImagePickerController {
-    //最大选择数   最大显示照片
-    TZImagePickerController *imagePickerVc = [[TZImagePickerController alloc] initWithMaxImagesCount:9 columnNumber:4 delegate:self pushPhotoPickerVc:YES];
-    // imagePickerVc.navigationBar.translucent = NO;
-    
-    imagePickerVc.naviBgColor = [UIColor grayColor];
-    
-#pragma mark - 五类个性化设置，这些参数都可以不传，此时会走默认设置
-    imagePickerVc.isSelectOriginalPhoto = YES;
 
-    imagePickerVc.selectedAssets = _selectedAssets; // 目前已经选中的图片数组
 
-    imagePickerVc.allowTakePicture = YES; // 在内部显示拍照按钮
 
-    [imagePickerVc setUiImagePickerControllerSettingBlock:^(UIImagePickerController *imagePickerController) {
-        imagePickerController.videoQuality = UIImagePickerControllerQualityTypeHigh;
-    }];
-    
-    //主题颜色
-    imagePickerVc.iconThemeColor = [UIColor colorWithRed:31 / 255.0 green:185 / 255.0 blue:34 / 255.0 alpha:1.0];
-    //显示照片不能选择图层
-    imagePickerVc.showPhotoCannotSelectLayer = YES;
-    //    无法选择图层颜色
-    imagePickerVc.cannotSelectLayerColor = [[UIColor whiteColor] colorWithAlphaComponent:0.8];
-    
-    imagePickerVc.naviBgColor = [UIColor blackColor];
-    imagePickerVc.naviTitleColor = [UIColor blackColor];
-    imagePickerVc.barItemTextColor = [UIColor blackColor];
-    
-    //设置照片选择器页面UI配置块
-    [imagePickerVc setPhotoPickerPageUIConfigBlock:^(UICollectionView *collectionView, UIView *bottomToolBar, UIButton *previewButton, UIButton *originalPhotoButton, UILabel *originalPhotoLabel, UIButton *doneButton, UIImageView *numberImageView, UILabel *numberLabel, UIView *divideLine) {
-        [doneButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-    }];
-    
-    // 3. 设置是否可以选择视频/图片/原图
-    imagePickerVc.allowPickingVideo = NO;
-    imagePickerVc.allowPickingImage = YES;
-    imagePickerVc.allowPickingOriginalPhoto = YES;
-    imagePickerVc.allowPickingGif = NO;
-    imagePickerVc.allowPickingMultipleVideo = NO; // 是否可以多选视频
-    
-    // 4. 照片排列按修改时间升序
-    imagePickerVc.sortAscendingByModificationDate = YES;
-
-    imagePickerVc.statusBarStyle = UIStatusBarStyleDefault;
-    
-    // 设置是否显示图片序号
-    imagePickerVc.showSelectedIndex = YES;
-    
-#pragma mark - 到这里为止
-
-    // 你可以通过block或者代理，来得到用户选择的照片.
-    [imagePickerVc setDidFinishPickingPhotosHandle:^(NSArray<UIImage *> *photos, NSArray *assets, BOOL isSelectOriginalPhoto) {
-        
-        ZZTZoneUpLoadViewController *uploadVC = [[ZZTZoneUpLoadViewController alloc] init];
-        
-        TZImagePickerController *tzImagePickerVc = [[TZImagePickerController alloc] initWithMaxImagesCount:9 delegate:self];
-        
-        [tzImagePickerVc showProgressHUD];
-        
-        [tzImagePickerVc hideProgressHUD];
-        
-        uploadVC.addAssetsArray = assets;
-        
-        uploadVC.addPhotosArray = photos;
-        
-        [self presentViewController:uploadVC animated:YES completion:nil];
-    }];
-    
-    [self presentViewController:imagePickerVc animated:YES completion:nil];
-}
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
@@ -439,55 +325,9 @@ NSString *SuggestionView3 = @"SuggestionView";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-//创建一个图片选择控制器
-- (UIImagePickerController *)imagePickerVc {
-    if (_imagePickerVc == nil) {
-        _imagePickerVc = [[UIImagePickerController alloc] init];
-        _imagePickerVc.delegate = self;
-        // set appearance / 改变相册选择页的导航栏外观
-        _imagePickerVc.navigationBar.barTintColor = self.navigationController.navigationBar.barTintColor;
-        _imagePickerVc.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
-        UIBarButtonItem *tzBarItem, *BarItem;
-        if (@available(iOS 9, *)) {
-            tzBarItem = [UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[TZImagePickerController class]]];
-            BarItem = [UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[UIImagePickerController class]]];
-        } else {
-            tzBarItem = [UIBarButtonItem appearanceWhenContainedIn:[TZImagePickerController class], nil];
-            BarItem = [UIBarButtonItem appearanceWhenContainedIn:[UIImagePickerController class], nil];
-        }
-        NSDictionary *titleTextAttributes = [tzBarItem titleTextAttributesForState:UIControlStateNormal];
-        [BarItem setTitleTextAttributes:titleTextAttributes forState:UIControlStateNormal];
-    }
-    return _imagePickerVc;
-}
-
-//相机返回代理
-- (void)imagePickerController:(UIImagePickerController*)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    [picker dismissViewControllerAnimated:YES completion:^{
-        ZZTZoneUpLoadViewController *uploadVC = [[ZZTZoneUpLoadViewController alloc] init];
-        NSString *type = [info objectForKey:UIImagePickerControllerMediaType];
-        
-        TZImagePickerController *tzImagePickerVc = [[TZImagePickerController alloc] initWithMaxImagesCount:1 delegate:self];
-        [tzImagePickerVc showProgressHUD];
-        if ([type isEqualToString:@"public.image"]) {
-            UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
-            // save photo and get asset / 保存图片，获取到asset
-            [[TZImageManager manager] savePhotoWithImage:image location:self.location completion:^(PHAsset *asset, NSError *error){
-                [tzImagePickerVc hideProgressHUD];
-                if (error) {
-                    NSLog(@"图片保存失败 %@",error);
-                } else {
-                    TZAssetModel *assetModel = [[TZImageManager manager] createModelWithAsset:asset];
-                    
-                    //                    [self refreshCollectionViewWithAddedAsset:assetModel.asset image:image];
-                    uploadVC.addAssets = assetModel.asset;
-                    uploadVC.addPhotos = image;
-                }
-            }];
-        }
-        
-        [self presentViewController:uploadVC animated:YES completion:nil];
-    }];
-
+-(void)dealloc{
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:_observer];
+    
 }
 @end

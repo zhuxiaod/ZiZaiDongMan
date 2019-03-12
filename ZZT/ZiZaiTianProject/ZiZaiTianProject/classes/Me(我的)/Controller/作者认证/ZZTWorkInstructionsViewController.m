@@ -20,7 +20,7 @@
     [self.viewNavBar.centerButton setTitle:@"投稿须知" forState:UIControlStateNormal];
     
     UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"SubmitContentImg"]];
-    imageView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    imageView.frame = CGRectMake(0, 20, SCREEN_WIDTH, SCREEN_HEIGHT);
     [self.view addSubview:imageView];
     
     [self setMeNavBarStyle];

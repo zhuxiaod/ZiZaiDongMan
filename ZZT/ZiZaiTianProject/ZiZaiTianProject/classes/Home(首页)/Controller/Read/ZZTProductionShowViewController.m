@@ -156,7 +156,7 @@ NSString *SuggestionView1 = @"SuggestionView1";
 #pragma mark - 创建CollectionView
 -(void)setupCollectionView:(UICollectionViewFlowLayout *)layout
 {
-    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, Height_NavBar, Screen_Width, Screen_Height) collectionViewLayout:layout];
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, Height_NavBar, Screen_Width, Screen_Height - navHeight) collectionViewLayout:layout];
     collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView = collectionView;
     collectionView.dataSource = self;
@@ -167,7 +167,7 @@ NSString *SuggestionView1 = @"SuggestionView1";
 
 //边距设置:整体边距的优先级，始终高于内部边距的优先级
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    return UIEdgeInsetsMake(0, 8, 8, 8);//分别为上、左、下、右
+    return UIEdgeInsetsMake(8, 8, 8, 8);//分别为上、左、下、右
 }
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
@@ -198,80 +198,5 @@ NSString *SuggestionView1 = @"SuggestionView1";
         detailVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:detailVC animated:YES];
     }
-}
-
-#pragma mark - 设置导航条
--(void)setupNavBar
-{
-    //右边导航条
-    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithImage:[UIImage imageNamed:@"read_search"] highImage:[UIImage imageNamed:@"read_search"] target:self action:@selector(search)];
-}
-
--(void)search{
-
-    //设置热词
-    NSArray *hotSeaches = @[@"妖神记", @"大霹雳", @"镖人", @"偷星九月天"];
-
-    PYSearchViewController *searchVC = [PYSearchViewController searchViewControllerWithHotSearches:hotSeaches searchBarPlaceholder:@"搜索作品名、作者名、社区内容" didSearchBlock:^(PYSearchViewController *searchViewController, UISearchBar *searchBar, NSString *searchText) {
-
-    }];
-    searchVC.hotSearchTitle = @"热门搜索";
-    searchVC.delegate = self;
-    searchVC.dataSource = self;
-
-    //set cancelButton
-    [searchVC.cancelButton setTitle:@"取消" forState:UIControlStateNormal];
-    [searchVC.cancelButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-
-//    [self.navigationController pushViewController:searchVC animated:YES];
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:searchVC];
-    Utilities *tool = [[Utilities alloc] init];
-    [tool setupNavgationStyle:nav];
-    [self presentViewController:nav animated:YES completion:nil];
-    _searchVC = searchVC;
-}
-
-//搜索文字已经改变
-#pragma mark - PYSearchViewControllerDelegate
-- (void)searchViewController:(PYSearchViewController *)searchViewController searchTextDidChange:(UISearchBar *)seachBar searchText:(NSString *)searchText
-{
-    if (searchText.length) {
-        weakself(self);
-        NSDictionary *dic = @{
-                              @"fuzzy":searchText
-                              };
-        //添加数据
-//        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-        AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-        [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/queryFuzzy"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
-            NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
-            weakSelf.searchSuggestionArray = array;
-            [searchViewController.searchSuggestionView reloadData];
-        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            
-        }];
-    }
-}
--(NSInteger)numberOfSectionsInSearchSuggestionView:(UITableView *)searchSuggestionView{
-    return 1;
-}
--(NSInteger)searchSuggestionView:(UITableView *)searchSuggestionView numberOfRowsInSection:(NSInteger)section{
-    return self.searchSuggestionArray.count;
-}
--(UITableViewCell *)searchSuggestionView:(UITableView *)searchSuggestionView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [searchSuggestionView dequeueReusableCellWithIdentifier:SuggestionView1];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:SuggestionView1];
-    }
-    if(self.searchSuggestionArray.count > 0){
-        ZZTCarttonDetailModel *str = self.searchSuggestionArray[indexPath.row];
-        cell.textLabel.text = str.bookName;
-    }
-    return cell;
-}
-- (CGFloat)searchSuggestionView:(UITableView *)searchSuggestionView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return 40.f;
 }
 @end

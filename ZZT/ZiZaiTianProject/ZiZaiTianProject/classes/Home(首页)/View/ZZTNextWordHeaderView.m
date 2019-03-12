@@ -37,7 +37,7 @@
     _leftBtn = [[UIButton alloc] init];
 //    _liftBtn.backgroundColor = [UIColor redColor];
     [_leftBtn setImage:[UIImage imageNamed:@"lastPage_black"] forState:UIControlStateNormal];
-    [_leftBtn setTitle:@"上一章" forState:UIControlStateNormal];
+    [_leftBtn setTitle:@"上一篇" forState:UIControlStateNormal];
     [_leftBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.contentView addSubview:_leftBtn];
     [_leftBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
@@ -47,7 +47,7 @@
     _rightBtn = [[UIButton alloc] init];
 //    _rightBtn.backgroundColor = [UIColor blueColor];
     [_rightBtn setImage:[UIImage imageNamed:@"nextPage_black"] forState:UIControlStateNormal];
-    [_rightBtn setTitle:@"下一章" forState:UIControlStateNormal];
+    [_rightBtn setTitle:@"下一篇" forState:UIControlStateNormal];
     [_rightBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.contentView addSubview:_rightBtn];
     [_rightBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 60)];

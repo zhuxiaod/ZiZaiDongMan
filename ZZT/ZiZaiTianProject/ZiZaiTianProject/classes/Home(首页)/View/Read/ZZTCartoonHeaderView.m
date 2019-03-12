@@ -9,7 +9,9 @@ static const CGFloat spaceing = 10.0f;
 static const CGFloat contentHeight = 22.0f;
 
 #import "ZZTCartoonHeaderView.h"
+
 @interface ZZTCartoonHeaderView ()
+
 @property (weak, nonatomic)  UILabel *titleView;
 
 @end
@@ -43,6 +45,7 @@ static const CGFloat contentHeight = 22.0f;
         make.right.equalTo(self).offset(-20);
         make.height.equalTo(@(30));
     }];
+    
 }
 //先走
 -(void)setTitle:(NSString *)title{

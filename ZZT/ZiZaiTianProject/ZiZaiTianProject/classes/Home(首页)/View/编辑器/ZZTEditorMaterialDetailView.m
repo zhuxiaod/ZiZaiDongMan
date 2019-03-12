@@ -12,7 +12,6 @@
 
 @interface ZZTEditorMaterialDetailView ()<UICollectionViewDataSource,UICollectionViewDelegate>
 
-
 @property (nonatomic,strong) UIView *yellowView;
 
 @property (nonatomic,strong) UICollectionView *collectionView;
@@ -129,6 +128,12 @@
     
     if(view == nil){
         [self removeFromSuperview];
+        //移除代理
+        if (self.delegate && [self.delegate respondsToSelector:@selector(materialDetailViewRemoveTarget)])
+        {
+            //模型 类型
+            [self.delegate materialDetailViewRemoveTarget];
+        }
     }
     return view;
 }

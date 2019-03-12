@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ZZTShoppingMallViewController : UIViewController
+@interface ZZTShoppingMallViewController : BaseViewController
 
 @property (nonatomic,assign)BOOL isShopping;
 

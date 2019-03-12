@@ -45,7 +45,7 @@
     for (int i = 0; i < images.count; i++) {
     
         UIImage *newImage = images[i];
-        NSData *data = [self resetSizeOfImageData:newImage maxSize:100];
+        NSData *data = [self resetSizeOfImageData:newImage maxSize:400];
         NSString *keyTime = [self currentTime];
         NSString *keyRandom = [self randomString];
         NSString *keyString = [NSString stringWithFormat:@"%@%@.jpg",keyTime,keyRandom];

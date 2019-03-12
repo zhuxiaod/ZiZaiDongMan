@@ -25,7 +25,6 @@
 
 - (void)editorBasisViewWithPich:(UIPinchGestureRecognizer *)gesture isPinch:(BOOL)isPicnch;
 
-
 @end
 
 @interface ZZTEditorBasisView : UIView

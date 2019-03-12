@@ -14,7 +14,6 @@
 #import "ZZTCell.h"
 #import "ZZTLoginRegisterViewController.h"
 #import "ZZTVIPViewController.h"
-#import "ZZTBrowViewController.h"
 #import "ZZTHistoryViewController.h"
 #import "ZZTSettingViewController.h"
 #import "ZZTMeEditViewController.h"
@@ -31,6 +30,9 @@
 #import "ZZTAuthorBookRoomViewController.h"
 #import "ZZTAuthorCreationController.h"
 #import "ZZTCartReleaseViewController.h"
+#import "ZZTMallDetailViewController.h"
+#import "ZZTMeTableModel.h"
+
 
 @interface ZZTMeViewController ()<UITableViewDataSource,UITableViewDelegate,ZZTSignInViewDelegate>
 
@@ -97,18 +99,72 @@ NSString *bannerID = @"MeCell";
     [self setupTab];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tongzhi)name:@"loadMeView" object:nil];
+    //创建模型
+    //第一节
+    ZZTMeTableModel *cell1 = [ZZTMeTableModel initModelWithTitle:@"自在VIP"];
+    cell1.block = ^{
+        [self gotoVipVC];
+    };
     
-    _sectionOne = [NSArray arrayWithObjects:@"自在VIP",@"作者认证",@"我的关注", nil];
+    ZZTMeTableModel *cell2 = [ZZTMeTableModel initModelWithTitle:@"作者认证"];
+    cell2.block = ^{
+        [self gotoAuthorCtionVC];
+    };
+    
+    ZZTMeTableModel *cell3 = [ZZTMeTableModel initModelWithTitle:@"自在商城"];
+    cell3.block = ^{
+        [self gotoShoppingMallVC];
+    };
+    
+    ZZTMeTableModel *cell4 = [ZZTMeTableModel initModelWithTitle:@"我的关注"];
+    cell4.block = ^{
+        [self gotoMeAttentionVC];
+    };
+    
+    ZZTMeTableModel *cell5 = [ZZTMeTableModel initModelWithTitle:@"我的书柜"];
+    cell5.block = ^{
+        [self gotoBookVC];
+    };
+    
+    ZZTMeTableModel *cell6 = [ZZTMeTableModel initModelWithTitle:@"浏览历史"];
+    cell6.block = ^{
+        [self gotoHistoryVC];
+    };
+    
+    //第二节
+    ZZTMeTableModel *cell7 = [ZZTMeTableModel initModelWithTitle:@"问题反馈"];
+    cell7.block = ^{
+        [self gotoFeedBackVC];
+    };
+    
+    ZZTMeTableModel *cell8 = [ZZTMeTableModel initModelWithTitle:@"关于我们"];
+    cell8.block = ^{
+        [self gotoAboutUsVC];
+    };
+    
+    //第三节
+    ZZTMeTableModel *cell9 = [ZZTMeTableModel initModelWithTitle:@"用户协议"];
+    cell9.block = ^{
+        [self gotoUserAgreementVC];
+    };
+    
+    ZZTMeTableModel *cell10 = [ZZTMeTableModel initModelWithTitle:@"设置"];
+    cell10.block = ^{
+        [self gotoSettingVC];
+    };
+    
+    _sectionOne = [NSArray arrayWithObjects:cell1,cell2,cell3,cell4,cell5,cell6, nil];
 //    _sectionOne = [NSArray arrayWithObjects:@"我的关注", nil];
-    _sectionTwo = [NSArray arrayWithObjects:@"问题反馈",@"关于我们", nil];
-    _sectionThree = [NSArray arrayWithObjects:@"用户协议",@"设置", nil];
+    _sectionTwo = [NSArray arrayWithObjects:cell7,cell8, nil];
+    _sectionThree = [NSArray arrayWithObjects:cell9,cell10, nil];
 
 }
 
 #pragma mark - 设置tableView
 -(void)setupTab
 {
-    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0 , self.view.bounds.size.width, self.view.bounds.size.height) style:UITableViewStyleGrouped];
+    CGFloat tabBar = Height_TabBar;
+    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0 , self.view.bounds.size.width, self.view.bounds.size.height - tabBar) style:UITableViewStyleGrouped];
     _tableView.backgroundColor = [UIColor whiteColor];
     _tableView.contentInset = UIEdgeInsetsMake(Height_TabbleViewInset, 0, 0, 0);
     _tableView.sectionHeaderHeight = 0;
@@ -170,48 +226,25 @@ NSString *bannerID = @"MeCell";
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     ZZTMeCell *cell = [tableView dequeueReusableCellWithIdentifier:bannerID];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    
-    cell.accessoryType = UITableViewCellAccessoryNone; //显示最右边的箭头
-    
-    UIView *bottomView = [[UIView alloc] init];
-    
-    bottomView.backgroundColor = [UIColor colorWithRGB:@"232,232,232"];
-    
-    [cell.contentView addSubview:bottomView];
-    
-    [bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(cell.contentView.mas_bottom).offset(-1);
-        make.height.mas_equalTo(1);
-        make.right.equalTo(cell.contentView.mas_right);
-        make.left.equalTo(cell.contentView.mas_left);
-    }];
-    
+   
+    ZZTMeTableModel *model = [[ZZTMeTableModel alloc] init];
     if(indexPath.section == 0){
-        NSString *rowName = _sectionOne[indexPath.row];
-        cell.textLabel.text = rowName;
-        if(indexPath.row == 1 && [[Utilities GetNSUserDefaults].userType isEqualToString:@"2"]){
-            cell.textLabel.text = @"作者书柜";
-        }
-        if(indexPath.row == (_sectionOne.count - 1)){
-            [bottomView removeFromSuperview];
-        }
-        return cell;
+        model = _sectionOne[indexPath.row];
+        cell.cellCount = _sectionOne.count;
     }else if(indexPath.section == 1){
-        NSString *rowName = _sectionTwo[indexPath.row];
-        cell.textLabel.text = rowName;
-        if(indexPath.row == (_sectionTwo.count - 1)){
-            [bottomView removeFromSuperview];
-        }
-        return cell;
+        model = _sectionTwo[indexPath.row];
+        cell.cellCount = _sectionTwo.count;
+
     }else{
-        NSString *rowName = _sectionThree[indexPath.row];
-        cell.textLabel.text = rowName;
-        if(indexPath.row == (_sectionThree.count - 1)){
-            [bottomView removeFromSuperview];
-        }
-        return cell;
+        model = _sectionThree[indexPath.row];
+        cell.cellCount = _sectionThree.count;
     }
+    cell.textLabel.text = model.cellTitle;
+    if(indexPath.section == 0 && indexPath.row == 1 && [[Utilities GetNSUserDefaults].userType isEqualToString:@"2"]){
+        cell.textLabel.text = @"作者书柜";
+    }
+    cell.cellIndex = indexPath.row;
+    return cell;
 }
 
 #pragma mark - 请求数据
@@ -290,133 +323,16 @@ NSString *bannerID = @"MeCell";
 //选中cell
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 0) {
-        if(indexPath.row == 0){
-//            //VIP
-//            if([[UserInfoManager share] hasLogin] == NO){
-//                [UserInfoManager needLogin];
-//                return;
-//            }
-            ZZTVIPViewController *VIPVC = [[ZZTVIPViewController alloc] init];
-            VIPVC.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:VIPVC animated:YES];
-        }else if (indexPath.row == 1){
-            //作者认证
-            if([[UserInfoManager share] hasLogin] == NO){
-                [UserInfoManager needLogin];
-                return;
-            }
-            if([[Utilities GetNSUserDefaults].userType isEqualToString:@"2"]){
-                //作者书库
-                ZZTAuthorCreationController *authorCtionVC = [[ZZTAuthorCreationController alloc] init];
-                [self.navigationController pushViewController:authorCtionVC animated:YES];
-            }else{
-                //作者认证
-                ZZTAuthorCertificationViewController *authorCerVC = [[ZZTAuthorCertificationViewController alloc] init];
-                authorCerVC.hidesBottomBarWhenPushed = YES;
-                [self.navigationController pushViewController:authorCerVC animated:YES];
-            }
-
-        }else{
-            //关注
-            if([[UserInfoManager share] hasLogin] == NO){
-                [UserInfoManager needLogin];
-                return;
-            }
-            ZZTMeAttentionViewController *meAttentionVC = [[ZZTMeAttentionViewController alloc] init];
-            meAttentionVC.hidesBottomBarWhenPushed = YES;
-            //            meAttentionVC.user = self.userData;
-            [self.navigationController pushViewController:meAttentionVC animated:YES];
-        }
-    }else if (indexPath.section == 1){
-        if(indexPath.row == 0){
-            //问题反馈
-            ZZTFeedBackViewController *feedBackVC = [[ZZTFeedBackViewController alloc] init];
-            feedBackVC.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:feedBackVC animated:YES];
-        }else{
-            //关于我们
-            ZZTAboutUsViewController *aboutUsVC = [[ZZTAboutUsViewController alloc] init];
-            aboutUsVC.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:aboutUsVC animated:YES];
-        }
-    }else{
-        if(indexPath.row == 0){
-            //用户协议
-            ZZTUserAgreementViewController *userAgreementVC = [[ZZTUserAgreementViewController alloc] init];
-            userAgreementVC.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:userAgreementVC animated:YES];
-        }else{
-            //设置
-            ZZTSettingViewController *settingVC = [[ZZTSettingViewController alloc] init];
-            settingVC.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:settingVC animated:YES];
-        }
-    }
     
-//    else if (indexPath.section == 1){
-//        if(indexPath.row == 0){
-//            //VIP
-//            ZZTVIPViewController *VIPView = [[ZZTVIPViewController alloc]init];
-//            VIPView.hidesBottomBarWhenPushed = YES;
-//            [self.navigationController pushViewController:VIPView animated:YES];
-//        }else if(indexPath.row == 1){
-//            //钱包
-//            ZZTMeWalletViewController *walletVC = [[ZZTMeWalletViewController alloc] init];
-//            walletVC.hidesBottomBarWhenPushed = YES;
-//            [self.navigationController pushViewController:walletVC animated:YES];
-//        }
-//    }else if(indexPath.section == 2){
-//        if(indexPath.row == 0){
-//            //自在商城
-//            ZZTShoppingMallViewController *shoppingMallVC = [[ZZTShoppingMallViewController alloc] init];
-//            shoppingMallVC.hidesBottomBarWhenPushed = YES;
-//            shoppingMallVC.isShopping = YES;
-//            shoppingMallVC.viewTitle = @"自在商城";
-//            [self.navigationController pushViewController:shoppingMallVC animated:YES];
-//        }else if(indexPath.row == 1){
-//            //积分兑换
-//            ZZTShoppingMallViewController *shoppingMallVC = [[ZZTShoppingMallViewController alloc] init];
-//            shoppingMallVC.hidesBottomBarWhenPushed = YES;
-//            shoppingMallVC.isShopping = YES;
-//            shoppingMallVC.viewTitle = @"积分兑换";
-//            [self.navigationController pushViewController:shoppingMallVC animated:YES];
-//        }
-//    }else if (indexPath.section == 3){
-////        if(indexPath.row == 0){
-////            ZZTCartoonViewController *bookVC = [[ZZTCartoonViewController alloc] init];
-////            bookVC.hidesBottomBarWhenPushed = YES;
-////            bookVC.viewTitle = @"参与作品";
-////            bookVC.viewType = @"1";
-//////            bookVC.user = self.userData;
-////            [self.navigationController pushViewController:bookVC animated:YES];
-////        }else
-//        if(indexPath.row == 0){
-//            //书柜
-//            ZZTCartoonViewController *bookVC = [[ZZTCartoonViewController alloc] init];
-//            bookVC.hidesBottomBarWhenPushed = YES;
-//            bookVC.viewTitle = @"书柜";
-//            bookVC.viewType = @"2";
-////            bookVC.user = self.userData;
-//            [self.navigationController pushViewController:bookVC animated:YES];
-//        }else if(indexPath.row == 1){
-//            //关注
-//            ZZTMeAttentionViewController *meAttentionVC = [[ZZTMeAttentionViewController alloc] init];
-//            meAttentionVC.hidesBottomBarWhenPushed = YES;
-////            meAttentionVC.user = self.userData;
-//            [self.navigationController pushViewController:meAttentionVC animated:YES];
-//        }else if(indexPath.row == 2){
-//            //浏览历史
-//            ZZTHistoryViewController *historyVC = [[ZZTHistoryViewController alloc] init];
-//            historyVC.hidesBottomBarWhenPushed = YES;
-//            [self.navigationController pushViewController:historyVC animated:YES];
-//        }
-//    }else if(indexPath.section == 4){
-//        //设置
-//        ZZTSettingViewController *settingVC = [[ZZTSettingViewController alloc] init];
-//        settingVC.hidesBottomBarWhenPushed = YES;
-//        [self.navigationController pushViewController:settingVC animated:YES];
-//    }
+    ZZTMeTableModel *model = [[ZZTMeTableModel alloc] init];
+    if(indexPath.section == 0){
+        model = _sectionOne[indexPath.row];
+    }else if (indexPath.section == 1){
+        model = _sectionTwo[indexPath.row];
+    }else{
+        model = _sectionThree[indexPath.row];
+    }
+    model.block();
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(nonnull NSIndexPath *)indexPath{
@@ -436,4 +352,104 @@ NSString *bannerID = @"MeCell";
     [self.navigationController setNavigationBarHidden:YES animated:YES];
 
 }
+
+#pragma mark - Vip
+-(void)gotoVipVC{
+    ZZTVIPViewController *VIPVC = [[ZZTVIPViewController alloc] init];
+    VIPVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:VIPVC animated:YES];
+}
+
+#pragma mark - 作者认证
+-(void)gotoAuthorCtionVC{
+    //作者认证
+    if([[UserInfoManager share] hasLogin] == NO){
+        [UserInfoManager needLogin];
+        return;
+    }
+    if([[Utilities GetNSUserDefaults].userType isEqualToString:@"2"]){
+        //作者书库
+        ZZTAuthorCreationController *authorCtionVC = [[ZZTAuthorCreationController alloc] init];
+        [self.navigationController pushViewController:authorCtionVC animated:YES];
+    }else{
+        //作者认证
+        ZZTAuthorCertificationViewController *authorCerVC = [[ZZTAuthorCertificationViewController alloc] init];
+        authorCerVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:authorCerVC animated:YES];
+    }
+}
+
+#pragma mark - 自在商城
+-(void)gotoShoppingMallVC{
+    //自在商城
+    ZZTShoppingMallViewController *shoppingMallVC = [[ZZTShoppingMallViewController alloc] init];
+    shoppingMallVC.hidesBottomBarWhenPushed = YES;
+    shoppingMallVC.isShopping = YES;
+    shoppingMallVC.viewTitle = @"自在商城";
+    [self.navigationController pushViewController:shoppingMallVC animated:YES];
+}
+
+#pragma mark - 我的关注
+-(void)gotoMeAttentionVC{
+    //关注
+    if([[UserInfoManager share] hasLogin] == NO){
+        [UserInfoManager needLogin];
+        return;
+    }
+    ZZTMeAttentionViewController *meAttentionVC = [[ZZTMeAttentionViewController alloc] init];
+    meAttentionVC.hidesBottomBarWhenPushed = YES;
+    //            meAttentionVC.user = self.userData;
+    [self.navigationController pushViewController:meAttentionVC animated:YES];
+}
+
+#pragma mark - 我的书柜
+-(void)gotoBookVC{
+    //我的书柜
+    ZZTCartoonViewController *bookVC = [[ZZTCartoonViewController alloc] init];
+    bookVC.hidesBottomBarWhenPushed = YES;
+    bookVC.viewTitle = @"书柜";
+    bookVC.viewType = @"2";
+    [self.navigationController pushViewController:bookVC animated:YES];
+}
+
+#pragma mark - 浏览历史
+-(void)gotoHistoryVC{
+    //浏览历史
+    ZZTHistoryViewController *historyVC = [[ZZTHistoryViewController alloc] init];
+    historyVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:historyVC animated:YES];
+}
+
+#pragma mark - 问题反馈
+-(void)gotoFeedBackVC{
+    //问题反馈
+    ZZTFeedBackViewController *feedBackVC = [[ZZTFeedBackViewController alloc] init];
+    feedBackVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:feedBackVC animated:YES];
+}
+
+#pragma mark - 关于我们
+-(void)gotoAboutUsVC{
+    //关于我们
+    ZZTAboutUsViewController *aboutUsVC = [[ZZTAboutUsViewController alloc] init];
+    aboutUsVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:aboutUsVC animated:YES];
+}
+
+#pragma mark - 用户协议
+-(void)gotoUserAgreementVC{
+    //用户协议
+    ZZTUserAgreementViewController *userAgreementVC = [[ZZTUserAgreementViewController alloc] init];
+    userAgreementVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:userAgreementVC animated:YES];
+}
+
+#pragma mark - 设置
+-(void)gotoSettingVC{
+    //设置
+    ZZTSettingViewController *settingVC = [[ZZTSettingViewController alloc] init];
+    settingVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:settingVC animated:YES];
+}
+
 @end

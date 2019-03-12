@@ -11,8 +11,9 @@
 #import "ZZTKindModel.h"
 #import "ZZTDetailModel.h"
 #import "ZZTEditorImgCell.h"
+#import "ZZTAlbumAlertControllerView.h"
 
-@interface ZZTMaterialWindowView ()<UICollectionViewDataSource,UICollectionViewDelegate,ZZTMaterialWindowViewDelegate>
+@interface ZZTMaterialWindowView ()<UICollectionViewDataSource,UICollectionViewDelegate,ZZTMaterialWindowViewDelegate,ZZTAlbumAlertControllerViewDelegate>
 
 @property(nonatomic , strong)UIView *topView;
 @property(nonatomic , strong)UIView *midView;
@@ -23,7 +24,7 @@
 @property(nonatomic , strong)UIView *midLine;
 @property(nonatomic , assign)NSInteger materialIndex;
 @property(nonatomic , assign)BOOL isCollect;
-
+@property (nonatomic ,strong) ZZTKindModel *selectKindModel;
 @end
 
 @implementation ZZTMaterialWindowView
@@ -39,6 +40,8 @@
                            [ZZTKindModel initKindModelWith:@"对话" isSelect:@"0"],
                            ];
         
+        _selectKindModel = self.typeArray[0];
+        
         self.delegate = self;
         
         //添加UI
@@ -51,9 +54,14 @@
     }
     return self;
 }
-
--(void)setMaterialArray:(NSArray *)materialArray{
+//设置数据
+-(void)setMaterialArray:(NSMutableArray *)materialArray{
     _materialArray = materialArray;
+    if(![_selectKindModel.kindTitle isEqualToString:@"布局"] && ![_selectKindModel.kindTitle isEqualToString:@"对话"]){
+        //插入一个
+        ZZTDetailModel *model = [ZZTDetailModel initDetailModelWith:@"editorUpload" flag:0 ifCollect:0];
+        [self.materialArray insertObject:model atIndex:0];
+    }
     [self.contentCollectionView reloadData];
 }
 
@@ -176,6 +184,7 @@
 #pragma mark - 创建CollectionView
 -(void)setupCollectionView
 {
+    //类别
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     layout.minimumLineSpacing = 0;
     layout.minimumInteritemSpacing = 5;
@@ -189,7 +198,7 @@
     
     [typeCollectionView registerClass:[ZZTMaterialTypeCell class] forCellWithReuseIdentifier:@"materialTypeCell"];
     
-    
+    //素材
     UICollectionViewFlowLayout *contentCollectionViewlayout = [[UICollectionViewFlowLayout alloc] init];
     
     UICollectionView *contentCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, Height_NavBar, Screen_Width, Screen_Height) collectionViewLayout:contentCollectionViewlayout];
@@ -220,48 +229,27 @@
         cell.model = model;
         return cell;
     }else{
+//        if(![_selectKindModel.kindTitle isEqualToString:@"布局"] && ![_selectKindModel.kindTitle isEqualToString:@"对话"]){
+//            //第一个显示上传按钮
+//            //如果是第一个 那么显示上传 不然显示素材
+//            if(indexPath.row == 0){
+//                ZZTEditorImgCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"materialCell" forIndexPath:indexPath];
+//                cell.imageStr = @"editorUpload";
+//                return cell;
+//            }
+//        }
+        //如果是场景...第一个显示上传按钮   注意数据索引
         ZZTEditorImgCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"materialCell" forIndexPath:indexPath];
         ZZTDetailModel *model = self.materialArray[indexPath.row];
+        
         cell.model = model;
         return cell;
     }
 }
 
-//定义每个UICollectionView 的大小
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    if(collectionView == self.contentCollectionView){
-        return CGSizeMake(ZZTLayoutDistance(200), ZZTLayoutDistance(200));
-    }else if(collectionView == self.typeCollectionView){
-        return CGSizeMake((self.typeCollectionView.width)/self.typeArray.count - 10, self.typeCollectionView.height);
-    }else{
-        return CGSizeZero;
-    }
-}
-
--(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section{
-    
-    if(collectionView == self.contentCollectionView){
-        return UIEdgeInsetsMake(ZZTLayoutDistance(50), ZZTLayoutDistance(40), ZZTLayoutDistance(50), ZZTLayoutDistance(40));
-    }else if(collectionView == self.typeCollectionView){
-        return UIEdgeInsetsZero;
-    }else{
-        return UIEdgeInsetsZero;
-    }
-}
-
--(CGFloat )collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section{
-    if(collectionView == self.contentCollectionView){
-        return ZZTLayoutDistance(50);
-        
-    }else{
-        return 0;
-    }
-}
-
+//点击事件
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-
-
+    //标题点击
     if(collectionView == self.typeCollectionView){
         self.isCollect = NO;
 
@@ -277,6 +265,7 @@
                 ZZTKindModel *model = self.typeArray[i];
                 if(indexPath.row == i){
                     model.isSelect = @"1";
+                    self.selectKindModel = model;
                 }else{
                     model.isSelect = @"0";
                 }
@@ -286,6 +275,16 @@
             });
         });
     }else{
+        if(![_selectKindModel.kindTitle isEqualToString:@"布局"] && ![_selectKindModel.kindTitle isEqualToString:@"对话"] && indexPath.row == 0){
+            NSLog(@"点击了上传");
+            //出现选择图片的view然后选中多少上传图片
+            ZZTAlbumAlertControllerView *view = [[ZZTAlbumAlertControllerView alloc] init];
+            view.delegate = self;
+            view.isImageClip = NO;
+            [view pushTZImagePickerController];
+            return;
+        }
+        //素材视图点击
         ZZTEditorImgCell *cell = (ZZTEditorImgCell *)[collectionView cellForItemAtIndexPath:indexPath];
         //分2种  多种 和 单种
         ZZTDetailModel *model = self.materialArray[indexPath.row];
@@ -311,6 +310,11 @@
     }
 }
 
+#pragma mark - 上传图片
+-(void)albumAlertControllerViewWithImg:(NSArray *)photos{
+    NSLog(@"photos:%@",photos);
+    //上传后 加载出来
+}
 
 -(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event{
     
@@ -318,7 +322,45 @@
     
     if(view == nil){
         [self removeFromSuperview];
+        
+        if (self.delegate && [self.delegate respondsToSelector:@selector(materialWindowHidden)])
+        {
+            //模型 类型
+            [self.delegate materialWindowHidden];
+        }
     }
     return view;
+}
+
+//定义每个UICollectionView 的大小
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    if(collectionView == self.contentCollectionView){
+        return CGSizeMake(ZZTLayoutDistance(200), ZZTLayoutDistance(200));
+    }else if(collectionView == self.typeCollectionView){
+        return CGSizeMake((self.typeCollectionView.width)/self.typeArray.count - 10, self.typeCollectionView.height);
+    }else{
+        return CGSizeZero;
+    }
+}
+
+-(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section{
+    
+    if(collectionView == self.contentCollectionView){
+        return UIEdgeInsetsMake(ZZTLayoutDistance(50), ZZTLayoutDistance(40), ZZTLayoutDistance(50), ZZTLayoutDistance(40));
+    }else if(collectionView == self.typeCollectionView){
+        return UIEdgeInsetsZero;
+    }else{
+        return UIEdgeInsetsZero;
+    }
+}
+
+
+-(CGFloat )collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section{
+    if(collectionView == self.contentCollectionView){
+        return ZZTLayoutDistance(50);
+    }else{
+        return 0;
+    }
 }
 @end

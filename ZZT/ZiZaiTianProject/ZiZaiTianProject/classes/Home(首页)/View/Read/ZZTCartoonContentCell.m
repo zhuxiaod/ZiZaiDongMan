@@ -67,9 +67,12 @@
     _model = model;
     
 //    [_content sd_setImageWithURL:[NSURL URLWithString:model.cartoonUrl] placeholderImage:[UIImage imageNamed:@"peien"]];
+    _content.contentMode = UIViewContentModeScaleToFill;
     __block float height = 0.0f;
     [_content sd_setImageWithURL:[NSURL URLWithString:model.cartoonUrl] placeholderImage:[UIImage imageNamed:@"chapterPlaceV"] options:0 completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
         if(image){
+            self.content.contentMode = UIViewContentModeScaleAspectFit;
+
             CGFloat percentage;
             CGFloat imageHeight;
             NSLog(@"imageW:%@",image);

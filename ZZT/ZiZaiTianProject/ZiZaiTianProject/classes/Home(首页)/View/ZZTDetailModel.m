@@ -10,4 +10,12 @@
 
 @implementation ZZTDetailModel
 
++(instancetype)initDetailModelWith:(NSString *)img flag:(NSInteger)flag ifCollect:(NSInteger)ifCollect{
+    ZZTDetailModel *model = [[ZZTDetailModel alloc] init];
+    model.img = img;
+    model.flag = flag;
+    model.ifCollect = ifCollect;
+    return model;
+}
+
 @end

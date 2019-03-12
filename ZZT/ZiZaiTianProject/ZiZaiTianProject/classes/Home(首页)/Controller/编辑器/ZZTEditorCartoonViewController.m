@@ -29,17 +29,19 @@
 @interface ZZTEditorCartoonViewController ()<ZZTMaterialWindowViewDelegate,ZZTEditorImageViewDelegate,ZZTSquareRoundViewDelegate,ZZTEditorDeskViewdelegate,ZZTEditorBasisViewDelegate,ZZTColorPickerViewDelegate,ZZTEditorBrightnessView,ZZTAlbumAlertControllerViewDelegate,ZZTEditorTextViewDelegate,ZZTEditorFontViewDelegate,ZZTEditorMaterialDetailViewDelegate>{
     
     CIFilter *_colorControlsFilter;//色彩滤镜
+    
+    CIFilter *_hueFilter;//色相滤镜
+
 
     CIContext *_context;//Core Image上下文
 
     CIImage *_image;//我们要编辑的图像
     
     NSInteger testI;
-
 }
-
 @property (nonatomic,strong) ZZTEditorDeskView *editorDeskView;//桌面
 @property (nonatomic,strong) ZZTInputView *inputView;//输入框
+
 @property (nonatomic,strong) ZZTEditorImageView *ImageView1;
 //顶部关闭按钮
 @property (nonatomic,strong) UIButton *closeBtn;
@@ -78,6 +80,10 @@
 
 @property (nonatomic,strong) ZZTEditorMaterialDetailView *materialDetailView;//分组框
 @property (nonatomic,assign) BOOL collectStatus;
+//素材类别索引
+@property (nonatomic,assign) NSInteger collectIndex;
+//填色slider
+@property (nonatomic,strong) ZZTEditorBrightnessView *brightnessView;
 
 @end
 
@@ -102,6 +108,8 @@
     [self loadData];
     
     self.collectStatus = NO;
+    
+    self.collectIndex = 0;
 }
 
 -(void)getDeskArrayObjectIndex:(ZZTEditorDeskView *)editorDeskView{
@@ -153,12 +161,10 @@
     }];
     
     //上一页
-    UIButton *lastPageBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIButton *lastPageBtn = [GlobalUI createButtionWithImg:@"上一页" selTaget:@selector(clickOnThePreviousPage)];
     _lastPageBtn = lastPageBtn;
-    [lastPageBtn setImage:[UIImage imageNamed:@"上一页"] forState:UIControlStateNormal];
     [self.view addSubview:lastPageBtn];
-    [lastPageBtn addTarget:self action:@selector(clickOnThePreviousPage) forControlEvents:UIControlEventTouchUpInside];
-    
+
     [lastPageBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(bottomView.mas_top).offset(ZZTLayoutDistance(-100));
         make.left.equalTo(self.view).offset(10);
@@ -166,14 +172,10 @@
     }];
     
     //下一页
-    UIButton *nextPageBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIButton *nextPageBtn = [GlobalUI createButtionWithImg:@"下一页" selTaget:@selector(clickOnTheNextPage)];
     _nextPageBtn = nextPageBtn;
-    [nextPageBtn setImage:[UIImage imageNamed:@"下一页"] forState:UIControlStateNormal];
     [self.view addSubview:nextPageBtn];
-    
-    [nextPageBtn addTarget:self action:@selector(clickOnTheNextPage) forControlEvents:UIControlEventTouchUpInside];
 
-    
     [nextPageBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(bottomView.mas_top).offset(ZZTLayoutDistance(-100));
         make.right.equalTo(self.view).offset(-10);
@@ -184,7 +186,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrameNotify:) name:UIKeyboardWillChangeFrameNotification object:nil];
 }
 
-//隐藏当前View按钮
+#pragma mark 预览状态 隐藏
 -(void)hiddenCurrentImgViewCloseBtn{
     //如果当前View是桌面上的
     if(self.editorDeskView.currentView){
@@ -210,7 +212,7 @@
         self.editor_squareRoundView.currentView = nil;
     }
 }
-
+#pragma mark 预览状态 显示
 -(void)showCurrentImgViewCloseBtn{
     
     if(self.editorDeskView.currentView){
@@ -253,18 +255,25 @@
     }];
 }
 
-//返回上一页面
+#pragma mark - 返回
 -(void)backLastVC{
-    [self.navigationController popViewControllerAnimated:YES];
+    ZZTRemindView *remindView = [ZZTRemindView sharedInstance];
+    remindView.viewTitle = @"是否确定退出";
+    remindView.tureBlock = ^(UIButton *btn) {
+        //清空桌面
+        [self.editorDeskView Editor_removeAllView];
+        //返回
+        [self.navigationController popViewControllerAnimated:YES];
+    };
+    [remindView show];
 }
 
 -(void)loadData{
     
     //请求布局信息
 }
-//切换上下页的时候 看父类是什么  如果是桌面 那么  就移动桌面上的
-//如果是 方框里面的  执行方框里的上下页方法
-//上一层
+
+#pragma mark - 上一层
 -(void)moveUpOneLevel{
     if(self.editorDeskView.currentView){
         [self.editorDeskView Editor_moveCurrentImageViewToLastLayer];
@@ -273,7 +282,7 @@
     }
 }
 
-//下一层
+#pragma mark - 下一层
 -(void)moveDownOneLevel{
     if(self.editorDeskView.currentView){
         [self.editorDeskView Editor_moveCurrentImageViewToNextLayer];
@@ -282,7 +291,7 @@
     }
 }
 
-//填色
+#pragma mark - 填色功能
 -(void)colorTheView{
     CGFloat viewHeight = 250;
     CGFloat y = SCREEN_HEIGHT - viewHeight;
@@ -291,7 +300,6 @@
     _colorPickerView = colorPickerView;
     [self.view addSubview:colorPickerView];
 }
-
 
 -(void)colorPickerViewWithColor:(ZZTColorPickerView *)view color:(UIColor *)color{
     //方框 背景
@@ -303,25 +311,127 @@
     }
 }
 
-//调色
+#pragma mark - 调色功能
 -(void)paletteTheView{
-    _context = [CIContext contextWithOptions:nil];//使用GPU渲染，推荐,但注意GPU的CIContext无法跨应用访问，例如直接在UIImagePickerController的完成方法中调用上下文处理就会自动降级为CPU渲染，所以推荐现在完成方法中保存图像，然后在主程序中调用
+    _context = [CIContext contextWithOptions:nil];//画布
     
-    //取得滤镜
+    //亮度 饱和度 对比度 滤镜
     _colorControlsFilter = [CIFilter filterWithName:@"CIColorControls"];
-    
+    //色相滤镜
+    _hueFilter = [CIFilter filterWithName:@"CIHueAdjust"];
+    //设置需要修改的图像
+    [self setupNewInputImage];
+
+    //ZZTEditorBrightnessView
+    ZZTEditorBrightnessView *brightnessView = [[ZZTEditorBrightnessView alloc] initWithFrame:CGRectMake(0, self.view.height - BrightnessToolBarHeight, self.view.width, BrightnessToolBarHeight)];
+    _brightnessView = brightnessView;
+    brightnessView.delegate = self;
+    [self.view addSubview:brightnessView];
+    //调色slider记录
+    [self setupEditorBrightnessViewSliderValue];
+}
+
+//设置新的输入图片
+-(void)setupNewInputImage{
     //拿到当前view的照片 判断
     ZZTEditorImageView *imageView = [self getCurrentViewImg];
-    
     //初始化CIImage源图像
     _image = [CIImage imageWithCGImage:imageView.imageView.image.CGImage];
     
     [_colorControlsFilter setValue:_image forKey:@"inputImage"];//设置滤镜的输入图片
     
-    //显示UI
-    ZZTEditorBrightnessView *BrightnessView = [[ZZTEditorBrightnessView alloc] initWithFrame:CGRectMake(0, self.view.height - BrightnessToolBarHeight, self.view.width, BrightnessToolBarHeight)];
-    BrightnessView.delegate = self;
-    [self.view addSubview:BrightnessView];
+    [_hueFilter setValue:_image forKey:@"inputImage"];
+}
+
+//调色slider记录
+-(void)setupEditorBrightnessViewSliderValue{
+    
+    ZZTEditorImageView *imageView = [self getCurrentViewImg];
+
+    _brightnessView.imageViewModel = imageView;
+
+    imageView.imageView.alpha = imageView.alpha;
+}
+
+#pragma mark - ZZTEditorBrightnessViewDelegate
+-(void)brightnessChangeWithTag:(NSInteger)tag Value:(CGFloat)value
+{
+    //获取已被修改的图片
+    if(tag == 108){
+        [_hueFilter setValue:_colorControlsFilter.outputImage forKey:@"inputImage"];
+    }else{
+        [_colorControlsFilter setValue:_hueFilter.outputImage forKey:@"inputImage"];//设置滤镜的输入图片
+    }
+
+    switch (tag) {
+        case 105:
+            [_colorControlsFilter setValue:[NSNumber numberWithFloat:value] forKey:@"inputBrightness"];
+            [self setImageWithTag:tag Value:value];
+            break;
+        case 106:
+            [_colorControlsFilter setValue:[NSNumber numberWithFloat:value] forKey:@"inputSaturation"];//设置滤镜参数
+            [self setImageWithTag:tag Value:value];
+            break;
+        case 107:
+            [_colorControlsFilter setValue:[NSNumber numberWithFloat:value] forKey:@"inputContrast"];
+            [self setImageWithTag:tag Value:value];
+            break;
+        case 108://色相
+            //拿到cgimage
+            [_hueFilter setValue:[NSNumber numberWithFloat:value] forKey:@"inputAngle"];
+            [self setImageWithTag:tag Value:value];
+            break;
+        case 109://透明度
+            [self setImgAlphaWithValue:value];
+            break;
+        default:
+            break;
+    }
+}
+
+-(void)setImgAlphaWithValue:(CGFloat)value{
+    ZZTEditorImageView *currentView = [self getCurrentWithPalette];
+    currentView.imageView.alpha = value;
+    currentView.alpha = value;
+}
+
+//导出修改完的图片
+-(void)setImageWithTag:(NSInteger)tag Value:(CGFloat)value{
+    
+    CIImage *outputImage;
+    
+    if(tag == 108){
+        //传一下
+        //把那个编辑好的也传过来
+        outputImage = [_hueFilter valueForKey:@"outputImage"];
+    }else{
+       outputImage = [_colorControlsFilter outputImage];//取得输出图像
+    }
+    
+    CGImageRef temp = [_context createCGImage:outputImage fromRect:[outputImage extent]];
+    
+    ZZTEditorImageView *currentView = [self getCurrentWithPalette];
+    
+    switch (tag) {
+        case 105:
+            currentView.brightness = value;
+            break;
+        case 106:
+            currentView.saturation = value;
+            break;
+        case 107:
+            currentView.contrast = value;
+            break;
+        case 108:
+            currentView.hue = value;
+            break;
+        default:
+            break;
+    }
+    
+    currentView.imageView.image = [UIImage imageWithCGImage:temp];//转化为CGImage显示在界面中
+    
+    CGImageRelease(temp);//释放CGImage对象
 }
 
 #pragma mark - 获得CurrentView的image
@@ -342,37 +452,11 @@
     return currentView;
 }
 
-#pragma mark - ZZTEditorBrightnessViewDelegate
--(void)brightnessChangeWithTag:(NSInteger)tag Value:(CGFloat)value
-{
-    switch (tag) {
-        case 105:
-            [_colorControlsFilter setValue:[NSNumber numberWithFloat:value] forKey:@"inputBrightness"];
-            
-            break;
-        case 106:
-            [_colorControlsFilter setValue:[NSNumber numberWithFloat:value] forKey:@"inputSaturation"];//设置滤镜参数
-            break;
-        case 107:
-            [_colorControlsFilter setValue:[NSNumber numberWithFloat:value] forKey:@"inputContrast"];
-            break;
-            
-        default:
-            break;
-    }
-    
-    [self setImage];
-    
-}
 
--(void)setImage{
-    
-    CIImage *outputImage = [_colorControlsFilter outputImage];//取得输出图像
-    
-    CGImageRef temp = [_context createCGImage:outputImage fromRect:[outputImage extent]];
-    
+#pragma mark 获得当前图 用于调色
+-(ZZTEditorImageView *)getCurrentWithPalette{
     ZZTEditorImageView *currentView = [[ZZTEditorImageView alloc] init];
-    
+    //如果当前是放大状态 并且不是文本框
     if(_editor_squareRoundView && _editor_squareRoundView.isBig == YES && ![self.editor_squareRoundView.currentView isKindOfClass:[ZZTEditorTextView class]]){
         
         //选中方框中的当前图
@@ -383,13 +467,10 @@
             currentView = (ZZTEditorImageView *)self.editorDeskView.currentView;
         }
     }
-    
-    currentView.imageView.image = [UIImage imageWithCGImage:temp];//转化为CGImage显示在界面中
-    
-    CGImageRelease(temp);//释放CGImage对象
+    return currentView;
 }
 
-//隐藏底部
+#pragma mark - 底部隐藏/显示
 -(void)hiddenBottomView{
     _bottomView.hidden = YES;
     _nextPageBtn.hidden = YES;
@@ -405,7 +486,7 @@
 
 #pragma mark - 素材库
 -(void)openTheMaterialLibrary{
-    
+    self.collectIndex = 0;
     //隐藏底部
     [self hiddenBottomView];
     
@@ -419,23 +500,29 @@
         make.height.mas_equalTo(ZZTLayoutDistance(800));
     }];
     
-    [self materialTypeView:nil index:0];
+    //加载初始数据
+    [self materialTypeView:nil index:self.collectIndex];
 
     //收藏图素
     weakself(self);
-//    _materialWindow.collectViewBtnBlock = ^(UIButton *btn) {
-//        [weakSelf collectMaterial:btn];
-//    };
     [_materialWindow.collectViewBtn addTarget:self action:@selector(collectMaterial:) forControlEvents:UIControlEventTouchUpInside];
     //获取收藏数据
     _materialWindow.favoritesBlock = ^{
+        weakSelf.materialWindow.collectViewBtn.hidden = NO;
+        
         weakSelf.collectStatus = YES;
         
         [weakSelf loadCollectionMaterialData];
     };
+    
     [_materialWindow.cameraBtn addTarget:self action:@selector(openAlbum) forControlEvents:UIControlEventTouchUpInside];
     
     [self reviseCollectBtnStatus];
+}
+
+-(void)materialWindowHidden{
+    //素材框消失 下部显示出来
+    [self showBottomView];
 }
 
 //打开本地相册
@@ -444,6 +531,7 @@
         if (index == 1) {
             [view takePhoto];
         }else{
+            view.selectPhotoNum = 1;
             [view pushTZImagePickerController];
         }
     }];
@@ -453,10 +541,12 @@
     view.isImageClip = NO;
     
     [view showZCAlert];
+    
 }
 
 //本地素材
--(void)albumAlertControllerViewWithImg:(UIImage *)image{
+-(void)albumAlertControllerViewWithImg:(NSArray *)phtots{
+    UIImage *image = phtots[0];
     
     CGRect viewFrame = [self getMaterialFrameWithImage:image];
 
@@ -468,89 +558,165 @@
 #pragma mark - 收藏图素
 -(void)collectMaterial:(UIButton *)btn{
     
-    btn.selected = !btn.selected;
-    
-    [self collectMaterialWithBtn:btn];
+    [self collectMaterialWithBtn:btn groupType:NO];
     
 }
 
--(void)collectMaterialWithBtn:(UIButton *)btn{
-    if(btn.selected == YES){
-        ZZTEditorImageView *imageView = [self getCurrentViewImg];
-        if(imageView == nil){
-            return;
-        }
+/*
+ groupType:是否为组收藏
+ */
+-(void)collectMaterialWithBtn:(UIButton *)btn groupType:(BOOL)groupType{
+    if(btn.selected == NO){
         
-        if(imageView.imageUrl){
-            //加载的
-            [self uploadCollectIMGWithFodderImg:imageView.imageUrl fodderType:@"1" imageView:imageView];
+        if(groupType == YES){
+            //如果为组收藏 那么没有选中素材 也可以收藏
+            //组收藏
+            [self materialDetailViewCollectSuccess:^{
+                btn.selected = !btn.selected;
+            }];
         }else{
-            //本地的
-            //上传到七牛云得到名字 然后再发给后台
-            NSString *coverImgPath = [Utilities getCacheImagePath];
+            ZZTEditorImageView *imageView = [self getCurrentViewImg];
             
-            [UIImagePNGRepresentation(imageView.imageView.image) writeToFile:coverImgPath atomically:YES];
+            if(imageView == nil){
+                [MBProgressHUD showSuccess:@"请选中需要进行收藏的素材"];
+                return;
+            }
             
-            dispatch_async(dispatch_get_global_queue(0, 0), ^{
-                // 处理耗时操作的代码块...
-                NSString *coverImg = [SYQiniuUpload QiniuPutSingleImage:coverImgPath complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp) {
-                    
+            if(imageView.imageUrl){
+                //加载的
+                [self uploadCollectIMGWithFodderImg:imageView.imageUrl fodderType:@"1" imageView:imageView Success:^{
+                    btn.selected = !btn.selected;
                 }];
-                //通知主线程刷新
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self uploadCollectIMGWithFodderImg:coverImg fodderType:@"2" imageView:nil];
+            }else{
+                //本地的
+                //上传到七牛云得到名字 然后再发给后台
+                NSString *coverImgPath = [Utilities getCacheImagePath];
+                
+              [UIImagePNGRepresentation(imageView.imageView.image) writeToFile:coverImgPath atomically:YES];
+                
+                dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                    // 处理耗时操作的代码块...
+                    NSString *coverImg = [SYQiniuUpload QiniuPutSingleImage:coverImgPath complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp) {
+                        
+                    }];
+                    //通知主线程刷新
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self uploadCollectIMGWithFodderImg:coverImg fodderType:@"2" imageView:nil Success:^{
+                            btn.selected = !btn.selected;
+                        }];
+                    });
                 });
-            });
+            }
+            
         }
+
     }else{
         
-        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-        ZZTEditorImageView *imageView = [self getCurrentViewImg];
-        if(imageView == nil){
-            return;
-        }
         NSDictionary *dict = [NSDictionary dictionary];
-        if(self.collectStatus == YES){
+        
+        ZZTEditorImageView *imageView = [self getCurrentViewImg];
+
+        if(groupType == YES){
+            //不选中就收藏
             dict = @{
-                       @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id],
-                       //系统默认的传数字
-                       @"fodderId":[NSString stringWithFormat:@"%ld",imageView.fodderId],//图片id 0
-                       @"collectId":imageView.imgId//收藏id 12
-                       };
-        }else{
-            dict = @{
+                     //系统的
                      @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id],
                      //系统默认的传数字
-                     @"fodderId":imageView.imgId,//图片id 0
-                     @"collectId":@"0"//收藏id 12
+                     @"fodderId":[NSString stringWithFormat:@"%ld",_materialDetailView.model.id],//图片id 0
+                     @"collectId":[NSString stringWithFormat:@"%ld",_materialDetailView.model.id]//收藏id 12
                      };
+        }else{
+            
+            if(imageView == nil){
+                return;
+            }
+            
+            if([imageView.isCollectOpen isEqualToString:@"1"]){
+                dict = @{
+                         //普通打开
+                         @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id],
+                         //系统默认的传数字
+                         @"fodderId":[NSString stringWithFormat:@"%ld",imageView.fodderId],//图片id 0
+                         @"collectId":imageView.imgId//收藏id 12
+                         };
+            }else if([imageView.isCollectOpen isEqualToString:@"0"]){
+                dict = @{
+                         //收藏打开
+                         @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id],
+                         //系统默认的传数字
+                         @"fodderId":imageView.imgId,//图片id 0
+                         @"collectId":@"0"//收藏id 12
+                         };
+            }
         }
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+
         [manager POST:[ZZTAPI stringByAppendingString:@"fodder/deleteUserFodderCollect"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             imageView.ifCollect = @"0";
+            //刷新素材的内容
+            [self reloadMaterialData];
+            btn.selected = !btn.selected;
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             
         }];
     }
 }
 
--(void)uploadCollectIMGWithFodderImg:(NSString *)coverImg fodderType:(NSString *)fodderType imageView:(ZZTEditorImageView *)imageView{
-    NSString *fodderId;
+//刷新素材数据
+-(void)reloadMaterialData{
+    if(self.collectStatus == YES){
+        [self loadCollectionMaterialData];
+    }else{
+        [self materialTypeView:nil index:self.collectIndex];
+    }
+}
+
+-(void)materialDetailViewCollectSuccess:(void (^)(void))success{
+    NSDictionary *dic = @{
+                          @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id],
+                          @"fodderImg":_materialDetailView.model.img,
+                          @"fodderType":_materialDetailView.model.fodderType,//类型
+                          @"fodderId":[NSString stringWithFormat:@"%ld",_materialDetailView.model.id],//图id
+                          @"modelType":[NSString stringWithFormat:@"%ld",_materialDetailView.model.modelType]//几号
+                          };
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    [manager POST:[ZZTAPI stringByAppendingString:@"fodder/insertUserFodderCollect"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        //刷新素材的内容
+        [self reloadMaterialData];
+        success();
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
+}
+
+-(void)uploadCollectIMGWithFodderImg:(NSString *)coverImg fodderType:(NSString *)fodderType imageView:(ZZTEditorImageView *)imageView Success:(void (^)(void))success{
+    NSString *fodderId;//图id
+    NSString *fodderTypeStr;//图id
+    NSString *modelTypeStr;//图id
+
     if(imageView == nil){
         fodderId = @"0";
+        fodderTypeStr = @"0";
+        modelTypeStr = @"0";
     }else{
         fodderId = imageView.imgId;
+        fodderTypeStr = imageView.kindIndex;
+        modelTypeStr = imageView.modelType;
     }
     NSDictionary *dic = @{
                           @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id],
                           @"fodderImg":coverImg,
-                          @"fodderType":imageView.kindIndex,//索引
+                          @"fodderType":fodderTypeStr,//类型
                           @"fodderId":fodderId,//图id
-                          @"modelType":imageView.modelType//几号
+                          @"modelType":modelTypeStr//几号
                           };
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"fodder/insertUserFodderCollect"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         ZZTEditorImageView *imageView = [self getCurrentViewImg];
         imageView.ifCollect = @"1";
+        //刷新素材的内容
+        [self reloadMaterialData];
+        success();
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
@@ -558,7 +724,11 @@
     
 -(void)materialTypeView:(UICollectionView *)materialTypeView index:(NSInteger)index{
     
+    self.collectIndex = index;
+    
     self.collectStatus = NO;
+    
+//    self.materialWindow.collectViewBtn.hidden = NO;
     
     //点击其他type  请求新的数据
     NSDictionary *dict = @{
@@ -597,6 +767,7 @@
 - (void)materialContentView:(UICollectionView *)materialContentView materialModel:(ZZTDetailModel *)model kindIndex:(NSInteger)index materialIndex:(NSInteger)materialIndex materialImage:(UIImage *)materialImage{
     
     CGRect viewFrame = [self getMaterialFrameWithImage:materialImage];
+    
     [self hiddenCurrentImgViewCloseBtn];
     
     //index 1.布局 2.场景 3.角色 4.表情 5.效果 6.对话
@@ -620,7 +791,6 @@
         ZZTSquareRoundView *squareRoundView = [[ZZTSquareRoundView alloc] initWithFrame:viewFrame];
         squareRoundView.squareRounddelegate = self;
         squareRoundView.delegate = self;
-        
         squareRoundView.type = model.modelType;
         
         //判断  如果框类型是正在编辑状态的话
@@ -640,7 +810,7 @@
         //旁白框
         if(model.modelType == 12){
             //旁白
-            ZZTEditorTextView *textView = [[ZZTEditorTextView alloc] initWithFrame:CGRectMake(50, 50, 36, 50)];
+            ZZTEditorTextView *textView = [[ZZTEditorTextView alloc] initWithFrame:CGRectMake(50, 50, 70, 50)];
             //不同的对话框
             textView.type = model.modelType;
             textView.kindIndex = [NSString stringWithFormat:@"%ld",index];
@@ -660,8 +830,7 @@
     }
     [self reviseCollectBtnStatus];
 
-    [self showBottomView];
-
+//    [self showBottomView];
 }
 
 -(void)reviseCollectBtnStatus{
@@ -672,13 +841,13 @@
     ZZTEditorImageView *imageView = [self getCurrentViewImg];
     if([imageView.ifCollect isEqualToString:@"1"] || imageView.fodderId != 0){
         self.materialWindow.collectViewBtn.selected = YES;
-        self.materialDetailView.collectViewBtn.selected = YES;
+//        self.materialDetailView.collectViewBtn.selected = YES;
     }
 }
 
 
 #pragma mark - 创建分组框
-- (void)createEditorMaterialDetailViewWithID:(NSInteger)materialId superModel:(ZZTDetailModel*)superModel kindIndex:(NSInteger)kindIndex{
+- (void)createEditorMaterialDetailViewWithID:(NSInteger)materialId superModel:(ZZTDetailModel *)superModel kindIndex:(NSInteger)kindIndex{
     [_materialDetailView removeFromSuperview];
     //隐藏素材的按钮
     self.materialWindow.collectViewBtn.hidden = YES;
@@ -717,22 +886,34 @@
     if(superModel.ifCollect == 1){
         self.materialDetailView.collectViewBtn.selected = YES;
     }
+    
     [self reviseCollectBtnStatus];
 
 }
-
--(void)MaterialDetailViewCollection:(UIButton *)btn{
-    btn.selected = !btn.selected;
-    //如果这个View在 那么
-    if(self.editorDeskView.currentView == nil || self.editor_squareRoundView.currentView == nil){
-        NSLog(@"没有");
-    }else{
-        [self collectMaterialWithBtn:btn];
-
-    }
+//显示被隐藏的内容
+-(void)materialDetailViewRemoveTarget{
+    self.materialWindow.collectViewBtn.hidden = NO;
+    
+    self.materialWindow.cameraBtn.hidden = NO;
 }
 
+#pragma mark - 素材组收藏
+-(void)MaterialDetailViewCollection:(UIButton *)btn{
+//    btn.selected = !btn.selected;
+    
+    [self collectMaterialWithBtn:btn groupType:YES];
+//
+//    //如果这个View在 那么
+//    if(self.editorDeskView.currentView || self.editor_squareRoundView.currentView){
+//    }else{
+//        NSLog(@"没有");
+//    }
+}
+
+//点击组图  生成素材
 -(void)sendMaterialDetailWithKindIndex:(NSInteger)index materialImage:(UIImage *)materialImage model:(ZZTDetailModel *)model{
+    // materialImage 图片
+    // model 图片数据
     [self materialContentView:nil materialModel:model kindIndex:index materialIndex:0 materialImage:materialImage];
 }
 
@@ -788,6 +969,9 @@
     
     if(self.collectStatus == YES){
         newImageView.ifCollect = @"1";
+        newImageView.isCollectOpen = @"1";
+    }else{
+        newImageView.isCollectOpen = @"0";
     }
     if(img == nil){
         newImageView.imageUrl = model.img;
@@ -916,6 +1100,7 @@
 -(void)editorFontViewSliderTarget:(UISlider *)slider{
     ZZTEditorTextView *textView = (ZZTEditorTextView *)[self getCurrentImageView];
     textView.fontSize = slider.value;
+    textView.viewScale = slider.value;
 }
 
 //得到当前textView
@@ -972,6 +1157,7 @@
 
 //清空
 -(void)cleanAllView{
+    
     ZZTRemindView *remindView = [ZZTRemindView sharedInstance];
     remindView.viewTitle = @"是否清空";
     remindView.tureBlock = ^(UIButton *btn) {
@@ -984,7 +1170,8 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
 
-    [UIApplication sharedApplication].statusBarHidden = YES;
+    UIView *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
+    statusBar.alpha = 0;
     
     self.fd_interactivePopDisabled = YES;
     
@@ -996,7 +1183,8 @@
 -(void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
     
-    [UIApplication sharedApplication].statusBarHidden = NO;
+    UIView *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
+    statusBar.alpha = 1;
 }
 
 #pragma mark - 桌面代理
@@ -1026,6 +1214,8 @@
 
 #pragma mark - 方框代理
 -(void)setupViewForCurrentView:(ZZTEditorBasisView *)view{
+    [self hiddenCurrentImgViewCloseBtn];
+
     //如果点击的是方框
     if([view isKindOfClass:[ZZTSquareRoundView class]]){
         [_editor_squareRoundView editorBtnHidden:YES];
@@ -1287,7 +1477,7 @@
 
 //添加图片到数组之中
 -(void)addImgToReleseImgArrayWithIndex:(NSInteger)index img:(UIImage *)img{
-    NSLog(@"现在加入第%ld页",index);
+//    NSLog(@"现在加入第%ld页",index);
     NSInteger isEnd;
     if(self.releseImgArray.count == 0){
         isEnd = 0;

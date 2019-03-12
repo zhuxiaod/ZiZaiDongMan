@@ -356,7 +356,7 @@
     }];
 
     self.maskView.frame = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height);
-
+    
 }
 
 //拖动角的手势
@@ -367,6 +367,8 @@
     
     //当前的点
     CGPoint point = [gesture locationInView:self];
+    CGPoint superPoint = [gesture locationInView:self.superview];
+
     CGFloat wChange = 0.0 , hChange = 0.0;
     
     //原来的点
@@ -391,60 +393,78 @@
         NSLog(@"w:%f h:%f",w,h);
         
         CGFloat originalArea = w * h;
-
-        //最小不能超过100
-        if(self.bounds.size.width < 100){
-            w = 100;
-            self.bounds = CGRectMake(self.bounds.origin.x , self.bounds.origin.y , w , h);
-
-        }else if(self.bounds.size.height < 100){
-            h = 100;
-            self.bounds = CGRectMake(self.bounds.origin.x , self.bounds.origin.y , w , h);
+        
+        // x坐标 y坐标
+        CGFloat x = self.x;
+        CGFloat y = self.y;
+        
+        if(gesture.view.tag == 8){
             //右下
-        }else if(gesture.view.tag == 8){
-
             if(CGRectGetMaxX(self.frame) > self.x && CGRectGetMaxY(self.frame) > self.y){
-                w += wChange;
-                h += hChange;
+                
+                if(point.x > 100){
+                    w += wChange;
+                }
+                
+                if(point.y > 100){
+                    h += hChange;
+                }
             }
-            
         }else if (gesture.view.tag == 5){
             //左上
             NSLog(@"我是5");
             //计算出XY的值
             selfX += wChange;
             selfY += hChange;
-            w -= wChange;
-            h -= hChange;
-
+        
+            if(superPoint.x < CGRectGetMaxX(self.frame) - 90){
+                w -= wChange;
+                x = selfX;
+            }
+            if(superPoint.y < CGRectGetMaxY(self.frame) - 90){
+                h -= hChange;
+                y = selfY;
+            }
         }else if (gesture.view.tag == 6){
             //左下
             NSLog(@"我是6");
-            selfX += wChange;
-            selfY += hChange;
-            w -= wChange;
-            h += hChange;
-
+          
+            if(point.y > 100){
+                h += hChange;
+            }
+            //10误差
+            if(superPoint.x < CGRectGetMaxX(self.frame) - 90){
+                w -= wChange;
+                x += wChange;
+            }
+            
         }else if (gesture.view.tag == 7){
             //右上
             NSLog(@"我是7");
             selfX -= wChange;
             selfY += hChange;
-            w += wChange;
-            h -= hChange;
+            if(point.x > 100){
+                w += wChange;
+            }
+            //10误差
+            if(superPoint.y < CGRectGetMaxY(self.frame) - 90){
+                h -= hChange;
+                y += hChange;
+            }
         }
         
         CGFloat nowArea = w * h;
         
         CGFloat multiple = nowArea / originalArea;
         
-        NSLog(@"multiple:%f",multiple);
+        self.frame = CGRectMake(x, y, w, h);
+
         
-        self.bounds = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width * multiple, self.bounds.size.height * multiple);
+//        self.bounds = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width * multiple, self.bounds.size.height * multiple);
         
-        self.mainView.transform = CGAffineTransformScale(self.mainView.transform, multiple, multiple);
-        
-        self.maskView.transform = CGAffineTransformScale(self.maskView.transform, multiple, multiple);
+//        self.mainView.transform = CGAffineTransformScale(self.mainView.transform, multiple, multiple);
+//
+//        self.maskView.transform = CGAffineTransformScale(self.maskView.transform, multiple, multiple);
         
         prevPoint = [gesture locationInView:self];
         
@@ -751,9 +771,8 @@
         //取消边线 （后面改）
         self.layer.borderColor = [UIColor clearColor].CGColor;
 
-        //正椭圆
         [self removeGesture];
-
+        //正椭圆
         CAShapeLayer *editor_layer = [CAShapeLayer createStraightEllipseMaskLayerWithView:self];
         //遮罩
         self.mainView.layer.mask = editor_layer;

@@ -95,4 +95,28 @@
     }
     return  cellH;
 }
+
+//快速创建btn
++(UIButton *)createButtionWithImg:(NSString *)img selTaget:(SEL)selTaget{
+    UIButton *Btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    
+    [Btn setImage:[UIImage imageNamed:img] forState:UIControlStateNormal];
+    
+    [Btn addTarget:self action:selTaget forControlEvents:UIControlEventTouchUpInside];
+    return Btn;
+}
+
+-(void)addLineSpacing:(UILabel *)label
+{
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:label.text attributes:@{NSKernAttributeName : @(1.5f)}];
+    
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    
+    [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, label.text.length)];
+    
+    [label setAttributedText:attributedString];
+    
+    label.lineBreakMode = NSLineBreakByTruncatingTail;
+    
+}
 @end

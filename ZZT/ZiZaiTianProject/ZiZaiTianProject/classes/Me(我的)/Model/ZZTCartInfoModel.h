@@ -14,5 +14,6 @@
 
 @property (nonatomic,strong) NSString *ifrelease;
 
+@property (nonatomic,strong) NSString *status;
 
 @end

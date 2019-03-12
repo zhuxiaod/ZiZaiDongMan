@@ -50,8 +50,8 @@
     CGFloat viewWidth = CGRectGetWidth(view.frame);
     CGFloat viewHeight = CGRectGetHeight(view.frame);
 
-    UIBezierPath *_ovalPath = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(0, 0, viewWidth, viewHeight)];
-    
+    UIBezierPath *_ovalPath = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(2, 2, viewWidth - 4, viewHeight - 4)];
+
     CAShapeLayer *shapeLayer = [CAShapeLayer layer];
     shapeLayer = [CAShapeLayer layer];
     shapeLayer.path           = _ovalPath.CGPath;
@@ -63,7 +63,7 @@
     CGFloat viewWidth = CGRectGetWidth(view.frame);
     CGFloat viewHeight = CGRectGetHeight(view.frame);
     
-    UIBezierPath *_ovalPath = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(0, 0, viewWidth, viewHeight)];
+    UIBezierPath *_ovalPath = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(2, 2, viewWidth - 4, viewHeight - 4)];
     
     CAShapeLayer *shapeLayer = [CAShapeLayer layer];
     shapeLayer.path           = _ovalPath.CGPath;

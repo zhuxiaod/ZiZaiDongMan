@@ -47,6 +47,9 @@ typedef NS_ENUM(NSInteger, editorTextViewType) {
 
 @property (nonatomic,strong) NSString *kindIndex;
 
+@property (nonatomic,assign) CGFloat viewScale;
+
+
 
 -(void)textViewHiddenState;
 

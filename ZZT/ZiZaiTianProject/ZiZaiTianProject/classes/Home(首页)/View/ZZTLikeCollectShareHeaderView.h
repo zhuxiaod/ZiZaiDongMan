@@ -26,7 +26,7 @@ typedef void (^collectBtnBlock) (void);
 
 @property (nonatomic, copy) void (^ likeBtnBlock)(void);
 
-@property (nonatomic, copy) void (^ collectBtnBlock)(void);
+@property (nonatomic, copy) void (^ collectBtnBlock)(NSInteger tag);
 
 
 @end

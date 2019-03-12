@@ -387,8 +387,8 @@
         imagePickerVc.showSelectedIndex = YES;
         imagePickerVc.isSelectOriginalPhoto = _isSelectOriginalPhoto;
         [imagePickerVc setDidFinishPickingPhotosHandle:^(NSArray<UIImage *> *photos, NSArray *assets, BOOL isSelectOriginalPhoto) {
-            self->_selectedPhotos = [NSMutableArray arrayWithArray:photos];
-            self->_selectedAssets = [NSMutableArray arrayWithArray:assets];
+            [self->_selectedPhotos addObjectsFromArray:photos];
+            [self->_selectedAssets addObjectsFromArray:assets];
             self->_isSelectOriginalPhoto = isSelectOriginalPhoto;
             [self->_collectionView reloadData];
             self->_collectionView.contentSize = CGSizeMake(0, ((self->_selectedPhotos.count + 2) / 3 ) * (self->_margin + self->_itemWH));
@@ -492,8 +492,11 @@
     // You can get the photos by block, the same as by delegate.
     // 你可以通过block或者代理，来得到用户选择的照片.
     [imagePickerVc setDidFinishPickingPhotosHandle:^(NSArray<UIImage *> *photos, NSArray *assets, BOOL isSelectOriginalPhoto) {
-        self->_selectedPhotos = [NSMutableArray arrayWithArray:photos];
-        self->_selectedAssets = [NSMutableArray arrayWithArray:assets];
+        [self->_selectedPhotos addObjectsFromArray:photos];
+        [self->_selectedAssets addObjectsFromArray:assets];
+
+//        self->_selectedPhotos = [NSMutableArray arrayWithArray:photos];
+//        self->_selectedAssets = [NSMutableArray arrayWithArray:assets];
         self->_isSelectOriginalPhoto = isSelectOriginalPhoto;
         [self->_collectionView reloadData];
         self->_collectionView.contentSize = CGSizeMake(0, ((self->_selectedPhotos.count + 2) / 3 ) * (self->_margin + self->_itemWH));
@@ -561,6 +564,7 @@
     
     [_collectionView reloadData];
 }
+
 #pragma mark - UITextViewDelegate
 - (void)textViewDidEndEditing:(UITextView *)textView {
     if(textView.text.length < 1){
@@ -615,15 +619,13 @@
                 } else {
                     TZAssetModel *assetModel = [[TZImageManager manager] createModelWithAsset:asset];
                     
-                    //                    [self refreshCollectionViewWithAddedAsset:assetModel.asset image:image];
-                    //这个页面的数据源 添加
-                    [self.selectedAssets addObject:assetModel.asset];
-                    [self.selectedPhotos addObject:image];
-                    [self.collectionView reloadData];
+                    [self refreshCollectionViewWithAddedAsset:assetModel.asset image:image];
                 }
             }];
         }
-
     }];
 }
+
+
+
 @end

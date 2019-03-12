@@ -12,6 +12,8 @@
 #import "ZZTMaterialCell.h"
 #import "HZPhotoBrowser.h"
 #import "ZZTMyZoneModel.h"
+#import "JYEqualCellSpaceFlowLayout.h"
+
 @interface ZZTCommentImgView ()<UICollectionViewDataSource,UICollectionViewDelegate>
 //图片View
 @property (strong, nonatomic) UICollectionView *collectionView;
@@ -36,16 +38,21 @@
     self = [super initWithFrame:frame];
     if (self) {
         //使用collectionView
-        UICollectionViewFlowLayout *layout = [self setupCollectionViewFlowLayout];
-        
-        [self setupCollectionView:layout];
+//        UICollectionViewFlowLayout *layout = [self setupCollectionViewFlowLayout];
+
+        JYEqualCellSpaceFlowLayout *flowLayout = [[JYEqualCellSpaceFlowLayout alloc]initWithType:AlignWithLeft betweenOfCell:10];
+        flowLayout.minimumLineSpacing = 10;
+        flowLayout.minimumInteritemSpacing = 10;
+
+        flowLayout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0);
+
+        [self setupCollectionView:flowLayout];
         
         self.oneRowHeight = 0.0f;
         _cellW = 140;
         _cellH = _cellW;
         self.isDown = NO;
         
-       
     }
     return self;
 }
@@ -57,23 +64,24 @@
     
 }
 
-#pragma mark - 创建流水布局
--(UICollectionViewFlowLayout *)setupCollectionViewFlowLayout{
-    
-    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-    //修改尺寸(控制)
-//    layout.itemSize = CGSizeMake(imgHeight,imgHeight);
-    
-    layout.scrollDirection = UICollectionViewScrollDirectionVertical;
-    //行距
-//    layout.minimumLineSpacing = 10;
+//#pragma mark - 创建流水布局
+//-(UICollectionViewFlowLayout *)setupCollectionViewFlowLayout{
 //
-//    layout.minimumInteritemSpacing = 10;
-    
-//    layout.estimatedItemSize = CGSizeMake(320, 60);
-    
-    return layout;
-}
+//    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+//    //修改尺寸(控制)
+////    layout.itemSize = CGSizeMake(imgHeight,imgHeight);
+//
+//    layout.scrollDirection = UICollectionViewScrollDirectionVertical;
+//    //行距
+////    layout.minimumLineSpacing = 40;
+////
+////
+////    layout.minimumInteritemSpacing = 40;
+//
+////    layout.estimatedItemSize = CGSizeMake(320, 60);
+//
+//    return layout;
+//}
 
 #pragma mark - 创建CollectionView
 -(void)setupCollectionView:(UICollectionViewFlowLayout *)layout
@@ -85,6 +93,8 @@
     collectionView.delegate = self;
     collectionView.showsVerticalScrollIndicator = NO;
     [self addSubview:self.collectionView];
+    collectionView.pagingEnabled = YES;
+
     
     [self.collectionView registerNib:[UINib nibWithNibName:@"ZZTMaterialCell" bundle:nil]  forCellWithReuseIdentifier:@"wordImageCell1"];
 }
@@ -135,6 +145,7 @@
         return CGSizeMake(imgHeight,imgHeight);
     }
 }
+
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     

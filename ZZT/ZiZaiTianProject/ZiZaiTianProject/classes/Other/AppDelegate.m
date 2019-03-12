@@ -74,10 +74,10 @@
     [UserInfoContext sharedUserInfoContext].userInfo = [Utilities GetNSUserDefaults];
     
 //    // 启动图片延时: 1秒
-    [NSThread sleepForTimeInterval:2];
-
-//    异常处理
-    [self avoidCrash];
+//    [NSThread sleepForTimeInterval:2];
+//
+////    异常处理
+//    [self avoidCrash];
 
     /**启动IAP工具类*/
     [[SBIAPManager manager] startManager];

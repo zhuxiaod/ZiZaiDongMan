@@ -7,6 +7,8 @@
 //
 
 #import "ZZTEditorBrightnessView.h"
+#import "ZZTEditorImageView.h"
+
 #define margin 15
 
 @implementation ZZTEditorBrightnessView
@@ -21,95 +23,100 @@
     return self;
 }
 
+-(UILabel *)creatLabWithText:(NSString *)text textColor:(UIColor *)color fontSize:(NSInteger)fontSize{
+    UILabel *Label =[[UILabel alloc] init];
+    
+    Label.text = text;
+    Label.textColor = color;
+    Label.font = [UIFont systemFontOfSize:fontSize];
+    [self addSubview:Label];
+    return Label;
+}
+
+-(UISlider *)creatSliderWithTag:(NSInteger)tag minValue:(CGFloat)minValue maxValue:(CGFloat)maxValue value:(CGFloat)value taget:(SEL)taget{
+    
+    UISlider *slider =[[UISlider alloc] init];
+    slider.tag = tag;
+    slider.minimumValue = minValue;
+    slider.maximumValue = maxValue;
+    slider.value = value;
+    slider.minimumTrackTintColor =[UIColor colorWithRed:17 / 255.0 green:195 / 255.0 blue:236 / 255.0 alpha:1];
+    
+    //    Handle
+    [slider setThumbImage:[UIImage imageNamed:@"Handle"] forState:UIControlStateNormal];
+    [slider addTarget:self action:taget forControlEvents:UIControlEventValueChanged];
+    [self addSubview:slider];
+    return slider;
+}
+
 -(void)buildLayout
 {
     self.backgroundColor = [UIColor colorWithRed:244 green:244 blue:244 alpha:1];
-    CGFloat brightnessLabelX = margin;
+    
+    //亮度
+    CGFloat LabelX = margin;
     CGFloat brightnessLabelY = 5;
-    CGFloat brightnessLabelW = 70;
-    CGFloat brightnessLabelH = 20;
-    UILabel *brightnessLabel =[[UILabel alloc] initWithFrame:CGRectMake(brightnessLabelX, brightnessLabelY, brightnessLabelW, brightnessLabelH)];
-    brightnessLabel.text = @"亮度";
-    brightnessLabel.textColor = [UIColor blackColor];
-    brightnessLabel.font = [UIFont systemFontOfSize:14];
-    [self addSubview:brightnessLabel];
+    CGFloat LabelW = 70;
+    CGFloat LabelH = 20;
     
-    CGFloat brightnessSliderX = CGRectGetMaxX(brightnessLabel.frame) + margin;
+    UILabel *brightnessLabel = [self creatLabWithText:@"亮度" textColor:[UIColor blackColor] fontSize:14];
+    brightnessLabel.frame = CGRectMake(LabelX, brightnessLabelY, LabelW, LabelH);
+    
+    CGFloat SliderX = CGRectGetMaxX(brightnessLabel.frame) + margin;
     CGFloat brightnessSliderY = brightnessLabelY;
-    CGFloat brightnessSliderW = self.width - brightnessSliderX - margin;
-    CGFloat brightnessSliderH = 20;
+    CGFloat SliderW = self.width - SliderX - margin;
+    CGFloat SliderH = 20;
     
-    UISlider *brightnessSlider =[[UISlider alloc] initWithFrame:CGRectMake(brightnessSliderX, brightnessSliderY, brightnessSliderW, brightnessSliderH)];
-    brightnessSlider.tag = 105;
-    brightnessSlider.minimumValue = -0.5;
-    brightnessSlider.maximumValue = 0.5;
-    brightnessSlider.value = 0;
-    brightnessSlider.minimumTrackTintColor =[UIColor colorWithRed:17 / 255.0 green:195 / 255.0 blue:236 / 255.0 alpha:1];
-    
-//    Handle
-    
-    [brightnessSlider setThumbImage:[UIImage imageNamed:@"Handle"] forState:UIControlStateNormal];
-    [brightnessSlider addTarget:self action:@selector(sliderValueChage:) forControlEvents:UIControlEventValueChanged];
-    [self addSubview:brightnessSlider];
+    UISlider *brightnessSlider = [self creatSliderWithTag:105 minValue:-1 maxValue:1 value:0 taget:@selector(sliderValueChage:)];
+    _brightnessSlider = brightnessSlider;
+    brightnessSlider.frame = CGRectMake(SliderX, brightnessSliderY, SliderW, SliderH);
 
-    CGFloat SaturationLabelX = margin;
+    //饱和度
     CGFloat SaturationLabelY = CGRectGetMaxY(brightnessLabel.frame)+5;
-    CGFloat SaturationLabelW = 70;
-    CGFloat SaturationLabelH = 20;
-    UILabel *SaturationLabel =[[UILabel alloc] initWithFrame:CGRectMake(SaturationLabelX, SaturationLabelY, SaturationLabelW, SaturationLabelH)];
-    SaturationLabel.text = @"饱和度";
-    SaturationLabel.textColor = [UIColor blackColor];
-    SaturationLabel.font = [UIFont systemFontOfSize:14];
-    [self addSubview:SaturationLabel];
+    UILabel *SaturationLabel = [self creatLabWithText:@"饱和度" textColor:[UIColor blackColor] fontSize:14];
+    SaturationLabel.frame = CGRectMake(LabelX, SaturationLabelY, LabelW, LabelH);
     
-    CGFloat SaturationSliderX = CGRectGetMaxX(SaturationLabel.frame) + margin;
     CGFloat SaturationSliderY = SaturationLabelY;
-    CGFloat SaturationSliderW = self.width - SaturationSliderX - margin;
-    CGFloat SaturationSliderH = 20;
     
+    UISlider *SaturationSlider = [self creatSliderWithTag:106 minValue:0 maxValue:2 value:1 taget:@selector(sliderValueChage:)];
+    _saturationSlider = SaturationSlider;
+    SaturationSlider.frame = CGRectMake(SliderX, SaturationSliderY, SliderW, SliderH);
     
-    
-    UISlider *SaturationSlider =[[UISlider alloc] initWithFrame:CGRectMake(SaturationSliderX, SaturationSliderY, SaturationSliderW, SaturationSliderH)];
-    SaturationSlider.tag = 106;
-    SaturationSlider.minimumValue = 0.5;
-    SaturationSlider.maximumValue = 1.5;
-    SaturationSlider.value = 1;
-    SaturationSlider.minimumTrackTintColor =[UIColor colorWithRed:17 / 255.0 green:195 / 255.0 blue:236 / 255.0 alpha:1];
-    [SaturationSlider setThumbImage:[UIImage imageNamed:@"Handle"] forState:UIControlStateNormal];
-
-    [SaturationSlider addTarget:self action:@selector(sliderValueChage:) forControlEvents:UIControlEventValueChanged];
-    [self addSubview:SaturationSlider];
-    
-    
-    
-    self.backgroundColor = [UIColor colorWithRed:244 / 255.0 green:244 / 255.0 blue:244 / 255.0 alpha:1];
-    CGFloat ContrastLabelX = margin;
+    //对比度
     CGFloat ContrastLabelY = CGRectGetMaxY(SaturationLabel.frame)+5;;
-    CGFloat ContrastLabelW = 70;
-    CGFloat ContrastLabelH = 20;
-    UILabel *ContrastLabel =[[UILabel alloc] initWithFrame:CGRectMake(ContrastLabelX, ContrastLabelY, ContrastLabelW, ContrastLabelH)];
-    ContrastLabel.text = @"对比度";
-    ContrastLabel.textColor = [UIColor blackColor];
-    ContrastLabel.font = [UIFont systemFontOfSize:14];
-    [self addSubview:ContrastLabel];
-    
-    CGFloat ContrastSliderX = CGRectGetMaxX(ContrastLabel.frame) + margin;
-    CGFloat ContrastSliderY = ContrastLabelY;
-    CGFloat ContrastSliderW = self.width - ContrastSliderX - margin;
-    CGFloat ContrastSliderH = 20;
-    
-    
-    
-    UISlider *ContrastSlider =[[UISlider alloc] initWithFrame:CGRectMake(ContrastSliderX, ContrastSliderY, ContrastSliderW, ContrastSliderH)];
-    ContrastSlider.tag = 107;
-    ContrastSlider.minimumValue = 0.5;
-    ContrastSlider.maximumValue = 1.5;
-    ContrastSlider.value = 1;
-    ContrastSlider.minimumTrackTintColor =[UIColor colorWithRed:17 / 255.0 green:195 / 255.0 blue:236 / 255.0 alpha:1];
-    [ContrastSlider setThumbImage:[UIImage imageNamed:@"Handle"] forState:UIControlStateNormal];
 
-    [ContrastSlider addTarget:self action:@selector(sliderValueChage:) forControlEvents:UIControlEventValueChanged];
-    [self addSubview:ContrastSlider];
+    UILabel *ContrastLabel = [self creatLabWithText:@"对比度" textColor:[UIColor blackColor] fontSize:14];
+    ContrastLabel.frame = CGRectMake(LabelX, ContrastLabelY, LabelW, LabelH);
+    
+
+    CGFloat ContrastSliderY = ContrastLabelY;
+
+    UISlider *ContrastSlider = [self creatSliderWithTag:107 minValue:-3.14 maxValue:3.14 value:0 taget:@selector(sliderValueChage:)];
+    _contrastSlider = ContrastSlider;
+    ContrastSlider.frame = CGRectMake(SliderX, ContrastSliderY,SliderW,SliderH);
+    
+    //色相
+    CGFloat HueLabelY = CGRectGetMaxY(ContrastLabel.frame)+5;;
+    
+    UILabel *HueLabel = [self creatLabWithText:@"色相" textColor:[UIColor blackColor] fontSize:14];
+    HueLabel.frame = CGRectMake(LabelX, HueLabelY, LabelW, LabelH);
+    
+    CGFloat HueSliderY = HueLabelY;
+    
+    UISlider *HueSlider = [self creatSliderWithTag:108 minValue:-3.14 maxValue:3.14 value:0 taget:@selector(sliderValueChage:)];
+    _hueSlider = HueSlider;
+    HueSlider.frame = CGRectMake(SliderX, HueSliderY,SliderW,SliderH);
+    
+    //透明度
+    CGFloat AlphaLabelY = CGRectGetMaxY(HueLabel.frame)+5;
+    UILabel *AlphaLabel = [self creatLabWithText:@"透明度" textColor:[UIColor blackColor] fontSize:14];
+    AlphaLabel.frame = CGRectMake(LabelX, AlphaLabelY, LabelW, LabelH);
+    
+    CGFloat AlphaSliderY = AlphaLabelY;
+    
+    UISlider *AlphaSlider = [self creatSliderWithTag:109 minValue:0 maxValue:1 value:0.5 taget:@selector(sliderValueChage:)];
+    _alphaSlider = AlphaSlider;
+    AlphaSlider.frame = CGRectMake(SliderX, AlphaSliderY,SliderW,SliderH);
 }
 
 - (void)sliderValueChage:(UISlider *)slider
@@ -129,5 +136,20 @@
     return view;
     
 }
-
+#pragma mark - 设置slider的初始化
+-(void)setImageViewModel:(ZZTEditorImageView *)imageViewModel{
+    _imageViewModel = imageViewModel;
+    
+    if(imageViewModel == nil) return;
+    
+    self.saturationSlider.value = imageViewModel.saturation;
+    
+    self.contrastSlider.value = imageViewModel.contrast;
+    
+    self.brightnessSlider.value = imageViewModel.brightness;
+    
+    self.hueSlider.value = imageViewModel.hue;
+    
+    self.alphaSlider.value = imageViewModel.alpha;
+}
 @end

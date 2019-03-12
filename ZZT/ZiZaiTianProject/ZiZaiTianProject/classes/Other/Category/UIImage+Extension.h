@@ -13,6 +13,7 @@
 - (UIImage *)clipEllipseImage;
 
 + (UIImage *)cropSquareImage:(UIImage *)image;
-
+//改变图片的透明度
++ (UIImage *)imageByApplyingAlpha:(CGFloat)alpha  image:(UIImage*)image;
 
 @end

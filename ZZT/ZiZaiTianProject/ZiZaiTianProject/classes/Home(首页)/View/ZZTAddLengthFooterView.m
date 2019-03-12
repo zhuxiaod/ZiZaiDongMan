@@ -19,12 +19,12 @@
 
 -(void)awakeFromNib{
     [super awakeFromNib];
+    
     [_cellB addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
     _addCellBtn = _cellB;
 
     [_lengthB addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
     _addLengthBtn = _lengthB;
-
 }
 
 -(void)btnClick:(UIButton *)btn{

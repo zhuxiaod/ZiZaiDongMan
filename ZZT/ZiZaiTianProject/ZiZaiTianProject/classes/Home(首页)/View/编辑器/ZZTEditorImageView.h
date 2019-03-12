@@ -88,6 +88,19 @@ typedef NS_ENUM(NSInteger, Editor_ImageViewType) {
 
 @property (nonatomic,strong) NSString *modelType;
 
+//亮度 brightness
+@property (nonatomic,assign) CGFloat brightness;
+//对比度 Contrast
+@property (nonatomic,assign) CGFloat contrast;
+//饱和度 Saturation
+@property (nonatomic,assign) CGFloat saturation;
+//透明度
+@property (nonatomic,assign) CGFloat alpha;
+//色调
+@property (nonatomic,assign) CGFloat hue;
+
+@property (nonatomic,strong) NSString *isCollectOpen;
+
 -(void)draw;
 
 @end

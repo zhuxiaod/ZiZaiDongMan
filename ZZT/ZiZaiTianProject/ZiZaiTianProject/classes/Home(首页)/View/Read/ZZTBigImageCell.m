@@ -37,6 +37,7 @@
     }];
 }
 
+
 -(void)setModel:(ZZTCarttonDetailModel *)model{
     _model = model;
     
@@ -46,5 +47,9 @@
     
     self.imageView.layer.cornerRadius = 12;
     self.imageView.layer.masksToBounds = YES;
+    self.imageView.layer.borderWidth = 1.0f;
+    self.imageView.layer.borderColor = [UIColor blackColor].CGColor;
+
 }
+
 @end

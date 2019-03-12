@@ -60,7 +60,7 @@
     [self.contentView addSubview:_backgroundBtn];
     
     _userHead = [[ZZTUserHeadView alloc] initWithFrame:CGRectZero];
-//    [_userHead.viewClick addTarget:self action:@selector(print) forControlEvents:UIControlEventTouchUpInside];
+    [_userHead.viewClick addTarget:self action:@selector(gotoMeEditView) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:_userHead];
 
     //用户名
@@ -68,6 +68,14 @@
     [_userName setTextColor:[UIColor whiteColor]];
     _userName.textAlignment = NSTextAlignmentRight;
     [self.contentView addSubview:_userName];
+}
+
+//跳转我的编辑页
+-(void)gotoMeEditView{
+    //跳转编辑页
+    ZZTMeEditViewController *meEditVC = [[ZZTMeEditViewController alloc] init];
+    meEditVC.model = [Utilities GetNSUserDefaults];
+    [[self myViewController].navigationController pushViewController:meEditVC animated:YES];
 }
 
 -(void)updateBackground{
@@ -96,9 +104,10 @@
 
 -(void)layoutSubviews{
     [super layoutSubviews];
+    
     [_backgroundBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.right.left.equalTo(self.contentView);
-        make.bottom.equalTo(self.contentView).offset(-10);
+        make.bottom.equalTo(self.contentView).offset(-20);
     }];
     
     [_backgroundBtn.imageView mas_makeConstraints:^(MASConstraintMaker *make) {

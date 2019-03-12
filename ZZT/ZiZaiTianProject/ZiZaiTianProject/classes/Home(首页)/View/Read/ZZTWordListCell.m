@@ -36,6 +36,7 @@
     //图片
     //图片
     UIImageView *headImg = [[UIImageView alloc] init];
+    [headImg setContentMode:UIViewContentModeScaleToFill];
     headImg.layer.cornerRadius = 8;
     headImg.layer.masksToBounds = YES;
     _headImg = headImg;

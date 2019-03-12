@@ -26,9 +26,9 @@
 @property(nonatomic,weak)id<ZZTEditorDeskViewdelegate>   delegate;
 
 -(void)Editor_addSubView:(UIView *)view;
-
+//上一层
 -(void)Editor_moveCurrentImageViewToLastLayer;
-
+//下一层
 -(void)Editor_moveCurrentImageViewToNextLayer;
 
 -(void)Editor_removeAllView;

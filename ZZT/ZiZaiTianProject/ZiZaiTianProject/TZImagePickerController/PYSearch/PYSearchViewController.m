@@ -186,7 +186,9 @@
     // Adjust the view according to the `navigationBar.translucent`
     if (NO == self.navigationController.navigationBar.translucent) {
         self.baseSearchTableView.contentInset = UIEdgeInsetsMake(0, 0, self.view.py_y, 0);
-        self.searchSuggestionVC.view.frame = CGRectMake(0, CGRectGetMaxY(self.navigationController.navigationBar.frame) - self.view.py_y, self.view.py_width, self.view.py_height + self.view.py_y);
+#pragma mark - 处理了VC下移BUG
+//        CGRectGetMaxY(self.navigationController.navigationBar.frame) - self.view.py_y
+        self.searchSuggestionVC.view.frame = CGRectMake(0, 0, self.view.py_width, self.view.py_height + self.view.py_y);
         if (!self.navigationController.navigationBar.barTintColor) {
             self.navigationController.navigationBar.barTintColor = PYSEARCH_COLOR(249, 249, 249);
         }
@@ -261,7 +263,7 @@
                 [_swSelf searchBarSearchButtonClicked:_swSelf.searchBar];
             }
         };
-        searchSuggestionVC.view.frame = CGRectMake(0, 0, PYScreenW, PYScreenH);
+        searchSuggestionVC.view.frame = CGRectMake(0, 0, PYScreenW, PYScreenH - navHeight);
         
         searchSuggestionVC.view.backgroundColor = self.baseSearchTableView.backgroundColor;
         searchSuggestionVC.view.hidden = YES;
@@ -813,8 +815,8 @@
     _searchSuggestions = [searchSuggestions copy];
     self.searchSuggestionVC.searchSuggestions = [searchSuggestions copy];
     
-    self.baseSearchTableView.hidden = !self.searchSuggestionHidden && [self.searchSuggestionVC.tableView numberOfRowsInSection:0];
-    self.searchSuggestionVC.view.hidden = self.searchSuggestionHidden || ![self.searchSuggestionVC.tableView numberOfRowsInSection:0];
+//    self.baseSearchTableView.hidden = !self.searchSuggestionHidden && [self.searchSuggestionVC.tableView numberOfRowsInSection:0];
+//    self.searchSuggestionVC.view.hidden = self.searchSuggestionHidden || ![self.searchSuggestionVC.tableView numberOfRowsInSection:0];
 }
 
 - (void)setRankTagBackgroundColorHexStrings:(NSArray<NSString *> *)rankTagBackgroundColorHexStrings
@@ -1117,7 +1119,8 @@
 {
     if ([self.dataSource respondsToSelector:@selector(searchSuggestionView:numberOfRowsInSection:)]) {
         NSInteger numberOfRow = [self.dataSource searchSuggestionView:searchSuggestionView numberOfRowsInSection:section];
-        searchSuggestionView.hidden = self.searchSuggestionHidden || !self.searchBar.text.length || 0 == numberOfRow;
+        searchSuggestionView.hidden = self.searchSuggestionHidden || !self.searchBar.text.length;// || 0 == numberOfRow;
+        NSLog(@"hiddenhidden:%d",searchSuggestionView.hidden);
         self.baseSearchTableView.hidden = !searchSuggestionView.hidden;
         return numberOfRow;
     }

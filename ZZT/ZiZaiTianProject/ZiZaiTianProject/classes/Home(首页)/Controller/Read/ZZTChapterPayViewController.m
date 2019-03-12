@@ -32,7 +32,9 @@
 @property (weak, nonatomic) IBOutlet UILabel *VIPTotalPrice;
 @property (weak, nonatomic) IBOutlet UILabel *totalPrice;
 @property (nonatomic,strong) ZZTChapterVipModel *vipModel;//购买话模型
+
 @property (nonatomic,strong) ZZTChapterVipItemModel *nowBuyChapterModel;//当前要购买的章节模型
+
 @end
 
 @implementation ZZTChapterPayViewController
@@ -62,6 +64,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
     self.moneyView.layer.cornerRadius = 2;
     self.moneyView.layer.borderWidth = 1.0f;
     self.moneyView.layer.borderColor = ZZTSubColor.CGColor;
@@ -100,28 +103,12 @@
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         ZZTChapterVipModel *vipModel = [ZZTChapterVipModel mj_objectWithKeyValues:dic];
         self.vipModel = vipModel;
-//        vipModel.num = 31;
-        NSArray *dataArray = [NSArray array];
-        if(vipModel.num <= 10){
-            if(vipModel.num == 1){
-                dataArray = @[[ZZTChapterVipItemModel initWithItemStr:@"购买话" discount:@"1" buyChapterNum:1]];
-            }else{
-                dataArray = @[[ZZTChapterVipItemModel initWithItemStr:@"购买话" discount:@"1" buyChapterNum:1],[ZZTChapterVipItemModel initWithItemStr:[NSString stringWithFormat:@"剩余%ld话",vipModel.num] discount:vipModel.discountOne buyChapterNum:vipModel.num]];
-            }
-        }else if (vipModel.num >10 && vipModel.num <= 30){
-            dataArray = @[[ZZTChapterVipItemModel initWithItemStr:@"购买话" discount:@"1" buyChapterNum:1],[ZZTChapterVipItemModel initWithItemStr:@"后10话" discount:vipModel.discountOne buyChapterNum:10],[ZZTChapterVipItemModel initWithItemStr:[NSString stringWithFormat:@"剩余%ld话",vipModel.num] discount:vipModel.discountTwo buyChapterNum:vipModel.num]];
-        }else{
-            dataArray = @[[ZZTChapterVipItemModel initWithItemStr:@"购买话" discount:@"1" buyChapterNum:1],[ZZTChapterVipItemModel initWithItemStr:@"后10话" discount:vipModel.discountOne buyChapterNum:10],[ZZTChapterVipItemModel initWithItemStr:@"后30话" discount:vipModel.discountTwo buyChapterNum:30],[ZZTChapterVipItemModel initWithItemStr:[NSString stringWithFormat:@"剩余%ld话",vipModel.num] discount:vipModel.discountThree buyChapterNum:vipModel.num]];
-        }
-        self.dataArray = dataArray;
+        self.dataArray = [self setupChapterVipData:vipModel];;
         [self.collectionView reloadData];
         NSLog(@"%@",dic);
         self.totalPrice.text = [NSString stringWithFormat:@"应付%ldZ币",self.model.chapterMoney];
         self.VIPTotalPrice.text = [NSString stringWithFormat:@"%ldZ币",(NSInteger)(self.model.chapterMoney * [vipModel.vip floatValue])];
-        //按钮显示
-        //如果是登录状态
-        //如果改人是VIP 用他的钱 比 Vip 价格 不够的话显示 余额不足
-   
+
         [self updateBtnState];
         
         ZZTChapterVipItemModel *buyChapterNumModel = self.dataArray[0];
@@ -129,6 +116,23 @@
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
+}
+
+#pragma mark - 设置章节VIP数据
+-(NSArray *)setupChapterVipData:(ZZTChapterVipModel *)vipModel{
+    NSArray *dataArray = [NSArray array];
+    if(vipModel.num <= 10){
+        if(vipModel.num == 1){
+            dataArray = @[[ZZTChapterVipItemModel initWithItemStr:@"购买话" discount:@"1" buyChapterNum:1]];
+        }else{
+            dataArray = @[[ZZTChapterVipItemModel initWithItemStr:@"购买话" discount:@"1" buyChapterNum:1],[ZZTChapterVipItemModel initWithItemStr:[NSString stringWithFormat:@"剩余%ld话",vipModel.num] discount:vipModel.discountOne buyChapterNum:vipModel.num]];
+        }
+    }else if (vipModel.num >10 && vipModel.num <= 30){
+        dataArray = @[[ZZTChapterVipItemModel initWithItemStr:@"购买话" discount:@"1" buyChapterNum:1],[ZZTChapterVipItemModel initWithItemStr:@"后10话" discount:vipModel.discountOne buyChapterNum:10],[ZZTChapterVipItemModel initWithItemStr:[NSString stringWithFormat:@"剩余%ld话",vipModel.num] discount:vipModel.discountTwo buyChapterNum:vipModel.num]];
+    }else{
+        dataArray = @[[ZZTChapterVipItemModel initWithItemStr:@"购买话" discount:@"1" buyChapterNum:1],[ZZTChapterVipItemModel initWithItemStr:@"后10话" discount:vipModel.discountOne buyChapterNum:10],[ZZTChapterVipItemModel initWithItemStr:@"后30话" discount:vipModel.discountTwo buyChapterNum:30],[ZZTChapterVipItemModel initWithItemStr:[NSString stringWithFormat:@"剩余%ld话",vipModel.num] discount:vipModel.discountThree buyChapterNum:vipModel.num]];
+    }
+    return dataArray;
 }
 
 -(void)updateBtnState{
@@ -178,8 +182,10 @@
     [_buyOptionView addSubview:collectionView];
     
     [collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.buyOptionView.mas_right);
+        make.left.equalTo(self.buyOptionView.mas_left);
+
         make.centerY.equalTo(self.buyOptionView.mas_centerY);
-        make.width.mas_equalTo(SCREEN_WIDTH);
         make.height.mas_equalTo(30);
     }];
     

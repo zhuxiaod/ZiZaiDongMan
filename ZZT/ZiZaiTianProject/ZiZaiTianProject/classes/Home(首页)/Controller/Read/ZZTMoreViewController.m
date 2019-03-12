@@ -10,6 +10,10 @@
 #import "ZZTWordCell.h"
 #import "ZZTWordDetailViewController.h"
 #import "ZZTMulWordDetailViewController.h"
+#import "ZZTDetailModel.h"
+#import "ZZTMallDetailViewController.h"
+
+
 
 static const CGFloat MJDuration = 1.0;
 
@@ -94,30 +98,45 @@ NSString *WordCell = @"WordCell";
 
 -(void)setupMJRefresh{
     self.collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        [self loadNewData];
+        if(self.moreTag == 2){
+            //素材
+            [self loadMaterialData];
+        }else{
+            //默认是首页的更多
+            [self loadNewData];
+        }
     }];
     self.collectionView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
-       
-        [self loadMoreData];
+        if(self.moreTag == 2){
+            //素材
+            [self loadMoreMaterialData];
+        }else{
+            [self loadMoreData];
+        }
     }];
 }
 
--(void)loadNewData{
-    
+#pragma mark - 加载素材数据
+-(void)loadMaterialData{
     NSDictionary *dic = @{
                           @"pageNum":@"1",
                           @"pageSize":[NSString stringWithFormat:@"%ld",self.pageSize],
                           @"more":@"2"
                           };
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getRecommendCartoon"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:[ZZTAPI stringByAppendingString:@"zztMall/getFodderGoods"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
-        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
-        
+        NSMutableArray *array = [ZZTDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
+        NSInteger total = [[dic objectForKey:@"total"] integerValue];
+
         self.dataArray = array;
         
         // 模拟延迟加载数据，因此2秒后才调用（真实开发中，可以移除这段gcd代码）
         [self.collectionView reloadData];
+        
+        if(self.dataArray.count >= total){
+            [self.collectionView.mj_footer endRefreshingWithNoMoreData];
+        }
         
         [self.collectionView.mj_header endRefreshing];
         
@@ -128,7 +147,7 @@ NSString *WordCell = @"WordCell";
     }];
 }
 
--(void)loadMoreData{
+-(void)loadMoreMaterialData{
     NSDictionary *dic = @{
                           @"pageNum":[NSString stringWithFormat:@"%ld",self.pageNumber],
                           @"pageSize":@"10",
@@ -136,7 +155,85 @@ NSString *WordCell = @"WordCell";
                           };
     
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getRecommendCartoon"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:[ZZTAPI stringByAppendingString:@"zztMall/getFodderGoods"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
+        NSInteger total = [[dic objectForKey:@"total"] integerValue];
+        //        self.dataArray = array;
+        [self.dataArray addObjectsFromArray:array];
+        
+        // 模拟延迟加载数据，因此2秒后才调用（真实开发中，可以移除这段gcd代码）
+        [self.collectionView reloadData];
+        
+        if(self.dataArray.count >= total){
+            [self.collectionView.mj_footer endRefreshingWithNoMoreData];
+        }else{
+            [self.collectionView.mj_footer endRefreshing];
+        }
+        
+        self.pageNumber++;
+        
+        self.pageSize += 10;
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [self.collectionView.mj_footer endRefreshing];
+        
+    }];
+}
+
+-(void)loadNewData{
+    NSString *url = [self getCartoonUrl];
+    NSDictionary *dic = @{
+                          @"pageNum":@"1",
+                          @"pageSize":[NSString stringWithFormat:@"%ld",self.pageSize],
+                          @"more":@"2"
+                          };
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    [manager POST:[ZZTAPI stringByAppendingString:url] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
+        NSInteger total = [[dic objectForKey:@"total"] integerValue];
+
+        self.dataArray = array;
+        
+        // 模拟延迟加载数据，因此2秒后才调用（真实开发中，可以移除这段gcd代码）
+        [self.collectionView reloadData];
+        
+        if(self.dataArray.count >= total){
+            [self.collectionView.mj_footer endRefreshingWithNoMoreData];
+        }
+        
+        [self.collectionView.mj_header endRefreshing];
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+        [self.collectionView.mj_header endRefreshing];
+        
+    }];
+}
+#pragma mark - 获取首页卡通 和 商城卡通
+-(NSString *)getCartoonUrl{
+    NSString *url;
+    if(self.moreTag == 1){
+//        商城
+        url = @"zztMall/getCartoonGoods";
+    }else{
+//        首页
+        url = @"cartoon/getRecommendCartoon";
+    }
+    return url;
+}
+
+-(void)loadMoreData{
+    NSString *url = [self getCartoonUrl];
+    NSDictionary *dic = @{
+                          @"pageNum":[NSString stringWithFormat:@"%ld",self.pageNumber],
+                          @"pageSize":@"10",
+                          @"more":@"2"
+                          };
+    
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    [manager POST:[ZZTAPI stringByAppendingString:url] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
         NSInteger total = [[dic objectForKey:@"total"] integerValue];
@@ -171,25 +268,37 @@ NSString *WordCell = @"WordCell";
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     ZZTCartoonCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cellId" forIndexPath:indexPath];
-    ZZTCarttonDetailModel *car = self.dataArray[indexPath.row];
-    cell.cartoon = car;
+    if(_moreTag == 2){
+        ZZTDetailModel *car = self.dataArray[indexPath.row];
+        cell.materialModel = car;
+    }else{
+        ZZTCarttonDetailModel *car = self.dataArray[indexPath.row];
+        cell.cartoon = car;
+    }
     return cell;
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    ZZTCarttonDetailModel *md = self.dataArray[indexPath.row];
-    if([md.cartoonType isEqualToString:@"1"]){
-        ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
-        detailVC.isId = YES;
-        detailVC.cartoonDetail = md;
-        detailVC.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:detailVC animated:YES];
+    if(_moreTag == 2){
+        ZZTDetailModel *detailModel = self.dataArray[indexPath.row];
+        ZZTMallDetailViewController *vc = [[ZZTMallDetailViewController alloc] init];
+        vc.model = detailModel;
+        [self.navigationController pushViewController:vc animated:YES];
     }else{
-        ZZTMulWordDetailViewController *detailVC = [[ZZTMulWordDetailViewController alloc]init];
-        detailVC.isId = YES;
-        detailVC.cartoonDetail = md;
-        detailVC.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:detailVC animated:YES];
+        ZZTCarttonDetailModel *md = self.dataArray[indexPath.row];
+        if([md.cartoonType isEqualToString:@"1"]){
+            ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
+            detailVC.isId = YES;
+            detailVC.cartoonDetail = md;
+            detailVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:detailVC animated:YES];
+        }else{
+            ZZTMulWordDetailViewController *detailVC = [[ZZTMulWordDetailViewController alloc]init];
+            detailVC.isId = YES;
+            detailVC.cartoonDetail = md;
+            detailVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:detailVC animated:YES];
+        }
     }
 }
 
@@ -200,6 +309,22 @@ NSString *WordCell = @"WordCell";
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.collectionView.mj_header beginRefreshing];
+    [UIApplication sharedApplication].statusBarStyle =  UIStatusBarStyleDefault;
+
 }
 
+-(void)setMoreTag:(NSInteger)moreTag{
+    _moreTag = moreTag;
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    
+}
+
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [UIApplication sharedApplication].statusBarStyle =  UIStatusBarStyleLightContent;
+    
+}
 @end

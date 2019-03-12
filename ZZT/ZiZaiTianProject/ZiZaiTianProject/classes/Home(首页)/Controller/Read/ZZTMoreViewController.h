@@ -10,4 +10,6 @@
 
 @interface ZZTMoreViewController : BaseViewController
 
+@property (nonatomic,assign) NSInteger moreTag;
+
 @end

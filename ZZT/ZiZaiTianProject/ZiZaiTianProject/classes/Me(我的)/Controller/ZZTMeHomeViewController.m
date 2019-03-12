@@ -14,6 +14,7 @@
 #import "ImageClipViewController.h"
 #import "ZZTChapterPayViewController.h"
 #import "ZZTCreatCartoonViewController.h"
+#import "ZZTMallDetailViewController.h"
 
 @interface ZZTMeHomeViewController ()<UIScrollViewDelegate>
 
@@ -73,7 +74,7 @@
     [_zoneVC.view setFrame:CGRectMake(width, 0, width, height)];
     [_meVC.view setFrame:CGRectMake(0, 0, width, height)];
     
-    [self.mainView setContentOffset:CGPointMake(0, 0)];
+//    [self.mainView setContentOffset:CGPointMake(0, 0)];
 }
 
 
@@ -149,12 +150,14 @@
     //充值(左)
     [self.viewNavBar.leftButton setImage:[UIImage imageNamed:@"me_topUpBtn"] forState:UIControlStateNormal];
     [self.viewNavBar.leftButton addTarget:self action:@selector(gotoTopupView) forControlEvents:UIControlEventTouchUpInside];
+
     //空间按钮
     //瞬间(左)
     UIButton *mommentBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     mommentBtn.hidden = YES;
     _mommentBtn = mommentBtn;
-    [mommentBtn setImage:[UIImage imageNamed:@"me_momentBtn"] forState:UIControlStateNormal];
+    [mommentBtn setImage:[UIImage imageNamed:@"editCellImg"] forState:UIControlStateNormal];
+    [mommentBtn addTarget:self action:@selector(gotoVipView) forControlEvents:UIControlEventTouchUpInside];
     [self.viewNavBar addSubview:mommentBtn];
 
     [mommentBtn mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -166,21 +169,22 @@
     
     self.viewNavBar.backgroundColor = [UIColor clearColor];
     
-    //消息(通用 右)
-    [self.viewNavBar.rightButton setImage:[UIImage imageNamed:@"me_messageBtn"] forState:UIControlStateNormal];
-    [self.viewNavBar.rightButton addTarget:self action:@selector(gotoVipView) forControlEvents:UIControlEventTouchUpInside];
+//    //消息(通用 右)
+//    [self.viewNavBar.leftButton setImage:[UIImage imageNamed:@"editCellImg"] forState:UIControlStateNormal];
+//    [self.viewNavBar.leftButton addTarget:self action:@selector(gotoTopupView) forControlEvents:UIControlEventTouchUpInside];
 
-    self.viewNavBar.rightButton.hidden = YES;
+//    self.viewNavBar.rightButton.hidden = YES;
 //    self.viewNavBar.leftButton.hidden = YES;
-
 }
 
 -(void)gotoVipView{
     
-    ZZTEditorCartoonViewController *ecVC = [[ZZTEditorCartoonViewController alloc] init];
-    ecVC.hidesBottomBarWhenPushed = YES;
-
-    [self.navigationController pushViewController:ecVC animated:YES];
+    [self.viewNavBar addMoment];
+//    ZZTEditorCartoonViewController *ecVC = [[ZZTEditorCartoonViewController alloc] init];
+//
+//    ecVC.hidesBottomBarWhenPushed = YES;
+//
+//    [self.navigationController pushViewController:ecVC animated:YES];
 
     //    ZZTChapterPayViewController *CPVC = [[ZZTChapterPayViewController alloc] init];
 //    ZZTNavigationViewController *nav = [[ZZTNavigationViewController alloc] initWithRootViewController:CPVC];
@@ -221,7 +225,7 @@
 -(void)showZoneView{
 
     self.viewNavBar.leftButton.hidden = YES;
-    self.mommentBtn.hidden = YES;
+    self.mommentBtn.hidden = NO;
     [self.titleView selectBtn:self.titleView.rightBtn];
     
 }
@@ -238,4 +242,6 @@
         [self showZoneView];
     }
 }
+
+
 @end

@@ -61,7 +61,7 @@
     UILabel *likeLab = [[UILabel alloc] init];
     _likeLab = likeLab;
     likeLab.textAlignment = NSTextAlignmentCenter;
-    likeLab.font = [UIFont systemFontOfSize:12];
+    likeLab.font = [UIFont systemFontOfSize:14];
 //    likeLab.backgroundColor = [UIColor orangeColor];
     likeLab.textColor = [UIColor colorWithRGB:@"127,127,127"];
     [self.contentView addSubview:likeLab];
@@ -114,18 +114,10 @@
         [UserInfoManager needLogin];
         return;
     }
-    if([self.isCollect isEqualToString:@"0"]){
-        self.isCollect = @"1";
-        self.collectNum++;
-    }else{
-        self.isCollect = @"0";
-        self.collectNum--;
-    }
-    _collectLab.text = [NSString stringWithFormat:@"收藏 %ld",self.collectNum];
 
     _collectBtn.selected = !_collectBtn.selected;
     if(_collectBtnBlock){
-        self.collectBtnBlock();
+        self.collectBtnBlock(0);
     }
     
 }
@@ -154,30 +146,37 @@
     [super layoutSubviews];
     CGFloat HW = self.contentView.height * 0.3;
     CGFloat space = 4;
-    //点赞
-    [_likeBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(self.contentView).offset(-20);
-        make.left.equalTo(self.contentView).offset(44);
-        make.height.width.mas_equalTo(HW);
-    }];
-    
-    [_likeLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.likeBtn.mas_bottom).offset(space);
-        make.centerX.equalTo(self.likeBtn);
-        make.height.mas_equalTo(20);
-        make.width.mas_equalTo(70);
-    }];
-    
     //关注
     [_collectBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.contentView).offset(-20);
-        make.centerX.equalTo(self.contentView);
+        make.left.equalTo(self.contentView).offset(44);
         make.height.width.mas_equalTo(HW);
     }];
     
     [_collectLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.collectBtn.mas_bottom).offset(space);
         make.centerX.equalTo(self.collectBtn);
+        make.height.mas_equalTo(20);
+        make.width.mas_equalTo(70);
+    }];
+    
+//    _likeBtn
+//
+//    _likeLab
+//
+//    _collectBtn
+//
+//    _collectLab
+    //点赞
+    [_likeBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.contentView).offset(-20);
+        make.centerX.equalTo(self.contentView);
+        make.height.width.mas_equalTo(HW);
+    }];
+    
+    [_likeLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.likeBtn.mas_bottom).offset(space);
+        make.centerX.equalTo(self.likeBtn);
         make.height.mas_equalTo(20);
         make.width.mas_equalTo(70);
     }];
@@ -220,12 +219,8 @@
     _collectModel = collectModel;
     self.collectNum = collectModel.collectNum;
     self.isCollect = collectModel.ifCollect;
-    if([collectModel.ifCollect isEqualToString:@"0"]){
-        //没有收藏
-        self.collectBtn.selected = NO;
-    }else{
-        self.collectBtn.selected = YES;
-    }
+
+    self.collectBtn.selected = [collectModel.ifCollect integerValue];
     self.collectLab.text = [NSString stringWithFormat:@"收藏 %ld",collectModel.collectNum];
 }
 

@@ -11,6 +11,7 @@
 #import "CMInputView.h"
 #import "ZZTCell.h"
 #import "ZZTAuthorAttestationView.h"
+#import "ZZTWorkInstructionsViewController.h"
 
 static NSString *AuthorCertificationCellOne = @"AuthorCertificationCellOne";
 
@@ -63,6 +64,17 @@ static NSString *AuthorMeInputOneCell = @"AuthorMeInputOneCell";
     
     [self.viewNavBar.centerButton setTitle:@"作者认证申请" forState:UIControlStateNormal];
     
+    [self.viewNavBar.rightButton setTitle:@"投稿须知" forState:UIControlStateNormal];
+    
+    [self.viewNavBar.rightButton mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.right.mas_equalTo(0);
+        make.width.mas_equalTo(70);
+        make.height.mas_equalTo(40);
+        make.centerY.mas_equalTo(self.viewNavBar.leftButton);
+    }];
+    
+    [self.viewNavBar.rightButton addTarget:self action:@selector(gotoContribute) forControlEvents:UIControlEventTouchUpInside];
+    
     [self setMeNavBarStyle];
     
     //初始化
@@ -85,8 +97,13 @@ static NSString *AuthorMeInputOneCell = @"AuthorMeInputOneCell";
     //40加字体大小加
     _cellHeight[0] = 100;
     _cellHeight[1] = 100;
-    
+}
 
+#pragma mark - 进入投稿须知
+-(void)gotoContribute{
+    ZZTWorkInstructionsViewController *workVC = [[ZZTWorkInstructionsViewController alloc] init];
+    
+    [self.navigationController pushViewController:workVC animated:YES];
 }
 
 -(void)setupCommitBtn{
@@ -190,7 +207,6 @@ static NSString *AuthorMeInputOneCell = @"AuthorMeInputOneCell";
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             
         }];
-        
     }
 }
 

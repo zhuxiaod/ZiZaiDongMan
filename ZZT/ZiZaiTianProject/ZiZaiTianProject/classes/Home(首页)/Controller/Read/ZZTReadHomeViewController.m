@@ -37,19 +37,19 @@
 
 @end
 
-static NSString *collectionCycleView = @"collectionCycleView";
+//static NSString *collectionCycleView = @"collectionCycleView";
 
 static NSString *homeBtnView = @"homeBtnView";
 
-static NSString *sectionLabView = @"sectionLabView";
+//static NSString *sectionLabView = @"sectionLabView";
 
 static NSString *airViewId = @"airViewId";
 
-static NSString *cartoonCellId = @"cartoonCellId";
+//static NSString *cartoonCellId = @"cartoonCellId";
 
-static NSString *moreFooterView = @"moreFooterView";
+//static NSString *moreFooterView = @"moreFooterView";
 
-static NSString *bigImageCell = @"bigImageCell";
+//static NSString *bigImageCell = @"bigImageCell";
 
 @implementation ZZTReadHomeViewController
 
@@ -83,6 +83,8 @@ static NSString *bigImageCell = @"bigImageCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [[UITextView appearance] setTintColor:ZZTSubColor];  // Text View
+    [[UITextField appearance] setTintColor:ZZTSubColor];  // Text Field
     //初始化
     self.pageNum = 1;
     //创建collectionView
@@ -139,6 +141,7 @@ static NSString *bigImageCell = @"bigImageCell";
     NSDictionary *dic = @{
                           @"pageNum":@"1",
                           @"pageSize":@"6",
+                          @"more":@"1"
                           };
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getClassicsCartoon"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
@@ -191,12 +194,12 @@ static NSString *bigImageCell = @"bigImageCell";
     
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     //修改尺寸(控制)
-    layout.itemSize = CGSizeMake(SCREEN_WIDTH/3 - 10,200);
+//    layout.itemSize = CGSizeMake(SCREEN_WIDTH/3 - 10,200);
     
     layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     //行距
-    layout.minimumLineSpacing = 0;
-    layout.minimumInteritemSpacing = 5;
+//    layout.minimumLineSpacing = 0;
+//    layout.minimumInteritemSpacing = 5;
     
     return layout;
 }
@@ -328,7 +331,7 @@ static NSString *bigImageCell = @"bigImageCell";
                 [self clickHomeBtn:btn];
             };
             return btnView;
-        }else if (indexPath.section == 1){
+        }else if (indexPath.section == 1 || indexPath.section == 4){
             //跟多 刷一刷
             ZZTMoreFooterView *moreVC = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:moreFooterView forIndexPath:indexPath];;
             moreVC.moreBtnClick = ^{
@@ -338,8 +341,13 @@ static NSString *bigImageCell = @"bigImageCell";
                 [self.navigationController pushViewController:moreVC animated:YES];
             };
             moreVC.updateBtnClick = ^{
-                //更新数据
-                [self loadBookData];
+                if(indexPath.section == 1){
+                    //更新数据
+                    [self loadBookData];
+                }else if (indexPath.section == 4){
+                    [self loadClassBooksData];
+                }
+                
             };
             return moreVC;
         }else{
@@ -364,7 +372,7 @@ static NSString *bigImageCell = @"bigImageCell";
     if(section == 0){
         //btn 
         return CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT * 0.13);
-    }else if (section == 1){
+    }else if (section == 1 || section == 4){
         //
         return CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT * 0.074);
     }else{

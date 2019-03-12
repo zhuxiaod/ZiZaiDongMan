@@ -102,8 +102,8 @@ static NSString *const cellId = @"cellId";
     
     UISlider *fontSlider = [[UISlider alloc] init];
     _fontSlider = fontSlider;
-    fontSlider.minimumValue = 14;
-    fontSlider.maximumValue = 20;
+    fontSlider.minimumValue = 17;
+    fontSlider.maximumValue = 50;
     fontSlider.value = 17;
     [sliderViw addSubview:fontSlider];
     [fontSlider addTarget:self action:@selector(fontSizeChange) forControlEvents:UIControlEventValueChanged];

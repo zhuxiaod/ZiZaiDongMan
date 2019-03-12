@@ -21,4 +21,8 @@
 
 + (CGFloat)cellHeightWithModel:(ZZTMyZoneModel *)model;
 
+-(void)addLineSpacing:(UILabel *)label;
+//无字btn
++(UIButton *)createButtionWithImg:(NSString *)img selTaget:(SEL)selTaget;
+
 @end

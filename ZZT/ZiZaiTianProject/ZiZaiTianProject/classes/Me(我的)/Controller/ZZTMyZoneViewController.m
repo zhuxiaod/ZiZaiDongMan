@@ -13,6 +13,7 @@
 #import "ZZTMyZoneHeaderView.h"
 #import "ZZTMEXuHuaCell.h"
 #import "ZZTZoneUpLoadViewController.h"
+#import "ZZTZoneWordView.h"
 
 static const CGFloat MJDuration = 1.0;
 
@@ -38,9 +39,10 @@ static NSString *myZoneCell = @"myZoneCell";
 @property (nonatomic,strong) UserInfo *userData;
 
 @property (nonatomic,strong) UIImageView *underLineView;
+//作品view
+@property (nonatomic,strong) ZZTZoneWordView *zoneWordView;
 
 @end
-
 
 NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
 
@@ -51,6 +53,13 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
  1.为根视图时  影藏navBar
  2.不为根视图  push
  */
+-(ZZTZoneWordView *)zoneWordView{
+    if(_zoneWordView == nil){
+        _zoneWordView = [[ZZTZoneWordView alloc] initWithFrame:CGRectZero];
+    
+    }
+    return _zoneWordView;
+}
 
 -(NSMutableArray *)dataArray{
     if(!_dataArray){
@@ -87,6 +96,30 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     [self setupNavBar];
     
     [self setupUnderLineView];
+
+  
+}
+
+#pragma mark - 空间作品数据
+-(void)loadZoneWordDate{
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSDictionary *dic = @{
+                          @"userId":_userId,
+                          @"ifrelease":@"1",
+                          @"pageNum":@"1",
+                          @"pageSize":@"999"
+                          };
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getAuthorCartoon"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
+        self.zoneWordView.dataArray = array;
+        if(self.zoneWordView.dataArray.count == 0){
+            self.zoneWordView.isShowView = YES;
+        }
+        [self.tabelView reloadData];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
 }
 
 -(void)setupUnderLineView{
@@ -102,9 +135,8 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
         make.top.equalTo(self.view.mas_top).offset(SCREEN_HEIGHT * 0.46);
         make.right.left.bottom.equalTo(self.view);
     }];
-    underLineView.hidden = YES;
     
-
+    underLineView.hidden = YES;
 }
 
 -(void)setupNavBar{
@@ -174,6 +206,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
 -(void)setupMJRefresh{
     
     self.tabelView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        [self loadZoneWordDate];
         [self loadData];
         [self loadUserData];
     }];
@@ -246,6 +279,11 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
             
             self.dataArray = array;
             
+            //如果数据数量为0 那么作品View的按钮设置为选中状态
+            if(self.dataArray.count == 0){
+                self.zoneWordView.isSpreadWordHeight = YES;
+            }
+            
             [self.tabelView reloadData];
             
             if(self.dataArray.count >= total){
@@ -262,101 +300,100 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    self.tabelView.mj_footer.hidden = (_dataArray.count == 0);
-    return _dataArray.count;
+    if(section == 0){
+        return 0;
+    }else{
+        self.tabelView.mj_footer.hidden = (_dataArray.count == 0);
+        return _dataArray.count;
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    ZZTMyZoneModel *model = self.dataArray[indexPath.row];
-    return  [GlobalUI cellHeightWithModel:model];
+    if(indexPath.section == 0){
+        return 0;
+    }else{
+        ZZTMyZoneModel *model = self.dataArray[indexPath.row];
+        return  [GlobalUI cellHeightWithModel:model];
+    }
 }
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    ZZTMyZoneCell *cell = [tableView dequeueReusableCellWithIdentifier:myZoneCell forIndexPath:indexPath];
-    cell.indexRow = indexPath.row;
-    cell.update = ^{
-        [self loadData];
-    };
-    cell.LongPressBlock = ^(ZZTMyZoneModel *message) {
-        //删除
-        [self delMomment:message];
-    };
-    cell.reportBtn.delegate = self;
-    
-    ZZTMyZoneModel *model = _dataArray[indexPath.row];
-    model.index = indexPath.row;
-    model.nickName = self.userData.nickName;
-    cell.model = model;
-    return cell;
-}
-
--(void)delMomment:(ZZTMyZoneModel *)model
-{
-    //判断用户id
-    if([self.userId integerValue] != [Utilities GetNSUserDefaults].id){
-        return;
-    }
-    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:@"是否删除这条动态" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-    
-    UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"删除" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-       //删除接口
-        [self sendDelMommentRequest:model];
-    }];
-    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        NSLog(@"点击了取消");
-    }];
-    
-    //把action添加到actionSheet里
-    [actionSheet addAction:action1];
-    [actionSheet addAction:action2];
-    
-    //相当于之前的[actionSheet show];
-    [self presentViewController:actionSheet animated:YES completion:nil];
-}
-
--(void)sendDelMommentRequest:(ZZTMyZoneModel *)model{
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    NSDictionary *dic = @{@"topicId":model.id};
-    [manager POST:[ZZTAPI stringByAppendingString:@"circle/delUserRoom"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        [self loadData];
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+    if(indexPath.section == 0){
+        return nil;
+    }else{
+        ZZTMyZoneCell *cell = [tableView dequeueReusableCellWithIdentifier:myZoneCell forIndexPath:indexPath];
+        cell.indexRow = indexPath.row;
+        cell.update = ^{
+            [self loadData];
+        };
+        cell.LongPressBlock = ^(ZZTMyZoneModel *message) {
+            //删除
+            [self delMomment:message];
+        };
+        cell.reportBtn.delegate = self;
         
-    }];
-}
-
--(void)shieldingMessage:(NSInteger)index{
-    ZZTMyZoneModel *model = _dataArray[index];
-    [_dataArray removeObject:model];
-    [self.tabelView reloadData];
-}
-
-
--(void)startCreate{
-    ZZTCreationCartoonTypeViewController *view = [[ZZTCreationCartoonTypeViewController alloc] init];
-    [self.navigationController pushViewController:view animated:YES];
+        ZZTMyZoneModel *model = _dataArray[indexPath.row];
+        model.index = indexPath.row;
+        model.nickName = self.userData.nickName;
+        cell.model = model;
+        return cell;
+    }
 }
 
 #pragma mark - headView
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    //作者
-    static NSString *zoneHeadViewIf = @"zoneHeadViewIf";
-    self.zoneHeadView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:zoneHeadViewIf];
-    //如果没有头视图
-    if(!_zoneHeadView){
-        _zoneHeadView = [[ZZTMyZoneHeaderView alloc] initWithReuseIdentifier:zoneHeadViewIf];
+    if(section == 0){
+        //作者
+        static NSString *zoneHeadViewIf = @"zoneHeadViewIf";
+        self.zoneHeadView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:zoneHeadViewIf];
+        //如果没有头视图
+        if(!_zoneHeadView){
+            _zoneHeadView = [[ZZTMyZoneHeaderView alloc] initWithReuseIdentifier:zoneHeadViewIf];
+        }
+        
+        self.zoneHeadView.user = self.userData;
+        
+        return _zoneHeadView;
+    }else{
+        return nil;
     }
-
-    self.zoneHeadView.user = self.userData;
-
-    return _zoneHeadView;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    return SCREEN_HEIGHT * 0.36;
+    if(section == 0){
+        return SCREEN_HEIGHT * 0.36;
+    }else{
+        return 0.1;
+    }
+}
+
+#pragma mark - footerView
+-(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+    if(section == 0){
+        //作品
+        _zoneWordView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"zoneWordView"];
+        if(!_zoneWordView){
+            _zoneWordView = [[ZZTZoneWordView alloc] initWithReuseIdentifier:@"zoneWordView"];
+        }
+        weakself(self);
+        _zoneWordView.changeHeight = ^{
+            [weakSelf.tabelView reloadData];
+        };
+        return _zoneWordView;
+    }else{
+        return nil;
+    }
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+    if(self.zoneWordView.dataArray.count == 0){
+        return 0.1;
+    }
+    return self.zoneWordView.viewHeight;
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -449,5 +486,50 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     }];
 }
 
+-(void)delMomment:(ZZTMyZoneModel *)model
+{
+    //判断用户id
+    if([self.userId integerValue] != [Utilities GetNSUserDefaults].id){
+        return;
+    }
+    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:@"是否删除这条动态" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"删除" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        //删除接口
+        [self sendDelMommentRequest:model];
+    }];
+    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        NSLog(@"点击了取消");
+    }];
+    
+    //把action添加到actionSheet里
+    [actionSheet addAction:action1];
+    [actionSheet addAction:action2];
+    
+    //相当于之前的[actionSheet show];
+    [self presentViewController:actionSheet animated:YES completion:nil];
+}
+
+-(void)sendDelMommentRequest:(ZZTMyZoneModel *)model{
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSDictionary *dic = @{@"topicId":model.id};
+    [manager POST:[ZZTAPI stringByAppendingString:@"circle/delUserRoom"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [self loadData];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
+}
+
+-(void)shieldingMessage:(NSInteger)index{
+    ZZTMyZoneModel *model = _dataArray[index];
+    [_dataArray removeObject:model];
+    [self.tabelView reloadData];
+}
+
+
+-(void)startCreate{
+    ZZTCreationCartoonTypeViewController *view = [[ZZTCreationCartoonTypeViewController alloc] init];
+    [self.navigationController pushViewController:view animated:YES];
+}
 
 @end

@@ -34,4 +34,9 @@
 
 @property (nonatomic,strong) NSString *TXTContent;
 
+@property (nonatomic,strong) NSString *ifConcern;
+
+@property (nonatomic,strong) NSString *ifCollect;
+
+
 @end

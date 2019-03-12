@@ -19,6 +19,10 @@
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *userNameW;
 
+@property (weak, nonatomic) IBOutlet UILabel *likeNum;
+
+@property (weak, nonatomic) IBOutlet UILabel *attentionNum;
+
 @end
 
 @implementation ZZTMeTopView 
@@ -40,6 +44,11 @@
     CGFloat replyCountWidth = [_userName.titleLabel.text getTextWidthWithFont:self.userName.titleLabel.font];
     replyCountWidth += 20;
     self.userNameW.constant = replyCountWidth;
+    
+    self.likeNum.text = [NSString stringWithFormat:@"粉丝:%ld",[userModel.fansNum integerValue]];
+    
+    self.attentionNum.text = [NSString stringWithFormat:@"关注:%ld",[userModel.attentionNum integerValue]];
+
 }
 
 

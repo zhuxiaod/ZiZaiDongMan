@@ -15,6 +15,8 @@
 
 -(void)sendMaterialDetailWithKindIndex:(NSInteger)index materialImage:(UIImage *)materialImage model:(ZZTDetailModel *)model;
 
+-(void)materialDetailViewRemoveTarget;
+
 @end
 
 

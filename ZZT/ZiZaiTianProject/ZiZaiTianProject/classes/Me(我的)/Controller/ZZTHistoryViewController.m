@@ -78,19 +78,26 @@ static NSString *zztCartoonHistoryCell = @"zztCartoonHistoryCell";
 }
 
 -(void)deletHistory{
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-    UserInfo *user = [Utilities GetNSUserDefaults];
-    NSString *string = [self.cartoonIdArray componentsJoinedByString:@","];
-    NSLog(@"string:%@",string);
-    NSDictionary *dict = @{
-                           @"userId":[NSString stringWithFormat:@"%ld",user.id],
-                           @"id":string
-                           };
-    [manager POST:[ZZTAPI stringByAppendingString:@"record/delBrowsehistory"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        [self loadData];
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
-    }];
+    //提示页面
+    ZZTRemindView *remindView = [ZZTRemindView sharedInstance];
+    remindView.viewTitle = @"是否清空";
+    remindView.tureBlock = ^(UIButton *btn) {
+        AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+        UserInfo *user = [Utilities GetNSUserDefaults];
+        NSString *string = [self.cartoonIdArray componentsJoinedByString:@","];
+        NSLog(@"string:%@",string);
+        NSDictionary *dict = @{
+                               @"userId":[NSString stringWithFormat:@"%ld",user.id],
+                               @"id":string
+                               };
+        [manager POST:[ZZTAPI stringByAppendingString:@"record/delBrowsehistory"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            [self loadData];
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+            
+        }];
+    };
+    [remindView show];
+    
 }
 
 -(void)setupTableView{

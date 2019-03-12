@@ -14,6 +14,7 @@
     CGFloat bottomValue;
     CGFloat rightValue;
 }
+@property (nonatomic,assign)BOOL isFirst;
 
 @end
 
@@ -32,6 +33,8 @@
         leftValue = 0;
         bottomValue = 0;
         rightValue = 0;
+        
+        _isFirst = YES;
     }
     return self;
 }
@@ -226,4 +229,20 @@
     _fontColor = fontColor;
     self.textLab.textColor = [UIColor colorWithHexString:fontColor];
 }
+
+//初始化值
+-(CGFloat)alpha{
+    if(_alpha == 0 && _isFirst == YES){
+        _alpha = 0.5;
+    }
+    return _alpha;
+}
+
+-(CGFloat)saturation{
+    if(_saturation == 0 && _isFirst == YES){
+        _saturation = 1;
+    }
+    return _saturation;
+}
+
 @end

@@ -35,17 +35,13 @@
     if([attemtion.userType isEqualToString:@"1"]){
         _VIPBtn.hidden = YES;
     }
-    
+    self.attentionBtn.selected = YES;
     [self.attentionBtn addTarget:self action:@selector(addToShoppingCart:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)addToShoppingCart:(UIButton *)sender {
-    NSLog(@"%@",sender.titleLabel.text);
-    if([sender.titleLabel.text isEqualToString:@"已关注"]){
-        [sender setTitle:@"关注" forState:UIControlStateNormal];
-    }else{
-        [sender setTitle:@"已关注" forState:UIControlStateNormal];
-    }
+    sender.selected = !sender.selected;
+    
     if (self.attentionCancelBlock) {
         self.attentionCancelBlock(self);
     }

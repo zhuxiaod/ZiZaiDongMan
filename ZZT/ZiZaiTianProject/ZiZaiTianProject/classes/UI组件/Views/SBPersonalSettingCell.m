@@ -63,6 +63,7 @@
         _rightTextLabel.font = [UIFont systemFontOfSize:15];
         _rightTextLabel.textAlignment = NSTextAlignmentRight;
         _rightTextLabel.textColor = [UIColor colorWithHexString:@"#999999"];
+//        _rightTextLabel.textColor = [UIColor redColor];
         [self.mainView addSubview:_rightTextLabel];
         [_rightTextLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.mas_equalTo(self.nameLabel.mas_right).with.offset(20);
@@ -76,7 +77,7 @@
 -(UITextField *)textField{
     if(!_textField){
         _textField = [UITextField new];
-        _textField.textColor = [UIColor colorWithHexString:@"#999999"];
+        _textField.textColor = [UIColor blackColor];
         _textField.textAlignment = NSTextAlignmentRight;
         _textField.delegate = self;
         [self.mainView addSubview:_textField];
@@ -99,7 +100,13 @@
 
 -(void)setTextFieldPlaceholder:(NSString *)textFieldPlaceholder{
     _textFieldPlaceholder = textFieldPlaceholder;
+
     self.textField.placeholder = textFieldPlaceholder;
+    
+    UIColor *color = [UIColor lightGrayColor];
+    
+    _textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:textFieldPlaceholder attributes:@{NSForegroundColorAttributeName: color}];
+
 }
 
 - (BOOL)textField:(UITextField*)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString*)string {

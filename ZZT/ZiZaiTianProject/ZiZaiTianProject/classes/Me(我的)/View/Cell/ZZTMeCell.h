@@ -10,4 +10,8 @@
 
 @interface ZZTMeCell : UITableViewCell
 
+@property (nonatomic,assign)NSInteger cellCount;
+
+@property (nonatomic,assign)NSInteger cellIndex;
+
 @end

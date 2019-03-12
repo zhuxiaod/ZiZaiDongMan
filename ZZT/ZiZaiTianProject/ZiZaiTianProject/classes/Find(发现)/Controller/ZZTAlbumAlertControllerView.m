@@ -21,7 +21,7 @@
     
     //初始化图像选择控制器
     _picker = [[UIImagePickerController alloc]init];
-    _picker.allowsEditing = YES;  //重点是这两句
+    _picker.allowsEditing = NO;  //重点是这两句
     
     //遵守代理
     _picker.delegate = self;
@@ -140,7 +140,7 @@
         // 设置使用手机的前置摄像头。
         //picker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
         // 设置拍摄的照片允许编辑
-        _picker.allowsEditing =YES;
+        _picker.allowsEditing = NO;
     }else{
         NSLog(@"模拟器无法打开摄像头");
     }
@@ -150,18 +150,20 @@
     }];
 }
 
-
+-(void)setSelectPhotoNum:(NSInteger)selectPhotoNum{
+    _selectPhotoNum = selectPhotoNum;
+}
 
 #pragma mark - 相册回调
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
     UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
 
     [[self getCurrentVC] dismissViewControllerAnimated:YES completion:nil];
-//
+    
     if (self.delegate && [self.delegate respondsToSelector:@selector(albumAlertControllerViewWithImg:)])
     {
         // 调用代理方法
-        [self.delegate albumAlertControllerViewWithImg:image];
+        [self.delegate albumAlertControllerViewWithImg:@[image]];
     }
 
 }
@@ -169,9 +171,13 @@
 
 //图片选择控制器
 #pragma mark - TZImagePickerController
-- (void)pushTZImagePickerController {
+- (void)pushTZImagePickerController{
+    NSLog(@"_selectPhotoNum:%ld",_selectPhotoNum);
+    if(_selectPhotoNum == 0){
+        _selectPhotoNum = 9;
+    }
     //最大选择数   最大显示照片
-    TZImagePickerController *imagePickerVc = [[TZImagePickerController alloc] initWithMaxImagesCount:9 columnNumber:4 delegate:self pushPhotoPickerVc:YES];
+    TZImagePickerController *imagePickerVc = [[TZImagePickerController alloc] initWithMaxImagesCount:_selectPhotoNum columnNumber:4 delegate:self pushPhotoPickerVc:YES];
     // imagePickerVc.navigationBar.translucent = NO;
     
     imagePickerVc.naviBgColor = [UIColor grayColor];
@@ -229,7 +235,7 @@
                 if (self.delegate && [self.delegate respondsToSelector:@selector(albumAlertControllerViewWithImg:)] && isCancel == 0)
                 {
                     // 调用代理方法
-                    [self.delegate albumAlertControllerViewWithImg:image];
+                    [self.delegate albumAlertControllerViewWithImg:photos];
                 }
             }];
             imageClip.clipImage = photos[0];
@@ -240,7 +246,7 @@
             if (self.delegate && [self.delegate respondsToSelector:@selector(albumAlertControllerViewWithImg:)])
             {
                 // 调用代理方法
-                [self.delegate albumAlertControllerViewWithImg:photos[0]];
+                [self.delegate albumAlertControllerViewWithImg:photos];
             }
         }
         

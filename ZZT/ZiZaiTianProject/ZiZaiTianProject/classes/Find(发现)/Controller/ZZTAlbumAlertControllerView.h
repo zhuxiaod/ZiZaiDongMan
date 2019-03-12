@@ -12,7 +12,7 @@
 
 @optional
 
-- (void)albumAlertControllerViewWithImg:(UIImage *)image;
+- (void)albumAlertControllerViewWithImg:(NSArray *)photos;
 
 @end
 
@@ -22,14 +22,14 @@
 
 @property (nonatomic,assign) BOOL isImageClip;
 
+@property (nonatomic,assign) NSInteger selectPhotoNum;
+
 - (void)showZCAlert;
 
 + (instancetype)initAlbumAlertControllerViewWithAlertAction:(void (^)(NSInteger index))alertAction;
 
-
 - (void)takePhoto;
 
 - (void)pushTZImagePickerController;
-
 
 @end
