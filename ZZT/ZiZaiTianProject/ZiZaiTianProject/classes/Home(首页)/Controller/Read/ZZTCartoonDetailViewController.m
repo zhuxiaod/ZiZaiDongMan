@@ -321,7 +321,7 @@ static bool needHide = false;
 
 #pragma mark - 作者关注
 -(void)addAuthorAttention{
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dict = @{
                            @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id],
                             @"authorId":[NSString stringWithFormat:@"%ld",self.author.id]
@@ -662,7 +662,7 @@ static bool needHide = false;
 #warning 上下页btn样式
 //上下页btn样式
 -(void)loadUpDownBtnData{
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dic = @{
                           @"cartoonId":self.cartoonModel.id,//书ID
                           @"chapterId":self.dataModel.chapterId,//章节ID
@@ -706,8 +706,8 @@ static bool needHide = false;
 -(void)loadContentData{
     UserInfo *user = [Utilities GetNSUserDefaults];
 
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-    
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+
     if([self.cartoonModel.type isEqualToString:@"1"]){
         //漫画
         if(self.chapterModel.imageUrlArray.count > 0){
@@ -1099,7 +1099,7 @@ static bool needHide = false;
     }else{
         upDown = @"1";
     }
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dic = @{
                           @"cartoonId":self.cartoonModel.id,//书ID
                           @"chapterId":self.dataModel.chapterId,//章节ID
@@ -1166,7 +1166,7 @@ static bool needHide = false;
         return;
     }
     UserInfo *user = [Utilities GetNSUserDefaults];
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dic = @{
                           @"type":self.cartoonModel.type,
                               @"typeId":[NSString stringWithFormat:@"%ld",self.dataModel.id],
@@ -1291,7 +1291,7 @@ static bool needHide = false;
         [UserInfoManager needLogin];
         return;
     }
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dict = @{
                            @"type":type,//节是1 cell是2
                                @"commentId":commentId
@@ -1581,7 +1581,7 @@ static bool needHide = false;
                           @"typeId":item.id,
                           @"cartoonId":self.cartoonModel.id
                           };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"great/cartoonPraise"]  parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
 
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -1694,7 +1694,7 @@ static bool needHide = false;
         return;
     }
     
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     UserInfo *user = [Utilities GetNSUserDefaults];
     if(self.isReply){
         NSDictionary *dict = @{
@@ -2039,7 +2039,7 @@ static bool needHide = false;
                           @"cartoonId":_cartoonModel.id,
                           @"userId":[NSString stringWithFormat:@"%ld",userInfo.id]
                           };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"great/collects"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         //成功后刷新
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];

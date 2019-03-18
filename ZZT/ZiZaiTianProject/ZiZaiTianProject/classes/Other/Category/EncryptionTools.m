@@ -162,7 +162,7 @@
                                           bufferSize,
                                           &decryptedSize);
     
-    NSData *result = nil;
+    NSData *result = [[NSData alloc] init];
     if (cryptStatus == kCCSuccess) {
         result = [NSData dataWithBytesNoCopy:buffer length:decryptedSize];
     } else {

@@ -16,7 +16,7 @@
 #import <UserNotifications/UserNotifications.h>
 #import <UMCommonLog/UMCommonLogManager.h>
 #import "MLIAPManager.h"
-
+#import <SDImageCache.h>
 
 #import <UMShare/UMShare.h>
 
@@ -31,6 +31,10 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
+    [[SDImageCache sharedImageCache] setShouldGroupAccessibilityChildren:NO];
+    
+    [[SDWebImageDownloader sharedDownloader] setShouldDecompressImages:NO];
+    
     [UMCommonLogManager setUpUMCommonLogManager];
     [UMConfigure setLogEnabled:NO];
     
@@ -39,7 +43,12 @@
     [UMConfigure initWithAppkey:@"5ba096a35b5a55a35f0001bb" channel:@"App Store"];
     [MobClick setScenarioType:E_UM_GAME|E_UM_DPLUS];
     
-    [UNUserNotificationCenter currentNotificationCenter].delegate = self;
+    if (@available(iOS 10.0, *)) {
+        [UNUserNotificationCenter currentNotificationCenter].delegate = self;
+    } else {
+        // Fallback on earlier versions
+    }
+    
     UMessageRegisterEntity *entity = [[UMessageRegisterEntity alloc] init];
     entity.types = UMessageAuthorizationOptionAlert | UMessageAuthorizationOptionBadge | UMessageAuthorizationOptionSound;
     [UMessage registerForRemoteNotificationsWithLaunchOptions:launchOptions Entity:entity completionHandler:^(BOOL granted, NSError * _Nullable error) {
@@ -75,12 +84,12 @@
     
 //    // 启动图片延时: 1秒
 //    [NSThread sleepForTimeInterval:2];
-//
-////    异常处理
-//    [self avoidCrash];
 
-    /**启动IAP工具类*/
-    [[SBIAPManager manager] startManager];
+//    异常处理
+//    [self avoidCrash];
+//
+//    /**启动IAP工具类*/
+//    [[SBIAPManager manager] startManager];
     
     return YES;
 }
@@ -128,19 +137,31 @@ void uncaughtExceptionHandler(NSException *exception) {
     completionHandler(UIBackgroundFetchResultNewData);
 }
 
--(void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(nonnull UNNotification *)notification withCompletionHandler:(nonnull void (^)(UNNotificationPresentationOptions))completionHandler{
+-(void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(nonnull UNNotification *)notification withCompletionHandler:(nonnull void (^)(UNNotificationPresentationOptions))completionHandler API_AVAILABLE(ios(10.0)){
     NSDictionary *userinfo = notification.request.content.userInfo;
-    if([notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]){
-        [UMessage setAutoAlert:NO];
-        [UMessage didReceiveRemoteNotification:userinfo];
+    if (@available(iOS 10.0, *)) {
+        if([notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]){
+            [UMessage setAutoAlert:NO];
+            [UMessage didReceiveRemoteNotification:userinfo];
+        }
+    } else {
+        // Fallback on earlier versions
     }
-    completionHandler(UNNotificationPresentationOptionSound|UNNotificationPresentationOptionBadge|UNNotificationPresentationOptionAlert);
+    if (@available(iOS 10.0, *)) {
+        completionHandler(UNNotificationPresentationOptionSound|UNNotificationPresentationOptionBadge|UNNotificationPresentationOptionAlert);
+    } else {
+        // Fallback on earlier versions
+    }
 }
 
--(void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(nonnull UNNotificationResponse *)response withCompletionHandler:(nonnull void (^)(void))completionHandler{
+-(void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(nonnull UNNotificationResponse *)response withCompletionHandler:(nonnull void (^)(void))completionHandler API_AVAILABLE(ios(10.0)){
     NSDictionary *userinfo = response.notification.request.content.userInfo;
-    if([response.notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]){
-        [UMessage didReceiveRemoteNotification:userinfo];
+    if (@available(iOS 10.0, *)) {
+        if([response.notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]){
+            [UMessage didReceiveRemoteNotification:userinfo];
+        }
+    } else {
+        // Fallback on earlier versions
     }
 }
 // 支持所有iOS系统

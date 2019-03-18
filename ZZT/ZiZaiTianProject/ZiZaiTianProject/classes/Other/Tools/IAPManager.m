@@ -305,7 +305,7 @@ singleton_implementation(IAPManager)
                                    nil];
 
 #warning 在这里将凭证发送给服务器
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
         // 发出请求
 //        UserInfo *user = [Utilities GetNSUserDefaults];
         NSDictionary *dict = @{

@@ -32,5 +32,10 @@
 
 @property (nonatomic,strong) NSString *ifauthor;
 
+@property (nonatomic,strong) NSString *userId;
+
+@property (nonatomic,assign) NSInteger indexRow;
+
+
 +(instancetype)initDetailModelWith:(NSString *)img flag:(NSInteger)flag ifCollect:(NSInteger)ifCollect;
 @end

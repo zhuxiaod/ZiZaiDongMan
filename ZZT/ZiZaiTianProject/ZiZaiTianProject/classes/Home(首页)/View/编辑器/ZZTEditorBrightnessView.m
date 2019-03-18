@@ -72,7 +72,7 @@
     brightnessSlider.frame = CGRectMake(SliderX, brightnessSliderY, SliderW, SliderH);
 
     //饱和度
-    CGFloat SaturationLabelY = CGRectGetMaxY(brightnessLabel.frame)+5;
+    CGFloat SaturationLabelY = CGRectGetMaxY(brightnessLabel.frame)+20;
     UILabel *SaturationLabel = [self creatLabWithText:@"饱和度" textColor:[UIColor blackColor] fontSize:14];
     SaturationLabel.frame = CGRectMake(LabelX, SaturationLabelY, LabelW, LabelH);
     
@@ -82,21 +82,21 @@
     _saturationSlider = SaturationSlider;
     SaturationSlider.frame = CGRectMake(SliderX, SaturationSliderY, SliderW, SliderH);
     
-    //对比度
-    CGFloat ContrastLabelY = CGRectGetMaxY(SaturationLabel.frame)+5;;
-
-    UILabel *ContrastLabel = [self creatLabWithText:@"对比度" textColor:[UIColor blackColor] fontSize:14];
-    ContrastLabel.frame = CGRectMake(LabelX, ContrastLabelY, LabelW, LabelH);
-    
-
-    CGFloat ContrastSliderY = ContrastLabelY;
-
-    UISlider *ContrastSlider = [self creatSliderWithTag:107 minValue:-3.14 maxValue:3.14 value:0 taget:@selector(sliderValueChage:)];
-    _contrastSlider = ContrastSlider;
-    ContrastSlider.frame = CGRectMake(SliderX, ContrastSliderY,SliderW,SliderH);
+//    //对比度
+//    CGFloat ContrastLabelY = CGRectGetMaxY(SaturationLabel.frame)+5;;
+//
+//    UILabel *ContrastLabel = [self creatLabWithText:@"对比度" textColor:[UIColor blackColor] fontSize:14];
+//    ContrastLabel.frame = CGRectMake(LabelX, ContrastLabelY, LabelW, LabelH);
+//
+//
+//    CGFloat ContrastSliderY = ContrastLabelY;
+//
+//    UISlider *ContrastSlider = [self creatSliderWithTag:107 minValue:-3.14 maxValue:3.14 value:0 taget:@selector(sliderValueChage:)];
+//    _contrastSlider = ContrastSlider;
+//    ContrastSlider.frame = CGRectMake(SliderX, ContrastSliderY,SliderW,SliderH);
     
     //色相
-    CGFloat HueLabelY = CGRectGetMaxY(ContrastLabel.frame)+5;;
+    CGFloat HueLabelY = CGRectGetMaxY(SaturationLabel.frame)+20;
     
     UILabel *HueLabel = [self creatLabWithText:@"色相" textColor:[UIColor blackColor] fontSize:14];
     HueLabel.frame = CGRectMake(LabelX, HueLabelY, LabelW, LabelH);
@@ -108,7 +108,7 @@
     HueSlider.frame = CGRectMake(SliderX, HueSliderY,SliderW,SliderH);
     
     //透明度
-    CGFloat AlphaLabelY = CGRectGetMaxY(HueLabel.frame)+5;
+    CGFloat AlphaLabelY = CGRectGetMaxY(HueLabel.frame)+20;
     UILabel *AlphaLabel = [self creatLabWithText:@"透明度" textColor:[UIColor blackColor] fontSize:14];
     AlphaLabel.frame = CGRectMake(LabelX, AlphaLabelY, LabelW, LabelH);
     

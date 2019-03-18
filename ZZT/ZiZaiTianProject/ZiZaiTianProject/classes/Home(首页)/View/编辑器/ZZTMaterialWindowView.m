@@ -12,19 +12,21 @@
 #import "ZZTDetailModel.h"
 #import "ZZTEditorImgCell.h"
 #import "ZZTAlbumAlertControllerView.h"
+#import "ZZTMallDetailViewController.h"
 
 @interface ZZTMaterialWindowView ()<UICollectionViewDataSource,UICollectionViewDelegate,ZZTMaterialWindowViewDelegate,ZZTAlbumAlertControllerViewDelegate>
 
-@property(nonatomic , strong)UIView *topView;
-@property(nonatomic , strong)UIView *midView;
-@property(nonatomic , strong)UIView *bottomView;
-@property(nonatomic , strong)UICollectionView *typeCollectionView;
+@property(nonatomic , weak)UIView *topView;
+@property(nonatomic , weak)UIView *midView;
+@property(nonatomic , weak)UIView *bottomView;
 @property (nonatomic ,strong)NSArray *typeArray;
-@property(nonatomic , strong) UICollectionView *contentCollectionView;
-@property(nonatomic , strong)UIView *midLine;
+@property(nonatomic , weak)UIView *midLine;
 @property(nonatomic , assign)NSInteger materialIndex;
 @property(nonatomic , assign)BOOL isCollect;
 @property (nonatomic ,strong) ZZTKindModel *selectKindModel;
+@property (nonatomic ,weak) UIButton *topBtn;
+@property (nonatomic ,strong) NSString *fodderType;
+
 @end
 
 @implementation ZZTMaterialWindowView
@@ -40,6 +42,8 @@
                            [ZZTKindModel initKindModelWith:@"对话" isSelect:@"0"],
                            ];
         
+        self.fodderType = @"0";
+        
         _selectKindModel = self.typeArray[0];
         
         self.delegate = self;
@@ -51,6 +55,7 @@
         self.materialIndex = 1;
         
         self.isCollect = NO;
+        
     }
     return self;
 }
@@ -66,13 +71,24 @@
 }
 
 -(void)addUI{
-//    self.backgroundColor = [UIColor colorWithHexString:@"#1C15 22" alpha:0.3];
     //3个部分
     //按钮区
     UIView *topView = [[UIView alloc] init];
     _topView = topView;
     topView.backgroundColor = [UIColor clearColor];
     [self addSubview:topView];
+    
+    //底部空白区域
+    UIButton *topBtn = [[UIButton alloc] init];
+    [topBtn addTarget:self action:@selector(removeView) forControlEvents:UIControlEventTouchUpInside];
+    _topBtn = topBtn;
+    [topView addSubview:topBtn];
+    
+    //搜索按钮
+    UIButton *searchBtn = [GlobalUI createButtonWithImg:[UIImage imageNamed:@"editorSearch"] title:nil titleColor:nil];
+    _searchBtn = searchBtn;
+    searchBtn.userInteractionEnabled = YES;
+    [topView addSubview:searchBtn];
     
     //收藏 相机
     UIButton *collectViewBtn = [GlobalUI createButtonWithImg:[UIImage imageNamed:@"editor_noCollection"] title:nil titleColor:nil];
@@ -115,29 +131,40 @@
 
 //收藏事件
 -(void)favoriteTarget{
+    //改变索引的样式
+    [self changeTypeCollectionViewWithIndex:7];
     self.materialIndex = 0;
     self.favoritesBlock();
     self.isCollect = YES;
 }
-
 
 -(void)layoutSubviews{
     [super layoutSubviews];
     
     [self.topView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.right.left.equalTo(self);
-        make.height.mas_equalTo(ZZTLayoutDistance(108));
+        make.height.mas_equalTo(ZZTLayoutDistance(224));
     }];
     
-    [self.collectViewBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.searchBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.topView.mas_left).offset(ZZTLayoutDistance(24));
         make.top.equalTo(self.topView.mas_top).offset(ZZTLayoutDistance(8));
         make.width.height.mas_equalTo(ZZTLayoutDistance(93));
     }];
     
+    [self.topBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.right.bottom.left.equalTo(self.topView);
+    }];
+    
+    [self.collectViewBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.topView.mas_left).offset(ZZTLayoutDistance(24));
+        make.top.equalTo(self.searchBtn.mas_bottom).offset(ZZTLayoutDistance(22));
+        make.width.height.mas_equalTo(ZZTLayoutDistance(93));
+    }];
+    
     [self.cameraBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.topView.mas_right).offset(ZZTLayoutDistance(-24));
-        make.top.equalTo(self.topView.mas_top).offset(ZZTLayoutDistance(8));
+        make.centerY.equalTo(self.collectViewBtn);
         make.width.height.mas_equalTo(ZZTLayoutDistance(93));
     }];
     
@@ -229,22 +256,56 @@
         cell.model = model;
         return cell;
     }else{
-//        if(![_selectKindModel.kindTitle isEqualToString:@"布局"] && ![_selectKindModel.kindTitle isEqualToString:@"对话"]){
-//            //第一个显示上传按钮
-//            //如果是第一个 那么显示上传 不然显示素材
-//            if(indexPath.row == 0){
-//                ZZTEditorImgCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"materialCell" forIndexPath:indexPath];
-//                cell.imageStr = @"editorUpload";
-//                return cell;
-//            }
-//        }
         //如果是场景...第一个显示上传按钮   注意数据索引
         ZZTEditorImgCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"materialCell" forIndexPath:indexPath];
+        cell.deleteCell = ^(ZZTDetailModel *model) {
+            //删除提示
+            [self deleteCellRemind:model];
+        };
         ZZTDetailModel *model = self.materialArray[indexPath.row];
-        
+        model.indexRow = indexPath.row;
         cell.model = model;
         return cell;
     }
+}
+
+-(void)deleteCellRemind:(ZZTDetailModel *)model{
+    //弹出举报框
+    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"是否删除" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        //删除逻辑
+        [self materialDeleteData:model];
+    }];
+    
+    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        NSLog(@"点击了取消");
+    }];
+    
+    [actionSheet addAction:action];
+    
+    [actionSheet addAction:action2];
+    
+    [[self myViewController] presentViewController:actionSheet animated:YES completion:nil];
+}
+
+//删除数据
+-(void)materialDeleteData:(ZZTDetailModel *)model{
+    
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+    NSDictionary *dict = @{
+                           @"fodderId":[NSString stringWithFormat:@"%ld",model.id]
+                           };
+    [manager POST:[ZZTAPI stringByAppendingString:@"fodder/deleteUserSeekFodder"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+        NSLog(@"responseObject:%@",responseObject);
+        
+        if(self.reloadMaterialData){
+            self.reloadMaterialData();
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
 }
 
 //点击事件
@@ -260,20 +321,8 @@
             [self.delegate materialTypeView:collectionView index:indexPath.row];
         }
         
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            for (NSInteger i = 0; i < self.typeArray.count; i++) {
-                ZZTKindModel *model = self.typeArray[i];
-                if(indexPath.row == i){
-                    model.isSelect = @"1";
-                    self.selectKindModel = model;
-                }else{
-                    model.isSelect = @"0";
-                }
-            }
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.typeCollectionView reloadData];
-            });
-        });
+        [self changeTypeCollectionViewWithIndex:indexPath.row];
+        
     }else{
         if(![_selectKindModel.kindTitle isEqualToString:@"布局"] && ![_selectKindModel.kindTitle isEqualToString:@"对话"] && indexPath.row == 0){
             NSLog(@"点击了上传");
@@ -288,6 +337,14 @@
         ZZTEditorImgCell *cell = (ZZTEditorImgCell *)[collectionView cellForItemAtIndexPath:indexPath];
         //分2种  多种 和 单种
         ZZTDetailModel *model = self.materialArray[indexPath.row];
+        //收费的 -> 跳商城详情页
+        if([model.owner isEqualToString:@"3"]){
+            ZZTMallDetailViewController *vc = [[ZZTMallDetailViewController alloc] init];
+            vc.model = model;
+            [[self myViewController].navigationController pushViewController:vc animated:YES];
+            return;
+        }
+        
         if(model.flag == 1){
             //多
             if (self.delegate && [self.delegate respondsToSelector:@selector(createEditorMaterialDetailViewWithID:superModel:kindIndex:)])
@@ -312,8 +369,29 @@
 
 #pragma mark - 上传图片
 -(void)albumAlertControllerViewWithImg:(NSArray *)photos{
-    NSLog(@"photos:%@",photos);
-    //上传后 加载出来
+    //上传后 加载出来 上传到七牛云 然后给后台
+    [SYQiniuUpload QiniuPutImageArray:photos complete:nil uploadComplete:^(NSString *imgsStr) {
+        [self uploadSeverWithImageStr:imgsStr];
+    }];
+    
+    
+}
+
+-(void)uploadSeverWithImageStr:(NSString *)str{
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+    NSDictionary *dict = @{
+                           @"fodderImg":str,
+                            @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id],
+                            @"fodderType":self.fodderType
+                           };
+    [manager POST:[ZZTAPI stringByAppendingString:@"fodder/insertUserSeekFodder"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSLog(@"responseObject:%@",responseObject);
+        if(self.reloadMaterialData){
+            self.reloadMaterialData();
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
 }
 
 -(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event{
@@ -321,16 +399,11 @@
     UIView *view = [super hitTest:point withEvent:event];
     
     if(view == nil){
-        [self removeFromSuperview];
-        
-        if (self.delegate && [self.delegate respondsToSelector:@selector(materialWindowHidden)])
-        {
-            //模型 类型
-            [self.delegate materialWindowHidden];
-        }
+        [self removeView];
     }
     return view;
 }
+
 
 //定义每个UICollectionView 的大小
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -355,12 +428,40 @@
     }
 }
 
-
 -(CGFloat )collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section{
     if(collectionView == self.contentCollectionView){
         return ZZTLayoutDistance(50);
     }else{
         return 0;
     }
+}
+
+-(void)removeView{
+    [self removeFromSuperview];
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(materialWindowHidden)])
+    {
+        //模型 类型
+        [self.delegate materialWindowHidden];
+    }
+}
+
+-(void)changeTypeCollectionViewWithIndex:(NSInteger)index{
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        for (NSInteger i = 0; i < self.typeArray.count; i++) {
+            
+            ZZTKindModel *model = self.typeArray[i];
+            if(index == i){
+                model.isSelect = @"1";
+                self.selectKindModel = model;
+                self.fodderType = [NSString stringWithFormat:@"%ld",i + 1];
+            }else{
+                model.isSelect = @"0";
+            }
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.typeCollectionView reloadData];
+        });
+    });
 }
 @end

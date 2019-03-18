@@ -160,7 +160,7 @@
 //发现点赞
 -(void)findLikeTarget{
     UserInfo *user = [Utilities GetNSUserDefaults];
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dic = @{
                           @"type":@"2",
                           @"typeId":_model.id,
@@ -179,7 +179,7 @@
 -(void)likeTarget{
 
     UserInfo *user = [Utilities GetNSUserDefaults];
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dic = @{
                           @"type":@"3",
                           @"typeId":_model.id,

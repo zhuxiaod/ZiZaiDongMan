@@ -94,7 +94,6 @@
     collectionView.showsVerticalScrollIndicator = NO;
     [self addSubview:self.collectionView];
     collectionView.pagingEnabled = YES;
-
     
     [self.collectionView registerNib:[UINib nibWithNibName:@"ZZTMaterialCell" bundle:nil]  forCellWithReuseIdentifier:@"wordImageCell1"];
 }

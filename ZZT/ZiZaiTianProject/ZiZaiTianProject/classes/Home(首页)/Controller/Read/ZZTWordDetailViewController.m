@@ -222,7 +222,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
                                 @"id":ID,
                                 @"userId":[NSString stringWithFormat:@"%ld",user.id]
                                 };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     EncryptionTools *tool = [[EncryptionTools alloc]init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/particulars"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
@@ -251,7 +251,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
                                 @"pageSize":@"5",
                                 @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id]
                                 };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     EncryptionTools *tool = [[EncryptionTools alloc]init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterlist"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
@@ -455,8 +455,8 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
                           @"userId":[UserInfoManager share].ID,
                           @"authorId":model.userId
                           };
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+//    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"record/ifUserAtAuthor"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
 
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -567,7 +567,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
                                   @"cartoonId":detailModel.id,
                                   @"userId":[NSString stringWithFormat:@"%ld",userInfo.id]
                                   };
-            AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+            AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
             [manager POST:[ZZTAPI stringByAppendingString:@"great/collects"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
 
                     if(self.isId == YES){

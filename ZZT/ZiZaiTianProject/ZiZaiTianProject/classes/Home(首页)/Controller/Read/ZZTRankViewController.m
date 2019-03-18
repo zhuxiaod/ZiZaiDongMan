@@ -92,7 +92,7 @@ NSString *zztRankCell = @"zztRankCell";
                           @"pageSize":[NSString stringWithFormat:@"%ld",self.pageSize]
                           };
     
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getCartoonRanking"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
@@ -121,7 +121,7 @@ NSString *zztRankCell = @"zztRankCell";
                           @"pageSize":@"10"
                           };
     
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getCartoonRanking"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];

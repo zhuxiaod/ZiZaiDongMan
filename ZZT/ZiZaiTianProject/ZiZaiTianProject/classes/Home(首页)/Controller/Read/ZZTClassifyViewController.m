@@ -218,7 +218,7 @@ NSString *SuggestionView2 = @"SuggestionView2";
                           @"pageNum":@"1",
                           @"pageSize":@"10"
                           };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonlist"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
@@ -249,7 +249,7 @@ NSString *SuggestionView2 = @"SuggestionView2";
                           @"pageNum":[NSString stringWithFormat:@"%ld",self.pageNumber],
                           @"pageSize":@"10"
                           };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonlist"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
@@ -290,7 +290,7 @@ NSString *SuggestionView2 = @"SuggestionView2";
                           @"pageNum":@"1",
                           @"pageSize":[NSString stringWithFormat:@"%ld",self.pageSize]
                           };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonlist"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
@@ -317,7 +317,7 @@ NSString *SuggestionView2 = @"SuggestionView2";
 }
 
 -(void)loadTopViewData{
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getBookType"] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTBookType mj_objectArrayWithKeyValuesArray:dic];
@@ -367,8 +367,8 @@ NSString *SuggestionView2 = @"SuggestionView2";
         NSDictionary *dic = @{
                               @"fuzzy":searchText
                               };
-//        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-        AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+//        AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+        AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
         [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/queryFuzzy"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
             NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];

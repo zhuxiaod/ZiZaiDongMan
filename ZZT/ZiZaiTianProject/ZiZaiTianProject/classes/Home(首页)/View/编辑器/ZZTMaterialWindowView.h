@@ -39,13 +39,22 @@ typedef void (^collectViewBtnBlock)(UIButton *btn);//给block重命名,方便调
 
 @property (nonatomic,strong)UIButton *favoritesBtn;
 
+@property (nonatomic,strong) UIButton *searchBtn;
 
-@property (nonatomic,strong)NSMutableArray *materialArray;
+@property (nonatomic,strong) NSMutableArray *materialArray;
+
+@property(nonatomic , strong)UICollectionView *typeCollectionView;
+@property(nonatomic , strong) UICollectionView *contentCollectionView;
+
 
 @property (nonatomic, copy) favoritesBtnBlock favoritesBlock;//声明一个block属性
 
 @property (nonatomic, copy) collectViewBtnBlock collectViewBtnBlock;//声明一个block属性
 
 @property(nonatomic,weak)id<ZZTMaterialWindowViewDelegate>   delegate;
+
+@property (nonatomic,strong)void(^reloadMaterialData)();
+
+-(void)changeTypeCollectionViewWithIndex:(NSInteger)index;
 
 @end

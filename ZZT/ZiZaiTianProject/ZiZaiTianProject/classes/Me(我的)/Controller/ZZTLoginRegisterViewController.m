@@ -198,7 +198,7 @@
 -(void)verificationButtonClick:(UIButton *)button
 {
     //验证码
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
 
     NSDictionary *paramDict = @{
                                 @"phone":self.loginView.phoneNumber.text
@@ -218,7 +218,7 @@
                                 @"phone":self.loginView.phoneNumber.text,
                                 @"checkCode":self.loginView.verification.text
                                 };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"login/loginApp"]  parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSString *error = responseObject[@"code"];
         if([error integerValue] == 200){
@@ -324,7 +324,7 @@
                                       @"headimg":userInfo.iconurl
                                       };
                 
-                AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+                AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
                 [manager POST:[ZZTAPI stringByAppendingString:@"login/thirdPartyLogin"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                     
                     [self loginAfterLoadUserDataWith:responseObject];

@@ -49,7 +49,7 @@
     //显示提交成功
     [MBProgressHUD showMessage:@"正在提交" toView:self.view];
     
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dic = @{
                           @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id],
                           @"problemTypes":[NSString stringWithFormat:@"%ld",self.nowBtnTag],

@@ -245,7 +245,7 @@
         }else{
             if (self.delegate && [self.delegate respondsToSelector:@selector(albumAlertControllerViewWithImg:)])
             {
-                // 调用代理方法
+                // 确定
                 [self.delegate albumAlertControllerViewWithImg:photos];
             }
         }

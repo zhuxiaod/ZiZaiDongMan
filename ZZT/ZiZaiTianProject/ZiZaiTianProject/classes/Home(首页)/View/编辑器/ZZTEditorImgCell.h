@@ -20,6 +20,6 @@
 
 @property (nonatomic,strong) UIImageView *imageView;
 
-
+@property (nonatomic,strong) void(^deleteCell)(ZZTDetailModel *model);
 
 @end

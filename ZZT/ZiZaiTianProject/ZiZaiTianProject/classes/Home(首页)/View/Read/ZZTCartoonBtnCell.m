@@ -153,8 +153,8 @@ static NSString *const zxdCartoonBtnCell = @"zxdCartoonBtnCell";
                           @"pageNum":@"0",
                           @"pageSize":@"10"
                           };
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+//    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/cartoonlist"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];

@@ -66,7 +66,7 @@
                            @"pageSize":[NSString stringWithFormat:@"%ld",self.pageSize]
                            };
 
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
 
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getAuthorCartoon"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSLog(@"草稿%@",responseObject[@"result"]);
@@ -103,7 +103,7 @@
                            @"pageNum":[NSString stringWithFormat:@"%ld",self.pageNumber],
                            @"pageSize":@"10"
                            };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getAuthorCartoon"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         

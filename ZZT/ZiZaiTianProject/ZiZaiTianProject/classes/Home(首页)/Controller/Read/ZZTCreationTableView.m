@@ -81,8 +81,8 @@ static NSString *caiNiXiHuan = @"caiNiXiHuan";
                           @"pageNum":@"0",
                           @"pageSize":@"6"
                           };
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+//    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getRecommendCartoon"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
@@ -162,8 +162,8 @@ static NSString *caiNiXiHuan = @"caiNiXiHuan";
 
 -(void)loadBannerData{
     weakself(self);
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+//    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
 
     [manager POST:[ZZTAPI stringByAppendingString:@"homepage/banner"] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];

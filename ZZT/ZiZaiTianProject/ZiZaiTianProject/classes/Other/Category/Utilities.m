@@ -17,7 +17,7 @@
     [[UserInfoManager share] saveUserInfoWithData:userInfo];
 }
 
-+(UserInfo *)GetNSUserDefaults{
++(UserInfo *) GetNSUserDefaults{
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSData *data = [defaults objectForKey:@"user"];
     return [NSKeyedUnarchiver unarchiveObjectWithData:data];

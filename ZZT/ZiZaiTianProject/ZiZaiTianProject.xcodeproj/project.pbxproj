@@ -420,6 +420,7 @@
 		04DE14AC20E4E691009DF030 /* ZZTCartoonCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04DE14AA20E4E691009DF030 /* ZZTCartoonCell.xib */; };
 		04DE14B020E5015F009DF030 /* ZZTPlayCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04DE14AE20E5015F009DF030 /* ZZTPlayCell.m */; };
 		04DE14B120E50160009DF030 /* ZZTPlayCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04DE14AF20E5015F009DF030 /* ZZTPlayCell.xib */; };
+		04E1A4C3223FAAC4008CE70A /* SBAFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E1A4C2223FAAC4008CE70A /* SBAFHTTPSessionManager.m */; };
 		04E1FA0121C12B5900096A0D /* ZZTAuthorCertificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E1FA0021C12B5900096A0D /* ZZTAuthorCertificationViewController.m */; };
 		04E1FA0421C132D000096A0D /* ZZTMeInputOneCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E1FA0321C132CF00096A0D /* ZZTMeInputOneCell.m */; };
 		04E49F93213D5C57007EE617 /* ZZTJiXuYueDuModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E49F92213D5C57007EE617 /* ZZTJiXuYueDuModel.m */; };
@@ -1218,6 +1219,8 @@
 		04DE14AD20E5015F009DF030 /* ZZTPlayCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTPlayCell.h; sourceTree = "<group>"; };
 		04DE14AE20E5015F009DF030 /* ZZTPlayCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTPlayCell.m; sourceTree = "<group>"; };
 		04DE14AF20E5015F009DF030 /* ZZTPlayCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ZZTPlayCell.xib; sourceTree = "<group>"; };
+		04E1A4C1223FAAC4008CE70A /* SBAFHTTPSessionManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SBAFHTTPSessionManager.h; sourceTree = "<group>"; };
+		04E1A4C2223FAAC4008CE70A /* SBAFHTTPSessionManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SBAFHTTPSessionManager.m; sourceTree = "<group>"; };
 		04E1F9FF21C12B5900096A0D /* ZZTAuthorCertificationViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTAuthorCertificationViewController.h; sourceTree = "<group>"; };
 		04E1FA0021C12B5900096A0D /* ZZTAuthorCertificationViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZTAuthorCertificationViewController.m; sourceTree = "<group>"; };
 		04E1FA0221C132CF00096A0D /* ZZTMeInputOneCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZZTMeInputOneCell.h; sourceTree = "<group>"; };
@@ -2141,6 +2144,8 @@
 				04EC76F021AFBE8800C54CB5 /* UIView+BAAnimation.m */,
 				04EC76F321AFBF4700C54CB5 /* CALayer+BAAnimation.h */,
 				04EC76F421AFBF4800C54CB5 /* CALayer+BAAnimation.m */,
+				04E1A4C1223FAAC4008CE70A /* SBAFHTTPSessionManager.h */,
+				04E1A4C2223FAAC4008CE70A /* SBAFHTTPSessionManager.m */,
 			);
 			path = "UI组件";
 			sourceTree = "<group>";
@@ -3014,6 +3019,7 @@
 				04D8A5C0221E819900D6708E /* ZZTPayTureView.m in Sources */,
 				04E6D49520EC6B4E00116085 /* ZZTMeEditViewController.m in Sources */,
 				046B480421CCEFFF00945AAF /* SBIAPManager.m in Sources */,
+				04E1A4C3223FAAC4008CE70A /* SBAFHTTPSessionManager.m in Sources */,
 				042BA0BF20E9FACC003E279A /* ZZTMyCircleCellCollectionViewCell.m in Sources */,
 				0471A89720FC2ADF00ABFF35 /* ZZTCartoonDetailView.m in Sources */,
 				043B075B20EE187F00ED3F5B /* ZZTShoppingMallCell.m in Sources */,

@@ -68,7 +68,7 @@
                           @"userId":[UserInfoManager share].ID
                           };
 
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"record/selBrowsehistory"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
@@ -89,7 +89,7 @@
     }
     NSString *text = [self.idArray componentsJoinedByString:@","];
     UserInfo *user = [Utilities GetNSUserDefaults];
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dic = @{
                           @"userId":[NSString stringWithFormat:@"%ld",user.id],
                           @"id":text

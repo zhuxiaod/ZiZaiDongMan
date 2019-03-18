@@ -186,7 +186,7 @@
     UserInfo *user = [Utilities GetNSUserDefaults];
     NSNumber *high = @0;
     NSNumber *wide = @0;
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     [dict setObject:[NSString stringWithFormat:@"%ld",user.id] forKey:@"userId"];
     if([self.textView.text isEqualToString:@"这一刻的想法..."]){
@@ -214,9 +214,7 @@
     //多图上传
     NSString * imageParms = @"";
     if (array.count > 0) {
-        imageParms = [SYQiniuUpload QiniuPutImageArray:array complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp) {
-            NSLog(@"info == %@ \n resp === %@",info,resp);
-        }];
+        imageParms = [SYQiniuUpload QiniuPutImageArray:array complete:nil uploadComplete:nil];
     }
 
     //上传
@@ -225,11 +223,13 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
+    
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 }
 
@@ -373,6 +373,10 @@
             [self pushTZImagePickerController];
         }
     } else { // preview photos or video / 预览照片或者视频
+        if(_selectedAssets.count == 0){
+            return;
+        }
+        
         //如果是点击其他item 那么预览
         PHAsset *asset = _selectedAssets[indexPath.item];
         BOOL isVideo = NO;

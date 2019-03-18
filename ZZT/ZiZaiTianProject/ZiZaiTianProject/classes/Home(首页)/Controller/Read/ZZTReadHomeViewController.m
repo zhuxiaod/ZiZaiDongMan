@@ -21,13 +21,13 @@
 
 @interface ZZTReadHomeViewController ()<UICollectionViewDataSource,UICollectionViewDelegateFlowLayout, UICollectionViewDelegate >
 
-@property (nonatomic,strong) UICollectionView *collectionView;
+@property (nonatomic,weak) UICollectionView *collectionView;
 
 @property (nonatomic,strong) NSArray *caiNiXiHuan;
 
 @property (nonatomic,strong) NSArray *bannerModelArray;
 
-@property (nonatomic,strong) ZZTCollectionCycleView *cycleView;
+@property (nonatomic,weak) ZZTCollectionCycleView *cycleView;
 
 @property (nonatomic,assign) NSInteger pageNum;
 //最新更新
@@ -119,7 +119,7 @@ static NSString *airViewId = @"airViewId";
 }
 
 -(void)loadUpdateBooksData{
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dic = @{
                           @"pageNum":@"1",
                           @"pageSize":@"6",
@@ -137,7 +137,7 @@ static NSString *airViewId = @"airViewId";
 }
 
 -(void)loadClassBooksData{
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dic = @{
                           @"pageNum":@"1",
                           @"pageSize":@"6",
@@ -156,7 +156,7 @@ static NSString *airViewId = @"airViewId";
 }
 
 -(void)loadBannerData{
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     weakself(self);
     [manager POST:[ZZTAPI stringByAppendingString:@"homepage/banner"] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
@@ -171,7 +171,7 @@ static NSString *airViewId = @"airViewId";
 
 //换一批
 -(void)loadBookData{
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dict = @{
                            @"pageNum":[NSString stringWithFormat:@"%ld",(long)self.pageNum],
                            @"pageSize":@"7",
@@ -208,7 +208,7 @@ static NSString *airViewId = @"airViewId";
 -(void)setupCollectionView:(UICollectionViewFlowLayout *)layout
 {
     UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, Screen_Width, SCREEN_HEIGHT - 50) collectionViewLayout:layout];
-    [collectionView setContentInset:UIEdgeInsetsMake(-Height_TabbleViewInset, 0, 0, 0)];
+    [collectionView setContentInset:UIEdgeInsetsMake(-Height_TabbleViewInset, 0, Height_TabBar, 0)];
     collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView = collectionView;
     collectionView.dataSource = self;
@@ -347,7 +347,6 @@ static NSString *airViewId = @"airViewId";
                 }else if (indexPath.section == 4){
                     [self loadClassBooksData];
                 }
-                
             };
             return moreVC;
         }else{
@@ -355,7 +354,7 @@ static NSString *airViewId = @"airViewId";
             return airView;
         }
     }else{
-         return nil;
+         return [[UICollectionReusableView alloc] init];
     }
 }
 
@@ -376,7 +375,7 @@ static NSString *airViewId = @"airViewId";
         //
         return CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT * 0.074);
     }else{
-        return CGSizeZero;
+        return CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT * 0.074 / 2);
     }
 }
 

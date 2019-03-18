@@ -82,7 +82,7 @@ static NSString *zztCartoonHistoryCell = @"zztCartoonHistoryCell";
     ZZTRemindView *remindView = [ZZTRemindView sharedInstance];
     remindView.viewTitle = @"是否清空";
     remindView.tureBlock = ^(UIButton *btn) {
-        AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+        AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
         UserInfo *user = [Utilities GetNSUserDefaults];
         NSString *string = [self.cartoonIdArray componentsJoinedByString:@","];
         NSLog(@"string:%@",string);
@@ -120,8 +120,8 @@ static NSString *zztCartoonHistoryCell = @"zztCartoonHistoryCell";
     NSDictionary *paramDict = @{
                                 @"userId":[NSString stringWithFormat:@"%ld",user.id]
                                 };
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+//    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"record/selBrowsehistory"] parameters:paramDict progress:nil
           success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
               NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];

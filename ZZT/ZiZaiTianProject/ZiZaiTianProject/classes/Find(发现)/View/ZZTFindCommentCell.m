@@ -369,7 +369,7 @@
 }
 
 -(void)userLikeTarget{
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dict = @{
                            @"typeId":_model.id,
                            @"userId":[UserInfoManager share].ID,

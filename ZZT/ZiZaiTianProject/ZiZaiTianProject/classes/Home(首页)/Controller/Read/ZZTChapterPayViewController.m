@@ -92,7 +92,7 @@
 }
 
 -(void)loadChapterVipData{
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dic = @{
                           @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id],
                               @"chapterId":self.model.chapterId,//章节ID
@@ -298,7 +298,7 @@
         [self pushTopUpView:nil];
     }else{
         //确定购买代码
-        AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+        AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
         //1.普通 2.VIP
         NSInteger zbNum;
         if([[Utilities GetNSUserDefaults].userType isEqualToString:@"1"]){

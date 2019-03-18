@@ -191,8 +191,8 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
                                 @"type":@"1",
                                 @"cartoonType":self.cartoonDetail.cartoonType
                                 };
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+//    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     EncryptionTools *tool = [[EncryptionTools alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterlist"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [tool decry:responseObject[@"result"]];
@@ -213,8 +213,8 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
                                 @"id":Id,
                                 @"userId":[NSString stringWithFormat:@"%ld",userInfo.id]
                                 };
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+//    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     EncryptionTools *tool = [[EncryptionTools alloc] init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/particulars"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [tool decry:responseObject[@"result"]];
@@ -242,8 +242,8 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
                                };
     EncryptionTools *tool = [[EncryptionTools alloc] init];
 
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+//    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getXuhualist"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [tool decry:responseObject[@"result"]];
         NSArray *modelArray = [ZZTChapterlistModel mj_objectArrayWithKeyValuesArray:dic];
@@ -282,8 +282,8 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
                               @"cartoonId":detailModel.id,
                               @"userId":[NSString stringWithFormat:@"%ld",userInfo.id]
                               };
-//        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-        AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+//        AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+        AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
         [manager POST:[ZZTAPI stringByAppendingString:@"great/collects"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -382,8 +382,8 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
                           @"userId":@"1",
                           @"authorId":model.userId
                           };
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+//    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"record/ifUserAtAuthor"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

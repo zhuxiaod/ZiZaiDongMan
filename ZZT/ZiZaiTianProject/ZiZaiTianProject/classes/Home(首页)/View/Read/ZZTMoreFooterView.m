@@ -85,7 +85,7 @@
 }
 
 -(void)loadDataWithPageNum:(NSInteger)pageNum url:(NSString *)url resultBlock:(void (^)(NSArray * array))resultBlock{
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dict = @{
                            @"pageNum":[NSString stringWithFormat:@"%ld",(long)pageNum],
                            @"pageSize":@"7",

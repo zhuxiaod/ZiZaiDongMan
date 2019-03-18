@@ -146,8 +146,8 @@
 
 -(void)loadUserInfoDataSuccess:(void (^)(void))successBlock{
     
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-    
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+
     NSDictionary *paramDict = @{
                                 @"userId":[NSString stringWithFormat:@"%ld",self.userData.id]
                                 };
@@ -176,7 +176,7 @@
     NSDictionary *paradict = @{
                                @"phoneIMEI":adId
                                };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"/login/getTouristInfo"] parameters:paradict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSLog(@"responseObject:%@",responseObject);
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];

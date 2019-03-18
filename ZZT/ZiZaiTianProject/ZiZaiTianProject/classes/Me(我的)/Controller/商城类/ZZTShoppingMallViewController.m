@@ -328,6 +328,7 @@
 //头
 -(UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
     weakself(self);
+    UICollectionReusableView *view = [[UICollectionReusableView alloc] init];
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]){
         if(indexPath.section == 0){
             //轮播图
@@ -376,7 +377,7 @@
 
             return _moreVC;
         }
-    return nil;
+    return view;
 }
 
 //执行的 headerView 代理 返回 headerView 的高度
@@ -433,7 +434,7 @@
 }
 
 -(void)loadBannerData{
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     weakself(self);
     [manager POST:[ZZTAPI stringByAppendingString:@"homepage/banner"] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];

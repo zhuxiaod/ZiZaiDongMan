@@ -113,7 +113,7 @@ static NSString *findCommentCell = @"findCommentCell";
 }
 
 -(void)loadBannerData{
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     weakself(self);
     [manager POST:[ZZTAPI stringByAppendingString:@"homepage/banner"] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
@@ -169,7 +169,7 @@ static NSString *findCommentCell = @"findCommentCell";
                           @"userId":[NSString stringWithFormat:@"%ld",user.id],
                           @"type":@"1"//1.世界 2.关注
                           };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/selDiscover"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
 //        NSDictionary *dic = [NSString alloc]desc  description];
@@ -205,7 +205,7 @@ static NSString *findCommentCell = @"findCommentCell";
                           @"userId":[NSString stringWithFormat:@"%ld",user.id],
                           @"type":@"1"//1.世界 2.关注
                           };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/selDiscover"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
@@ -361,18 +361,19 @@ static NSString *findCommentCell = @"findCommentCell";
 
 -(void)loadCaiNiXiHuanData{
   
-        AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-        [manager POST:[ZZTAPI stringByAppendingString:@"circle/guessYouLike"] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
-            NSMutableArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
-            self.CNXHArray = array;
-            [self.contentView reloadData];
-            [self.contentView.mj_header endRefreshing];
-            
-        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            [self.contentView.mj_header endRefreshing];
+//    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"circle/guessYouLike"] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+        NSMutableArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
+        self.CNXHArray = array;
+        [self.contentView reloadData];
+        [self.contentView.mj_header endRefreshing];
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [self.contentView.mj_header endRefreshing];
 
-        }];
+    }];
 }
 
 //刷新NavBar的zhuang'ta

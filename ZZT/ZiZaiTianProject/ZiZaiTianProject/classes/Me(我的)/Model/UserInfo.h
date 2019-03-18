@@ -39,7 +39,6 @@
 @property (nonatomic,assign)NSInteger integralNum;
 //id+
 @property (nonatomic,assign)NSInteger id;
-
 //月票+
 @property (nonatomic,strong)NSString *month_num;
 //阅读卷数量+

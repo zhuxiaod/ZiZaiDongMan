@@ -24,7 +24,8 @@
 @property (nonatomic, strong) MCTabBar *mcTabbar;
 //判断是不是第二模块
 @property (nonatomic, assign) BOOL isSelectFind;
-
+//发现
+@property (nonatomic, strong) UINavigationController *nav1;
 
 @end
 
@@ -61,7 +62,7 @@
     self.mcTabbar.tintColor = [UIColor colorWithRed:251.0/255.0 green:199.0/255.0 blue:115/255.0 alpha:1];
     //透明设置为NO，显示白色，view的高度到tabbar顶部截止，YES的话到底部
     self.mcTabbar.translucent = YES;
-    
+    _mcTabbar.centerBtn.hidden = YES;
     self.mcTabbar.position = MCTabBarCenterButtonPositionBulge;
     self.mcTabbar.centerImage = [UIImage imageNamed:@"editorTabbar"];
 }
@@ -73,26 +74,47 @@
     [self tabBarController:self didSelectViewController:self.viewControllers[self.selectedIndex]];
 }
 
-// 重写选中事件， 处理中间按钮选中问题
+// 点击按钮
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController{
     
+    [self showTabbarBtn];
+
     //进来就是
     _mcTabbar.centerBtn.selected = (tabBarController.selectedIndex == self.viewControllers.count/2);
     
+    [self findTarget];
+}
+
+-(void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item{
+    NSLog(@"item:%ld",item.tag);
+    self.isSelectFind = NO;
+    
+    _nav1.tabBarItem.image = [UIImage imageOriginalWithName:@"tabbar_find"];
+    
+    _mcTabbar.centerBtn.hidden = YES;
+
+    if(item.tag == 0){
+        [self showTabbarBtn];
+    }
+}
+
+-(void)showTabbarBtn{
+    _nav1.tabBarItem.image = [UIImage imageOriginalWithName:@""];
+    
+    _mcTabbar.centerBtn.hidden = NO;
+    
+//    [self findTarget];
+
+}
+
+-(void)findTarget{
     if(self.isSelectFind){
         //弹出编辑
         NSLog(@"打开编辑器");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"addMomentTaget" object:nil];
-
     }else{
         self.isSelectFind = YES;
-
     }
-}
-
--(void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item{
-    self.isSelectFind = NO;
-
 }
 
 #pragma mark - 添加所有子控制器
@@ -134,11 +156,14 @@
     nav.tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
     
     //发现 凸起
-//    UINavigationController *nav1 = self.childViewControllers[1];
-////    nav1.tabBarItem.title = @"发现";
-//    nav1.tabBarItem.image = [UIImage imageOriginalWithName:@"tabbar_find"];
+    UINavigationController *nav1 = self.childViewControllers[1];
+    nav.tabBarItem.tag = 1;
+
+//    nav1.tabBarItem.title = @"发现";
+    nav1.tabBarItem.image = [UIImage imageOriginalWithName:@"tabbar_find"];
 //    nav1.tabBarItem.selectedImage = [UIImage imageOriginalWithName:@"tabbar_find_select"];
-//    nav1.tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
+    nav1.tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
+    _nav1 = nav1;
 
     //2:nav2
     UINavigationController *nav2 = self.childViewControllers[2];

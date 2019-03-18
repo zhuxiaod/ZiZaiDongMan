@@ -241,7 +241,7 @@ dispatch_queue_t iap_queue() {
     NSData *receipt = [NSData dataWithContentsOfURL:recepitURL];
     NSString *transactionReceiptString = [receipt base64EncodedStringWithOptions:0];
     
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     // 发出请求
     UserInfo *user = [Utilities GetNSUserDefaults];
     NSDictionary *dict = @{
@@ -309,7 +309,7 @@ dispatch_queue_t iap_queue() {
 //        
 //    }
 //    
-//        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//        AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
 //        // 发出请求
 //        UserInfo *user = [Utilities GetNSUserDefaults];
 //        NSDictionary *dict = @{

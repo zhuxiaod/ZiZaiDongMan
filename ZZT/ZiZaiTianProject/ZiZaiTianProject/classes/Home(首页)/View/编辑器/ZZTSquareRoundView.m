@@ -453,9 +453,9 @@
             }
         }
         
-        CGFloat nowArea = w * h;
+//        CGFloat nowArea = w * h;
         
-        CGFloat multiple = nowArea / originalArea;
+//        CGFloat multiple = nowArea / originalArea;
         
         self.frame = CGRectMake(x, y, w, h);
 
@@ -477,7 +477,7 @@
 #pragma mark - 对边操作
 -(void)tapTarget:(UIPanGestureRecognizer *)panGesture{
     
-    //改变变量
+//    //改变变量
     CGFloat width = selfW;
     CGFloat height = selfH;
     CGFloat x = selfX;

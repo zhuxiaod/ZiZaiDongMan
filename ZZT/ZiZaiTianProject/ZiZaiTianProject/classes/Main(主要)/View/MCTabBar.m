@@ -36,7 +36,8 @@
             _centerBtn.frame = CGRectMake(([UIScreen mainScreen].bounds.size.width - _centerWidth)/2.0, (MCTabBarItemHeight - _centerHeight)/2.0 + self.centerOffsetY, _centerWidth, _centerHeight);
             break;
         case MCTabBarCenterButtonPositionBulge://凸起
-             _centerBtn.frame = CGRectMake(([UIScreen mainScreen].bounds.size.width - _centerWidth)/2.0, -_centerHeight/2.0 + self.centerOffsetY, _centerWidth, _centerHeight);
+             _centerBtn.frame = CGRectMake(([UIScreen mainScreen].bounds.size.width - _centerWidth)/2.0, -_centerHeight/2.0 + self.centerOffsetY + 10
+                                           , _centerWidth, _centerHeight);
             break;
         default:
             break;

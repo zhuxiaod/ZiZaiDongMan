@@ -251,7 +251,7 @@
         return;
     }
 
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     UserInfo *user = [Utilities GetNSUserDefaults];
     
     //加一个字段 判断是漫画 还是 空间
@@ -438,7 +438,7 @@
 
 //删除回复接口
 -(void)deleteReplyWithType:(NSString *)type commentId:(NSString *)commentId{
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSString *api;
     NSDictionary *dict;
     if(_isFind == YES){

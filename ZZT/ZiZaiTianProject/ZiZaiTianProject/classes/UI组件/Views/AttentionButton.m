@@ -79,7 +79,7 @@ static NSString *pressedImageName = @"已关注";
                           @"userId":[NSString stringWithFormat:@"%ld",user.id],
                           @"authorId":self.requestID
                           };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"record/ifUserAtAuthor"]  parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

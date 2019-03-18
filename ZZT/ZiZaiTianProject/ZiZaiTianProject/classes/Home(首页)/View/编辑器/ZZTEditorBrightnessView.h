@@ -10,7 +10,7 @@
 
 @class ZZTEditorImageView;
 
-static CGFloat BrightnessToolBarHeight = 130.0f;
+static CGFloat BrightnessToolBarHeight = 160.0f;
 
 @protocol ZZTEditorBrightnessView <NSObject>
 

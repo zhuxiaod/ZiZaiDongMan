@@ -37,6 +37,8 @@
     UILabel *cartoonName = [[UILabel alloc] init];
     _cartoonName = cartoonName;
     [self.contentView addSubview:cartoonName];
+    
+    [self setupImgStyle];
 }
 
 -(void)layoutSubviews{
@@ -68,7 +70,7 @@
     
     self.cartoonName.text = cartoon.bookName;
     
-    [self setupImgStyle];
+//    [self setupImgStyle];
 
     
 //    NSLog(@"self.cartoonName.text:%@",self.cartoonName.text);
@@ -91,7 +93,7 @@
     
     self.cartoonName.text = materialModel.fodderName;
     
-    [self setupImgStyle];
+
     
 }
 

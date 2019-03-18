@@ -88,7 +88,7 @@
 
 -(void)getHotSearch{
     //添加数据
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/hotSelect"]  parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         NSArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
@@ -157,8 +157,9 @@
                           @"fodderName":searchText,
                           };
     //添加数据
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-    [manager POST:[ZZTAPI stringByAppendingString:@"zztMall/selIndistinctFodder"]  parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+    NSString *url = _isFromEditorView?@"fodder/seekFodder":@"zztMall/selIndistinctFodder";
+    [manager POST:[ZZTAPI stringByAppendingString:url]  parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTDetailModel mj_objectArrayWithKeyValuesArray:dic];
         weakSelf.materialArray = array;
@@ -177,7 +178,7 @@
                           @"userId":[NSString stringWithFormat:@"%ld",user.id]
                           };
     //添加数据
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/queryCartoon"]  parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
@@ -256,6 +257,7 @@
 
 #pragma mark - 点击搜索结果
 -(void)searchViewController:(PYSearchViewController *)searchViewController didSelectSearchSuggestionAtIndexPath:(NSIndexPath *)indexPath searchBar:(UISearchBar *)searchBar{
+    
     if(indexPath.section == 0){
         ZZTCarttonDetailModel *md = self.searchSuggestionArray[indexPath.row];
         ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
@@ -265,9 +267,32 @@
         [_nav pushViewController:detailVC animated:YES];
     }else{
         ZZTDetailModel *detailModel = self.materialArray[indexPath.row];
-        ZZTMallDetailViewController *vc = [[ZZTMallDetailViewController alloc] init];
-        vc.model = detailModel;
-        [_nav pushViewController:vc animated:YES];
+
+        if(_isFromEditorView == YES){
+            /*
+             拿到点击的数据 将这个数据带回后面的页面
+             找到这个数据所在的位置
+             */
+            
+            //跳转查找的位置
+            if(self.getSearchMaterialData){
+                self.getSearchMaterialData(detailModel);
+            }
+            
+            [self dismissViewControllerAnimated:YES completion:nil];
+            
+            [self.navigationController popViewControllerAnimated:NO];
+        }else{
+            
+            //收费的 -> 跳商城详情页
+            if([detailModel.owner isEqualToString:@"3"]){
+                ZZTMallDetailViewController *vc = [[ZZTMallDetailViewController alloc] init];
+                vc.model = detailModel;
+                vc.hidesBottomBarWhenPushed = YES;
+                [_nav pushViewController:vc animated:YES];
+            }
+            
+        }
     }
 }
 
@@ -305,5 +330,9 @@
 
 - (CGFloat)searchSuggestionView:(UITableView *)searchSuggestionView heightForFooterInSection:(NSInteger)section{
     return 1;
+}
+
+-(void)setIsFromEditorView:(BOOL)isFromEditorView{
+    _isFromEditorView = isFromEditorView;
 }
 @end

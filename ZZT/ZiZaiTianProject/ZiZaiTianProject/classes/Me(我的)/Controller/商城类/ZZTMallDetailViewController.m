@@ -83,7 +83,7 @@
 
 #pragma mark - 确认支付
 -(void)sendPayQuestWithZbNum:(NSString *)zbNum{
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dict = @{
                            @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id],
                            @"fodderId":[NSString stringWithFormat:@"%ld",self.model.id],//素材的id
@@ -132,7 +132,7 @@
 
 #pragma mark - 加载素材数据
 -(void)loadMaterialData{
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dict = @{
                            @"fodderId":[NSString stringWithFormat:@"%ld",self.model.id]
                            };

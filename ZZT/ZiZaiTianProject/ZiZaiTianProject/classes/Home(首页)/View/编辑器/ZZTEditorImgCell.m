@@ -62,6 +62,19 @@
     collectImg.userInteractionEnabled = YES;
     [collectImg setImage:[UIImage imageNamed:@"editCellCollect"]];
     [self addSubview:collectImg];
+    
+    //长按删除
+    UILongPressGestureRecognizer *recognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
+    recognizer.minimumPressDuration = 0.5; //设置最小长按时间；默认为0.5秒
+    [self addGestureRecognizer:recognizer];
+}
+
+-(void)handleLongPress:(UILongPressGestureRecognizer *)gesture{
+    NSLog(@"长按删除");
+    //提醒 删除
+    if(self.deleteCell && self.model.userId != nil){
+        self.deleteCell(self.model);
+    }
 }
 
 -(void)layoutSubviews{
@@ -101,10 +114,16 @@
 -(void)setModel:(ZZTDetailModel *)model{
     _model = model;
     
+    [self.imageView setContentMode:UIViewContentModeScaleAspectFit];
+
+    if([[model.img substringFromIndex:[model.img length] - 3] isEqualToString:@"jpg"]){
+        [self.imageView setContentMode:UIViewContentModeScaleAspectFill];
+    }
+    
     if([model.img isEqualToString:@"editorUpload"]){
         [self.imageView setImage:[UIImage imageNamed:model.img]];
     }else{
-          [self.imageView sd_setImageWithURL:[NSURL URLWithString:model.img] placeholderImage:[UIImage imageNamed:@"bannerPlaceV"] options:SDWebImageProgressiveDownload | SDWebImageCacheMemoryOnly];
+        [self.imageView sd_setImageWithURL:[NSURL URLWithString:model.img] placeholderImage:[UIImage imageNamed:@"bannerPlaceV"] options:SDWebImageProgressiveDownload | SDWebImageCacheMemoryOnly|SDWebImageAllowInvalidSSLCertificates];
     }
 
     _folderImg.hidden = YES;

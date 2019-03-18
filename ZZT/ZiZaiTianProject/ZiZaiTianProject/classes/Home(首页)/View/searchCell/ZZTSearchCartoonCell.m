@@ -66,6 +66,8 @@
 
 -(void)setModel:(ZZTCarttonDetailModel *)model{
     _model = model;
+    [self.imageView setContentMode:UIViewContentModeScaleAspectFit];
+
     [self.suggestionImage sd_setImageWithURL:[NSURL URLWithString:[@"http://img.cdn.zztian.cn/"stringByAppendingString:model.cover]] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
         //cell高度
         if(!image)return ;
@@ -109,8 +111,8 @@
                           @"userId":[UserInfoManager share].ID,
                           @"authorId":self.model.id
                           };
-    //    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    //    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"record/ifUserAtAuthor"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -121,6 +123,11 @@
 #pragma mark - 设置素材搜索
 -(void)setMaterialModel:(ZZTDetailModel *)materialModel{
     _materialModel = materialModel;
+    [self.imageView setContentMode:UIViewContentModeScaleAspectFit];
+    
+    if([[materialModel.img substringFromIndex:[materialModel.img length] - 3] isEqualToString:@"jpg"]){
+        [self.imageView setContentMode:UIViewContentModeScaleAspectFill];
+    }
     [self.suggestionImage sd_setImageWithURL:[NSURL URLWithString:materialModel.img] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
         //cell高度
         if(!image)return ;
@@ -135,7 +142,6 @@
     
     //作者
     [self.suggestionAuthor setHidden:YES];
-    //收藏
     
     //like
     [self.likeNum setHidden:YES];

@@ -32,13 +32,13 @@
     
     CIFilter *_hueFilter;//色相滤镜
 
-
     CIContext *_context;//Core Image上下文
 
     CIImage *_image;//我们要编辑的图像
     
     NSInteger testI;
 }
+
 @property (nonatomic,strong) ZZTEditorDeskView *editorDeskView;//桌面
 @property (nonatomic,strong) ZZTInputView *inputView;//输入框
 
@@ -73,10 +73,10 @@
 @property (nonatomic,assign) CGAffineTransform closeViewTransform;
 //底部
 @property (nonatomic,strong) ZZTEditorBottomView *bottomView;
-
 @property (nonatomic,strong) UIButton *lastPageBtn;
 
 @property (nonatomic,strong) UIButton *nextPageBtn;
+
 
 @property (nonatomic,strong) ZZTEditorMaterialDetailView *materialDetailView;//分组框
 @property (nonatomic,assign) BOOL collectStatus;
@@ -161,7 +161,7 @@
     }];
     
     //上一页
-    UIButton *lastPageBtn = [GlobalUI createButtionWithImg:@"上一页" selTaget:@selector(clickOnThePreviousPage)];
+    UIButton *lastPageBtn = [self createButtionWithImg:@"上一页" selTaget:@selector(clickOnThePreviousPage)];
     _lastPageBtn = lastPageBtn;
     [self.view addSubview:lastPageBtn];
 
@@ -172,7 +172,7 @@
     }];
     
     //下一页
-    UIButton *nextPageBtn = [GlobalUI createButtionWithImg:@"下一页" selTaget:@selector(clickOnTheNextPage)];
+    UIButton *nextPageBtn = [self createButtionWithImg:@"下一页" selTaget:@selector(clickOnTheNextPage)];
     _nextPageBtn = nextPageBtn;
     [self.view addSubview:nextPageBtn];
 
@@ -184,7 +184,75 @@
     
     //监听键盘
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrameNotify:) name:UIKeyboardWillChangeFrameNotification object:nil];
+    
 }
+
+#pragma mark - 搜索功能
+//前往搜索页
+-(void)gotoSearchVC{
+    
+    ZXDSearchViewController *searchVC = [[ZXDSearchViewController alloc] init];
+    searchVC.isFromEditorView = YES;
+    //查找素材的坐标
+    searchVC.getSearchMaterialData = ^(ZZTDetailModel *materialModel) {
+        NSLog(@"materialModel:%@",materialModel);
+        //跳转类别
+//        _materialWindow;
+        [self.materialWindow changeTypeCollectionViewWithIndex:[materialModel.fodderType integerValue] - 1];
+        //加载数据 并 定为
+        [self loadWindowDataAndPositioning:materialModel];
+        
+    };
+    [self.navigationController pushViewController:searchVC animated:NO];
+}
+
+#pragma mark - 加载数据并定位
+-(void)loadWindowDataAndPositioning:(ZZTDetailModel *)model{
+    NSDictionary *dict = @{
+                           @"fodderType":[NSString stringWithFormat:@"%ld", [model.fodderType integerValue]],
+                           @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id]
+                           };
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+    
+    [manager POST:[ZZTAPI stringByAppendingString:@"fodder/fodderList"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+        NSMutableArray *array = [ZZTDetailModel mj_objectArrayWithKeyValuesArray:dic];
+        self.materialWindow.materialArray = array;
+        [self postionMaterialData:model];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
+}
+
+-(void)postionMaterialData:(ZZTDetailModel *)model{
+
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        NSInteger i;
+        for (i = 0; i < self.materialWindow.materialArray.count; i++) {
+            ZZTDetailModel *model1 = self.materialWindow.materialArray[i];
+            if(model1.id == model.id){
+                //得到位置
+                break;
+            }
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            //跳转
+            [self.materialWindow.contentCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0] atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
+            [self.materialWindow.contentCollectionView reloadData];
+        });
+    });
+}
+
+//快速创建btn
+-(UIButton *)createButtionWithImg:(NSString *)img selTaget:(SEL)selTaget{
+    UIButton *Btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    
+    [Btn setImage:[UIImage imageNamed:img] forState:UIControlStateNormal];
+    
+    [Btn addTarget:self action:selTaget forControlEvents:UIControlEventTouchUpInside];
+    return Btn;
+}
+
 
 #pragma mark 预览状态 隐藏
 -(void)hiddenCurrentImgViewCloseBtn{
@@ -350,7 +418,6 @@
 
     _brightnessView.imageViewModel = imageView;
 
-    imageView.imageView.alpha = imageView.alpha;
 }
 
 #pragma mark - ZZTEditorBrightnessViewDelegate
@@ -475,13 +542,18 @@
     _bottomView.hidden = YES;
     _nextPageBtn.hidden = YES;
     _lastPageBtn.hidden = YES;
+    
+
 }
 
-//隐藏底部
+//显示底部
 -(void)showBottomView{
     _bottomView.hidden = NO;
     _nextPageBtn.hidden = NO;
     _lastPageBtn.hidden = NO;
+    
+//    _searchBtn.hidden = YES;
+
 }
 
 #pragma mark - 素材库
@@ -495,9 +567,14 @@
     materialWindow.delegate = self;
     [self.view addSubview:materialWindow];
     
+    materialWindow.reloadMaterialData = ^{
+        //刷新
+        [self materialTypeView:nil index:self.collectIndex];
+    };
+    
     [materialWindow mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.left.bottom.equalTo(self.view);
-        make.height.mas_equalTo(ZZTLayoutDistance(800));
+        make.height.mas_equalTo(ZZTLayoutDistance(910));
     }];
     
     //加载初始数据
@@ -516,6 +593,8 @@
     };
     
     [_materialWindow.cameraBtn addTarget:self action:@selector(openAlbum) forControlEvents:UIControlEventTouchUpInside];
+    
+    [_materialWindow.searchBtn addTarget:self action:@selector(gotoSearchVC) forControlEvents:UIControlEventTouchUpInside];
     
     [self reviseCollectBtnStatus];
 }
@@ -649,7 +728,7 @@
                          };
             }
         }
-        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
 
         [manager POST:[ZZTAPI stringByAppendingString:@"fodder/deleteUserFodderCollect"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             imageView.ifCollect = @"0";
@@ -679,7 +758,7 @@
                           @"fodderId":[NSString stringWithFormat:@"%ld",_materialDetailView.model.id],//图id
                           @"modelType":[NSString stringWithFormat:@"%ld",_materialDetailView.model.modelType]//几号
                           };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"fodder/insertUserFodderCollect"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         //刷新素材的内容
         [self reloadMaterialData];
@@ -710,7 +789,7 @@
                           @"fodderId":fodderId,//图id
                           @"modelType":modelTypeStr//几号
                           };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"fodder/insertUserFodderCollect"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         ZZTEditorImageView *imageView = [self getCurrentViewImg];
         imageView.ifCollect = @"1";
@@ -728,18 +807,16 @@
     
     self.collectStatus = NO;
     
-//    self.materialWindow.collectViewBtn.hidden = NO;
-    
     //点击其他type  请求新的数据
     NSDictionary *dict = @{
                            @"fodderType":[NSString stringWithFormat:@"%ld",index + 1],
                            @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id]
                            };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     
     [manager POST:[ZZTAPI stringByAppendingString:@"fodder/fodderList"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
-        NSArray *array = [ZZTDetailModel mj_objectArrayWithKeyValuesArray:dic];
+        NSMutableArray *array = [ZZTDetailModel mj_objectArrayWithKeyValuesArray:dic];
         self.materialWindow.materialArray = array;
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
@@ -752,7 +829,7 @@
     NSDictionary *parameter = @{
                                 @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id],
                                 };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     
     [manager POST:[ZZTAPI stringByAppendingString:@"fodder/getFodderCollectInfo"] parameters:parameter progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
@@ -866,14 +943,14 @@
         make.bottom.equalTo(self.view.mas_bottom).offset(ZZTLayoutDistance(-716));
         make.right.equalTo(self.view.mas_right).offset(-ZZTLayoutDistance(24));
         make.left.equalTo(self.view.mas_left).offset(ZZTLayoutDistance(24));
-        make.height.mas_equalTo(ZZTLayoutDistance(300));
+        make.height.mas_equalTo(ZZTLayoutDistance(300) + 16);
     }];
     
     //请求数据
     NSDictionary *dict = @{
                            @"fodderId":[NSString stringWithFormat:@"%ld",materialId]
                            };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"fodder/getFodderMulticlassList"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         NSArray *array = [ZZTDetailModel mj_objectArrayWithKeyValuesArray:dic];
@@ -1210,6 +1287,7 @@
     [self.fontView removeFromSuperview];
     
     [self.materialDetailView removeFromSuperview];
+    
 }
 
 #pragma mark - 方框代理
@@ -1391,15 +1469,16 @@
     }];
 }
 
-- (UIImage *)screenShotWithFrame:(CGRect )imageRect {
+- (UIImage *)screenShotWithFrame:(CGRect)imageRect {
     [self hiddenAllBtn];
     
     UIImage *image = [UIImage imageNamed:@"watermark"];
-    
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT), NO, 0.0);
+   //2.0几倍大小
+    UIGraphicsBeginImageContextWithOptions(self.editorDeskView.frame.size, YES, 8.0);
     
     [self.editorDeskView.layer renderInContext:UIGraphicsGetCurrentContext()];
     
+    //水印
     [image drawInRect:CGRectMake(SCREEN_WIDTH - 54, SCREEN_HEIGHT - 68, 50, 64)];
     
     UIImage *screenShotImage = UIGraphicsGetImageFromCurrentImageContext();

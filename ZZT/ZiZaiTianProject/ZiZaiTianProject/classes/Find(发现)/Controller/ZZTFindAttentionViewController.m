@@ -123,7 +123,7 @@ static NSString *findCommentCell = @"findCommentCell";
                           @"userId":[NSString stringWithFormat:@"%ld",user.id],
                           @"type":@"2"//1.世界 2.关注
                           };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/selDiscover"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
@@ -149,7 +149,7 @@ static NSString *findCommentCell = @"findCommentCell";
 }
 -(void)loadCaiNiXiHuanData{
 
-        AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
         [manager POST:[ZZTAPI stringByAppendingString:@"circle/guessYouLike"] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
             NSMutableArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
@@ -170,7 +170,7 @@ static NSString *findCommentCell = @"findCommentCell";
                           @"userId":[NSString stringWithFormat:@"%ld",user.id],
                           @"type":@"2"//1.世界 2.关注
                           };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/selDiscover"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         if(dic.count > 6){

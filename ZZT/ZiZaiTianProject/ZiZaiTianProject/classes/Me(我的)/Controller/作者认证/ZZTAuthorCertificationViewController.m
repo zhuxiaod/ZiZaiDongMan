@@ -195,7 +195,7 @@ static NSString *AuthorMeInputOneCell = @"AuthorMeInputOneCell";
                                @"introduce":self.userIntro,
                                @"production":self.workIntro
                                };
-        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
         [manager POST:[ZZTAPI stringByAppendingString:@"record/authorIdentification"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             NSString *code = responseObject[@"code"];
             if([code integerValue] == 100){

@@ -102,7 +102,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
 
 #pragma mark - 空间作品数据
 -(void)loadZoneWordDate{
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dic = @{
                           @"userId":_userId,
                           @"ifrelease":@"1",
@@ -228,7 +228,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
                           @"userId":_userId,
                           @"toUserId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id]
                           };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/selUserRoom"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         
@@ -267,7 +267,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
                           @"userId":_userId,
                           @"toUserId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id]
                           };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/selUserRoom"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         if(dic.count != 6){
@@ -323,7 +323,8 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     if(indexPath.section == 0){
-        return nil;
+        
+        return [[UITableViewCell alloc] init];
     }else{
         ZZTMyZoneCell *cell = [tableView dequeueReusableCellWithIdentifier:myZoneCell forIndexPath:indexPath];
         cell.indexRow = indexPath.row;
@@ -469,7 +470,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     NSDictionary *paramDict = @{
                                 @"userId":_userId
                                 };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"login/usersInfo"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
@@ -511,7 +512,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
 }
 
 -(void)sendDelMommentRequest:(ZZTMyZoneModel *)model{
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dic = @{@"topicId":model.id};
     [manager POST:[ZZTAPI stringByAppendingString:@"circle/delUserRoom"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [self loadData];

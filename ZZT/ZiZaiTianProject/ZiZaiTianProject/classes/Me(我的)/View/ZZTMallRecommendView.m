@@ -56,7 +56,7 @@
     //3个推荐
     ZZTCartoonShowView *showView1 = [ZZTCartoonShowView CartoonShowView];
     _showView1 = showView1;
-    CGFloat w = self.contentView.width / 3;
+    
     
     [self.contentView addSubview:showView1];
     

@@ -27,6 +27,10 @@
 -(void)setupUI{
     UIImageView *imageView = [[UIImageView alloc] init];
     _imageView = imageView;
+    imageView.layer.cornerRadius = 12;
+    imageView.layer.masksToBounds = YES;
+    imageView.layer.borderWidth = 1.0f;
+    imageView.layer.borderColor = [UIColor blackColor].CGColor;
     [self addSubview:imageView];
 }
 
@@ -45,10 +49,7 @@
 //        NSLog(@"imageW:%f imageH:%f",image.size.width,image.size.height);
     }];
     
-    self.imageView.layer.cornerRadius = 12;
-    self.imageView.layer.masksToBounds = YES;
-    self.imageView.layer.borderWidth = 1.0f;
-    self.imageView.layer.borderColor = [UIColor blackColor].CGColor;
+
 
 }
 

@@ -168,7 +168,7 @@ static NSString *AuthorMeInputOneCell1 = @"AuthorMeInputOneCell1";
                            @"chapterMoney":@"",
                            @"intro":@""
                            };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"record/authorUpChapter"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [MBProgressHUD showSuccess:@"下架成功~"];
         [self.navigationController popViewControllerAnimated:YES];
@@ -251,7 +251,7 @@ static NSString *AuthorMeInputOneCell1 = @"AuthorMeInputOneCell1";
                                @"chapterMoney":self.payPrice,
                                @"intro":self.wordIntro
                            };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"record/authorUpChapter"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [MBProgressHUD showSuccess:@"发布成功~"];
         [self.navigationController popViewControllerAnimated:YES];
@@ -265,9 +265,7 @@ static NSString *AuthorMeInputOneCell1 = @"AuthorMeInputOneCell1";
     //多图上传
     NSString * imageParms = @"";
     if (array.count > 0) {
-        imageParms = [SYQiniuUpload QiniuPutImageArray:array complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp) {
-            NSLog(@"info == %@ \n resp === %@",info,resp);
-        }];
+        imageParms = [SYQiniuUpload QiniuPutImageArray:array complete:nil uploadComplete:nil];
     }
     
     //上传
@@ -283,7 +281,7 @@ static NSString *AuthorMeInputOneCell1 = @"AuthorMeInputOneCell1";
                           @"pageSize":@"99",
                           @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id]
                           };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     EncryptionTools *tool = [[EncryptionTools alloc]init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getChapterlist"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic2 = [tool decry:responseObject[@"result"]];
@@ -534,7 +532,7 @@ static NSString *AuthorMeInputOneCell1 = @"AuthorMeInputOneCell1";
                                 @"id":ID,
                                 @"userId":[NSString stringWithFormat:@"%ld",user.id]
                                 };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     EncryptionTools *tool = [[EncryptionTools alloc]init];
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/particulars"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         

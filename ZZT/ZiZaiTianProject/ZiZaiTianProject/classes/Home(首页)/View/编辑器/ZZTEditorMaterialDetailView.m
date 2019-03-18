@@ -49,9 +49,9 @@
 -(void)setupCollectionView{
     
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-    layout.minimumLineSpacing = 0;
+    layout.minimumLineSpacing = 8;
     layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    layout.minimumInteritemSpacing = 5;
+    layout.minimumInteritemSpacing = 0;
     
     UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, Height_NavBar, Screen_Width, Screen_Height) collectionViewLayout:layout];
     collectionView.backgroundColor = [UIColor colorWithHexString:@"#1C1522" alpha:0.5];
@@ -72,7 +72,9 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     ZZTEditorImgCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"EditorMateriaDetailView" forIndexPath:indexPath];
+
     ZZTDetailModel *model = self.imgArray[indexPath.row];
+    model.indexRow = indexPath.row;
     cell.model = model;
     return cell;
 }
@@ -93,10 +95,11 @@
 //定义每个UICollectionView 的大小
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake(self.collectionView.height, self.collectionView.height);
+    return CGSizeMake(self.collectionView.height - 16, self.collectionView.height - 16);
 }
 
 -(void)layoutSubviews{
+    
     [self.collectViewBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self);
         make.top.equalTo(self).offset(ZZTLayoutDistance(8));
@@ -137,4 +140,12 @@
     }
     return view;
 }
+
+
+//定义每个UICollectionView 的 margin
+-(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
+{
+    return UIEdgeInsetsMake(8,8,8,8);
+}
+
 @end

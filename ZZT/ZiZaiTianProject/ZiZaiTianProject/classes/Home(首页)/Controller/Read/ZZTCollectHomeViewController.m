@@ -10,15 +10,15 @@
 
 @interface ZZTCollectHomeViewController ()<UICollectionViewDataSource,UICollectionViewDelegate>
 
-@property (nonatomic,strong) UICollectionView *collectionView;
+@property (nonatomic,weak) UICollectionView *collectionView;
 
 @property (nonatomic,strong) NSMutableArray *dataArray;
 
-@property (nonatomic,strong) ZZTRemindView *remindView;
+@property (nonatomic,weak) ZZTRemindView *remindView;
 
 @property (nonatomic,strong) NSArray *bookIdArray;
 
-@property (nonatomic,strong) UIButton *deleteBtn;
+@property (nonatomic,weak) UIButton *deleteBtn;
 
 @end
 
@@ -136,7 +136,7 @@
     NSDictionary *dic = @{
                           @"userId":[NSString stringWithFormat:@"%ld",user.id]
                           };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     EncryptionTools *tool = [[EncryptionTools alloc]init];
     [manager POST:[ZZTAPI stringByAppendingString:@"great/userCollect"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [tool decry:responseObject[@"result"]];
@@ -190,8 +190,8 @@
 
 -(void)loadRemoveBook:(NSString *)string{
   
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-    
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+
     UserInfo *user = [Utilities GetNSUserDefaults];
     NSDictionary *dic = @{
                           @"userId":[NSString stringWithFormat:@"%ld",user.id],

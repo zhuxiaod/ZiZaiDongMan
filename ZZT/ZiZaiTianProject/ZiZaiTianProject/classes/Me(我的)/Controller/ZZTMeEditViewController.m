@@ -410,7 +410,7 @@ static NSString *personalCellThree = @"personalCellThree";
                           @"headimg":self.headImg,//空
                           @"cover":self.backImg
                           };
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"login/upUser"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [MBProgressHUD hideHUD];
         [MBProgressHUD showSuccess:@"上传成功"];
@@ -712,7 +712,7 @@ static NSString *personalCellThree = @"personalCellThree";
 
 -(void)loadUserData{
     //通过id 获取数据
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *paramDict = @{
                                 @"userId":[NSString stringWithFormat:@"%ld",_model.id]
                                 };

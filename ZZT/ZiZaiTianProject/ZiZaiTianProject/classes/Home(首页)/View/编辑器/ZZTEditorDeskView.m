@@ -86,12 +86,12 @@
         view.hidden = YES;
         [view removeFromSuperview];
     }
+    self.backgroundColor = [UIColor whiteColor];
     [self layoutIfNeeded];
 }
 
 //in every view .m overide those methods
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
-    
     
     UIView * view = [super hitTest:point withEvent:event];
     

@@ -119,7 +119,7 @@ static NSString * const XYStoreiTunesSandboxVerifyReceiptURL1 = @"https://sandbo
 -(void)setupArray{
     [MBProgressHUD showMessage:@"正在获取商品信息" toView:self.view];
     //获取商品信息
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dict = @{
                            @"goodsType":@"2",// 1充值z币；2购买会员
                            };
@@ -206,7 +206,6 @@ static NSString * const XYStoreiTunesSandboxVerifyReceiptURL1 = @"https://sandbo
     }];
     
 }
-
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];

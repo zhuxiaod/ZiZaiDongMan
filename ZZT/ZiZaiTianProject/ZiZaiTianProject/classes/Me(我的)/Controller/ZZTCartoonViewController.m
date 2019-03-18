@@ -123,8 +123,8 @@ static NSString *circleCell = @"circleCell";
 }
 
 -(void)loadRemoveBook:(NSString *)string{
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+//    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     UserInfo *user = [Utilities GetNSUserDefaults];
     NSDictionary *dic = @{
                           @"userId":[NSString stringWithFormat:@"%ld",user.id],

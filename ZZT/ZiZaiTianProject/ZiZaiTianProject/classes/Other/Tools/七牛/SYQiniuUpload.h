@@ -25,6 +25,6 @@
  *  @param images     图片
  *  @param complete
  */
-+ (NSString *)QiniuPutImageArray:(NSArray *)images complete:(void (^)(QNResponseInfo *info, NSString *key, NSDictionary *resp))complete;
++ (NSString *)QiniuPutImageArray:(NSArray *)images complete:(void (^)(QNResponseInfo *info, NSString *key, NSDictionary *resp))complete uploadComplete:(void (^)(NSString *imgsStr))uploadComplete;
 
 @end

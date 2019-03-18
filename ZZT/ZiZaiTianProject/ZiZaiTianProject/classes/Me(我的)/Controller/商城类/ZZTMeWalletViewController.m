@@ -196,7 +196,7 @@ NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
 -(void)setupArray{
     [MBProgressHUD showMessage:@"正在获取商品信息" toView:self.view];
     //获取商品信息
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dict = @{
                            @"goodsType":@"1",// 1充值z币；2购买会员
                            };

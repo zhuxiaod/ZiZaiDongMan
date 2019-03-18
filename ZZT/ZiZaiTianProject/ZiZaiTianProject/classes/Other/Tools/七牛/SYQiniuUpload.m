@@ -36,7 +36,7 @@
 }
 
 //多图上传
-+ (NSString *)QiniuPutImageArray:(NSArray *)images complete:(void (^)(QNResponseInfo *info, NSString *key, NSDictionary *resp))complete {
++ (NSString *)QiniuPutImageArray:(NSArray *)images complete:(void (^)(QNResponseInfo *info, NSString *key, NSDictionary *resp))complete uploadComplete:(void (^)(NSString *imgsStr))uploadComplete{
     
     QNUploadManager *upManager = [[QNUploadManager alloc] init];
     
@@ -45,9 +45,14 @@
     for (int i = 0; i < images.count; i++) {
     
         UIImage *newImage = images[i];
-        NSData *data = [self resetSizeOfImageData:newImage maxSize:400];
+        
+        NSData *data = UIImagePNGRepresentation(newImage);
+
+//        NSData *data = [self resetSizeOfImageData:newImage maxSize:400];
         NSString *keyTime = [self currentTime];
+        
         NSString *keyRandom = [self randomString];
+        
         NSString *keyString = [NSString stringWithFormat:@"%@%@.jpg",keyTime,keyRandom];
         NSLog(@"keyString = %@", keyString);
         
@@ -62,6 +67,9 @@
                 complete(info, key, resp);
             }
         } option:nil];
+    }
+    if(uploadComplete){
+        uploadComplete([imageMString substringToIndex:imageMString.length - 1]);
     }
     return [imageMString substringToIndex:imageMString.length - 1];
 }
@@ -78,31 +86,34 @@
 + (NSData *)resetSizeOfImageData:(UIImage *)source_image maxSize:(NSInteger)maxSize{
     //先调整分辨率
     CGSize newSize = CGSizeMake(source_image.size.width, source_image.size.height);
+//
+//    CGFloat tempHeight = newSize.height / 1024;
+//    CGFloat tempWidth = newSize.width / 1024;
+//
+//    if (tempWidth > 1.0 && tempWidth != tempHeight) {
+//        newSize = CGSizeMake(source_image.size.width / tempWidth, source_image.size.height / tempWidth);
+//    }
     
-    CGFloat tempHeight = newSize.height / 1024;
-    CGFloat tempWidth = newSize.width / 1024;
-    
-    if (tempWidth > 1.0 && tempWidth != tempHeight) {
-        newSize = CGSizeMake(source_image.size.width / tempWidth, source_image.size.height / tempWidth);
-    }
-    
-    UIGraphicsBeginImageContext(newSize);
+    UIGraphicsBeginImageContextWithOptions(newSize, YES, 2.0);
+
     [source_image drawInRect:CGRectMake(0,0,newSize.width,newSize.height)];
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
     //调整大小
-    NSData *imageData = UIImageJPEGRepresentation(newImage,1.0);
-    NSUInteger sizeOrigin = [imageData length];
-    NSUInteger sizeOriginKB = sizeOrigin / 1024;
-    NSLog(@"sizeOriginKB === %ld",sizeOriginKB);
-    if (sizeOriginKB > maxSize) {
-        NSData *finallImageData = UIImageJPEGRepresentation(newImage,0.50);
-        NSLog(@"finallImageDataKB === %ld",[finallImageData length]/1024);
-        return finallImageData;
-    }
-    //    NSData *imageData = [PMRequest image:newImage maxSize:maxSize];
-    NSLog(@"imageDataKB === %ld",[imageData length]/1024);
+    //格式转换
+    //
+    NSData *imageData = UIImagePNGRepresentation(newImage);
+//    NSUInteger sizeOrigin = [imageData length];
+//    NSUInteger sizeOriginKB = sizeOrigin / 1024;
+//    NSLog(@"sizeOriginKB === %ld",sizeOriginKB);
+//    if (sizeOriginKB > maxSize) {
+//        NSData *finallImageData = UIImageJPEGRepresentation(newImage,0.50);
+//        NSLog(@"finallImageDataKB === %ld",[finallImageData length]/1024);
+//        return finallImageData;
+//    }
+//    //    NSData *imageData = [PMRequest image:newImage maxSize:maxSize];
+//    NSLog(@"imageDataKB === %ld",[imageData length]/1024);
     return imageData;
 }
 

@@ -48,8 +48,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     [TZImageManager manager].shouldFixOrientation = YES;
+    
     TZImagePickerController *_tzImagePickerVc = (TZImagePickerController *)self.navigationController;
+    
     if (!_didSetIsSelectOriginalPhoto) {
         _isSelectOriginalPhoto = _tzImagePickerVc.isSelectOriginalPhoto;
     }

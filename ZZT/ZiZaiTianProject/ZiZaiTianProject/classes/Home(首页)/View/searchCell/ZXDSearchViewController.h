@@ -10,6 +10,10 @@
 
 @interface ZXDSearchViewController : UIViewController
 
+@property (nonatomic,strong) void(^getSearchMaterialData)(ZZTDetailModel *materialModel);
+
+@property (nonatomic,assign) BOOL isFromEditorView;
+
 +(void)initView;
 
 @end

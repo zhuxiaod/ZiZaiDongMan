@@ -75,7 +75,7 @@ NSString *SuggestionView1 = @"SuggestionView1";
 }
 
 -(void)loadMoreData{
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dict = @{
                            @"pageNum":[NSString stringWithFormat:@"%ld",self.pageNumber],
                            @"pageSize":@"10",
@@ -104,8 +104,8 @@ NSString *SuggestionView1 = @"SuggestionView1";
 
 -(void)loadNewData{
     
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-    
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+
     NSDictionary *dict = @{
                            @"pageNum":@"1",
                            @"pageSize":[NSString stringWithFormat:@"%ld",self.pageSize]

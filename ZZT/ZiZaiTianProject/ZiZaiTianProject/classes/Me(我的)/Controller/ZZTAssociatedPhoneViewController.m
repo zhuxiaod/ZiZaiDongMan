@@ -133,7 +133,7 @@
         NSDictionary *paramDict = @{
                                     @"phone":self.phoneTF.text
                                     };
-        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
         [manager POST:[ZZTAPI stringByAppendingString:@"login/sendMsg"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -149,7 +149,7 @@
 
 -(void)doneTarget{
     UserInfo *user = [Utilities GetNSUserDefaults];
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dict = @{
                               @"checkCode":self.codeTF.text,
                               @"phone":self.phoneTF.text,

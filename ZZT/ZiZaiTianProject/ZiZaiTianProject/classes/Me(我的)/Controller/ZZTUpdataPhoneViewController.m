@@ -109,7 +109,7 @@
     NSDictionary *paramDict = @{
                                 @"phone":_userNum
                                 };
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"login/sendMsg"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -120,7 +120,7 @@
 
 -(void)doneTarget{
     [MBProgressHUD showMessage:@"正在验证" toView:self.view];
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dict = @{
                            @"checkCode":self.textField.text,
                                @"phone":_userNum

@@ -251,7 +251,7 @@
 //发现点赞
 -(void)findLikeTarget{
     UserInfo *user = [Utilities GetNSUserDefaults];
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dic = @{
                           @"type":@"1",//外面1 里面2
                           @"typeId":_model.id,

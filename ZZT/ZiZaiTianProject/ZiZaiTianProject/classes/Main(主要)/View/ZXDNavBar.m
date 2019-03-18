@@ -264,7 +264,8 @@
         [[self myViewController].navigationController pushViewController:ecVC animated:YES];
         
     }];
-    [action3 setValue:[UIColor blackColor] forKey:@"_titleTextColor"];
+    
+    [action3 setValue:ZZTSubColor forKey:@"_titleTextColor"];
     
     UIAlertAction *action4 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         NSLog(@"点击了取消");

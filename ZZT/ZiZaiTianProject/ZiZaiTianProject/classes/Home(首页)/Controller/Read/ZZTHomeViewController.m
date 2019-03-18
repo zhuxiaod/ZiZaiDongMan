@@ -44,13 +44,13 @@ static NSString *findCommentCell = @"findCommentCell";
 @property (nonatomic,strong) NSString *str;
 @property (nonatomic,strong) NSMutableArray *bookShelfArray;
 @property (nonatomic,strong) NSMutableArray *cartoonArray;
-@property (nonatomic,strong) ZZTRemindView *remindView;
+@property (nonatomic,weak) ZZTRemindView *remindView;
 //导航条
-@property (nonatomic,strong) ZXDNavBar *navBar;
+@property (nonatomic,weak) ZXDNavBar *navBar;
 //titleView
-@property (nonatomic,strong) ZZTNavBarTitleView *titleView;
+@property (nonatomic,weak) ZZTNavBarTitleView *titleView;
 
-@property (nonatomic,strong) UIButton *deleteBtn;
+@property (nonatomic,weak) UIButton *deleteBtn;
 
 @end
 
@@ -113,6 +113,9 @@ NSString *SuggestionView = @"SuggestionView";
 - (void)setupMainView {
     
     UIScrollView *mainView = [[UIScrollView alloc] init];
+    //主页的位置
+    [mainView setFrame:CGRectMake(0,0,ScreenW,ScreenH - navHeight + 20)];
+    mainView.contentSize  = CGSizeMake(ScreenW * 2, 0);
     //1.是否有弹簧效果
     mainView.bounces = NO;
     //整页平移是否开启
@@ -131,62 +134,38 @@ NSString *SuggestionView = @"SuggestionView";
 
 #pragma mark - 设置添加滚动子页
 - (void)setupChildView{
+    
+    CGFloat height = self.view.height  - navHeight + 20;
+    CGFloat width  = self.view.width;
+    
     //阅读页
     ZZTReadHomeViewController *readVC = [[ZZTReadHomeViewController alloc] init];
-//    ZZTReadTableView *readVC = [[ZZTReadTableView alloc] init];
-//    readVC.contentInset = UIEdgeInsetsMake(-20, 0, 0, 0);
-//    readVC.backgroundColor = [UIColor whiteColor];
+
+    [readVC.view setFrame:CGRectMake(0, 0, width, height)];
+
     [self addChildViewController:readVC];
     self.ReadView = readVC;
     [self.mainView addSubview:readVC.view];
-    
-//    //创作页
-//    ZZTCreationTableView *creationVC = [[ZZTCreationTableView alloc] init];
-////    ZZTCreationTableView *creationVC = [[ZZTCreationTableView alloc]initWithFrame:CGRectZero style:UITableViewStyleGrouped];
-//    self.CreationView = creationVC;
-//    creationVC.backgroundColor = [UIColor whiteColor];
-//    [self.mainView addSubview:creationVC];
-    
-    //书柜
-    //直接在该页面创建一个collectionView
-////    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc]init];
+
     ZZTCollectHomeViewController *collectVC = [[ZZTCollectHomeViewController alloc] init];
-//    collectVC.backgroundColor = [UIColor whiteColor];
     self.collectView = collectVC;
     [self addChildViewController:collectVC];
     [self.mainView addSubview:collectVC.view];
+    [_collectView.view setFrame:CGRectMake(width, 0, width, height)];
     self.automaticallyAdjustsScrollViewInsets = NO;
+    
 }
 
 #pragma mark - 设置滚动视图
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
-    
-    CGFloat height = self.view.height  - navHeight +20;
-    CGFloat width  = self.view.width;
-    
-    //主页的位置
-    [self.mainView setFrame:CGRectMake(0,0,width,height)];
-//    self.mainView.contentSize  = CGSizeMake(width * 3, 0);
-//    [self.mainView setFrame:CGRectMake(width,0,width,height)];
-    self.mainView.contentSize  = CGSizeMake(width * 2, 0);
-    
-    //提前加载
-//    [_CreationView setFrame:CGRectMake(0, 0, width, height)];
-//    [_ReadView setFrame:CGRectMake(width, 0, width, height)];
-//    [_collectView setFrame:CGRectMake(width * 2, 0, width, height)];
-    
-    [_collectView.view setFrame:CGRectMake(width, 0, width, height)];
-    [_ReadView.view setFrame:CGRectMake(0, 0, width, height)];
-
     //添加视图的时候会刷新一次
     if([_str isEqualToString:@"YES"]){
         [self.mainView setContentOffset:CGPointMake(0, 0)];
 
     }else{
-        //确定进去的时候在哪里
-//        [self.mainView setContentOffset:CGPointMake(width, 0)];
-         [self.mainView setContentOffset:CGPointMake(0, 0)];
+
+         [_mainView setContentOffset:CGPointMake(0, 0)];
     }
 }
 
@@ -194,21 +173,16 @@ NSString *SuggestionView = @"SuggestionView";
 //计时器开始
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    //反正是一个页面一起跑页没什么不好吧
-    //cell 还没有创建故不能在这里搞
-//    [_ReadView reloadData];
-    
-//    [self loadBookShelfData];
+
     
     NSLog(@"width:%f",SCREEN_WIDTH );
     
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
     
     self.navigationController.navigationBar.alpha = 0;
     
-//    [self.navigationController setNavigationBarHidden:YES animated:NO];
-    
 }
+
 //计时器结束
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
@@ -238,9 +212,6 @@ NSString *SuggestionView = @"SuggestionView";
     [titleView.leftBtn addTarget:self action:@selector(clickMenu:) forControlEvents:UIControlEventTouchUpInside];
     
     [titleView.rightBtn addTarget:self action:@selector(clickMenu:) forControlEvents:UIControlEventTouchUpInside];
-    
-    //跳转不同的页面
-//    [self clickMenu:titleView.leftBtn];
     
     ZXDNavBar *navBar = [[ZXDNavBar alloc] init];
     _navBar = navBar;
@@ -352,6 +323,7 @@ NSString *SuggestionView = @"SuggestionView";
 
 - (void)dealloc{
     NSLog(@"我走了");
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)search{
