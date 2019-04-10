@@ -90,6 +90,8 @@
 -(void)layoutSubviews{
     [super layoutSubviews];
     
+    if(self.contentView.bounds.size.height < 2) return;
+    
     [self.titleLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self);
         make.left.equalTo(self).offset(12);

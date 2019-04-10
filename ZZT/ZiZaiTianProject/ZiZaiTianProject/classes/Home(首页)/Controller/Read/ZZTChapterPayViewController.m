@@ -158,7 +158,7 @@
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     
     [self.view layoutIfNeeded];
-    NSLog(@"self.contentView:%f",self.buyOptionView.height);
+    
     //修改尺寸(控制)
 //    layout.itemSize = CGSizeMake(SCREEN_WIDTH/4 - 15,_collectionView.height/2 - 5);
     

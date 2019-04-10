@@ -409,6 +409,7 @@ NSString *bannerID = @"MeCell";
     bookVC.hidesBottomBarWhenPushed = YES;
     bookVC.viewTitle = @"书柜";
     bookVC.viewType = @"2";
+    bookVC.model = [ZZTHomeTableViewModel initHotVCModel:@"great/userCollect" title:@"书柜"];
     [self.navigationController pushViewController:bookVC animated:YES];
 }
 

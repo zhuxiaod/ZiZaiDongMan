@@ -23,14 +23,14 @@
                         <rect key="frame" x="60" y="4" width="200" height="34"/>
                         <color key="backgroundColor" red="0.34509803919999998" green="0.0" blue="0.43137254899999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="200" id="W1E-GO-xdk"/>
+                            <constraint firstAttribute="width" constant="200" id="doC-g7-S2i"/>
                         </constraints>
                         <state key="normal" title="退出账号"/>
                     </button>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="evb-mI-FHZ" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="48c-W4-dy7"/>
-                    <constraint firstItem="evb-mI-FHZ" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="VV9-M4-i2u"/>
+                    <constraint firstItem="evb-mI-FHZ" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="jjO-b8-WqE"/>
+                    <constraint firstItem="evb-mI-FHZ" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="uZr-Cb-e7a"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="aW0-zy-SZf"/>

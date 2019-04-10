@@ -70,7 +70,7 @@ typedef NS_ENUM(NSInteger, Editor_ImageViewType) {
 
 @property(nonatomic,weak)id<ZZTEditorImageViewDelegate> imageViewDelegate;
 
-@property(nonatomic,strong) UIButton *closeImageView;
+@property(nonatomic,strong) UIImageView *imgView;
 
 @property(nonatomic,strong) UIImageView *imageView;
 
@@ -100,6 +100,8 @@ typedef NS_ENUM(NSInteger, Editor_ImageViewType) {
 @property (nonatomic,assign) CGFloat hue;
 
 @property (nonatomic,strong) NSString *isCollectOpen;
+
+@property (nonatomic,strong) CIImage *originalImg;
 
 -(void)draw;
 

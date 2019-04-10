@@ -24,7 +24,8 @@
     NSString *attentionNum;// 关注数量
     NSString *fansNum;//粉丝数量
     NSString *userVip;
-    
+    NSInteger ifConcern;
+
 }
 
 @property (nonatomic,assign)BOOL isLogin;
@@ -83,6 +84,9 @@
 @property (nonatomic,strong) NSString *fansNum;
 //是不是vip
 @property (nonatomic,strong) NSString *userVip;
+
+@property (nonatomic,assign) NSInteger ifConcern;
+
 
 
 +(instancetype)initAuthorWithUserId:(NSString *)userId headImg:(NSString *)headImg nikeName:(NSString *)nikeName;

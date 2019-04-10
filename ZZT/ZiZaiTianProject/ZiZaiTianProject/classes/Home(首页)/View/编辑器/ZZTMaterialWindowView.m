@@ -298,7 +298,7 @@
                            };
     [manager POST:[ZZTAPI stringByAppendingString:@"fodder/deleteUserSeekFodder"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
-        NSLog(@"responseObject:%@",responseObject);
+//        NSLog(@"responseObject:%@",responseObject);
         
         if(self.reloadMaterialData){
             self.reloadMaterialData();
@@ -385,7 +385,7 @@
                             @"fodderType":self.fodderType
                            };
     [manager POST:[ZZTAPI stringByAppendingString:@"fodder/insertUserSeekFodder"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"responseObject:%@",responseObject);
+//        NSLog(@"responseObject:%@",responseObject);
         if(self.reloadMaterialData){
             self.reloadMaterialData();
         }
@@ -461,6 +461,26 @@
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.typeCollectionView reloadData];
+        });
+    });
+}
+
+//搜索跳转
+-(void)postionMaterialData:(ZZTDetailModel *)model{
+    
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        NSInteger i;
+        for (i = 0; i < self.materialArray.count; i++) {
+            ZZTDetailModel *model1 = self.materialArray[i];
+            if(model1.id == model.id){
+                //得到位置
+                break;
+            }
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            //跳转
+            [self.contentCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0] atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
+            [self.contentCollectionView reloadData];
         });
     });
 }

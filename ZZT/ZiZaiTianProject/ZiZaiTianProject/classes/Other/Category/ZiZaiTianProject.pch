@@ -58,6 +58,7 @@
 #import "ZZTNavBarTitleView.h"
 #import "ZZTUserHeadView.h"
 #import "likeCountView.h"
+#import "UIImage+Extension.h"
 
 //#define imageHost @"http://img.cdn.zztian.cn"
 
@@ -123,6 +124,7 @@
 #import "NSDictionary+Property.h"
 #import "UIImage+Extension.h"
 #import "SBAFHTTPSessionManager.h"
+#import "ZZTHomeTableViewModel.h"
 
 #define BanerHeight SCREEN_HEIGHT * 0.3
 //九宫格尺寸
@@ -241,8 +243,13 @@
 
 //#define AFNHttpTool AFNHttpTool *tool = [AFNHttpTool ];
 
+//点赞小图标
+#define LikeIconImg @"catoonDetail_like"
+#define LikeIconImg_Select @"catoonDetail_like_select"
 
-
+//评论
+#define CommentIconImg @"commentImg"
+#define CommentIconImg_Select @"commentImg"
 
 
 

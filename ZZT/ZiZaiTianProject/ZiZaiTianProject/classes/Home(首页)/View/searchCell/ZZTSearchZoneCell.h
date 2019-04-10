@@ -10,6 +10,8 @@
 
 @interface ZZTSearchZoneCell : UITableViewCell
 
+@property (nonatomic, strong) UserInfo *model;
+
 + (instancetype)cellWithTableView:(UITableView *)tableView;
 
 @end

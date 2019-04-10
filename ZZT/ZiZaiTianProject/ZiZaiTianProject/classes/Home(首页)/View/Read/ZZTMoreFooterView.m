@@ -68,19 +68,20 @@
     [super layoutSubviews];
     
     CGFloat BtnW = (SCREEN_WIDTH - 20) / 2;
-    
+    CGFloat BtnH = 60;
+
     [_moreBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self).offset(2);
         make.left.equalTo(self).offset(8);
-        make.bottom.equalTo(self).offset(-2);
         make.width.mas_equalTo(BtnW);
+        make.height.mas_equalTo(BtnH);
     }];
     
     [_updateBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self).offset(2);
         make.right.equalTo(self).offset(-8);
-        make.bottom.equalTo(self).offset(-2);
         make.width.mas_equalTo(BtnW);
+        make.height.mas_equalTo(BtnH);
     }];
 }
 

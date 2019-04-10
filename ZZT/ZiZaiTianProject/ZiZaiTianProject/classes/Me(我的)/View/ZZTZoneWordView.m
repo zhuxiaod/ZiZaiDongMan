@@ -26,13 +26,6 @@
 
 @implementation ZZTZoneWordView
 
-//-(NSMutableArray *)dataArray{
-//    if(_dataArray == nil){
-//        _dataArray = [NSMutableArray array];
-//    }
-//    return _dataArray;
-//}
-
 - (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier{
     self = [super initWithReuseIdentifier:reuseIdentifier];
     if (self) {
@@ -43,6 +36,7 @@
 
 -(void)setDataArray:(NSMutableArray *)dataArray{
     _dataArray = dataArray;
+    self.actionBtn.hidden = _dataArray.count > 3 ? 0:1;
     [self.collectionView reloadData];
 }
 
@@ -81,14 +75,14 @@
         
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
         //行距
-        layout.minimumLineSpacing = 0;
+        layout.minimumLineSpacing = 10;
         layout.minimumInteritemSpacing = 5;
         
         layout;
     });
     
     UICollectionView *collectionView = ({
-        UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, Height_NavBar, Screen_Width, Screen_Height) collectionViewLayout:layout];
+        UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
         collectionView.backgroundColor = [UIColor whiteColor];
         collectionView.dataSource = self;
         collectionView.delegate = self;
@@ -98,7 +92,7 @@
     });
     self.collectionView = collectionView;
     
-    [collectionView registerNib:[UINib nibWithNibName:@"ZZTCartoonCell" bundle:nil] forCellWithReuseIdentifier:@"ZZTZoneWordView"];
+    [collectionView registerClass:[ZZTCartoonCell class] forCellWithReuseIdentifier:@"cellId"];
     
     UIView *bottomView = [[UIView alloc] init];
     _bottomView = bottomView;
@@ -147,12 +141,11 @@
     detailVC.cartoonDetail = model;
     detailVC.hidesBottomBarWhenPushed = YES;
     [[self myViewController].navigationController pushViewController:detailVC animated:YES];
-
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    ZZTCartoonCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"ZZTZoneWordView" forIndexPath:indexPath];
+    ZZTCartoonCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cellId" forIndexPath:indexPath];
     ZZTCarttonDetailModel *car = _dataArray[indexPath.row];
     cell.cartoon = car;
     return cell;
@@ -168,25 +161,30 @@
 -(void)layoutSubviews{
     [super layoutSubviews];
     
+    if(self.contentView.bounds.size.height < 2) return;
+    
     [self.wordTitleView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.right.left.equalTo(self.contentView);
+        make.top.left.equalTo(self.contentView);
+        make.width.mas_equalTo(SCREEN_WIDTH);
         make.height.mas_offset(50);
     }];
     
     [self.titleLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(self.wordTitleView);
-        make.left.equalTo(self.wordTitleView).offset(10);
+        make.centerY.equalTo(self.wordTitleView.mas_centerY);
+        make.left.equalTo(self.wordTitleView.mas_left).offset(10);
+        make.height.mas_equalTo(40);
+        make.width.mas_equalTo(80);
     }];
     
     [self.actionBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(self.wordTitleView);
-        make.right.equalTo(self.wordTitleView).offset(-10);
+        make.centerY.equalTo(self.wordTitleView.mas_centerY);
+        make.right.equalTo(self.wordTitleView.mas_right).offset(-10);
         make.height.width.mas_equalTo(40);
     }];
     
     [self.wordView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.wordTitleView.mas_bottom);
-        make.right.left.bottom.equalTo(self.contentView);
+        make.left.bottom.right.equalTo(self.contentView);
     }];
     
     [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -205,9 +203,9 @@
         NSInteger row = self.dataArray.count / 3;
         NSInteger remainder = self.dataArray.count % 3 ? row + 1 : row;
         NSLog(@"remainder:%ld",remainder);
-        return ([Utilities getCarChapterH] + 24) * remainder + 50;
+        return ([Utilities getCarChapterH] + 24 + 10) * remainder + 50 + 10;
     }else{
-        return 50 + [Utilities getCarChapterH] + 24;
+        return 50 + [Utilities getCarChapterH] + 24 + 10;
     }
 }
 @end

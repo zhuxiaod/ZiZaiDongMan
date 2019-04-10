@@ -14,7 +14,7 @@ static CGFloat BrightnessToolBarHeight = 160.0f;
 
 @protocol ZZTEditorBrightnessView <NSObject>
 
-- (void)brightnessChangeWithTag:(NSInteger)tag Value:(CGFloat)value;
+- (void)brightnessChangeWithTag:(NSInteger)tag Value:(CGFloat)value img:(CIImage *)img;
 
 @end
 

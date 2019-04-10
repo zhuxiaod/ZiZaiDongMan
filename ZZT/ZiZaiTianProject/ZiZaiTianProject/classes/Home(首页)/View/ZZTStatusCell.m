@@ -64,7 +64,15 @@ static CGFloat iconSize = 50;
 
 - (void)setupUI {
     
-    self.contentView.backgroundColor = [UIColor whiteColor];
+//    self.contentView.backgroundColor = [UIColor whiteColor];
+ 
+    
+    UILongPressGestureRecognizer *longPressGest = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPressView)];
+    [self addGestureRecognizer:longPressGest];
+}
+
+-(void)layoutSubviews{
+    [super layoutSubviews];
     
     CGFloat spaceing = SafetyW;
     CGFloat margin = 8;
@@ -80,7 +88,7 @@ static CGFloat iconSize = 50;
         make.left.equalTo(self.userAuthenticationIcon.mas_right).offset(margin);
         make.centerY.equalTo(self.userAuthenticationIcon.mas_centerY);
         make.height.mas_equalTo(30);
-        make.right.equalTo(self.contentView);
+        make.width.mas_equalTo(Screen_Width - 66);
     }];
     
     //内容
@@ -90,9 +98,6 @@ static CGFloat iconSize = 50;
         make.top.equalTo(self.userNameLabel.mas_bottom).offset(spaceing);//8
         make.bottom.equalTo(self.contentView.mas_bottom).offset(-8);
     }];
-    
-    UILongPressGestureRecognizer *longPressGest = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPressView)];
-    [self addGestureRecognizer:longPressGest];
 }
 
 -(void)longPressView{

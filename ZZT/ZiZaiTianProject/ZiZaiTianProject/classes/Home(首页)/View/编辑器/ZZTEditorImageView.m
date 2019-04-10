@@ -14,8 +14,9 @@
     CGFloat bottomValue;
     CGFloat rightValue;
 }
-@property (nonatomic,assign)BOOL isFirst;
-
+@property (nonatomic,assign)BOOL isFirstAlpha;
+@property (nonatomic,assign)BOOL isFirstSaturation;
+@property (nonatomic,weak) UIButton *closeImageView;
 @end
 
 @implementation ZZTEditorImageView
@@ -34,7 +35,8 @@
         bottomValue = 0;
         rightValue = 0;
         
-        _isFirst = YES;
+        _isFirstAlpha = YES;
+        _isFirstSaturation = YES;
     }
     return self;
 }
@@ -52,17 +54,23 @@
 }
 
 -(void)addUI{
+    
     UIImageView *imageView = [[UIImageView alloc] init];
     imageView.userInteractionEnabled = YES;
     _imageView = imageView;
     [self addSubview:imageView];
     
     UIButton *closeImageView = [UIButton buttonWithType:UIButtonTypeCustom];
-    [closeImageView setImage:[UIImage imageNamed:@"deletMartarel"] forState:UIControlStateNormal];
+//    [closeImageView setImage:[UIImage imageNamed:@"deletMartarel"] forState:UIControlStateNormal];
     _closeImageView = closeImageView;
     [self addSubview:closeImageView];
 
     [closeImageView addTarget:self action:@selector(deleteSelf) forControlEvents:UIControlEventTouchUpInside];
+
+    UIImageView *imgView = [[UIImageView alloc] init];
+    _imgView = imgView;
+    imgView.image = [UIImage imageNamed:@"deletMartarel"];
+    [self addSubview:imgView];
 }
 
 -(void)deleteSelf{
@@ -83,6 +91,11 @@
     
     [self.closeImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.equalTo(self);
+        make.height.width.mas_equalTo(30);
+    }];
+    
+    [self.imgView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.left.equalTo(self);
         make.height.width.mas_equalTo(20);
     }];
 }
@@ -90,7 +103,9 @@
 
 -(void)setImageUrl:(NSString *)imageUrl{
     _imageUrl = imageUrl;
-    [self.imageView sd_setImageWithURL:[NSURL URLWithString:imageUrl]];
+    [self.imageView sd_setImageWithURL:[NSURL URLWithString:imageUrl]completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+        self.originalImg = [CIImage imageWithCGImage:image.CGImage];
+    }];
 }
 
 -(void)setType:(Editor_ImageViewType)type{
@@ -232,15 +247,17 @@
 
 //初始化值
 -(CGFloat)alpha{
-    if(_alpha == 0 && _isFirst == YES){
-        _alpha = 0.5;
+    if(_alpha == 0 && _isFirstAlpha == YES){
+        _alpha = 1;
+        _isFirstAlpha = NO;
     }
     return _alpha;
 }
 
 -(CGFloat)saturation{
-    if(_saturation == 0 && _isFirst == YES){
+    if(_saturation == 0 && _isFirstSaturation == YES){
         _saturation = 1;
+        _isFirstSaturation = NO;
     }
     return _saturation;
 }

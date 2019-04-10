@@ -39,7 +39,7 @@
 {
     if (!_placeholderView ) {
         UITextView *placeholderView = [[UITextView alloc] init];
-        NSLog(@"self.b:%@",NSStringFromCGRect(self.bounds));
+//        NSLog(@"self.b:%@",NSStringFromCGRect(self.bounds));
         _placeholderView = placeholderView;
         //防止textView输入时跳动问题
         _placeholderView.scrollEnabled = NO;
@@ -162,7 +162,7 @@
     // 根据文字内容决定placeholderView是否隐藏
     self.placeholderView.hidden = self.text.length > 0;
     
-    NSLog(@"self.text:%@",self.text);
+//    NSLog(@"self.text:%@",self.text);
     
     if ([self.text length] > self.maxTextNum) {
     self.text = [self.text substringWithRange:NSMakeRange(0, self.maxTextNum)];

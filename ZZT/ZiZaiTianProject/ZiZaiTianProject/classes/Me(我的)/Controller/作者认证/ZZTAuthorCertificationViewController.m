@@ -211,6 +211,7 @@ static NSString *AuthorMeInputOneCell = @"AuthorMeInputOneCell";
 }
 
 -(void)setupTableView{
+    
     CGFloat navbarH = Height_NavBar;
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, Height_NavBar , self.view.bounds.size.width, self.view.bounds.size.height - navbarH - 64) style:UITableViewStyleGrouped];
     _tableView.backgroundColor = [UIColor whiteColor];

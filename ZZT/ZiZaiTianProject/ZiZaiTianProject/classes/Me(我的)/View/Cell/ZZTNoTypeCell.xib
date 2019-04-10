@@ -21,33 +21,26 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="111" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nxG-y2-px2">
-                        <rect key="frame" x="16" y="12" width="207" height="21"/>
+                        <rect key="frame" x="16" y="12" width="23" height="21"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="207" id="EWH-qK-Hj5"/>
-                            <constraint firstAttribute="height" constant="21" id="HhI-C3-eeS"/>
+                            <constraint firstAttribute="height" constant="21" id="hiZ-Qh-se3"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KiB-F6-djr">
-                        <rect key="frame" x="234" y="11" width="60" height="21"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="60" id="gfR-pR-htD"/>
-                        </constraints>
+                        <rect key="frame" x="256" y="11" width="42" height="21"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" red="0.7843137255" green="0.80784313730000001" blue="0.89019607840000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="KiB-F6-djr" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="OgX-m0-SPD"/>
-                    <constraint firstItem="nxG-y2-px2" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="1" id="RqM-0m-abf"/>
-                    <constraint firstItem="nxG-y2-px2" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="Wqt-nW-hEO"/>
-                    <constraint firstItem="KiB-F6-djr" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" constant="-10" id="f1i-fx-vaB"/>
-                    <constraint firstItem="nxG-y2-px2" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="ik3-fU-XCN"/>
-                    <constraint firstItem="nxG-y2-px2" firstAttribute="bottom" secondItem="H2p-sc-9uM" secondAttribute="bottomMargin" id="n5n-n2-GC8"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="KiB-F6-djr" secondAttribute="bottom" constant="1" id="x5U-jk-rR6"/>
+                    <constraint firstItem="KiB-F6-djr" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="YSR-x8-yzE"/>
+                    <constraint firstItem="nxG-y2-px2" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="ZE0-oo-YCu"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="KiB-F6-djr" secondAttribute="trailing" constant="6" id="mk5-0f-IXa"/>
+                    <constraint firstItem="nxG-y2-px2" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="s4u-bN-Z30"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="aW0-zy-SZf"/>

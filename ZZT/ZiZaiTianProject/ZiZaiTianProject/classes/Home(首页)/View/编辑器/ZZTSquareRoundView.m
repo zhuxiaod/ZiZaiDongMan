@@ -10,7 +10,6 @@
 #import "ZZTSquareRoundView.h"
 #import "CAShapeLayer+ViewMask.h"
 
-
 @interface ZZTSquareRoundView ()<ZZTEditorBasisViewDelegate>{
     CGPoint prevPoint;
     
@@ -27,7 +26,6 @@
     CGPoint lastCenter;
 
     CGFloat proportion;
-
 }
 
 //四条边
@@ -72,6 +70,8 @@
 @property (nonatomic,strong) UIPinchGestureRecognizer *pinchGesture;
 
 @property (nonatomic,strong) UIView *maskView;
+
+@property (nonatomic,weak) UIView *leftOneView;
 
 @end
 
@@ -135,7 +135,7 @@
     
     [self.rightOne addGestureRecognizer:self.angle1];
     [self.rightTwo addGestureRecognizer:self.angle2];
-    [self.leftOne addGestureRecognizer:self.angle3];
+    [self.leftOneView addGestureRecognizer:self.angle3];
     [self.leftTwo addGestureRecognizer:self.angle4];
 }
 
@@ -149,7 +149,7 @@
     
     [self.rightOne removeGestureRecognizer:self.angle1];
     [self.rightTwo removeGestureRecognizer:self.angle2];
-    [self.leftOne removeGestureRecognizer:self.angle3];
+    [self.leftOneView removeGestureRecognizer:self.angle3];
     [self.leftTwo removeGestureRecognizer:self.angle4];
 }
 
@@ -175,13 +175,17 @@
     UIImageView *leftOne = [[UIImageView alloc] init];
     [leftOne setImage:[UIImage imageNamed:@"deletMartarel"]];
     leftOne.userInteractionEnabled = YES;
-    leftOne.contentMode = UIViewContentModeCenter;
-
+    leftOne.contentMode = UIViewContentModeScaleAspectFit;
     self.leftOne = leftOne;
-
+    
 //    [leftOne setBackgroundColor:[UIColor blueColor]];
-    leftOne.tag = 5;
+    
     [self addSubview:leftOne];
+    
+    UIView *leftOneView = [[UIView alloc] init];
+    leftOneView.tag = 5;
+    _leftOneView = leftOneView;
+    [self addSubview:leftOneView];
     
     UIView *leftTwo = [[UIView alloc] init];
     self.leftTwo = leftTwo;
@@ -293,64 +297,71 @@
 
     //先定四个角  再定四条线
     [self.leftOne mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.mas_top);
-        make.left.mas_equalTo(self.mas_left);
+        make.top.equalTo(self.mas_top).offset(2);
+        make.left.equalTo(self.mas_left).offset(2);
+        make.height.mas_equalTo(20);
+        make.width.mas_equalTo(20);
+    }];
+    
+    [self.leftOneView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.mas_top);
+        make.left.equalTo(self.mas_left);
         make.height.mas_equalTo(30);
         make.width.mas_equalTo(30);
     }];
     
     [self.leftTwo mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.mas_equalTo(self.mas_bottom);
-        make.left.mas_equalTo(self.mas_left);
+        make.bottom.equalTo(self.mas_bottom);
+        make.left.equalTo(self.mas_left);
         make.height.mas_equalTo(30);
         make.width.mas_equalTo(30);
     }];
     
     [self.rightOne mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.mas_top);
-        make.right.mas_equalTo(self.mas_right);
+        make.top.equalTo(self.mas_top);
+        make.right.equalTo(self.mas_right);
         make.height.mas_equalTo(30);
         make.width.mas_equalTo(30);
     }];
     
     [self.rightTwo mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.mas_equalTo(self.mas_bottom);
-        make.right.mas_equalTo(self.mas_right);
+        make.bottom.equalTo(self.mas_bottom);
+        make.right.equalTo(self.mas_right);
         make.height.mas_equalTo(30);
         make.width.mas_equalTo(30);
     }];
     
     [self.topBorder mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.mas_top);
+        make.top.equalTo(self.mas_top);
         make.height.mas_equalTo(30);
-        make.left.mas_equalTo(self.leftOne.mas_right);
-        make.right.mas_equalTo(self.rightOne.mas_left);
+        make.left.equalTo(self.leftOneView.mas_right);
+        make.right.equalTo(self.rightOne.mas_left);
     }];
     
     [self.leftBorder mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.leftOne.mas_bottom);
-        make.bottom.mas_equalTo(self.leftTwo.mas_top);
-        make.left.mas_equalTo(self.mas_left);
+        make.top.equalTo(self.leftOneView.mas_bottom);
+        make.bottom.equalTo(self.leftTwo.mas_top);
+        make.left.equalTo(self.mas_left);
         make.width.mas_equalTo(30);
     }];
     
     [self.rightBorder mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.rightOne.mas_bottom);
-        make.bottom.mas_equalTo(self.rightTwo.mas_top);
-        make.right.mas_equalTo(self.mas_right);
+        make.top.equalTo(self.leftOneView.mas_bottom);
+        make.bottom.equalTo(self.rightTwo.mas_top);
+        make.right.equalTo(self.mas_right);
         make.width.mas_equalTo(30);
     }];
     
     [self.bottomBorder mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.mas_equalTo(self.mas_bottom);
-        make.left.mas_equalTo(self.leftTwo.mas_right);
-        make.right.mas_equalTo(self.rightTwo.mas_left);
+        make.bottom.equalTo(self.mas_bottom);
+        make.left.equalTo(self.leftTwo.mas_right);
+        make.right.equalTo(self.rightTwo.mas_left);
         make.height.mas_equalTo(30);
     }];
     
     [self.centerBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.mas_equalTo(self);
-        make.centerY.mas_equalTo(self);
+        make.centerX.equalTo(self);
+        make.centerY.equalTo(self);
         make.height.mas_equalTo(50);
         make.width.mas_equalTo(50);
     }];
@@ -708,9 +719,9 @@
     
     if(self.leftOne.hidden){
         //隐藏 去除点击
-        [self.leftOne removeGestureRecognizer:_rightOnetapGesture];
+        [self.leftOneView removeGestureRecognizer:_rightOnetapGesture];
     }else{
-        [self.leftOne addGestureRecognizer:_rightOnetapGesture];
+        [self.leftOneView addGestureRecognizer:_rightOnetapGesture];
     }
 }
 

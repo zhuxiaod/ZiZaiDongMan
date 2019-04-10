@@ -73,7 +73,11 @@
     UIImageView *imageView = [[UIImageView alloc] init];
     imageView.userInteractionEnabled = YES;
     _imageView = imageView;
+    imageView.layer.borderColor = [UIColor whiteColor].CGColor;
+    imageView.layer.borderWidth = 1.0f;
     [self addSubview:imageView];
+    
+    
     
 //    //通过2条边 来控制自身的大小
 //    UIView *rightBorder = [[UIView alloc] init];
@@ -165,7 +169,8 @@
 -(void)layoutSubviews{
     
     [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.right.left.bottom.equalTo(self);
+        make.top.left.equalTo(self).offset(1);
+        make.bottom.right.equalTo(self).offset(-1);
     }];
     
     [self.moveImg mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -198,8 +203,8 @@
     self.textLab.frame = CGRectMake(10, 0, self.bounds.size.width - 20, self.bounds.size.height);
     
     [self.closeImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self);
-        make.left.equalTo(self);
+        make.top.equalTo(self).offset(2);
+        make.left.equalTo(self).offset(2);
         make.width.height.mas_equalTo(20);
     }];
     
@@ -274,8 +279,7 @@
             height += 20;
         }
         
-        NSLog(@"pointX:%f , pointY:%f",point.x,point.y);
-        NSLog(@"width:%f",width);
+        
         
         //得到当前的Width
         self.frame = CGRectMake(x, y, width, height);
@@ -289,7 +293,6 @@
     replyCountWidth += 20;
     if(num < replyCountWidth){
         num = replyCountWidth;
-        
     }
     return num;
 }
@@ -312,8 +315,6 @@
     [self setupViewHeight];
 }
 
-
-
 //设置样式
 -(void)setType:(editorTextViewType)type{
     _type = type;
@@ -321,16 +322,16 @@
     if(type == editorTextViewTypeBGClear){
 //        [self setNeedsDisplay];
     }else if (type == editorTextViewTypeBGWhite){
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = [UIColor clearColor];
     }else{
         //无边框  输入完成后
-        
     }
 }
 
 //设置字体颜色
 -(void)setFontColor:(NSString *)fontColor{
     _fontColor = fontColor;
+    
     self.textLab.textColor = [UIColor colorWithHexString:fontColor];
 }
 
@@ -346,52 +347,20 @@
     //字体变大 label 会不会变大
     self.textLab.font = [UIFont systemFontOfSize:fontSize];
     
-//    NSLog(@"%@",self.textLab);
-    
-    /*
-     需求：当字体变大的时候 lab和view也一起变大
-     如果text第一行有多个字
-     那么计算多个字会占用多少宽度
-     将这个快读设置为view的宽度
-     */
-    
     //取到第一行有多少字
-//    NSArray *array = [self getLinesArrayOfStringInLabel:self.textLab];
-//    NSString *str = array[0];
-//
-//    NSLog(@"第一行的字:%@",str);
-//
-//    //计算会用到的宽度
-//    CGFloat replyCountWidth = [str getTextWidthWithFont:self.textLab.font];
-//
-//    CGFloat addWidth = [@"宽" getTextWidthWithFont:self.textLab.font];
-//    addWidth *= 0.9;
-//    replyCountWidth += addWidth;
-//
-//    //计算高度
-    CGFloat height = [self.textLab.text heightWithWidth:self.bounds.size.width - 20 font:self.fontSize];
-//
+    NSArray *array = [self getLinesArrayOfStringInLabel:self.textLab];
+    NSString *str = array[0];
 
-    //缩小时候防止
-    //缩小极限
-    //lab变小后能够显示的内容也变少了
-    //判断view变多小 然后Lab能够显示一行 让str改变的时候不能够继续变小了
+    NSString *textStr = [NSString stringWithFormat:@"%@宽",str];
     
+    //计算会用到的宽度
+    CGFloat replyCountWidth = [textStr getTextWidthWithFont:self.textLab.font];
     
-//    NSLog(@"replyCountWidth:%f extremityWidth:%f",replyCountWidth,extremityWidth);
-    
-//    if(replyCountWidth >= extremityWidth){
-    self.frame = CGRectMake(self.x, self.y, self.bounds.size.width, height);
-    
-//    }
-    
-//    [self setupViewWidth:str];
-//
-//    [self setupViewHeight];
-    
-//    CGSize size = [self sizeWithText:self.textLab.text font:self.textLab.font maxSize:CGSizeMake(MAXFLOAT, MAXFLOAT)];
-////
-//    self.frame = CGRectMake(self.x, self.y, size.width + 30, size.height + 30);
+    replyCountWidth = [self minimumlimit:replyCountWidth];
+
+    self.frame = CGRectMake(self.x, self.y, replyCountWidth, self.bounds.size.height);
+
+    [self setupViewHeight];
 }
 
 - (CGSize)sizeWithText:(NSString *)text font:(UIFont *)font maxSize:(CGSize)maxSize
@@ -431,7 +400,7 @@
     UIFont *font = [label font];
     CGRect rect = [label frame];
     
-    CTFontRef myFont = CTFontCreateWithName(( CFStringRef)([font fontName]), [font pointSize], NULL);
+    CTFontRef myFont = CTFontCreateWithName((CFStringRef)([font fontName]), [font pointSize], NULL);
     NSMutableAttributedString *attStr = [[NSMutableAttributedString alloc] initWithString:text];
     [attStr addAttribute:(NSString *)kCTFontAttributeName value:(__bridge  id)myFont range:NSMakeRange(0, attStr.length)];
     CFRelease(myFont);
@@ -460,6 +429,7 @@
 
 -(void)setImageUrl:(NSString *)imageUrl{
     _imageUrl = imageUrl;
+    
     [self.imageView sd_setImageWithURL:[NSURL URLWithString:imageUrl]];
 }
 
@@ -474,6 +444,8 @@
     [self.moveImg setHidden:YES];
     
     self.layer.borderColor = [UIColor clearColor].CGColor;
+    
+    _imageView.layer.borderColor = [UIColor clearColor].CGColor;
 }
 
 -(void)textViewShowState
@@ -483,6 +455,8 @@
     [self.moveImg setHidden:NO];
 
     self.layer.borderColor = [UIColor blackColor].CGColor;
+    
+    _imageView.layer.borderColor = [UIColor whiteColor].CGColor;
 }
 
  

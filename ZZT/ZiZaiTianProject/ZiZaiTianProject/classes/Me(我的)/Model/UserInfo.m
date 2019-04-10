@@ -58,6 +58,7 @@
 @synthesize attentionNum;
 @synthesize fansNum;
 @synthesize userVip;
+@synthesize ifConcern;
 
 // 归档属性
 - (void)encodeWithCoder:(nonnull NSCoder *)aCoder {

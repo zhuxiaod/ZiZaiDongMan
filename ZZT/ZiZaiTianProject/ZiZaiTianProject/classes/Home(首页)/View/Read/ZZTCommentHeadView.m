@@ -33,16 +33,10 @@
     [self addSubview:btn];
     btn.hidden = YES;
     
-    UIView *bottomView = [[UIView alloc] init];
+    UIView *bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, self.height - 1, Screen_Width, 1)];
     bottomView.backgroundColor = [UIColor colorWithRGB:@"246,246,251"];
     [self addSubview:bottomView];
     
-    [bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(self).offset(0);
-        make.right.equalTo(self).offset(0);
-        make.left.equalTo(self).offset(0);
-        make.height.mas_equalTo(@1);
-    }];
 }
 
 @end

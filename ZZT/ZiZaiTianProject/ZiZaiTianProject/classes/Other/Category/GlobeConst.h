@@ -20,4 +20,6 @@ extern NSString * const sectionLabView;
 
 extern NSString * const moreFooterView;
 
+extern NSString * const airViewId;
 
+extern NSString * const ZZTFirstViewBtnId;

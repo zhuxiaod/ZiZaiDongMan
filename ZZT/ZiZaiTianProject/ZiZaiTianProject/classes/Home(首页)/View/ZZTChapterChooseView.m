@@ -37,18 +37,7 @@
 -(void)setTitle:(NSString *)title{
     _title = title;
     _mainText.text = title;
-
 }
-
-//-(UILabel *)mainText{
-//    if(!_mainText){
-//        //正篇lab
-//        _mainText = [[UILabel alloc] init];
-//
-//        [self.backView addSubview:_mainText];
-//    }
-//    return _mainText;
-//}
 
 //点击样式
 -(NSMutableArray *)itemStyleArray{
@@ -93,7 +82,7 @@
     UILabel *mainText = [[UILabel alloc] init];
     mainText.text = @"正篇";
     _mainText = mainText;
-    [self.contentView addSubview:mainText];
+    [backView addSubview:mainText];
     
     //连载中
     UILabel *serializeLab = [[UILabel alloc] init];
@@ -101,38 +90,26 @@
     serializeLab.textColor = [UIColor colorWithHexString:@"#A7A8A9"];
     serializeLab.text = @"(连载中)";
     _serializeLab = serializeLab;
-    [self.contentView addSubview:serializeLab];
+    [backView addSubview:serializeLab];
     
     UICollectionViewFlowLayout *layout = [self setupCollectionViewFlowLayout];
     
     [self setupCollectionView:layout];
     
-    //按钮View
-    UIView *bottom = [[UIView alloc] init];
-    bottom.backgroundColor = [UIColor whiteColor];
-    _bottom = bottom;
-    [backView addSubview:bottom];
-    
     //展开按钮
     UIButton *openButton = [UIButton buttonWithType:UIButtonTypeCustom];
     openButton.backgroundColor = [UIColor whiteColor];
-//    openButton.titleLabel.font = [UIFont systemFontOfSize:10];
-//    [openButton setTitle:@"展开更多章节" forState:UIControlStateNormal];
-//    [openButton setTitle:@"收起" forState:UIControlStateSelected];
-//    [openButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
-//    [openButton setTitleColor:[UIColor blueColor] forState:UIControlStateSelected];
-    
     [openButton setImage:[UIImage imageNamed:@"wordsDetail_open"] forState:UIControlStateNormal];
     [openButton setImage:[UIImage imageNamed:@"wordsDetail_close"] forState:UIControlStateSelected];
     _openBtn = openButton;
-//    openButton.enabled = NO;
     [openButton addTarget:self action:@selector(openOrClose:) forControlEvents:UIControlEventTouchUpInside];
-    [self.contentView addSubview:openButton];
+    [backView addSubview:openButton];
     
     UIView *bottomView = [[UIView alloc] init];
     bottomView.backgroundColor = [UIColor colorWithRGB:@"239,239,239"];
     _bottomView = bottomView;
     [backView addSubview:bottomView];
+
 }
 
 -(void)layoutSubviews{
@@ -150,44 +127,46 @@
     //2.只有2行
     //如果是大于8个的话  就需要显示出来
     //3.2行以上
-    
+
     //正篇
     [self.mainText mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.backView.mas_top).offset(8);
         make.left.equalTo(self.backView.mas_left).offset(12);
         make.height.mas_equalTo(30);
-//        make.right.equalTo(self.backView.mas_right).offset(-8);
+        make.width.mas_equalTo(40);
+//      make.right.equalTo(self.backView.mas_right).offset(-8);
     }];
     
     [self.serializeLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(self.mainText.mas_bottom);
         make.left.equalTo(self.mainText.mas_right).offset(8);
         make.height.equalTo(self.mainText);
+        make.width.mas_equalTo(80);
     }];
     
-    //没有设置高度
-    if(_openBtn.selected == NO){
-        [_collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.mainText.mas_bottom).offset(8);
-            make.right.equalTo(self.backView.mas_right).offset(-20);
-            make.left.equalTo(self.backView.mas_left).offset(20);
-        }];
-    }
+    //没有设置高度 显示一行
+    [_collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.serializeLab.mas_bottom).offset(8);
+        make.left.equalTo(self.backView.mas_left).offset(20);
+        make.width.mas_equalTo(SCREEN_WIDTH - 40);
+//        make.height.mas_equalTo(38);
 
-    
-    [_bottom mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.bottom.equalTo(self.backView.mas_bottom).offset(0);
-        make.right.equalTo(self.backView.mas_right).offset(0);
-        make.left.equalTo(self.backView.mas_left).offset(0);
-//        make.top.equalTo(self.collectionView.mas_bottom);
+//        make.right.equalTo(self.backView.mas_right).offset(-20);
+//        make.bottom.equalTo(self.backView.mas_bottom);
     }];
-    //写一个按钮 展开收缩的
-    //如果item大于8
-    //那么这个按钮才会被显示出来
     
     [_bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.bottom.left.equalTo(self.contentView).offset(0);
+        make.right.equalTo(self.backView.mas_right);
+        make.left.equalTo(self.backView.mas_left);
         make.height.mas_equalTo(1);
+        make.bottom.equalTo(self.backView.mas_bottom);
+    }];
+    
+    [_openBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.mainText.mas_top);
+        make.right.equalTo(self.backView).offset(-8);
+        make.bottom.equalTo(self.mainText.mas_bottom);
+        make.width.mas_equalTo(30);
     }];
 }
 
@@ -197,9 +176,9 @@
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     
     [self layoutIfNeeded];
-    NSLog(@"self.contentView:%f",self.contentView.height);
+    
     //修改尺寸(控制)
-    layout.itemSize = CGSizeMake(SCREEN_WIDTH/4 - 15,_collectionView.height/2 - 5);
+//    layout.itemSize = CGSizeMake(SCREEN_WIDTH/4 - 15,_collectionView.height/2 - 5);
     
     layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     //行距
@@ -226,8 +205,8 @@
 //设置分组数
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
     return 1;
-    
 }
+
 //设置每个分组个数
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
     if(self.dataArray.count > 8){
@@ -244,6 +223,7 @@
         return self.dataArray.count;
     }
 }
+
 //只有新的cell出现的时候才会调用
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     
@@ -278,12 +258,20 @@
 - (CGSize) collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     [self layoutIfNeeded];
+    
     return CGSizeMake(SCREEN_WIDTH / 4 - 20 , 30);
 }
 
 //行间距
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section{
     return 10;
+}
+
+//调节item边距
+
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section{
+    
+    return UIEdgeInsetsMake(0, 0, 8, 0);
 }
 
 //总数
@@ -329,89 +317,83 @@
 
     self.dataArray = modelArray;
 
-    if(modelArray.count <= 4)
-    {
-        //一行的时候 8 + 20 + 8
-        [_collectionView mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.height.mas_equalTo(30);
+    //如果只有一行 显示一行 如果有2行 显示2行 如果有2行以上 点击后显示
+    if(modelArray.count > 4){
+
+        //显示2行
+        [_collectionView mas_remakeConstraints :^(MASConstraintMaker *make) {
+
+            make.height.mas_equalTo(78);
         }];
-        [_bottom mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.collectionView.mas_bottom);
-            make.bottom.equalTo(self.backView.mas_bottom).offset(-8);
-        }];
-    }else{
-        //如果大于4
-        [_collectionView mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.height.mas_equalTo(70);
-        }];
-        //大于4小于8
-        if(modelArray.count <= 8 ){
-            [_bottom mas_updateConstraints:^(MASConstraintMaker *make) {
-                make.bottom.equalTo(self.backView.mas_bottom).offset(-8);
-                make.top.equalTo(self.collectionView.mas_bottom);
-            }];
-        }else{
-            if(_openBtn.selected == YES){
-                CGFloat collectionH = [self getCollectionViewHeight];
-                
-                [_collectionView mas_updateConstraints:^(MASConstraintMaker *make) {
-                    make.height.mas_equalTo(collectionH);
-                }];
-            }
-       
-            //大于8的时候
-            [_bottom mas_updateConstraints:^(MASConstraintMaker *make) {
-                make.top.equalTo(self.collectionView.mas_bottom).offset(4);
-                make.bottom.equalTo(self.backView.mas_bottom).offset(-8);
-//                make.height.mas_equalTo(0);
-            }];
-            //设置open按钮
-//            if(_openBtn.enabled)
-            _openBtn.enabled = YES;
-            [_openBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.top.equalTo(self.mainText.mas_top);
-                make.right.equalTo(self.backView).offset(-8);
-                make.bottom.equalTo(self.mainText.mas_bottom);
-                make.width.mas_equalTo(30);
-            }];
-        }
+
     }
+    
+    if(modelArray.count <= 4){
+        
+        //显示2行
+        [_collectionView mas_remakeConstraints :^(MASConstraintMaker *make) {
+            
+            make.height.mas_equalTo(38);
+        }];
+        
+    }
+    
+    //显示2行 如果小于2行 不显示按钮  大于2行才显示
+    if(modelArray.count <= 8){
+        
+        _openBtn.hidden = YES;
+        
+    }
+
     [self.collectionView reloadData];
-//    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-//    [self collectionView:self.collectionView didSelectItemAtIndexPath:indexPath];
+
 }
 
 - (CGFloat)myHeight {
     
     [self setNeedsLayout];
     [self layoutIfNeeded];
-    CGFloat height = [self systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
-    return height;
-    
+
+    return [self setupViewHeight];
+}
+
+#pragma mark - 计算View的高度
+-(CGFloat)setupViewHeight{
+    CGFloat height = 0.0f;
+    if(_dataArray.count == 0){
+        height = 0;
+    }else if (_dataArray.count <= 4){
+        height = 84;
+    }else{
+        if(_openBtn.selected == YES){
+            height = [self getCollectionViewHeight];
+            height += 46;
+        }else{
+            height = 124;
+        }
+    }
+    return height + 1;
 }
 
 -(void)openOrClose:(UIButton *)btn{
     //开关状态
     btn.selected = !btn.selected;
+    
     if(btn.selected == NO){
         //没有点击
         [_collectionView mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.height.mas_equalTo(70);
+            make.height.mas_equalTo(78);
         }];
     }else{
-        
+
         CGFloat collectionH = [self getCollectionViewHeight];
-    
+
         [_collectionView mas_updateConstraints:^(MASConstraintMaker *make) {
+
             make.height.mas_equalTo(collectionH);
         }];
-        [_bottom mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.collectionView.mas_bottom).offset(4);
-            make.bottom.equalTo(self.backView.mas_bottom).offset(-8);
-            make.height.mas_equalTo(20);
-        }];
-        
     }
+    
     [self.collectionView reloadData];
     
     if (self.needReloadHeight) {
@@ -432,7 +414,7 @@
     }else{
         rowNum = rowNum - 2 + 1;
     }
-    collectionH = 70 + 40 * rowNum;
+    collectionH = 70 + 40 * rowNum + 8;
     return collectionH;
 }
 

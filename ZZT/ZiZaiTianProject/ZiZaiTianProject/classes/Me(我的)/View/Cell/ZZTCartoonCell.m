@@ -14,7 +14,8 @@
 @property (strong, nonatomic) UIImageView *image;
 
 @property (strong, nonatomic) UILabel *cartoonName;
-
+@property (weak, nonatomic) UIImageView *rightImg;
+@property (weak, nonatomic) UIView *topView;
 @end
 
 @implementation ZZTCartoonCell
@@ -29,14 +30,24 @@
 }
 
 -(void)setupUI{
+    
+    UIView *topView = [[UIView alloc] init];
+    self.topView = topView;
+    [self.contentView addSubview:topView];
+    
     UIImageView *imageView = [[UIImageView alloc] init];
     _image = imageView;
-
-    [self.contentView addSubview:imageView];
+    [topView addSubview:imageView];
     
     UILabel *cartoonName = [[UILabel alloc] init];
     _cartoonName = cartoonName;
     [self.contentView addSubview:cartoonName];
+    
+    UIImageView *rightImg = [[UIImageView alloc] init];
+    self.rightImg = rightImg;
+//    rightImg.contentMode = UIViewContentModeScaleToFill;
+    rightImg.image = [UIImage imageNamed:@"众创作品角标"];
+    [topView addSubview:rightImg];
     
     [self setupImgStyle];
 }
@@ -53,10 +64,20 @@
         make.height.mas_equalTo(nameH);
     }];
     
-    [_image mas_makeConstraints:^(MASConstraintMaker *make) {
+    [_topView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.contentView).offset(0);
         make.right.left.equalTo(self.contentView).offset(0);
         make.bottom.equalTo(self.cartoonName.mas_top).offset(-4);
+    }];
+    
+    
+    [_image mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.right.left.bottom.equalTo(self.topView);
+    }];
+    
+    [_rightImg mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.right.equalTo(self.topView);
+//        make.width.height.mas_equalTo(50);
     }];
 //    self.image.backgroundColor = [UIColor orangeColor];
 }
@@ -70,6 +91,8 @@
     
     self.cartoonName.text = cartoon.bookName;
     
+    _rightImg.hidden = [cartoon.cartoonType isEqualToString:@"2"] ? NO:YES;
+
 //    [self setupImgStyle];
 
     
@@ -87,23 +110,29 @@
     
     //判断是什么类型 选择不同的显示方式
     [self.image setContentMode:UIViewContentModeScaleAspectFill];
-
-
-
     
     self.cartoonName.text = materialModel.fodderName;
     
+    _rightImg.hidden = [materialModel.cartoonType isEqualToString:@"2"] ? NO:YES;
 
-    
+ 
 }
 
 -(void)setupImgStyle{
-    self.image.layer.cornerRadius = 12;
     
-    self.image.layer.masksToBounds = YES;
+    [self setupStyle:self.topView];
+
+}
+
+-(void)setupStyle:(UIView *)imgView{
+    imgView.layer.cornerRadius = 12;
     
-    self.image.layer.borderColor = [UIColor blackColor].CGColor;
-    self.image.layer.borderWidth = 1.0f;
+    imgView.layer.masksToBounds = YES;
+    
+    imgView.layer.borderColor = [UIColor blackColor].CGColor;
+    
+    imgView.layer.borderWidth = 1.0f;
+
 }
 
 -(void)addLineSpacing:(UILabel *)label

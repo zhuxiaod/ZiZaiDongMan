@@ -20,6 +20,9 @@
 @property (nonatomic,strong) UIView *bottomView;
 @property (nonatomic,strong) UILabel *xuHuaLab;
 @property (nonatomic,strong) UIImageView *VIPChapterImg;
+
+@property (nonatomic, assign) CGFloat imageW;
+
 @end
 
 @implementation ZZTWordListCell
@@ -27,6 +30,7 @@
 -(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
     if(self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]){
         [self setupUI];
+        _imageW = 100;
     }
     return self;
 }
@@ -36,7 +40,7 @@
     //图片
     //图片
     UIImageView *headImg = [[UIImageView alloc] init];
-    [headImg setContentMode:UIViewContentModeScaleToFill];
+    [headImg setContentMode:UIViewContentModeScaleAspectFill];
     headImg.layer.cornerRadius = 8;
     headImg.layer.masksToBounds = YES;
     _headImg = headImg;
@@ -97,16 +101,16 @@
     if([self.model.type isEqualToString:@"1"]){
         
         [self.headImg mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self).with.offset(10);
-            make.left.equalTo(self).with.offset(10);
+            make.top.equalTo(self.contentView).with.offset(10);
+            make.left.equalTo(self.contentView).with.offset(10);
             make.bottom.equalTo(self.bottomView.mas_top).with.offset(-10);
-            make.height.mas_equalTo(100);
+            make.width.mas_equalTo(self.imageW);
         }];
     }else{
         //表示有
         [self.headImg mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self).with.offset(10);
-            make.left.equalTo(self).with.offset(0);
+            make.top.equalTo(self.contentView).with.offset(10);
+            make.left.equalTo(self.contentView).with.offset(0);
             make.width.mas_equalTo(1);
             make.height.mas_equalTo(1);
         }];
@@ -114,16 +118,17 @@
     
     //VIP
     [self.VIPChapterImg mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self).offset(10);
-        make.right.equalTo(self.mas_right).offset(-8);
+        make.top.equalTo(self.contentView).offset(10);
+        make.right.equalTo(self.contentView.mas_right).offset(-8);
         
     }];
     
     [self.chapterLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self).with.offset(10);
-        make.left.equalTo(self.headImg.mas_right).with.offset(10);
+        make.top.equalTo(self.contentView.mas_top).offset(10);
+        make.left.equalTo(self.headImg.mas_right).offset(10);
 //        make.right.equalTo(self).with.offset(-10);
         make.height.mas_equalTo(20);
+        make.width.mas_equalTo(100);
     }];
     
     [self.pageLab mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -131,12 +136,15 @@
         make.left.equalTo(self.chapterLab.mas_left).with.offset(0);
 //        make.right.equalTo(self).with.offset(-10);
         make.height.mas_equalTo(20);
+        make.width.mas_equalTo(100);
+
     }];
     
     [self.commentView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.contentView).offset(-8);
         make.bottom.equalTo(self.contentView).offset(-10);
         make.height.mas_equalTo(20);
+//        make.width.mas_equalTo(100);
     }];
     
 //    [self.commentView.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -146,7 +154,7 @@
 //    }];
     
     [self.likeNum mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.commentView.mas_left).with.offset(-5);
+        make.right.equalTo(self.contentView.mas_right).with.offset(-80);
         make.bottom.equalTo(self.bottomView.mas_top).with.offset(-10);
         make.height.mas_equalTo(20);
         make.width.mas_equalTo(50);
@@ -173,6 +181,7 @@
                 //            NSLog(@"proportion:%f",proportion);
                 CGFloat imageViewW = image.size.width / proportion;
                 //            NSLog(@"imageViewW:%f",imageViewW);
+                self.imageW = imageViewW;
                 [self.headImg mas_updateConstraints:^(MASConstraintMaker *make) {
                     make.width.mas_equalTo(imageViewW);
                 }];
@@ -207,8 +216,11 @@
     
     CGFloat replyCountWidth = [replayCountText getTextWidthWithFont:self.commentView.titleLabel.font] + 30;
     //设置宽度
-    [self.commentView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.width.equalTo(@(replyCountWidth));
+    [self.commentView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.contentView).offset(-8);
+        make.bottom.equalTo(self.contentView).offset(-10);
+        make.height.mas_equalTo(20);
+        make.width.mas_equalTo(replyCountWidth);
     }];
     [self.likeImg setImage:[UIImage imageNamed:@"catoonDetail_like"]];
     

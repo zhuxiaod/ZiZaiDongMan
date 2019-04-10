@@ -7,7 +7,9 @@
 //
 
 #define imgHeight  (CGRectGetWidth([UIScreen mainScreen].bounds) - 24 - 24)/3
+
 #define imgRowW  (CGRectGetWidth([UIScreen mainScreen].bounds))
+
 #import "ZZTFindCommentCell.h"
 #import "ZZTMyZoneModel.h"
 #import "AttentionButton.h"
@@ -33,12 +35,11 @@
 @property (nonatomic,strong) NSMutableArray * downImageArray;
 
 //评论
-@property (strong, nonatomic) replyCountView *replyCountView;
+@property (strong, nonatomic) likeCountView *replyCountView;
 //点赞
 @property (strong, nonatomic) likeCountView *likeCountView;
 //图片View
 @property (nonatomic,strong) ZZTCommentImgView  *bgImgsView; // 9张图片bgView
-
 
 @end
 
@@ -142,8 +143,6 @@
 
 - (void)layoutSubviews{
     [super layoutSubviews];
-    CGFloat space = SafetyW;
-    CGFloat distance = 8;
     
     //头像
     [_headBtn mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -170,10 +169,12 @@
         make.height.width.mas_equalTo(16);
     }];
     
+    //----------------------
+    
     [_contentLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.headBtn.mas_left);
         make.right.equalTo(self.attentionBtn.mas_right);
-        make.top.equalTo(self.headBtn.mas_bottom).offset(SafetyW);
+        make.top.equalTo(self.headBtn.mas_bottom).offset(6);
     }];
     
     NSInteger row = _imgArray.count / 3;// 多少行图片
@@ -185,25 +186,25 @@
     CGFloat collectionW = SCREEN_WIDTH - 24;
     
     [_bgImgsView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.contentLab.mas_bottom).offset(SafetyW);
+        make.top.equalTo(self.contentLab.mas_bottom).offset(6);
         make.width.mas_equalTo(collectionW);
         make.left.equalTo(self.headBtn.mas_left);
     }];
-    
+    //
     [_dataLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.headBtn.mas_left);
         make.top.equalTo(self.bgImgsView.mas_bottom).offset(SafetyW);
         make.height.mas_equalTo(20);
         make.width.mas_equalTo(100);
     }];
-    
+    //
     [self.replyCountView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.dataLab);
         make.right.equalTo(self.contentView.mas_right).offset(-8);
         make.height.mas_equalTo(20);
         make.width.mas_equalTo(60);
     }];
-    
+    //
     [self.likeCountView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.replyCountView);
         make.right.equalTo(self.replyCountView.mas_left).offset(-SafetyW);
@@ -228,89 +229,112 @@
 - (void)setModel:(ZZTMyZoneModel *)model{
     _model = model;
 
-    //更新时间
-    [_dataLab mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.bgImgsView.mas_bottom).offset(SafetyW);
-    }];
-    
-    _contentLab.text = model.content;
-    [_contentLab setFont:[UIFont systemFontOfSize:MomentFontSize]];
-    //时间
-    _dataLab.text = [NSString compareCurrentTime:model.publishtime];
-    
-    //更新内容高度
-    CGFloat contentHeight = 0.0f;
-    
-    [_contentLab mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.headBtn.mas_bottom).offset(SafetyW);
-        make.left.equalTo(self.contentView).offset(SafetyW);
-        make.right.equalTo(self.contentView).offset(-SafetyW);
-    }];
-    
-    if([model.content isEqualToString:@""]){
-        contentHeight = 0;
-        [_contentLab mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.headBtn.mas_bottom);
-        }];
-    }else{
-        contentHeight = [_contentLab.text heightWithWidth:CGRectGetWidth(self.contentView.bounds) - 24 font:MomentFontSize];
-        contentHeight += 10;
-    }
-    
-    [_contentLab mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo(contentHeight);
-    }];
-    
-    //获取图片数组
-    _bgImgsView.model = model;
-    
-    _imgArray = [model.contentImg componentsSeparatedByString:@","];
-    
-    CGFloat bgH = [_bgImgsView getIMGHeight:_imgArray.count];
-    
-    [self.bgImgsView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo(bgH);
-    }];
-    
     [_headBtn sd_setBackgroundImageWithURL:[NSURL URLWithString:model.headimg] forState:UIControlStateNormal];
     
     //名字位置刷新 vip的位置也刷新
     _userName.text = model.nickName;
     
-    CGFloat replyCountWidth = [_userName.text getTextWidthWithFont:self.userName.font];
-    replyCountWidth += 30;
-    [_userName mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo(replyCountWidth);
-    }];
-    
-    //评论
-    NSString *replayCountText = [NSString makeTextWithCount:model.replycount];
-    
-    [self.replyCountView setTitle:replayCountText forState:UIControlStateNormal];
-
-    //评论跳转
-    [self.replyCountView addTarget:self action:@selector(gotoCommentView) forControlEvents:UIControlEventTouchUpInside];
-
-    //点赞
-    self.likeCountView.islike  = [model.ifpraise integerValue];
-    self.likeCountView.requestID = model.userId;
-    self.likeCountView.likeCount = model.praisecount;
-
     //关注
     _attentionBtn.hidden = NO;
     _attentionBtn.isAttention = [model.ifConcern integerValue];
     _attentionBtn.requestID = model.userId;
     UserInfo *user = [Utilities GetNSUserDefaults];
     //如果是自己发的 隐藏关注
-    if([model.userId isEqualToString:[NSString stringWithFormat:@"%ld",user.id]]){
-        _attentionBtn.hidden = YES;
-    }
+    _attentionBtn.hidden = [model.userId isEqualToString:[NSString stringWithFormat:@"%ld",user.id]];
+//    if([model.userId isEqualToString:[NSString stringWithFormat:@"%ld",user.id]]){
+//        _attentionBtn.hidden = YES;
+//    }
+
+    //评论内容
+    _contentLab.text = model.content;
+
+    [_contentLab setFont:[UIFont systemFontOfSize:MomentFontSize]];
     
+    //更新内容高度
+    CGFloat contentHeight = 0.0f;
+
+//    [_contentLab mas_updateConstraints:^(MASConstraintMaker *make) {
+//        make.top.equalTo(self.headBtn.mas_bottom).offset(SafetyW);
+//    }];
+    
+    if([model.content isEqualToString:@""]){
+        
+        contentHeight = 0;
+        
+//        [_contentLab mas_remakeConstraints:^(MASConstraintMaker *make) {
+//            make.top.equalTo(self.headBtn.mas_bottom).offset(2);
+//            make.left.equalTo(self.headBtn.mas_left);
+//            make.right.equalTo(self.attentionBtn.mas_right);
+//        }];
+    }else{
+        contentHeight = [_contentLab.text heightWithWidth:CGRectGetWidth(self.contentView.bounds) - 24 font:MomentFontSize];
+        contentHeight += 10;
+    }
+
+
+    [_contentLab mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(contentHeight);
+    }];
+    
+    //获取图片数组
+    _bgImgsView.model = model;
+
+    _imgArray = [model.contentImg componentsSeparatedByString:@","];
+
+    CGFloat bgH = [_bgImgsView getIMGHeight:_imgArray.count];
+
+    [self.bgImgsView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(bgH);
+    }];
+
+    //时间
+    _dataLab.text = [NSString compareCurrentTime:model.publishtime];
+    
+    //评论
+    self.replyCountView.likeCount = model.replycount;
+    
+    //点赞
+    self.likeCountView.islike  = [model.ifpraise integerValue];
+    self.likeCountView.requestID = model.userId;
+    self.likeCountView.likeCount = model.praisecount;
+
+    //举报
     _reportBtn.hidden = NO;
     _reportBtn.zoneModel = model;
-    if([Utilities GetNSUserDefaults].id == [self.model.userId integerValue]){
-        _reportBtn.hidden = YES;
-    }
+    _reportBtn.hidden = [Utilities GetNSUserDefaults].id == [self.model.userId integerValue];
+    
+    
+//    CGFloat replyCountWidth = [_userName.text getTextWidthWithFont:self.userName.font];
+//    replyCountWidth += 30;
+//    [_userName mas_updateConstraints:^(MASConstraintMaker *make) {
+//        make.width.mas_equalTo(replyCountWidth);
+//    }];
+    
+    //更新时间
+//    [_dataLab mas_updateConstraints:^(MASConstraintMaker *make) {
+//        make.top.equalTo(self.bgImgsView.mas_bottom).offset(SafetyW);
+//    }];
+
+
+//
+
+//
+
+//
+
+//
+//    //评论
+
+//
+
+//
+//    //点赞
+//    self.likeCountView.islike  = [model.ifpraise integerValue];
+//    self.likeCountView.requestID = model.userId;
+//    self.likeCountView.likeCount = model.praisecount;
+//
+
+
 }
 
 -(void)gotoCommentView{
@@ -327,21 +351,22 @@
     [[self myViewController].navigationController presentViewController:nav animated:YES completion:nil];
 }
 
-//评论
-- (replyCountView *)replyCountView {
+- (likeCountView *)replyCountView {
+    
     if (!_replyCountView) {
         
-        replyCountView *btn = [[replyCountView alloc]init];
+        likeCountView *lcv = [[likeCountView alloc] init];
         
-        [btn setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
+        [self.contentView addSubview:lcv];
         
-        [btn setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-
-        [self.contentView addSubview:btn];
-
-        _replyCountView = btn;
+        [lcv likeCountViewWithImg:CommentIconImg selectImg:CommentIconImg_Select];
+        
+        _replyCountView = lcv;
+        
+        [lcv setOnClick:^(likeCountView *btn) {
+            [self gotoCommentView];
+        }];
     }
-    
     return _replyCountView;
 }
 
@@ -349,26 +374,24 @@
     if (!_likeCountView) {
         
         likeCountView *lcv = [[likeCountView alloc] init];
+        [self.contentView addSubview:lcv];
+
+        [lcv likeCountViewWithImg:LikeIconImg selectImg:LikeIconImg_Select];
         
-        [lcv setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
-        
-        [lcv setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-        
-        weakself(self);
         //发现点赞
         [lcv setOnClick:^(likeCountView *btn) {
             //用户点赞
             [self userLikeTarget];
         }];
         
-        [self.contentView addSubview:lcv];
-        
         _likeCountView = lcv;
+        
     }
     return _likeCountView;
 }
 
 -(void)userLikeTarget{
+    
     AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dict = @{
                            @"typeId":_model.id,
@@ -380,7 +403,6 @@
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
+    
 }
-
-
 @end

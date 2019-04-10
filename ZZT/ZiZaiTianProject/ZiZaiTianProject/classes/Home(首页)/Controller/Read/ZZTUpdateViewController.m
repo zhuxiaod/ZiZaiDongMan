@@ -112,7 +112,7 @@
     
     layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     //行距
-    layout.minimumLineSpacing = 0;
+    layout.minimumLineSpacing = 10;
     layout.minimumInteritemSpacing = 5;
     
     return layout;
@@ -128,7 +128,7 @@
     collectionView.delegate = self;
     [self.view addSubview:self.collectionView];
     
-    [collectionView registerNib:[UINib nibWithNibName:@"ZZTCartoonCell" bundle:nil] forCellWithReuseIdentifier:@"cellId"];
+     [collectionView registerClass:[ZZTCartoonCell class] forCellWithReuseIdentifier:@"cellId"];
 }
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section

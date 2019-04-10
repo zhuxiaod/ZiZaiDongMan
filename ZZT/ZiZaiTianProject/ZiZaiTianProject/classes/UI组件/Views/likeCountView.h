@@ -18,6 +18,6 @@
 
 @property (nonatomic,copy) void (^onClick)(likeCountView *btn);
 
-+ (instancetype)likeCountViewWithCount:(NSInteger)count requestID:(NSString *)ID;
+- (void)likeCountViewWithImg:(NSString *)img selectImg:(NSString *)selectImg;
 
 @end

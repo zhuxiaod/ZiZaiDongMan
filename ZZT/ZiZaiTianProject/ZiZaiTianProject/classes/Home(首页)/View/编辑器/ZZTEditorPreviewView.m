@@ -36,20 +36,20 @@ NSString *ZZTEditorPreviewViewIDF = @"ZZTEditorPreviewViewIDF";
 
 -(void)setupUI{
     //tableView
-    _tableView= [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+    _tableView= [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     _tableView.backgroundColor = [UIColor whiteColor];
     _tableView.delegate = self;
     _tableView.dataSource = self;
-    _tableView.contentInset = UIEdgeInsetsMake(-navHeight + 30,0,0,0);
+    _tableView.contentInset = UIEdgeInsetsMake(-20 ,0,0,0);
 //    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _tableView.estimatedRowHeight = 0;
     _tableView.estimatedSectionHeaderHeight = 0;
     _tableView.estimatedSectionFooterHeight = 0;
     _tableView.tableFooterView = [UIView new];
     [_tableView registerClass:[ZZTCartoonContentCell class] forCellReuseIdentifier:ZZTEditorPreviewViewIDF];
-
     _tableView.showsVerticalScrollIndicator = YES;
     [self addSubview:_tableView];
+    [self myViewController].automaticallyAdjustsScrollViewInsets = NO;
     
     //返回按钮
     UIButton *backBtn = [GlobalUI createButtonWithImg:[UIImage imageNamed:@"返回"] title:nil titleColor:nil];
@@ -108,8 +108,19 @@ NSString *ZZTEditorPreviewViewIDF = @"ZZTEditorPreviewViewIDF";
     
     CGRect rectInTableView = [_tableView rectForRowAtIndexPath:[NSIndexPath indexPathForRow:currentIndex inSection:0]];
     
-    [self.tableView setContentOffset:CGPointMake(0 , rectInTableView.origin.y) animated:NO];
+    [self.tableView setContentOffset:CGPointMake(0 , rectInTableView.origin.y+20) animated:NO];
+    
+//    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:currentIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+//    [self.tableView setContentMode:uic];
 
+}
 
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    return 0.01f;
+}
+
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+    UIView *airView = [[UIView alloc] init];
+    return airView;
 }
 @end

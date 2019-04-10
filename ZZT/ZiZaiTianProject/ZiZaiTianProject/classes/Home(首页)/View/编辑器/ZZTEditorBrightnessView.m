@@ -114,15 +114,15 @@
     
     CGFloat AlphaSliderY = AlphaLabelY;
     
-    UISlider *AlphaSlider = [self creatSliderWithTag:109 minValue:0 maxValue:1 value:0.5 taget:@selector(sliderValueChage:)];
+    UISlider *AlphaSlider = [self creatSliderWithTag:109 minValue:0 maxValue:1 value:1 taget:@selector(sliderValueChage:)];
     _alphaSlider = AlphaSlider;
     AlphaSlider.frame = CGRectMake(SliderX, AlphaSliderY,SliderW,SliderH);
 }
 
 - (void)sliderValueChage:(UISlider *)slider
 {
-    if ([self.delegate respondsToSelector:@selector(brightnessChangeWithTag:Value:)]) {
-        [self.delegate brightnessChangeWithTag:slider.tag Value:slider.value];
+    if ([self.delegate respondsToSelector:@selector(brightnessChangeWithTag:Value:img:)]) {
+        [self.delegate brightnessChangeWithTag:slider.tag Value:slider.value img:self.imageViewModel.originalImg];
     }
 }
 
@@ -143,13 +143,17 @@
     if(imageViewModel == nil) return;
     
     self.saturationSlider.value = imageViewModel.saturation;
-    
-    self.contrastSlider.value = imageViewModel.contrast;
+//    [self sliderValueChage:self.saturationSlider];
     
     self.brightnessSlider.value = imageViewModel.brightness;
-    
+//    [self sliderValueChage:self.brightnessSlider];
+
     self.hueSlider.value = imageViewModel.hue;
-    
+//    [self sliderValueChage:self.hueSlider];
+
     self.alphaSlider.value = imageViewModel.alpha;
+//    [self sliderValueChage:self.alphaSlider];
+    
+    NSLog(@"saturation:%lf contrast:%lf brightness:%lf hue:%lf alpha:%lf",imageViewModel.saturation,imageViewModel.contrast,imageViewModel.brightness,imageViewModel.hue,imageViewModel.alpha);
 }
 @end

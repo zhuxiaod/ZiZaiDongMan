@@ -11,7 +11,7 @@
 
 @property (weak, nonatomic) IBOutlet UIImageView *headImage;
 @property (weak, nonatomic) IBOutlet UILabel *userName;
-@property (weak, nonatomic) IBOutlet UILabel *userZoneName;
+@property (weak, nonatomic) IBOutlet UILabel *userIntro;
 @property (weak, nonatomic) IBOutlet UIButton *collectBtn;
 @property (weak, nonatomic) IBOutlet UILabel *praiseNum;
 @property (weak, nonatomic) IBOutlet UILabel *likeNum;
@@ -42,6 +42,16 @@
     [super awakeFromNib];
     self.headKW.constant = self.contentView.height - 8;
     self.headImageW.constant = self.contentView.height - 15.5;
+}
+
+-(void)setModel:(UserInfo *)model{
+    _model = model;
+    
+    [_headImage sd_setImageWithURL:[NSURL URLWithString:model.headimg]];
+    
+    _userName.text = model.nickName;
+    
+    _userIntro.text = model.intro;
 }
 
 @end

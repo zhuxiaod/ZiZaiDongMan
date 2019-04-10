@@ -56,7 +56,7 @@
 + (CGFloat)cellHeightWithModel:(ZZTMyZoneModel *)model{
     CGFloat strH = [model.content heightWithWidth:CGRectGetWidth([UIScreen mainScreen].bounds) - 24 font:MomentFontSize];
     if([model.content isEqualToString:@""]){
-        strH = -12;
+        strH = 0;
     }else{
         strH += 10;
     }
@@ -93,7 +93,7 @@
     if (array.count) {
         cellH += bgH;
     }
-    return  cellH;
+    return  cellH - 10;
 }
 
 //快速创建btn

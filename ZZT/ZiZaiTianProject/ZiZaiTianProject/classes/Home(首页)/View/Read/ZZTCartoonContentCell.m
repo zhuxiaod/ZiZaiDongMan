@@ -69,13 +69,13 @@
 //    [_content sd_setImageWithURL:[NSURL URLWithString:model.cartoonUrl] placeholderImage:[UIImage imageNamed:@"peien"]];
     _content.contentMode = UIViewContentModeScaleToFill;
     __block float height = 0.0f;
-    [_content sd_setImageWithURL:[NSURL URLWithString:model.cartoonUrl] placeholderImage:[UIImage imageNamed:@"chapterPlaceV"] options:0 completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+    [_content sd_setImageWithURL:[NSURL URLWithString:model.cartoonUrl] placeholderImage:[UIImage imageNamed:@"chapterPlaceV"] options:0|SDWebImageAllowInvalidSSLCertificates completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
         if(image){
             self.content.contentMode = UIViewContentModeScaleAspectFit;
 
             CGFloat percentage;
             CGFloat imageHeight;
-            NSLog(@"imageW:%@",image);
+//            NSLog(@"imageW:%@",image);
             if(image.size.width > Screen_Width){
                 percentage = image.size.width / Screen_Width;
                 imageHeight = image.size.height / percentage;
@@ -87,14 +87,14 @@
             //        刷新
             //        判断图片是否加载完成 如果是不用
             if(cacheType == SDImageCacheTypeNone){
-                NSLog(@"我是刚被下载下来的");
+//                NSLog(@"我是刚被下载下来的");
                 
             }
             else if(cacheType == SDImageCacheTypeDisk){
-                NSLog(@"我本来就在");
+//                NSLog(@"我本来就在");
             }
             else if (cacheType == SDImageCacheTypeMemory){
-                NSLog(@"我是内存里面的");
+//                NSLog(@"我是内存里面的");
             }
             
             if ([self.delegate respondsToSelector:@selector(cellHeightUpdataWithIndex:Height:)]) {

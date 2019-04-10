@@ -12,6 +12,8 @@ NSString * const authorName = @"朱晓丹是一个大帅哥";
 
 NSString * const bigImageCell = @"bigImageCell";
 
+NSString * const ZZTFirstViewBtnId = @"ZZTFirstViewBtnId";
+
 NSString * const cartoonCellId = @"cartoonCellId";
 
 NSString * const collectionCycleView = @"collectionCycleView";
@@ -19,3 +21,5 @@ NSString * const collectionCycleView = @"collectionCycleView";
 NSString * const sectionLabView = @"sectionLabView";
 
 NSString * const moreFooterView = @"moreFooterView";
+
+NSString * const airViewId = @"airViewId";

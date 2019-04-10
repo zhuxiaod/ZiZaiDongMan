@@ -10,7 +10,8 @@
 @interface ZZTBigImageCell ()
 
 @property (nonatomic,strong) UIImageView *imageView;
-
+@property (nonatomic,strong) UIView *cellView;
+@property (nonatomic,strong) UIImageView *rightImg;
 @end
 
 @implementation ZZTBigImageCell
@@ -25,19 +26,39 @@
 }
 
 -(void)setupUI{
+    
+    UIView *cellView = [[UIView alloc] init];
+    _cellView = cellView;
+    cellView.layer.cornerRadius = 12;
+    cellView.layer.masksToBounds = YES;
+    cellView.layer.borderWidth = 1.0f;
+    cellView.layer.borderColor = [UIColor blackColor].CGColor;
+    [self addSubview:cellView];
+    
     UIImageView *imageView = [[UIImageView alloc] init];
     _imageView = imageView;
-    imageView.layer.cornerRadius = 12;
-    imageView.layer.masksToBounds = YES;
-    imageView.layer.borderWidth = 1.0f;
-    imageView.layer.borderColor = [UIColor blackColor].CGColor;
-    [self addSubview:imageView];
+ 
+    [cellView addSubview:imageView];
+    
+    UIImageView *rightImg = [[UIImageView alloc] init];
+    _rightImg = rightImg;
+    rightImg.image = [UIImage imageNamed:@"众创作品角标"];
+    [cellView addSubview:rightImg];
+    
 }
 
 -(void)layoutSubviews{
     [super layoutSubviews];
+    [_cellView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.right.left.bottom.equalTo(self);
+    }];
+    
     [_imageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.right.left.bottom.equalTo(self).offset(0);
+    }];
+    
+    [_rightImg mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.right.equalTo(self.imageView);
     }];
 }
 
@@ -49,6 +70,7 @@
 //        NSLog(@"imageW:%f imageH:%f",image.size.width,image.size.height);
     }];
     
+    _rightImg.hidden = [model.cartoonType isEqualToString:@"2"] ? NO:YES;
 
 
 }

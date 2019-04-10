@@ -8,10 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+@class ZZTHomeTableViewModel;
+
 @interface ZZTProductionShowViewController : BaseViewController
 
 @property (nonatomic,strong) NSArray *array;
 
 @property (nonatomic,strong) NSString *viewTitle;
+
+@property (nonatomic,strong) ZZTHomeTableViewModel *model;
 
 @end

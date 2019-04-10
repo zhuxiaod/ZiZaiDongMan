@@ -9,11 +9,13 @@
 #import <UIKit/UIKit.h>
 
 @class ZZTUserModel;
-
+@class ZZTHomeTableViewModel;
 @interface ZZTCartoonViewController : BaseViewController
 
 @property(nonatomic,strong)NSString *viewTitle;
 
 @property(nonatomic,strong)NSString *viewType;
+
+@property(nonatomic,strong)ZZTHomeTableViewModel *model;
 
 @end

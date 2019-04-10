@@ -41,25 +41,30 @@
     [self.userName labOutline];
 
     //label宽度    
-    CGFloat nameWidth = [user.nickName getTextWidthWithFont:self.userName.font] + 30;
-    
-    [_userName mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo(nameWidth);
-    }];
+//    CGFloat nameWidth = [user.nickName getTextWidthWithFont:self.userName.font] + 30;
+//
+//    [_userName mas_updateConstraints:^(MASConstraintMaker *make) {
+//        make.width.mas_equalTo(nameWidth);
+//    }];
 }
 
 -(void)setup{
     self.contentView.backgroundColor = [UIColor whiteColor];
     
     _backgroundBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    
     [_backgroundBtn setImage:[UIImage imageNamed:@"轻触更换背景"] forState:UIControlStateNormal];
+    
     [_backgroundBtn addTarget:self action:@selector(updateBackground) forControlEvents:UIControlEventTouchUpInside];
+    
     [self.backgroundBtn.imageView setContentMode:UIViewContentModeScaleAspectFill];
     
     self.backgroundBtn.imageView.clipsToBounds = YES;
+    
     [self.contentView addSubview:_backgroundBtn];
     
-    _userHead = [[ZZTUserHeadView alloc] initWithFrame:CGRectZero];
+    _userHead = [[ZZTUserHeadView alloc] init];
+
     [_userHead.viewClick addTarget:self action:@selector(gotoMeEditView) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:_userHead];
 
@@ -72,6 +77,9 @@
 
 //跳转我的编辑页
 -(void)gotoMeEditView{
+    if(self.user.id != [Utilities GetNSUserDefaults].id){
+        return;
+    }
     //跳转编辑页
     ZZTMeEditViewController *meEditVC = [[ZZTMeEditViewController alloc] init];
     meEditVC.model = [Utilities GetNSUserDefaults];
@@ -110,9 +118,9 @@
         make.bottom.equalTo(self.contentView).offset(-20);
     }];
     
-    [_backgroundBtn.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.right.left.bottom.equalTo(self.backgroundBtn);
-    }];
+//    [_backgroundBtn.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.right.left.bottom.equalTo(self.backgroundBtn);
+//    }];
     
     [_userHead mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(self.contentView.mas_bottom);

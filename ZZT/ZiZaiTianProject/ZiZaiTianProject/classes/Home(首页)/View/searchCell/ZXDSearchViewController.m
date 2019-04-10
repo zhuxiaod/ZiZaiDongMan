@@ -28,6 +28,8 @@
 
 @property (nonatomic,strong) NSArray *materialArray;
 
+@property (nonatomic,strong) NSArray *userArray;
+
 @end
 
 @implementation ZXDSearchViewController
@@ -44,6 +46,13 @@
         _materialArray = [NSArray array];
     }
     return _materialArray;
+}
+
+-(NSArray *)userArray{
+    if(!_userArray){
+        _userArray = [NSArray array];
+    }
+    return _userArray;
 }
 
 - (NSMutableArray *)searchSuggestionArray{
@@ -146,8 +155,28 @@
         [self searchMaterial:searchText searchViewController:searchViewController];
         //搜索卡通
         [self searchCartoon:searchText searchViewController:searchViewController];
-        
+        //搜索用户
+        [self searchUser:searchText searchViewController:searchViewController];
     }
+}
+
+#pragma mark - 搜索用户
+-(void)searchUser:(NSString *)searchText searchViewController:(PYSearchViewController *)searchViewController{
+    weakself(self);
+    NSDictionary *dic = @{
+                          @"fuzzy":searchText,
+                          @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id]
+                          };
+    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/queryUser"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+        NSMutableArray *array = [UserInfo mj_objectArrayWithKeyValuesArray:dic];
+        self.userArray = array;
+        [searchViewController.searchSuggestionView reloadData];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
+    
 }
 
 #pragma mark - 搜索素材
@@ -194,15 +223,17 @@
 
 //搜索结果多少节
 - (NSInteger)numberOfSectionsInSearchSuggestionView:(UITableView *)searchSuggestionView{
-    return 2;
+    return 3;
 }
 
 //多少行
 - (NSInteger)searchSuggestionView:(UITableView *)searchSuggestionView numberOfRowsInSection:(NSInteger)section{
     if(section == 0){
         return self.searchSuggestionArray.count;
-    }else{
+    }else if(section == 1){
         return self.materialArray.count;
+    }else{
+        return self.userArray.count;
     }
 }
 
@@ -212,18 +243,21 @@
         [searchSuggestionView registerNib:[UINib nibWithNibName:@"ZZTSearchCartoonCell" bundle:nil] forCellReuseIdentifier:@"searchCartoonCell"];
         
         ZZTSearchCartoonCell *cell = [searchSuggestionView dequeueReusableCellWithIdentifier:@"searchCartoonCell"];
-        
         ZZTCarttonDetailModel *model = self.searchSuggestionArray[indexPath.row];
         cell.model = model;
-        
         return cell;
-    }else{
+    }else if(indexPath.section == 1){
         [searchSuggestionView registerNib:[UINib nibWithNibName:@"ZZTSearchCartoonCell" bundle:nil] forCellReuseIdentifier:@"searchCartoon"];
 
         ZZTSearchCartoonCell *cell = [searchSuggestionView dequeueReusableCellWithIdentifier:@"searchCartoon"];
 
         ZZTDetailModel *model = self.materialArray[indexPath.row];
         cell.materialModel = model;
+        return cell;
+    }else{
+        [searchSuggestionView registerNib:[UINib nibWithNibName:@"ZZTSearchZoneCell" bundle:nil] forCellReuseIdentifier:@"searchZoneCell"];
+        ZZTSearchZoneCell *cell = [searchSuggestionView dequeueReusableCellWithIdentifier:@"searchZoneCell"];
+        cell.model = self.userArray[indexPath.row];
         return cell;
     }
 }
@@ -236,7 +270,7 @@
     }else if(indexPath.section == 1){
         return SCREEN_HEIGHT * 0.22;
     }else{
-        return SCREEN_HEIGHT * 0.22;
+        return 100;
     }
 }
 
@@ -247,8 +281,10 @@
     }
 //    else if (section == 1){
 //        title = @"相关空间";
-    else{
+    else if(section == 1){
         title = @"相关素材";
+    }else{
+        title = @"相关用户";
     }
     ZZTCartoonHeaderView *head = [[ZZTCartoonHeaderView alloc] init];
     head.title = title;
@@ -265,7 +301,7 @@
         detailVC.cartoonDetail = md;
         detailVC.hidesBottomBarWhenPushed = YES;
         [_nav pushViewController:detailVC animated:YES];
-    }else{
+    }else if(indexPath.section == 1){
         ZZTDetailModel *detailModel = self.materialArray[indexPath.row];
 
         if(_isFromEditorView == YES){
@@ -283,7 +319,6 @@
             
             [self.navigationController popViewControllerAnimated:NO];
         }else{
-            
             //收费的 -> 跳商城详情页
             if([detailModel.owner isEqualToString:@"3"]){
                 ZZTMallDetailViewController *vc = [[ZZTMallDetailViewController alloc] init];
@@ -291,8 +326,14 @@
                 vc.hidesBottomBarWhenPushed = YES;
                 [_nav pushViewController:vc animated:YES];
             }
-            
         }
+    }else{
+        //跳转空间
+        //跳转个人页
+        ZZTMyZoneViewController *zoneView = [[ZZTMyZoneViewController alloc] init];
+        UserInfo *model = self.userArray[indexPath.row];
+        zoneView.userId = [NSString stringWithFormat:@"%ld",model.id];
+        [_nav pushViewController:zoneView animated:NO];
     }
 }
 
@@ -305,7 +346,6 @@
     detailVC.cartoonDetail = model;
     detailVC.hidesBottomBarWhenPushed = YES;
     [_nav pushViewController:detailVC animated:YES];
-    
 }
 
 #pragma mark - 搜索历史

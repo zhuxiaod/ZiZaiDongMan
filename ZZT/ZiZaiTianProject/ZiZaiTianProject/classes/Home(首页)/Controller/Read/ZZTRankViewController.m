@@ -10,6 +10,7 @@
 #import "RankButton.h"
 #import "ZZTRankCell.h"
 #import "ZZTCartonnPlayModel.h"
+
 @interface ZZTRankViewController ()<UITableViewDelegate,UITableViewDataSource>
 
 @property (nonatomic,strong) NSMutableArray *array;
@@ -23,7 +24,6 @@
 @property (nonatomic,assign) NSInteger pageNumber;
 
 @property (nonatomic,assign) NSInteger pageSize;
-
 
 @end
 
@@ -66,13 +66,11 @@ NSString *zztRankCell = @"zztRankCell";
     
     [self addBackBtn];
 
-    
     [self setupMJRefresh];
 
     [self.tableView.mj_header beginRefreshing];
     
     self.pageNumber = 2;
-
 }
 
 -(void)setupMJRefresh{
@@ -96,9 +94,10 @@ NSString *zztRankCell = @"zztRankCell";
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getCartoonRanking"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+        
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
         
-        array = [self addIsHave:array];
+//        array = [self addIsHave:array];
         
         self.dataArray = array;
         
@@ -229,6 +228,7 @@ NSString *zztRankCell = @"zztRankCell";
     tableView.delegate = self;
     tableView.dataSource = self;
     tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    tableView.estimatedRowHeight = [Utilities getCarChapterH] + 24 + 15;
     _tableView = tableView;
     [self.view addSubview:tableView];
     //注册

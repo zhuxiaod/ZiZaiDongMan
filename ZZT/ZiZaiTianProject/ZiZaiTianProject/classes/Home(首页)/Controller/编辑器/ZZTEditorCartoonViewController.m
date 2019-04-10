@@ -218,30 +218,13 @@
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         NSMutableArray *array = [ZZTDetailModel mj_objectArrayWithKeyValuesArray:dic];
         self.materialWindow.materialArray = array;
-        [self postionMaterialData:model];
+        [self.materialWindow postionMaterialData:model];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
 }
 
--(void)postionMaterialData:(ZZTDetailModel *)model{
 
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        NSInteger i;
-        for (i = 0; i < self.materialWindow.materialArray.count; i++) {
-            ZZTDetailModel *model1 = self.materialWindow.materialArray[i];
-            if(model1.id == model.id){
-                //得到位置
-                break;
-            }
-        }
-        dispatch_async(dispatch_get_main_queue(), ^{
-            //跳转
-            [self.materialWindow.contentCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0] atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
-            [self.materialWindow.contentCollectionView reloadData];
-        });
-    });
-}
 
 //快速创建btn
 -(UIButton *)createButtionWithImg:(NSString *)img selTaget:(SEL)selTaget{
@@ -261,7 +244,7 @@
         //如果是图
         if([self.editorDeskView.currentView isKindOfClass:[ZZTEditorImageView class]]){
             ZZTEditorImageView *currentView = (ZZTEditorImageView *)self.editorDeskView.currentView;
-            currentView.closeImageView.hidden = YES;
+            currentView.imgView.hidden = YES;
         }else if([self.editorDeskView.currentView isKindOfClass:[ZZTEditorTextView class]]){
             ZZTEditorTextView *currentView = (ZZTEditorTextView *)self.editorDeskView.currentView;
             [currentView textViewHiddenState];
@@ -272,7 +255,7 @@
     }else{
         if([self.editor_squareRoundView.currentView isKindOfClass:[ZZTEditorImageView class]]){
             ZZTEditorImageView *currentView = (ZZTEditorImageView *)self.editor_squareRoundView.currentView;
-            currentView.closeImageView.hidden = YES;
+            currentView.imgView.hidden = YES;
         }else if([self.editor_squareRoundView.currentView isKindOfClass:[ZZTEditorTextView class]]){
             ZZTEditorTextView *currentView = (ZZTEditorTextView *)self.editor_squareRoundView.currentView;
             [currentView textViewHiddenState];
@@ -286,7 +269,7 @@
     if(self.editorDeskView.currentView){
         if([self.editorDeskView.currentView isKindOfClass:[ZZTEditorImageView class]]){
             ZZTEditorImageView *currentView = (ZZTEditorImageView *)self.editorDeskView.currentView;
-            currentView.closeImageView.hidden = NO;
+            currentView.imgView.hidden = NO;
         }else if([self.editorDeskView.currentView isKindOfClass:[ZZTEditorTextView class]]){
             ZZTEditorTextView *currentView = (ZZTEditorTextView *)self.editorDeskView.currentView;
             [currentView textViewShowState];
@@ -294,7 +277,7 @@
     }else{
         if([self.editor_squareRoundView.currentView isKindOfClass:[ZZTEditorImageView class]]){
             ZZTEditorImageView *currentView = (ZZTEditorImageView *)self.editor_squareRoundView.currentView;
-            currentView.closeImageView.hidden = NO;
+            currentView.imgView.hidden = NO;
         }else if([self.editor_squareRoundView.currentView isKindOfClass:[ZZTEditorTextView class]]){
             ZZTEditorTextView *currentView = (ZZTEditorTextView *)self.editor_squareRoundView.currentView;
             [currentView textViewShowState];
@@ -381,20 +364,27 @@
 
 #pragma mark - 调色功能
 -(void)paletteTheView{
+    
     _context = [CIContext contextWithOptions:nil];//画布
     
     //亮度 饱和度 对比度 滤镜
     _colorControlsFilter = [CIFilter filterWithName:@"CIColorControls"];
+    
     //色相滤镜
     _hueFilter = [CIFilter filterWithName:@"CIHueAdjust"];
+    
     //设置需要修改的图像
     [self setupNewInputImage];
 
     //ZZTEditorBrightnessView
     ZZTEditorBrightnessView *brightnessView = [[ZZTEditorBrightnessView alloc] initWithFrame:CGRectMake(0, self.view.height - BrightnessToolBarHeight, self.view.width, BrightnessToolBarHeight)];
+    
     _brightnessView = brightnessView;
+    
     brightnessView.delegate = self;
+    
     [self.view addSubview:brightnessView];
+    
     //调色slider记录
     [self setupEditorBrightnessViewSliderValue];
 }
@@ -403,8 +393,12 @@
 -(void)setupNewInputImage{
     //拿到当前view的照片 判断
     ZZTEditorImageView *imageView = [self getCurrentViewImg];
+    
     //初始化CIImage源图像
-    _image = [CIImage imageWithCGImage:imageView.imageView.image.CGImage];
+    _image = imageView.originalImg;
+    
+    NSLog(@"_image:%@",_image);
+    NSLog(@"originalImg:%@",imageView.originalImg);
     
     [_colorControlsFilter setValue:_image forKey:@"inputImage"];//设置滤镜的输入图片
     
@@ -417,19 +411,37 @@
     ZZTEditorImageView *imageView = [self getCurrentViewImg];
 
     _brightnessView.imageViewModel = imageView;
-
+    
+    //重新设置
+//    [_colorControlsFilter setValue:[NSNumber numberWithFloat:imageView.brightness] forKey:@"inputBrightness"];
+//    [self setImageWithTag:105 Value:imageView.brightness];
+//
+//    [_colorControlsFilter setValue:[NSNumber numberWithFloat:imageView.saturation] forKey:@"inputSaturation"];//设置滤镜参数
+//    [self setImageWithTag:106 Value:imageView.saturation];
+//
+//    [_colorControlsFilter setValue:[NSNumber numberWithFloat:imageView.contrast] forKey:@"inputContrast"];
+//    [self setImageWithTag:107 Value:imageView.contrast];
+//
+//    [_hueFilter setValue:_colorControlsFilter.outputImage forKey:@"inputImage"];
+//
+//    [_hueFilter setValue:[NSNumber numberWithFloat:imageView.hue] forKey:@"inputAngle"];
+//    [self setImageWithTag:108 Value:imageView.hue];
+//
+//    imageView.imageView.alpha = imageView.alpha;
 }
 
 #pragma mark - ZZTEditorBrightnessViewDelegate
--(void)brightnessChangeWithTag:(NSInteger)tag Value:(CGFloat)value
+-(void)brightnessChangeWithTag:(NSInteger)tag Value:(CGFloat)value img:(CIImage *)img
 {
     //获取已被修改的图片
     if(tag == 108){
-        [_hueFilter setValue:_colorControlsFilter.outputImage forKey:@"inputImage"];
+//        [_hueFilter setValue:_colorControlsFilter.outputImage forKey:@"inputImage"];
+        [_hueFilter setValue:img forKey:@"inputImage"];
     }else{
-        [_colorControlsFilter setValue:_hueFilter.outputImage forKey:@"inputImage"];//设置滤镜的输入图片
+//        [_colorControlsFilter setValue:_hueFilter.outputImage forKey:@"inputImage"];//设置滤镜的输入图片
+        [_colorControlsFilter setValue:img forKey:@"inputImage"];//设置滤镜的输入图片
     }
-
+    
     switch (tag) {
         case 105:
             [_colorControlsFilter setValue:[NSNumber numberWithFloat:value] forKey:@"inputBrightness"];
@@ -472,12 +484,14 @@
         //把那个编辑好的也传过来
         outputImage = [_hueFilter valueForKey:@"outputImage"];
     }else{
-       outputImage = [_colorControlsFilter outputImage];//取得输出图像
+        outputImage = [_colorControlsFilter outputImage];//取得输出图像
     }
     
     CGImageRef temp = [_context createCGImage:outputImage fromRect:[outputImage extent]];
     
     ZZTEditorImageView *currentView = [self getCurrentWithPalette];
+    
+//    currentView.originalImg = outputImage;
     
     switch (tag) {
         case 105:
@@ -686,9 +700,8 @@
                     });
                 });
             }
-            
         }
-
+        
     }else{
         
         NSDictionary *dict = [NSDictionary dictionary];
@@ -833,7 +846,7 @@
     
     [manager POST:[ZZTAPI stringByAppendingString:@"fodder/getFodderCollectInfo"] parameters:parameter progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
-        NSArray *array = [ZZTDetailModel mj_objectArrayWithKeyValuesArray:dic];
+        NSMutableArray *array = [ZZTDetailModel mj_objectArrayWithKeyValuesArray:dic];
         self.materialWindow.materialArray = array;
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
@@ -885,9 +898,9 @@
     }else if(index == 6){
 
         //旁白框
-        if(model.modelType == 12){
+        if(model.modelType == 12 || model.modelType == 13){
             //旁白
-            ZZTEditorTextView *textView = [[ZZTEditorTextView alloc] initWithFrame:CGRectMake(50, 50, 70, 50)];
+            ZZTEditorTextView *textView = [[ZZTEditorTextView alloc] initWithFrame:CGRectMake(50, 50, 70, 142)];
             //不同的对话框
             textView.type = model.modelType;
             textView.kindIndex = [NSString stringWithFormat:@"%ld",index];
@@ -1416,6 +1429,8 @@
     [self.view addSubview:previewView];
     
     previewView.imgArray = self.releseImgArray;
+    
+    self.automaticallyAdjustsScrollViewInsets = NO;
     
     previewView.currentIndex = _deskIndex;
 }

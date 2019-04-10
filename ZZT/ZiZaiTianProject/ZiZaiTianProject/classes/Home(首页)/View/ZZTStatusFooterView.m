@@ -19,8 +19,9 @@
 @property (nonatomic,strong) likeCountView *likeCountView;
 
 //评论
-@property (nonatomic,weak) UIButton *replyCountView;
+@property (nonatomic,weak) likeCountView *replyCountView;
 
+@property (nonatomic,weak) UIView *bottomView;
 
 
 @end
@@ -36,55 +37,54 @@
 }
 
 -(void)setup{
-    self.contentView.backgroundColor = [UIColor whiteColor];
+
+    //举报
+    _reportBtn = [[ZZTReportBtn alloc] init];
+    [self.contentView addSubview:_reportBtn];
+    
+    //底线
+    UIView *bottomView = [[UIView alloc] init];
+    bottomView.backgroundColor = [UIColor colorWithRGB:@"246,246,251"];
+    _bottomView = bottomView;
+    [self.contentView addSubview:bottomView];
+}
+
+-(void)layoutSubviews{
+    [super layoutSubviews];
     
     [self.timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.contentView);
-        make.top.equalTo(self.contentView.mas_top).offset(4);
-        make.bottom.equalTo(self.contentView.mas_bottom).offset(-4);
+        make.height.mas_equalTo(22);
+        make.width.mas_equalTo(40);
         make.left.equalTo(self.contentView).offset(70);
     }];
     
     [self.replyCountView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.contentView).offset(-4);
-        make.centerY.equalTo(self.timeLabel);
+        make.centerY.equalTo(self.contentView.mas_centerY);
         make.width.mas_equalTo(60);
         make.height.mas_equalTo(20);
     }];
     
-    //点赞的地方  添加
-    [self.replyCountView.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.replyCountView.mas_left).offset(2);
-        make.centerY.equalTo(self);
-    }];
-
-    //点赞的地方  添加
-    [self.replyCountView.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.replyCountView.imageView.mas_right).offset(2);
-        make.centerY.equalTo(self);
-        make.height.mas_offset(18);
-        make.right.equalTo(self.replyCountView.mas_right);
-    }];
-    
-    
     [self.likeCountView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(self.timeLabel);
+        make.centerY.equalTo(self.contentView);
         make.right.equalTo(self.replyCountView.mas_left).offset(-8);
         make.width.mas_equalTo(60);
         make.height.mas_equalTo(20);
     }];
     
     //举报
-    _reportBtn = [[ZZTReportBtn alloc] init];
-    [self.contentView addSubview:_reportBtn];
-    //如果是自己就隐藏
-
-    //举报
     [self.reportBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.likeCountView);
         make.right.equalTo(self.likeCountView.mas_left).offset(-64);
-        make.height.mas_equalTo(20);
+        make.height.width.mas_equalTo(20);
     }];
+    
+    [self.bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.right.left.equalTo(self.contentView);
+        make.height.mas_equalTo(1);
+    }];
+    
 }
 
 -(void)setModel:(ZZTCircleModel *)model{
@@ -92,22 +92,13 @@
     self.timeLabel.text = model.commentDate;
 
     //点赞的数量
+    self.likeCountView.likeCount = model.praiseNum;
+    
     self.likeCountView.islike = [model.ifPraise integerValue];
 
-    self.likeCountView.requestID = @"20";
-    
-    self.likeCountView.likeCount = model.praiseNum;
-
     //回复评论数量
-    NSString *replayCountText = [NSString makeTextWithCount:model.replyComment.count];
-    //回复数据
-    [self.replyCountView setTitle:replayCountText forState:UIControlStateNormal];
-//    //评论宽度
-//    CGFloat replyCountWidth = [replayCountText getTextWidthWithFont:self.replyCountView.titleLabel.font] + 30;
-//    //设置宽度
-//    [self.replyCountView mas_updateConstraints:^(MASConstraintMaker *make) {
-//        make.width.equalTo(@(replyCountWidth));
-//    }];
+    self.replyCountView.likeCount = model.replyComment.count;
+
     _reportBtn.hidden = NO;
     if([Utilities GetNSUserDefaults].id == [self.model.customer.id integerValue]){
         _reportBtn.hidden = YES;
@@ -136,9 +127,12 @@
     if (!_likeCountView) {
         likeCountView *lcv = [[likeCountView alloc] init];
         
-        [lcv setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
-      
-        [lcv setContentVerticalAlignment:UIControlContentVerticalAlignmentBottom];
+        [self.contentView addSubview:lcv];
+        
+        [lcv likeCountViewWithImg:LikeIconImg selectImg:LikeIconImg_Select];
+        
+        _likeCountView = lcv;
+        
         
         weakself(self);
         
@@ -150,9 +144,7 @@
             }
         }];
         
-        [self.contentView addSubview:lcv];
-        
-        _likeCountView = lcv;
+      
     }
     return _likeCountView;
 }
@@ -195,24 +187,23 @@
     }];
 }
 
-- (UIButton *)replyCountView {
+- (likeCountView *)replyCountView {
+    
     if (!_replyCountView) {
         
-        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        likeCountView *lcv = [[likeCountView alloc] init];
         
-        btn.titleLabel.font = [UIFont systemFontOfSize:12];
-        btn.titleLabel.textAlignment = NSTextAlignmentCenter;
-        [btn setTitle:@"" forState:UIControlStateNormal];
-        [btn setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
-        [btn setTitleColor:ZZTSubColor forState:UIControlStateNormal];
-        [btn setImage:[[UIImage imageNamed:@"commentImg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
-        [btn.imageView setContentMode:UIViewContentModeScaleAspectFit];
-        [btn addTarget:self action:@selector(showCommentVc) forControlEvents:UIControlEventTouchUpInside];
-        [self.contentView addSubview:btn];
+        [self.contentView addSubview:lcv];
         
-        _replyCountView = btn;
+        [lcv likeCountViewWithImg:CommentIconImg selectImg:CommentIconImg_Select];
+        
+        _replyCountView = lcv;
+        
+        [lcv setOnClick:^(likeCountView *btn) {
+            [self showCommentVc];
+        }];
+
     }
-    
     return _replyCountView;
 }
 

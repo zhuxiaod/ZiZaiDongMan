@@ -22,6 +22,7 @@
 @property (nonatomic,strong) ZZTWordsDetailHeadView *head;
 
 @property (nonatomic,strong) ZZTWordDescSectionHeadView *descHeadView;
+
 @property (nonatomic,strong) ZZTCarttonDetailModel *ctDetail;
 
 @property (nonatomic,strong) UITableView *contentView;
@@ -328,7 +329,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     //轮播图
     UIImage *bannerImg = [UIImage imageNamed:self.ctDetail.lbCover];
     
-    UIImage *shareBannerImage = [self addImage:@"shareImg" withImage:self.ctDetail.lbCover];
+    UIImage *shareBannerImage = [UIImage addImage:@"shareImg" withImage:self.ctDetail.lbCover];
     
     UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
     
@@ -348,45 +349,6 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
         }
     }];
 }
-
-- (UIImage *)addImage:(NSString *)imageName1 withImage:(NSString *)imageName2 {
-    //分享图
-    UIImage *image1 = [UIImage imageNamed:imageName1];
-    //轮播图
-    NSData *resultData = [NSData dataWithContentsOfURL:[NSURL URLWithString:imageName2]];
-    
-    UIImage *image2 = [UIImage imageWithData:resultData];
-    
-    UIImage *logoImg = [UIImage imageNamed:@"logoImg"];
-    
-    CGFloat image1H;
-    if(SCREEN_WIDTH == 414){
-        image1H = 421;
-    }else{
-        image1H = 381;
-    }
-    
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(self.view.bounds.size.width, image1H), NO, 0);
-
-    [image1 drawInRect:CGRectMake(0, 0, SCREEN_WIDTH, image1H)];
-    
-    //计算轮播图 应该显示多少高度
-    CGFloat bannerH = image2.size.height * SCREEN_WIDTH / image2.size.width;
-    
-    [image2 drawInRect:CGRectMake(0,0, SCREEN_WIDTH, bannerH)];
-    
-    //logo的大小
-    CGRect image2Rect = CGRectMake(0,0, SCREEN_WIDTH, bannerH);
-    //添加logo
-    [logoImg drawInRect:CGRectMake(CGRectGetMaxX(image2Rect) - 60, CGRectGetMaxY(image2Rect) - 60, 50, 50)];
-    
-    UIImage *resultingImage = UIGraphicsGetImageFromCurrentImageContext();
-    
-    UIGraphicsEndImageContext();
-    
-    return resultingImage;
-}
-
 
 #pragma mark - 设置组数
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -511,6 +473,13 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     return 0.01;
 }
 
+#pragma mark 改变tableView的背景色
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
+    if ([view isKindOfClass:[UITableViewHeaderFooterView class]]) {
+        ((UITableViewHeaderFooterView *)view).backgroundView.backgroundColor = [UIColor whiteColor];
+    }
+}
+
 #pragma mark - lazyLoad
 - (ZZTChapterChooseView *)chapterChooseView{
     if(!_chapterChooseView){
@@ -520,7 +489,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
         _chapterChooseView.needReloadHeight = ^{
             [weakSelf.contentView reloadData];
         };
-        _chapterChooseView.backgroundColor = [UIColor whiteColor];
+//        _chapterChooseView.backgroundColor = [UIColor whiteColor];
     }
     return _chapterChooseView;
 }
@@ -539,7 +508,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     if (!_descHeadView) {
         
         _descHeadView = [[ZZTWordDescSectionHeadView alloc] initWithFrame:self.view.bounds];
-        _descHeadView.backgroundColor = [UIColor clearColor];
+//        _descHeadView.backgroundColor = [UIColor clearColor];
         weakself(self);
         
         [_descHeadView setNeedReloadHeight:^{
@@ -624,7 +593,7 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
          [self loadtopData:self.cartoonDetail.cartoonId];
      }
 
-    NSLog(@"sekf ppp :%@",self.chooseNum);
+//    NSLog(@"sekf ppp :%@",self.chooseNum);
     if(self.isId == YES){
         //如果有记录的值 那么请求记录哪一行
         if(self.chooseNum){

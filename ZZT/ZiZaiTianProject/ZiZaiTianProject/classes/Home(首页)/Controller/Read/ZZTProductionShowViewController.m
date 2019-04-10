@@ -7,6 +7,8 @@
 //
 
 #import "ZZTProductionShowViewController.h"
+#import "ZZTHomeTableViewModel.h"
+#import "ZZTCartoonViewController.h"
 
 @interface ZZTProductionShowViewController ()<UICollectionViewDataSource,UICollectionViewDelegate,PYSearchViewControllerDelegate,PYSearchViewControllerDataSource>
 
@@ -80,7 +82,7 @@ NSString *SuggestionView1 = @"SuggestionView1";
                            @"pageNum":[NSString stringWithFormat:@"%ld",self.pageNumber],
                            @"pageSize":@"10",
                            };
-    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getHostCartoon"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:[ZZTAPI stringByAppendingString:self.model.url] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         NSArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
         
@@ -110,7 +112,7 @@ NSString *SuggestionView1 = @"SuggestionView1";
                            @"pageNum":@"1",
                            @"pageSize":[NSString stringWithFormat:@"%ld",self.pageSize]
                            };
-    [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getHostCartoon"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:[ZZTAPI stringByAppendingString:self.model.url] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         
@@ -137,6 +139,39 @@ NSString *SuggestionView1 = @"SuggestionView1";
 -(void)setViewTitle:(NSString *)viewTitle{
     _viewTitle = viewTitle;
 }
+
+-(void)setModel:(ZZTHomeTableViewModel *)model{
+    _model = model;
+    
+    [self.viewNavBar.centerButton setTitle:model.title forState:UIControlStateNormal];
+    
+    //设置一个按钮 设置事件
+    [self setupNavRightBtn:@"我参与的" Sel:@selector(gotoParticipation)];
+}
+
+-(UIButton *)setupNavRightBtn:(NSString *)title Sel:(SEL)sel{
+    [self.viewNavBar.rightButton setTitle:title forState:UIControlStateNormal];
+    [self.viewNavBar.rightButton setTitleColor:ZZTSubColor forState:UIControlStateNormal];
+    [self.viewNavBar.rightButton sizeToFit];
+    
+    [self.viewNavBar.rightButton mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.width.mas_equalTo(80);
+        make.height.mas_equalTo(50);
+    }];
+    
+    [self.viewNavBar.rightButton addTarget:self action:sel forControlEvents:UIControlEventTouchUpInside];
+    return self.viewNavBar.rightButton;
+}
+
+#pragma mark - NavRightBtnTarget
+-(void)gotoParticipation{
+    //同人创作
+    ZZTCartoonViewController *bookVC = [[ZZTCartoonViewController alloc] init];
+    bookVC.hidesBottomBarWhenPushed = YES;
+    bookVC.model = [ZZTHomeTableViewModel initHotVCModel:@"great/userCollect" title:@"参与的作品"];
+    [self.navigationController pushViewController:bookVC animated:YES];
+}
+
 #pragma mark - 创建流水布局
 -(UICollectionViewFlowLayout *)setupCollectionViewFlowLayout{
     
@@ -146,7 +181,7 @@ NSString *SuggestionView1 = @"SuggestionView1";
     
     layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     //行距
-    layout.minimumLineSpacing = 0;
+    layout.minimumLineSpacing = 10;
     
     layout.minimumInteritemSpacing = 5;
     
@@ -162,7 +197,8 @@ NSString *SuggestionView1 = @"SuggestionView1";
     collectionView.dataSource = self;
     collectionView.delegate = self;
     [self.view addSubview:self.collectionView];
-    [collectionView registerNib:[UINib nibWithNibName:@"ZZTCartoonCell" bundle:nil] forCellWithReuseIdentifier:@"cellId"];
+
+    [collectionView registerClass:[ZZTCartoonCell class] forCellWithReuseIdentifier:@"cellId"];
 }
 
 //边距设置:整体边距的优先级，始终高于内部边距的优先级

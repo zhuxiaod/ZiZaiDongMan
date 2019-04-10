@@ -57,4 +57,6 @@ typedef void (^collectViewBtnBlock)(UIButton *btn);//给block重命名,方便调
 
 -(void)changeTypeCollectionViewWithIndex:(NSInteger)index;
 
+-(void)postionMaterialData:(ZZTDetailModel *)model;
+
 @end

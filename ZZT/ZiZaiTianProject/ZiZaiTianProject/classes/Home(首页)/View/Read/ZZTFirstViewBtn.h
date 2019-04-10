@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-@class ZZTEasyBtnModel;
+@class ZZTHomeTableViewModel;
 @interface ZZTFirstViewBtn : UICollectionViewCell
 
-@property (nonatomic,strong) ZZTEasyBtnModel *btnModel;
+@property (nonatomic,strong) ZZTHomeTableViewModel *btnModel;
 
 @end

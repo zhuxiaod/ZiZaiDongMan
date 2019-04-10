@@ -10,6 +10,7 @@
 #import "ZZTCartoonCell.h"
 #import "ZZTAttentionCell.h"
 #import "ZZTMyCircleCellCollectionViewCell.h"
+#import "ZZTHomeTableViewModel.h"
 
 //请求192.168.0.165:8888/great/daiti?id=daiti
 @interface ZZTCartoonViewController ()<UICollectionViewDataSource,UICollectionViewDelegate>
@@ -28,8 +29,8 @@
 @property (nonatomic,strong) ZZTRemindView *remindView;
 
 @property (nonatomic,strong) NSMutableArray *cartoonArray;
-@end
 
+@end
 
 @implementation ZZTCartoonViewController
 
@@ -139,43 +140,31 @@ static NSString *circleCell = @"circleCell";
 
 #pragma mark 注册Cell(控制)
 -(void)registerCell{
-    UINib *nib1= [UINib nibWithNibName:@"ZZTCartoonCell" bundle:[NSBundle mainBundle]];
-    [self.collectionView registerNib:nib1 forCellWithReuseIdentifier:collectionID];
+    [self.collectionView registerClass:[ZZTCartoonCell class] forCellWithReuseIdentifier:cartoonCellId];
+
+}
+
+-(void)setModel:(ZZTHomeTableViewModel *)model{
+    _model = model;
+    [self.viewNavBar.centerButton setTitle:model.title forState:UIControlStateNormal];
+
 }
 
 -(void)loadData{
-    if([self.viewType isEqualToString:@"1"]){
-        //请求参数
-        NSDictionary *paramDict = @{
-                                    @"userId":[NSString stringWithFormat:@"%ld",self.user.id],
-                                    };
-        [self.manager POST:[ZZTAPI stringByAppendingString:@"great/userCollect"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            
-            NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
-            NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
-            self.cartoons = array;
-            [self addCartoonId:array];
-            [self.collectionView reloadData];
-        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            NSLog(@"请求失败 -- %@",error);
-        }];
-    }else{
-        //请求参数
-        NSDictionary *paramDict = @{
-                                    @"userId":[NSString stringWithFormat:@"%ld",self.user.id]
-                                    };
+    //请求参数
+    NSDictionary *paramDict = @{
+                                @"userId":[NSString stringWithFormat:@"%ld",self.user.id],
+                                };
+    [self.manager POST:[ZZTAPI stringByAppendingString:self.model.url] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
-        [self.manager POST:[ZZTAPI stringByAppendingString:@"great/userCollect"] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            
-            NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
-            NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
-            self.cartoons = array;
-            [self addCartoonId:array];
-            [self.collectionView reloadData];
-        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            NSLog(@"请求失败 -- %@",error);
-        }];
-    }
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
+        self.cartoons = array;
+        [self addCartoonId:array];
+        [self.collectionView reloadData];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"请求失败 -- %@",error);
+    }];
 }
 
 -(void)addCartoonId:(NSMutableArray *)array{
@@ -220,7 +209,7 @@ static NSString *circleCell = @"circleCell";
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    ZZTCartoonCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:collectionID forIndexPath:indexPath];
+    ZZTCartoonCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cartoonCellId forIndexPath:indexPath];
     ZZTCarttonDetailModel *car = self.cartoons[indexPath.row];
     if (car) {
         cell.cartoon = car;

@@ -210,9 +210,9 @@ NSString *SuggestionView3 = @"SuggestionView";
     }];
     
     //返回
-    [navBar.leftButton setImage:[UIImage imageNamed:@"editCellImg"] forState:UIControlStateNormal];
+//    [navBar.leftButton setImage:[UIImage imageNamed:@"editCellImg"] forState:UIControlStateNormal];
 //    navBar.leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 17);
-    [navBar.leftButton addTarget:self action:@selector(addMomentTaget) forControlEvents:UIControlEventTouchUpInside];
+//    [navBar.leftButton addTarget:self action:@selector(addMomentTaget) forControlEvents:UIControlEventTouchUpInside];
     
     [navBar.rightButton setImage:[UIImage imageNamed:@"find_home_search"] forState:UIControlStateNormal];
 //    navBar.rightButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, -33);

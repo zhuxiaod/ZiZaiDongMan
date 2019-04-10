@@ -265,7 +265,6 @@ static NSString *findCommentCell = @"findCommentCell";
 #pragma mark 高度设置
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     ZZTMyZoneModel *model = _dataArray[indexPath.row];
-    NSArray *imgs = [model.contentImg componentsSeparatedByString:@","];
     return  [GlobalUI cellHeightWithModel:model];
 }
 

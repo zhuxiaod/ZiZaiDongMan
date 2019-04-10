@@ -15,7 +15,17 @@
 
 @property (nonatomic,assign) CGFloat textHeight;
 
-@property (nonatomic,strong) UILabel *wordLabel;
+@property (nonatomic,weak) UILabel *wordLabel;
+
+@property (nonatomic,weak) UIView *backView;
+
+@property (nonatomic,weak) UIView *topView;
+
+@property (nonatomic,weak) UIView *bottomView;
+
+@property (nonatomic,weak)UIView *bottomLine;
+
+
 
 @end
 
@@ -38,12 +48,14 @@ static CGFloat const tbSpaceing = 12;
     
     //如果大于2行
     if (self.textHeight > self.descLabel.font.lineHeight * 2) {
-        //流出放button的位置
-        [self.descLabel mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.bottom.equalTo(self).offset(-tbSpaceing * 2);
-        }];
+//        //流出放button的位置
+//        [self.descLabel mas_updateConstraints:^(MASConstraintMaker *make) {
+//            make.bottom.equalTo(self.backView.mas_bottom).offset(-tbSpaceing * 2);
+//
+//        }];
+        
         //设置打开按钮
-        [self openUpBtn];
+        self.openUpBtn.hidden = NO;
     }
 }
 
@@ -59,78 +71,100 @@ static CGFloat const tbSpaceing = 12;
 -(void)setupUI{
 //    self.backgroundColor = [UIColor whiteColor];
     UIView *backView = [UIView new];
+    _backView = backView;
     backView.backgroundColor = [UIColor whiteColor];
     [self addSubview:backView];
     
     UIView *topView = [UIView new];
+    _topView = topView;
     topView.backgroundColor = [UIColor colorWithHexString:@"#F0F1F2"];
-    [self addSubview:topView];
+    [backView addSubview:topView];
     
     UIView *bottomView = [UIView new];
+    _bottomView = bottomView;
     bottomView.backgroundColor = [UIColor colorWithHexString:@"#F0F1F2"];
-    [self addSubview:bottomView];
+    [backView addSubview:bottomView];
     
     UILabel *wordLabel = [UILabel new];
     _wordLabel = wordLabel;
     wordLabel.text = @"作品简介";
-    [self addSubview:wordLabel];
+    [backView addSubview:wordLabel];
     
     //显示内容
     UILabel *descLabel = [UILabel new];
+    _descLabel = descLabel;
     descLabel.numberOfLines = 2;
     descLabel.font = [UIFont systemFontOfSize:14];
     descLabel.textColor = [UIColor colorWithHexString:@"#A7A8A9"];
     descLabel.preferredMaxLayoutWidth = SCREEN_WIDTH - spaceing * 2;
-
-    [self addSubview:descLabel];
-    
-    
-    [backView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self).offset(0);
-        make.right.equalTo(self).offset(0);
-        make.left.equalTo(self).offset(0);
-        make.bottom.equalTo(self).offset(0);
-    }];
-    
-    [topView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self).offset(0);
-        make.right.equalTo(self).offset(0);
-        make.left.equalTo(self).offset(0);
-        make.height.offset(4);
-    }];
-    
-    [wordLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self).offset(spaceing);
-        make.top.equalTo(topView.mas_bottom).offset(5);
-        make.right.equalTo(self).offset(-spaceing);
-        make.height.mas_equalTo(30);
-    }];
-    
-    [descLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self).offset(spaceing);
-        make.top.equalTo(wordLabel.mas_bottom).offset(5);
-        make.right.equalTo(self).offset(-spaceing);
-        make.bottom.equalTo(self).offset(-tbSpaceing);
-    }];
-
-    [bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(self).offset(0);
-        make.right.equalTo(self).offset(0);
-        make.left.equalTo(self).offset(0);
-        make.height.offset(4);
-    }];
+    [backView addSubview:descLabel];
     
     self.descLabel = descLabel;
     //底线
     UIView *bottomLine = [UIView new];
     
-    bottomLine.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1];
+    _bottomLine = bottomLine;
     
-    [self addSubview:bottomLine];
+    bottomLine.backgroundColor = [UIColor colorWithRGB:@"239,239,239"];
+
+    [backView addSubview:bottomLine];
     
-    [bottomLine mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.bottom.equalTo(self);
-        make.height.equalTo(@(SINGLE_LINE_WIDTH));
+    UIButton *openUpBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [openUpBtn setImage:[UIImage imageNamed:@"wordsDetail_open"] forState:UIControlStateNormal];
+    [openUpBtn setImage:[UIImage imageNamed:@"wordsDetail_close"] forState:UIControlStateSelected];
+    
+    [openUpBtn addTarget:self action:@selector(openOrClose:) forControlEvents:UIControlEventTouchUpInside];
+    _openUpBtn = openUpBtn;
+    self.openUpBtn.hidden = YES;
+    [backView addSubview:openUpBtn];
+}
+
+-(void)layoutSubviews{
+    [super layoutSubviews];
+    [_backView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self).offset(0);
+        make.right.equalTo(self).offset(0);
+        make.left.equalTo(self).offset(0);
+        make.bottom.equalTo(self).offset(0);
+    }];
+    
+    [_topView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.backView.mas_top).offset(0);
+        make.right.equalTo(self.backView.mas_right).offset(0);
+        make.left.equalTo(self.backView.mas_left).offset(0);
+        make.height.mas_equalTo(4);
+    }];
+    
+    [_wordLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.backView.mas_left).offset(spaceing);
+        make.top.equalTo(self.topView.mas_bottom).offset(5);
+        make.width.mas_equalTo(SCREEN_WIDTH - 16);
+        make.height.mas_equalTo(30);
+    }];
+    
+    [_descLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.backView.mas_left).offset(spaceing);
+        make.top.equalTo(self.wordLabel.mas_bottom).offset(5);
+        make.right.equalTo(self.backView.mas_right).offset(-spaceing);
+        make.bottom.equalTo(self.backView.mas_bottom).offset(-tbSpaceing);
+    }];
+    
+    [_bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(self.backView).offset(0);
+        make.right.equalTo(self.backView).offset(0);
+        make.left.equalTo(self.backView).offset(0);
+        make.height.mas_equalTo(4);
+    }];
+    
+    [_bottomLine mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.bottom.equalTo(self.backView);
+        make.height.mas_equalTo(SINGLE_LINE_WIDTH);
+    }];
+    
+    [_openUpBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.wordLabel.mas_centerY);
+        make.right.equalTo(self).offset(-8);
+        make.width.height.mas_equalTo(30);
     }];
 }
 
@@ -162,37 +196,37 @@ static CGFloat const tbSpaceing = 12;
                                               context:nil].size.height;
 }
 
-- (UIButton *)openUpBtn {
-    if (!_openUpBtn) {
-        
-        UIButton *openUpBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        
-//        openUpBtn.titleLabel.font = [UIFont systemFontOfSize:10];
+//- (UIButton *)openUpBtn {
+//    if (!_openUpBtn) {
 //
-//        openUpBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 30, 0, 0);
-//        openUpBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 10);
-        
-//        [openUpBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-        
-//        [openUpBtn setTitle:@"全部" forState:UIControlStateNormal];
-//        [openUpBtn setTitle:@"收起" forState:UIControlStateSelected];
-        [openUpBtn setImage:[UIImage imageNamed:@"wordsDetail_open"] forState:UIControlStateNormal];
-        [openUpBtn setImage:[UIImage imageNamed:@"wordsDetail_close"] forState:UIControlStateSelected];
-        
-        [openUpBtn addTarget:self action:@selector(openOrClose:) forControlEvents:UIControlEventTouchUpInside];
-        
-        [self addSubview:openUpBtn];
-        
-        [openUpBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.bottom.equalTo(self.wordLabel.mas_bottom);
-            make.top.equalTo(self.wordLabel.mas_top);
-            make.right.equalTo(self).offset(-8);
-            make.width.height.mas_equalTo(30);
-        }];
-        _openUpBtn = openUpBtn;
-    }
-    return _openUpBtn;
-}
+//        UIButton *openUpBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+//
+////        openUpBtn.titleLabel.font = [UIFont systemFontOfSize:10];
+////
+////        openUpBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 30, 0, 0);
+////        openUpBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 10);
+//
+////        [openUpBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+//
+////        [openUpBtn setTitle:@"全部" forState:UIControlStateNormal];
+////        [openUpBtn setTitle:@"收起" forState:UIControlStateSelected];
+//        [openUpBtn setImage:[UIImage imageNamed:@"wordsDetail_open"] forState:UIControlStateNormal];
+//        [openUpBtn setImage:[UIImage imageNamed:@"wordsDetail_close"] forState:UIControlStateSelected];
+//
+//        [openUpBtn addTarget:self action:@selector(openOrClose:) forControlEvents:UIControlEventTouchUpInside];
+//
+//        [self addSubview:openUpBtn];
+//
+//        [openUpBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+//            make.bottom.equalTo(self.wordLabel.mas_bottom);
+//            make.top.equalTo(self.wordLabel.mas_top);
+//            make.right.equalTo(self).offset(-8);
+//            make.width.height.mas_equalTo(30);
+//        }];
+//        _openUpBtn = openUpBtn;
+//    }
+//    return _openUpBtn;
+//}
 //开关状态
 - (void)openOrClose:(UIButton *)btn {
     btn.selected = !btn.selected;

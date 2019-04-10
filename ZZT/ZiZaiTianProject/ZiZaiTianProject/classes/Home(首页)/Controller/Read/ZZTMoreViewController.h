@@ -9,7 +9,10 @@
 #import <UIKit/UIKit.h>
 
 @interface ZZTMoreViewController : BaseViewController
+//分类
+@property (nonatomic,assign) NSInteger modelTag;
+//2级分类
+@property (nonatomic,assign) NSInteger classTag;
 
-@property (nonatomic,assign) NSInteger moreTag;
 
 @end

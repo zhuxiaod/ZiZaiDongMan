@@ -340,13 +340,6 @@ static bool needHide = false;
 }
 
 -(void)setupMJRefresh{
-//    //刷新评论的page数
-//    _moreCommentPage = 2;
-//    //更新评论的page数
-//    _updataCommentPage = 1;
-//    self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
-//        [self loadMoreCommentData];
-//    }];
     
     self.tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(pullUpToReloadMoreData:)];
 }
@@ -584,7 +577,7 @@ static bool needHide = false;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"indexRow:%ld",(long)indexPath.row);
+//    NSLog(@"indexRow:%ld",(long)indexPath.row);
     if(indexPath.section == 0){
         //漫画   是这里的数据
         if([self.cartoonModel.type isEqualToString:@"1"]){
@@ -602,7 +595,7 @@ static bool needHide = false;
             ZZTStoryModel *model = self.cartoonDetailArray[indexPath.row];
             cell.index = indexPath.row;
             cell.str = model.content;
-            NSLog(@"model.content:%@",model.content);
+//            NSLog(@"model.content:%@",model.content);
             return cell;
         }
     }else{
@@ -670,8 +663,8 @@ static bool needHide = false;
                           @"code":@"1"//1.漫画 2.章节
                           };
     [manager POST:[ZZTAPI stringByAppendingString:@"cartoon/getupDown"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
-        NSLog(@"dic:%@",dic);
+//        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+//        NSLog(@"dic:%@",dic);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
@@ -689,12 +682,12 @@ static bool needHide = false;
         //保存的文件路径
         NSString *fullPath = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:response.suggestedFilename];
         
-        NSLog(@"response:%@",response.suggestedFilename);
+//        NSLog(@"response:%@",response.suggestedFilename);
         
         return [NSURL fileURLWithPath:fullPath];
 
     } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
-        NSLog(@"File downloaded to: %@", filePath.path);
+//        NSLog(@"File downloaded to: %@", filePath.path);
         //把response的文件名
         self.fileName = filePath.path;
     }];
@@ -832,13 +825,11 @@ static bool needHide = false;
             //没有数据的时候
             [self.commentArray addObject:@"1"];
             self.isHasComment = YES;
-//            [self.tableView.mj_footer endRefreshingWithNoMoreData];
         }else{
             //外面的数据
             FriendCircleViewModel *circleViewModel = [[FriendCircleViewModel alloc] init];
             circleViewModel.circleModelArray = array1;
             self.commentArray = [circleViewModel loadDatas];
-//            [self.tableView.mj_footer endRefreshing];
         }
         //加工一下评论的数据
         [self.tableView reloadData];
@@ -927,7 +918,7 @@ static bool needHide = false;
         return SCREEN_HEIGHT * 0.124;
     }else if (section == 2){
         //作者
-        return SCREEN_HEIGHT * 0.18;
+        return 130;
     }else{
         if(_isHasComment){
             //没有评论
@@ -943,7 +934,7 @@ static bool needHide = false;
 
 //添加头 ZZTCartoonDetailFoot
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    NSLog(@"section%ld",section);
+//    NSLog(@"section%ld",section);
     if(section == 0){
         //作者 顶部
         ZZTAuthorHeadView *authorHead = [ZZTAuthorHeadView AuthorHeadView];
@@ -1137,6 +1128,7 @@ static bool needHide = false;
             //显示错误信息
             [MBProgressHUD showError:@"已经没有章节"];
         }
+        [self.tableView reloadData];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
@@ -1227,7 +1219,7 @@ static bool needHide = false;
     
     //如果是其他的cell
     if(indexPath.section == 0 || indexPath.section == 1){
-        NSLog(@"你点中了不在进来的地方");
+//        NSLog(@"你点中了不在进来的地方");
         //如果现在是隐藏状态
         if(needHide == YES){
             needHide = NO;
@@ -1302,6 +1294,7 @@ static bool needHide = false;
         
     }];
 }
+
 -(void)deleteCommentHeaderView:(ZZTCircleModel *)circleItem{
     UserInfo *user = [Utilities GetNSUserDefaults];
     if([circleItem.customer.id isEqualToString:[NSString stringWithFormat:@"%ld",user.id]]){
@@ -1339,6 +1332,7 @@ static bool needHide = false;
     //隐藏右边按钮区
     self.rightBtnView.hidden = needhide;
 }
+
 //隐藏底部评论
 - (void)hideOrShowBottomView:(BOOL)needhide{
     if(needhide == YES){
@@ -1378,7 +1372,7 @@ static bool needHide = false;
         arrayDict = [NSMutableArray array];
     }
     
-    NSLog(@"arrayDict:%@",arrayDict);
+//    NSLog(@"arrayDict:%@",arrayDict);
     
     //直接存这本书
     //创建书模型
@@ -1517,7 +1511,7 @@ static bool needHide = false;
     [super viewWillAppear:animated];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
-    NSLog(@"width:%f",[UIScreen mainScreen].bounds.size.width);
+    
     [IQKeyboardManager sharedManager].enable = YES;
     [IQKeyboardManager sharedManager].enableAutoToolbar = YES;
     [IQKeyboardManager sharedManager].shouldResignOnTouchOutside = YES;
@@ -1527,7 +1521,7 @@ static bool needHide = false;
     
     //是否购买 0没购买
     if([_dataModel.ifbuy isEqualToString:@"0"] && _dataModel.ifrelease == 2){
-        NSLog(@"没有购买 弹出界面");
+//        NSLog(@"没有购买 弹出界面");
         ZZTChapterPayViewController *CPVC = [[ZZTChapterPayViewController alloc] init];
         CPVC.delegate = self;
         CPVC.model = self.dataModel;
@@ -1596,7 +1590,7 @@ static bool needHide = false;
         height = 500;
     }
     NSNumber *newHeight = [NSNumber numberWithDouble:height];
-    NSLog(@"imageCellHeightCacheCount:%lu,index:%lu",(unsigned long)self.imageCellHeightCache.count,(unsigned long)index);
+//    NSLog(@"imageCellHeightCacheCount:%lu,index:%lu",(unsigned long)self.imageCellHeightCache.count,(unsigned long)index);
     
     if(newHeight > 0){
         if(index <= self.imageCellHeightCache.count){
@@ -1776,12 +1770,13 @@ static bool needHide = false;
         [UserInfoManager needLogin];
         return;
     }
-//    UIImage *imageView = [[TJLongImgCut manager] screenShotForTableView:self.tableView screenRect:UIEdgeInsetsMake(0, 0, 88, 40) imageKB:1024 * 10];//获取图片小于等于1M
-//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//    NSString *path = [paths objectAtIndex:0];
-//    NSString *filePath = [path stringByAppendingPathComponent:@"imageView.png"];
+    //
+    UIImage *imageView = [[TJLongImgCut manager] screenShotForTableView:self.tableView screenRect:UIEdgeInsetsMake(0, 0, 88, 40) imageKB:1024 * 10];//获取图片小于等于1M
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *path = [paths objectAtIndex:0];
+    NSString *filePath = [path stringByAppendingPathComponent:@"imageView.png"];
 //    NSLog(@"filePath%@",filePath);
-//    [UIImagePNGRepresentation(imageView) writeToFile:filePath atomically:YES];
+    [UIImagePNGRepresentation(imageView) writeToFile:filePath atomically:YES];
     __weak typeof(self) ws = self;
     [UMSocialUIManager showShareMenuViewInWindowWithPlatformSelectionBlock:^(UMSocialPlatformType platformType, NSDictionary *userInfo) {
         [ws shareTextToPlatform:platformType];
@@ -1790,12 +1785,21 @@ static bool needHide = false;
 
 //分享
 -(void)shareTextToPlatform:(UMSocialPlatformType)plaform{
+    //生成哪一张图片就行了
+    UIImage *shareImg = [UIImage imageNamed:@"shareImg"];
+    //轮播图
+    UIImage *bannerImg = [UIImage imageNamed:self.collectModel.lbCover];
+    
+    UIImage *shareBannerImage = [UIImage addImage:@"shareImg" withImage:self.collectModel.lbCover];
+    
     UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
     
-    messageObject.text = @"友盟+";
-    
-    UMShareWebpageObject *shareObject = [UMShareWebpageObject shareObjectWithTitle:@"自在动漫" descr:@"自在动漫~自在~" thumImage:[UIImage imageNamed:@"我的-头像框"]];
-    shareObject.webpageUrl = @"http://www.zztian.cn/"; //分享消息对象设置分享内容对象
+    //创建图片内容对象
+    UMShareImageObject *shareObject = [[UMShareImageObject alloc] init];
+    //如果有缩略图，则设置缩略图
+    shareObject.thumbImage = [UIImage imageNamed:@"icon"];
+    [shareObject setShareImage:shareBannerImage];
+    //分享消息对象设置分享内容对象
     messageObject.shareObject = shareObject;
     
     [[UMSocialManager defaultManager] shareToPlatform:plaform messageObject:messageObject currentViewController:nil completion:^(id result, NSError *error) {
@@ -1825,7 +1829,7 @@ static bool needHide = false;
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString *path = [paths objectAtIndex:0];
     NSString *filePath = [path stringByAppendingPathComponent:@"image.png"];
-    NSLog(@"filePath%@",filePath);
+//    NSLog(@"filePath%@",filePath);
     [UIImagePNGRepresentation(image) writeToFile:filePath atomically:YES];
     return image;
 }
@@ -1940,7 +1944,7 @@ static bool needHide = false;
             row--;
         }
         [indexPaths addObject:[NSIndexPath indexPathForRow:row inSection:section]];
-        NSLog(@"priorIndexPathCount:%ld row:%ld",section,row);
+//        NSLog(@"priorIndexPathCount:%ld row:%ld",section,row);
     }
     return indexPaths;
 }
@@ -1965,7 +1969,7 @@ static bool needHide = false;
             return indexPaths;
         }
         [indexPaths addObject:[NSIndexPath indexPathForRow:row inSection:section]];
-        NSLog(@"nextIndexPathCount:%ld row:%ld",section,row);
+//        NSLog(@"nextIndexPathCount:%ld row:%ld",section,row);
     }
     return indexPaths;
 }
@@ -2013,6 +2017,9 @@ static bool needHide = false;
         _tableView.showsVerticalScrollIndicator = YES;
         [self.view addSubview:_tableView];
         
+        //按钮View提升到最前面来
+        [self.view bringSubviewToFront:_rightBtnView];
+        
         [self loadViewIfNeeded];
         
         _tableView.pagingEnabled = NO;
@@ -2043,7 +2050,7 @@ static bool needHide = false;
     [manager POST:[ZZTAPI stringByAppendingString:@"great/collects"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         //成功后刷新
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
-        NSLog(@"dic:%@",dic);
+//        NSLog(@"dic:%@",dic);
         //重新获取数据
         self.rightBtnView.rightCollectBtn.selected = tag?self.rightBtnView.rightCollectBtn.selected:!self.rightBtnView.rightCollectBtn.selected;
 //

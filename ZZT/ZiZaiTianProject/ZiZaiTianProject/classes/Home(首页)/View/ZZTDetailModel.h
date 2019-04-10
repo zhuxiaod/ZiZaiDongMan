@@ -36,6 +36,9 @@
 
 @property (nonatomic,assign) NSInteger indexRow;
 
+@property (nonatomic,strong) NSString *cartoonType;
+
+
 
 +(instancetype)initDetailModelWith:(NSString *)img flag:(NSInteger)flag ifCollect:(NSInteger)ifCollect;
 @end

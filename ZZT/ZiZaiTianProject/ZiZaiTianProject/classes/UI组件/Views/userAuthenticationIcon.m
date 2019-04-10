@@ -51,9 +51,7 @@
     
     [self addSubview:icon];
     
-    [icon mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(self);
-    }];
+  
     
     _userIcon = icon;
     
@@ -64,6 +62,10 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
+    
+    [_userIcon mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self);
+    }];
     
     CGFloat size = self.bounds.size.width;
     CGFloat margin = size * 0.01;

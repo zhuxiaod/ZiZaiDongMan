@@ -13,128 +13,121 @@
 #import "UIView+Extension.h"
 #import <Masonry.h>
 
-static NSString * const likeUrl = @"http://api.kuaikanmanhua.com/v1/comics";
-
-static NSString * const normalImageName = @"catoonDetail_like";
-
-static NSString * const pressedImageName = @"catoonDetail_like_select";
+//static NSString * const likeUrl = @"http://api.kuaikanmanhua.com/v1/comics";
+//
+//static NSString * const normalImageName = @"catoonDetail_like";
+//
+//static NSString * const pressedImageName = @"catoonDetail_like_select";
 
 #define MyWidth 30.0f
 
+@interface likeCountView ()
+
+@property (nonatomic,strong) NSString *img;
+
+@property (nonatomic,strong) NSString *selectImg;
+
+@property (nonatomic, weak) UILabel *numLab;
+
+@property (nonatomic, weak) UIImageView *icon;
+
+@end
+
 @implementation likeCountView
 
-+ (instancetype)likeCountViewWithCount:(NSInteger)count requestID:(NSString *)ID {
+- (void)likeCountViewWithImg:(NSString *)img selectImg:(NSString *)selectImg{
+
+    self.img = img;
     
-    likeCountView *like = [[likeCountView alloc] init];
-    like.likeCount = count;
-    like.requestID = ID;
+    self.selectImg = selectImg;
     
-    return like;
+    [self setup];
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setup];
+        
     }
     return self;
 }
 
-- (void)awakeFromNib {
-    
-    [self setup];
-    
-}
 
 - (void)setup {
-
+    
+    UIImageView *icon = [[UIImageView alloc] init];
+    _icon = icon;
+    [icon setContentMode:UIViewContentModeScaleAspectFit];
+    [self addSubview:icon];
+    
+    UILabel *numLab = [[UILabel alloc] init];
+    _numLab = numLab;
+    numLab.textAlignment = NSTextAlignmentCenter;
+    [numLab setTextColor:ZZTSubColor];
+    [self addSubview:numLab];
+//    //点击事件
     [self addTarget:self action:@selector(like) forControlEvents:UIControlEventTouchUpInside];
 
-    
-    [self setTitleEdgeInsets:UIEdgeInsetsMake(0,8, 0, 0)];
-    
-    self.titleLabel.font = [UIFont systemFontOfSize:12];
-    
-    
-    self.titleLabel.textAlignment = NSTextAlignmentCenter;
-    
-    [self setTitle:@"" forState:UIControlStateNormal];
-
-    [self setImage:[[UIImage imageNamed:normalImageName] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
-
-//    //点赞的地方  添加
-//    [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.equalTo(self.mas_left).offset(2);
-//        make.centerY.equalTo(self);
-//    }];
-    
-//    //点赞的地方  添加
-//    [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.equalTo(self.imageView.mas_right).offset(2);
-//        make.centerY.equalTo(self);
-//        make.height.mas_offset(18);
-//    }];
-    
-    [self setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
-    
-    [self setContentVerticalAlignment:UIControlContentVerticalAlignmentBottom];
-    
     self.islike = false;
 
 }
 
-- (void)setIslike:(BOOL)islike {
-    _islike = islike;
+-(void)layoutSubviews{
+    [super layoutSubviews];
     
-    int upCount = islike ? 1 : -1;
-    
-    self.likeCount = self.likeCount + upCount;
-    
-    NSString *imageName = self.islike ? pressedImageName : normalImageName;
-    
-    [self setImage:[[UIImage imageNamed:imageName] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
-    
-    [self.imageView setContentMode:UIViewContentModeScaleAspectFit];
-    
-    UIColor *textColor = self.islike ? ZZTSubColor : ZZTSubColor;
-    
-    [self setTitleColor:textColor forState:UIControlStateNormal];
-    
-    //点赞的地方  添加
-    [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.mas_left).offset(2);
+    [self.icon mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self);
+        make.left.equalTo(self);
+        make.width.height.mas_equalTo(18);
+    }];
+    
+    [self.numLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.bottom.right.equalTo(self);
+        make.left.equalTo(self.icon.mas_right);
     }];
 }
 
+//设置状态
+- (void)setIslike:(BOOL)islike {
+    _islike = islike;
+    //0 没点  1 点了
+    NSString *imgStr = islike ? self.selectImg : self.img;
+    
+    [self.icon setImage:[UIImage imageNamed:imgStr]];
+    
+    self.likeCount = self.likeCount;
 
+    UIColor *textColor = self.islike ? ZZTSubColor : ZZTSubColor;
+    
+    [self setTitleColor:textColor forState:UIControlStateNormal];
+}
 
 - (void)setLikeCount:(NSInteger)likeCount {
     _likeCount = likeCount;
     
     CGFloat width = MyWidth;
-//
-    if (likeCount < 1) {
-//
-       [self setTitle:@"0" forState:UIControlStateNormal];
-//
-    }else {
     
+    
+
+    if (likeCount < 1) {
+        
+//        if(likeCount == -999){
+//            [self.numLab setText:@""];
+//            return;
+//        }
+
+       [self.numLab setText:@"0"];
+
+    }else {
+
         NSString *title = [NSString makeTextWithCount:likeCount];
-        
-        [self setTitle:title forState:UIControlStateNormal];
-        
+
+        [self.numLab setText:title];
+
         width = [title getTextWidthWithFont:self.titleLabel.font] + MyWidth;
 
     }
-    //点赞的地方  添加
-    [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.imageView.mas_right).offset(2);
-        make.centerY.equalTo(self);
-        make.height.mas_offset(18);
-        make.right.equalTo(self.mas_right);
-    }];
 }
 
 - (void)like {
@@ -149,33 +142,8 @@ static NSString * const pressedImageName = @"catoonDetail_like_select";
     if (self.onClick) {
         self.onClick(self);
     }
-    
-//    [UIView animateWithDuration:0.25 animations:^{
-//
-//        self.imageView.transform = CGAffineTransformMakeScale(1.5, 1.5);
-//
-//    } completion:^(BOOL finished) {
-//
-//        [UIView animateWithDuration:0.25 animations:^{
-//            self.imageView.transform = CGAffineTransformIdentity;
-            self.userInteractionEnabled = YES;
-//        }];
-//
-//    }];
-    
-    
-//    NetWorkManager *manger = [NetWorkManager share];
-//
-//    NSArray *parameter  = self.islike ? @[@"POST",@"/like"] : @[@"DELETE",@"/like?"];   //取消赞DELETE,反则POST
-//    
-//    NSMutableString *newUrl = [likeUrl mutableCopy];
-//    
-//    [newUrl appendFormat:@"/%@%@",self.requestID,parameter.lastObject];
-//    
-//    [manger requestWithMethod:parameter.firstObject url:newUrl.copy parameters:nil complish:^(id res, NSError *error) {
-//            DEBUG_Log(@"%@",error);
-//    }];
-    
+
+    self.userInteractionEnabled = YES;
 }
 
 

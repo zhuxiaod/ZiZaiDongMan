@@ -114,7 +114,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
         NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
         self.zoneWordView.dataArray = array;
         if(self.zoneWordView.dataArray.count == 0){
-            self.zoneWordView.isShowView = YES;
+            self.zoneWordView.hidden = YES;
         }
         [self.tabelView reloadData];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -183,6 +183,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     _tabelView.backgroundColor = [UIColor whiteColor];
     [_tabelView registerClass:[ZZTMyZoneCell class] forCellReuseIdentifier:myZoneCell];
     [_tabelView registerClass:[ZZTMEXuHuaCell class] forCellReuseIdentifier:zztMEXuHuaCell];
+    [_tabelView registerClass:[ZZTZoneWordView class] forHeaderFooterViewReuseIdentifier:@"zoneWordView"];
     self.tabelView.separatorStyle = UITableViewCellEditingStyleNone;     //让tableview不显示分割线
     self.automaticallyAdjustsScrollViewInsets = NO;
     
@@ -193,6 +194,8 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
     [self.view addSubview:_tabelView];
+    
+
 }
 
 //跳转上传页
@@ -376,7 +379,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
 -(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     if(section == 0){
         //作品
-        _zoneWordView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"zoneWordView"];
+        self.zoneWordView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"zoneWordView"];
         if(!_zoneWordView){
             _zoneWordView = [[ZZTZoneWordView alloc] initWithReuseIdentifier:@"zoneWordView"];
         }
@@ -392,6 +395,7 @@ NSString *zztMEXuHuaCell = @"zztMEXuHuaCell";
 
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     if(self.zoneWordView.dataArray.count == 0){
+        self.zoneWordView.hidden = YES;
         return 0.1;
     }
     return self.zoneWordView.viewHeight;

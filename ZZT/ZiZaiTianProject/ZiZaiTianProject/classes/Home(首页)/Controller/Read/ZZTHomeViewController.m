@@ -175,7 +175,7 @@ NSString *SuggestionView = @"SuggestionView";
     [super viewWillAppear:animated];
 
     
-    NSLog(@"width:%f",SCREEN_WIDTH );
+    
     
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
     

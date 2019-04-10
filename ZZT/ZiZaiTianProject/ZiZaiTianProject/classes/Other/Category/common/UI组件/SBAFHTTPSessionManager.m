@@ -22,9 +22,18 @@ static AFHTTPSessionManager *manager;
         [manager.requestSerializer willChangeValueForKey:@"timeoutInterval"];
         manager.requestSerializer.timeoutInterval = 30.f;
         [manager.requestSerializer didChangeValueForKey:@"timeoutInterval"];
-        // 4. 设置响应数据类型
+
+        //无条件的信任服务器上的证书
+        AFSecurityPolicy *securityPolicy = [AFSecurityPolicy defaultPolicy];
+        // 客户端是否信任非法证书
+        securityPolicy.allowInvalidCertificates = YES;
+        // 是否在证书域字段中验证域名
+        securityPolicy.validatesDomainName = NO;
+        manager.securityPolicy = securityPolicy;
         
+        // 4. 设置响应数据类型
         [manager.responseSerializer setAcceptableContentTypes:[NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript",@"text/html",@"text/css",@"text/plain", @"application/javascript",@"image/jpeg", @"text/vnd.wap.wml", @"application/x-javascript",@"image/png", nil]];
+        
         [manager.requestSerializer setValue:@"application/x-www-form-urlencoded;charset=UTF-8" forHTTPHeaderField:@"Content-Type"];
         
     });

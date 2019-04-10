@@ -39,32 +39,40 @@ NSString *WordCell = @"WordCell";
     }
     return _dataArray;
 }
-
+/*
+ 将加载数据分为2种
+ 1.漫画
+ 漫画又有2个接口
+ 2.素材
+ */
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    //初始化
     self.pageNumber = 2;
     
     self.pageSize = 10;
     
+    //设置UI
+    [self setupUI];
+}
+
+-(void)setupUI{
+    
     [self addBackBtn];
     
     [self.viewNavBar.centerButton setTitle:@"更多推荐" forState:UIControlStateNormal];
-
+    
     //流水布局
     UICollectionViewFlowLayout *layout = [self setupCollectionViewFlowLayout];
     //创建UICollectionView：黑色
     [self setupCollectionView:layout];
-
-//    [self loadMoreData];
     
     [self.view bringSubviewToFront:self.viewNavBar];
-
+    
     [self setupMJRefresh];
-
+    
     [self.collectionView.mj_header beginRefreshing];
-
-//    [self setBackItemWithImage:@"blackBack" pressImage:nil];
+    
 }
 
 #pragma mark - 创建流水布局
@@ -76,7 +84,7 @@ NSString *WordCell = @"WordCell";
     
     layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     //行距
-    layout.minimumLineSpacing = 0;
+    layout.minimumLineSpacing = 10;
     
     layout.minimumInteritemSpacing = 5;
     
@@ -93,12 +101,13 @@ NSString *WordCell = @"WordCell";
     collectionView.delegate = self;
     [self.view addSubview:self.collectionView];
     
-    [collectionView registerNib:[UINib nibWithNibName:@"ZZTCartoonCell" bundle:nil] forCellWithReuseIdentifier:@"cellId"];
+     [collectionView registerClass:[ZZTCartoonCell class] forCellWithReuseIdentifier:@"cellId"];
 }
 
 -(void)setupMJRefresh{
     self.collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        if(self.moreTag == 2){
+        //2为素材  1漫画
+        if(self.modelTag == 2){
             //素材
             [self loadMaterialData];
         }else{
@@ -107,7 +116,8 @@ NSString *WordCell = @"WordCell";
         }
     }];
     self.collectionView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
-        if(self.moreTag == 2){
+        //2为素材  1漫画
+        if(self.modelTag == 2){
             //素材
             [self loadMoreMaterialData];
         }else{
@@ -214,13 +224,12 @@ NSString *WordCell = @"WordCell";
 #pragma mark - 获取首页卡通 和 商城卡通
 -(NSString *)getCartoonUrl{
     NSString *url;
-    if(self.moreTag == 1){
-//        商城
-        url = @"zztMall/getCartoonGoods";
-    }else{
-//        首页
-        url = @"cartoon/getRecommendCartoon";
-    }
+    //0.商城
+    //1.为你推荐
+    //4.经典好书
+    //5.完结
+    NSArray *urlArray = @[@"zztMall/getCartoonGoods",@"cartoon/getRecommendCartoon",@"",@"",@"cartoon/getClassicsCartoon",@"cartoon/getEedCartoon"];
+    url = urlArray[self.classTag];
     return url;
 }
 
@@ -268,7 +277,7 @@ NSString *WordCell = @"WordCell";
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     ZZTCartoonCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cellId" forIndexPath:indexPath];
-    if(_moreTag == 2){
+    if(_modelTag == 2){
         ZZTDetailModel *car = self.dataArray[indexPath.row];
         cell.materialModel = car;
     }else{
@@ -279,7 +288,7 @@ NSString *WordCell = @"WordCell";
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    if(_moreTag == 2){
+    if(_modelTag == 2){
         ZZTDetailModel *detailModel = self.dataArray[indexPath.row];
         ZZTMallDetailViewController *vc = [[ZZTMallDetailViewController alloc] init];
         vc.model = detailModel;
@@ -308,13 +317,13 @@ NSString *WordCell = @"WordCell";
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self.collectionView.mj_header beginRefreshing];
+//    [self.collectionView.mj_header beginRefreshing];
     [UIApplication sharedApplication].statusBarStyle =  UIStatusBarStyleDefault;
 
 }
 
--(void)setMoreTag:(NSInteger)moreTag{
-    _moreTag = moreTag;
+-(void)setModelTag:(NSInteger)modelTag{
+    _modelTag = modelTag;
 }
 
 -(void)viewDidAppear:(BOOL)animated{

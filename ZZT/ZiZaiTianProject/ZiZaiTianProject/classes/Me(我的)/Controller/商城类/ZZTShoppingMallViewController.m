@@ -28,6 +28,7 @@
 #import "ZZTMeWalletViewController.h"
 #import "ZZTSearchBtn.h"
 #import "ZZTMallFooterModel.h"
+#import "ZZTAirHeaderFooterView.h"
 
 
 @interface ZZTShoppingMallViewController ()<SDCycleScrollViewDelegate,UICollectionViewDelegate,UICollectionViewDataSource,UITextFieldDelegate>
@@ -215,7 +216,8 @@
 -(void)setupCollectionView:(UICollectionViewFlowLayout *)layout
 {
     UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, navHeight, Screen_Width, SCREEN_HEIGHT - navHeight) collectionViewLayout:layout];
-//    [collectionView setContentInset:UIEdgeInsetsMake(-Height_TabbleViewInset, 0, 0, 0)];
+    [collectionView setContentInset:UIEdgeInsetsMake(-Height_TabbleViewInset, 0, Height_TabBar, 0)];
+//    collectionVie
     collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView = collectionView;
     collectionView.dataSource = self;
@@ -231,6 +233,9 @@
 
     [self.collectionView registerClass:[ZZTCartoonCell class] forCellWithReuseIdentifier:cartoonCellId];
     [self.collectionView registerClass:[ZZTBigImageCell class] forCellWithReuseIdentifier:bigImageCell];
+    
+    [self.collectionView registerClass:[ZZTAirHeaderFooterView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:airViewId];
+
 }
 
 //节
@@ -343,28 +348,30 @@
             return labView;
         }
     }else if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
+        if(indexPath.section == 0){
+            ZZTAirHeaderFooterView *airView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:airViewId forIndexPath:indexPath];
+            return airView;
+        }else{
             //跟多 刷一刷
             self.moreVC = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:moreFooterView forIndexPath:indexPath];
             self.moreVC.tag = indexPath.section;
             //更多
             _moreVC.moreBtnClick = ^{
                 //跳转更多页面
+                //2 4 漫画
                 ZZTMoreViewController *moreVC = [[ZZTMoreViewController alloc] init];
-                if(indexPath.section == 2 || indexPath.section == 4){
-                    moreVC.moreTag = 2;
-                }else{
-                    moreVC.moreTag = 1;
-                }
+                moreVC.modelTag = indexPath.section == 4 || indexPath.section == 2 ? 2 : 1;
+                moreVC.classTag = moreVC.modelTag == 1 ? 0 : 0;
                 moreVC.hidesBottomBarWhenPushed = YES;
                 [weakSelf.navigationController pushViewController:moreVC animated:YES];
             };
             //换一批
             self.moreVC.updateBtnClick = ^{
-//                if(indexPath.section == 2){
-//                    [self loadMaterialData];
-//                }else{
-//                    [self loadBookData];
-//                }
+                //                if(indexPath.section == 2){
+                //                    [self loadMaterialData];
+                //                }else{
+                //                    [self loadBookData];
+                //                }
                 ZZTMallFooterModel *model = weakSelf.footerArray[indexPath.section - 1];
                 [weakSelf.moreVC loadDataWithPageNum:model.pageNum url:model.footerUrl resultBlock:^(NSArray *array) {
                     model.footerArray = array;
@@ -373,10 +380,11 @@
                     //判断是那一组的 将数据赋值
                 }];
             };
-    
 
             return _moreVC;
         }
+        
+    }
     return view;
 }
 
@@ -392,7 +400,7 @@
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section {
    if (section == 1 || section == 4 || section == 2 || section == 3){
         //
-        return CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT * 0.074);
+        return CGSizeMake(SCREEN_WIDTH, 120);
     }else{
         return CGSizeZero;
     }

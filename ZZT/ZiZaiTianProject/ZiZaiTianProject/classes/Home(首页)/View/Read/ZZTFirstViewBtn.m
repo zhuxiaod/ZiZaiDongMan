@@ -8,9 +8,12 @@
 
 #import "ZZTFirstViewBtn.h"
 #import "ZXDCartoonFlexoBtn.h"
-#import "ZZTEasyBtnModel.h"
+#import "ZZTHomeTableViewModel.h"
 @interface ZZTFirstViewBtn()
-@property (weak, nonatomic) IBOutlet ZXDCartoonFlexoBtn *button;
+
+@property (weak, nonatomic) IBOutlet UIImageView *ImgView;
+
+@property (weak, nonatomic) IBOutlet UILabel *titleLab;
 
 @end
 
@@ -21,9 +24,12 @@
     // Initialization code
 }
 
--(void)setBtnModel:(ZZTEasyBtnModel *)btnModel{
+-(void)setBtnModel:(ZZTHomeTableViewModel *)btnModel{
     _btnModel = btnModel;
-    [self.button setTitle:btnModel.btnTitile forState:UIControlStateNormal];
-    [self.button setImage:[UIImage imageNamed:btnModel.btnImage] forState:UIControlStateNormal];
+    
+    _ImgView.image = [UIImage imageNamed:btnModel.btnImgUrl];
+    
+    _titleLab.text = btnModel.title;
+    
 }
 @end
