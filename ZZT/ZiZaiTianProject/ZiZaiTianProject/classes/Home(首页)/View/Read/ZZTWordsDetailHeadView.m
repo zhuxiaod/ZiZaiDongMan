@@ -36,6 +36,8 @@
 @property (nonatomic,strong) NSString *ifCollect;
 
 @property (weak, nonatomic) IBOutlet SBStrokeLabel *collectLab;
+@property (weak, nonatomic) IBOutlet SBStrokeLabel *creatLab;
+@property (weak, nonatomic) IBOutlet UIButton *creatBtn;
 
 @end
 
@@ -120,6 +122,12 @@ static NSString * const offsetKeyPath = @"contentOffset";
     }
     
     [self.collectBtn addTarget:self action:@selector(collectBook:) forControlEvents:UIControlEventTouchUpInside];
+    
+    //创作按钮
+    self.creatLab.text = @"50人";
+    
+    self.creatBtn.hidden = [detailModel.cartoonType isEqualToString:@"1"];
+    self.creatLab.hidden = [detailModel.cartoonType isEqualToString:@"1"];
 }
 
 - (void)collectBook:(UIButton *)sender {

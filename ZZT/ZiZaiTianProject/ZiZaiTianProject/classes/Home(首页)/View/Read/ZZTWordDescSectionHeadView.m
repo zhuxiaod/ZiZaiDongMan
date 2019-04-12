@@ -25,8 +25,6 @@
 
 @property (nonatomic,weak)UIView *bottomLine;
 
-
-
 @end
 
 static CGFloat const spaceing = 8;

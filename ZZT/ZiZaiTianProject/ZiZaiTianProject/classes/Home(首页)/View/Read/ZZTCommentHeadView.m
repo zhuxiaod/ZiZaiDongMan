@@ -7,6 +7,7 @@
 //
 
 #import "ZZTCommentHeadView.h"
+#import "ZZTContinueToDrawHeadView.h"
 
 @implementation ZZTCommentHeadView
 
@@ -22,21 +23,23 @@
 }
 
 -(void)setupUI{
+
+    
     UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 100, 20)];
     [lab setText:@"精彩点评"];
     [self addSubview:lab];
-    
-    CGFloat btnW = 50;
-    UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH - 10 - btnW, 10, btnW, 20)];
-    [btn setTitle:@"点评" forState:UIControlStateNormal];
-    btn.backgroundColor = [UIColor colorWithHexString:@"#C4A9D3"];
-    [self addSubview:btn];
-    btn.hidden = YES;
-    
-    UIView *bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, self.height - 1, Screen_Width, 1)];
+//
+//    CGFloat btnW = 50;
+//    UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH - 10 - btnW, 10, btnW, 20)];
+//    [btn setTitle:@"点评" forState:UIControlStateNormal];
+//    btn.backgroundColor = [UIColor colorWithHexString:@"#C4A9D3"];
+//    [self addSubview:btn];
+//    btn.hidden = YES;
+//
+    UIView *bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, 39, Screen_Width, 1)];
     bottomView.backgroundColor = [UIColor colorWithRGB:@"246,246,251"];
     [self addSubview:bottomView];
-    
+//
 }
 
 @end

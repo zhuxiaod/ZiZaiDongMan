@@ -23,3 +23,7 @@ extern NSString * const moreFooterView;
 extern NSString * const airViewId;
 
 extern NSString * const ZZTFirstViewBtnId;
+
+extern NSString * const GET;
+
+extern NSString * const POST;

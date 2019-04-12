@@ -63,7 +63,8 @@
     }];
     
     [self linkStyles];
-   
+    
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
 }
 
 

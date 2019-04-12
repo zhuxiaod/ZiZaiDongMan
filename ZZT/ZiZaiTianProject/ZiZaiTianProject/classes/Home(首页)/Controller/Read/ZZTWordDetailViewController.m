@@ -16,6 +16,7 @@
 #import "ZZTCarttonDetailModel.h"
 #import "ZZTChapterChooseView.h"
 #import "ZZTChapterChooseModel.h"
+#import "ZZTContinueToDrawHeadView.h"
 
 @interface ZZTWordDetailViewController ()<UITableViewDelegate,UITableViewDataSource,UINavigationControllerDelegate,ZZTChapterChooseViewDelegate>
 
@@ -57,6 +58,8 @@
 
 //记录选择
 @property (nonatomic,strong) NSString *chooseNum;
+//同人创作
+@property (nonatomic,weak) ZZTContinueToDrawHeadView *xuHuaView;
 
 @end
 
@@ -426,14 +429,13 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
     }];
 }
 
-//高度设置
+#pragma mark - headerView
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if(section == 0){
         return [Utilities getBannerH];
     }else if(section == 1){
         //字符串
-        self.descHeadView.desc = self.ctDetail.intro;
-        return self.descHeadView.myHeight;
+        return self.chapterChooseView.myHeight;
     }
     else{
         return 0.01;
@@ -443,22 +445,26 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 //设置头
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if(section == 0){
-        //设置数据
+        //封面
         self.wordDetailHeadView.detailModel = self.ctDetail;
         return self.wordDetailHeadView;
     }else if(section == 1){
-        //介绍
-        self.descHeadView.desc = self.ctDetail.intro;
-        return self.descHeadView;
+        //正篇
+        return self.chapterChooseView;
     }else{
         return nil;
     }
-
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
-    if(section == 1){
-        return self.chapterChooseView;
+    //设置简介到这里来
+    if(section == 0){
+        //作品简介
+        self.descHeadView.desc = self.ctDetail.intro;
+        return self.descHeadView;
+    }else if (section == 1){
+        //同人版本
+        return self.xuHuaView;
     }else{
         static NSString *viewIdentfier = @"footerView";
         SectionFooterView *footerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:viewIdentfier];
@@ -467,8 +473,12 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
-    if(section == 1){
-        return self.chapterChooseView.myHeight;
+    if(section == 0){
+        //字符串
+        self.descHeadView.desc = self.ctDetail.intro;
+        return self.descHeadView.myHeight;
+    }else if (section == 1){
+        return 146;
     }
     return 0.01;
 }
@@ -501,14 +511,12 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
         }else{
             [self loadListData:self.cartoonDetail.cartoonId pageNum:[NSString stringWithFormat:@"%ld",model.APIPage] isFirst:NO];
         }
-    
 }
 
 - (ZZTWordDescSectionHeadView *)descHeadView {
     if (!_descHeadView) {
-        
         _descHeadView = [[ZZTWordDescSectionHeadView alloc] initWithFrame:self.view.bounds];
-//        _descHeadView.backgroundColor = [UIColor clearColor];
+        
         weakself(self);
         
         [_descHeadView setNeedReloadHeight:^{
@@ -619,6 +627,13 @@ NSString *zztWordsDetailHeadView = @"zztWordsDetailHeadView";
         _model = [[ZZTJiXuYueDuModel alloc] init];
     }
     return _model;
+}
+
+-(ZZTContinueToDrawHeadView *)xuHuaView{
+    if(_xuHuaView == nil){
+        _xuHuaView = [ZZTContinueToDrawHeadView ContinueToDrawHeadView];
+    }
+    return _xuHuaView;
 }
 
 -(void)JiXuYueDuTarget{

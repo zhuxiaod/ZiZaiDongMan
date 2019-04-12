@@ -49,6 +49,7 @@ static NSString *const zxdCartoonBtnCell = @"zxdCartoonBtnCell";
     _array = array;
     self.btnArray = array;
 }
+
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="ZZTContinueToDrawHeadView">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="145"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="同人版本" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7D6-lI-3Tc">
+                    <rect key="frame" x="10" y="10" width="69.5" height="20"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="20" id="Vw2-o5-f3X"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1BM-IN-7E4">
+                    <rect key="frame" x="0.0" y="40" width="320" height="105"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S3n-Cw-XDh">
+                            <rect key="frame" x="10" y="7.5" width="74" height="90"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="90" id="sjI-Wb-8cH"/>
+                                <constraint firstAttribute="width" constant="74" id="tbP-rP-RPx"/>
+                            </constraints>
+                            <state key="normal" title="新建同人" image="笔">
+                                <color key="titleColor" red="0.5450980392" green="0.54901960780000003" blue="0.87843137250000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </state>
+                        </button>
+                        <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="N1v-8c-2TH" customClass="ZZTXuHuaUserView">
+                            <rect key="frame" x="88" y="7.5" width="232" height="90"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="90" id="Wt0-SK-cEU"/>
+                            </constraints>
+                            <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="mdv-VY-HLb">
+                                <size key="itemSize" width="50" height="50"/>
+                                <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            </collectionViewFlowLayout>
+                        </collectionView>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DiO-Av-nrK">
+                            <rect key="frame" x="0.0" y="104" width="320" height="1"/>
+                            <color key="backgroundColor" red="0.94901960780000005" green="0.94901960780000005" blue="0.94901960780000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="1" id="nbd-nl-bCt"/>
+                            </constraints>
+                            <viewLayoutGuide key="safeArea" id="BWa-sb-Imi"/>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="N1v-8c-2TH" secondAttribute="trailing" id="16V-bg-kxW"/>
+                        <constraint firstAttribute="height" constant="105" id="89D-yl-fPB"/>
+                        <constraint firstItem="N1v-8c-2TH" firstAttribute="centerY" secondItem="S3n-Cw-XDh" secondAttribute="centerY" id="HHv-si-rkK"/>
+                        <constraint firstItem="S3n-Cw-XDh" firstAttribute="centerY" secondItem="1BM-IN-7E4" secondAttribute="centerY" id="b5i-qt-Lbs"/>
+                        <constraint firstItem="N1v-8c-2TH" firstAttribute="leading" secondItem="S3n-Cw-XDh" secondAttribute="trailing" constant="4" id="gim-f5-uXN"/>
+                        <constraint firstAttribute="bottom" secondItem="DiO-Av-nrK" secondAttribute="bottom" id="jVX-6X-YGy"/>
+                        <constraint firstItem="S3n-Cw-XDh" firstAttribute="leading" secondItem="1BM-IN-7E4" secondAttribute="leading" constant="10" id="mVB-rK-iJn"/>
+                        <constraint firstItem="DiO-Av-nrK" firstAttribute="leading" secondItem="1BM-IN-7E4" secondAttribute="leading" id="qqu-B8-khf"/>
+                        <constraint firstAttribute="trailing" secondItem="DiO-Av-nrK" secondAttribute="trailing" id="uEf-d2-OOw"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="1BM-IN-7E4" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="77x-xN-215"/>
+                <constraint firstItem="7D6-lI-3Tc" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="10" id="XjQ-SX-2x1"/>
+                <constraint firstItem="1BM-IN-7E4" firstAttribute="top" secondItem="7D6-lI-3Tc" secondAttribute="bottom" constant="10" id="dQz-o0-OhU"/>
+                <constraint firstItem="7D6-lI-3Tc" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="10" id="g0W-ZE-dPX"/>
+                <constraint firstItem="1BM-IN-7E4" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="h8D-XK-j8H"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <connections>
+                <outlet property="xuHuaBtn" destination="S3n-Cw-XDh" id="4e7-B5-6m3"/>
+                <outlet property="xuHuaUserView" destination="N1v-8c-2TH" id="sb4-hM-Sqg"/>
+            </connections>
+            <point key="canvasLocation" x="-385.60000000000002" y="34.632683658170919"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="笔" width="64.5" height="64.5"/>
+    </resources>
+</document>

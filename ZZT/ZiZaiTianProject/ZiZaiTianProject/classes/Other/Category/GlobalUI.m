@@ -119,4 +119,38 @@
     label.lineBreakMode = NSLineBreakByTruncatingTail;
     
 }
+
++(UIButton *)initButton:(UIButton*)btn{
+    float  spacing = 4;//图片和文字的上下间距
+    CGSize imageSize = btn.imageView.frame.size;
+    CGSize titleSize = btn.titleLabel.frame.size;
+    CGSize textSize = [btn.titleLabel.text sizeWithAttributes:@{NSFontAttributeName : btn.titleLabel.font}];
+    CGSize frameSize = CGSizeMake(ceilf(textSize.width), ceilf(textSize.height));
+    if (titleSize.width + 0.5 < frameSize.width) {
+        titleSize.width = frameSize.width;
+    }
+    CGFloat totalHeight = (imageSize.height + titleSize.height + spacing);
+    btn.imageEdgeInsets = UIEdgeInsetsMake(- (totalHeight - imageSize.height), 0.0, 0.0, - titleSize.width);
+    btn.titleEdgeInsets = UIEdgeInsetsMake(0, - imageSize.width, - (totalHeight - titleSize.height), 0);
+    return btn;
+}
+
++(UITextView *)initTextViewWithBgColor:(UIColor *)BgColor fontSize:(NSInteger)fontSize text:(NSString *)text textColor:(UIColor *)textColor{
+    
+    UITextView *kTextView = [UITextView new];
+    kTextView.backgroundColor = BgColor;
+    kTextView.font = [UIFont systemFontOfSize:fontSize];
+    kTextView.layer.cornerRadius = 5;
+    kTextView.text = text;
+    kTextView.textColor = textColor;
+    NSMutableParagraphStyle *paragraphStyle = [NSMutableParagraphStyle new];
+    paragraphStyle.lineSpacing = 5;// 字体的行间距
+    NSDictionary *attributes = @{
+                                 NSFontAttributeName:[UIFont systemFontOfSize:16], NSParagraphStyleAttributeName:paragraphStyle
+                                 };
+    kTextView.typingAttributes = attributes;
+    kTextView.returnKeyType = UIReturnKeySend;
+    return kTextView;
+    
+}
 @end

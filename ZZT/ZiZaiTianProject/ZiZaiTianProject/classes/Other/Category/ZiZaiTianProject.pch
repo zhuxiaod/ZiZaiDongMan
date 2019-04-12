@@ -125,6 +125,8 @@
 #import "UIImage+Extension.h"
 #import "SBAFHTTPSessionManager.h"
 #import "ZZTHomeTableViewModel.h"
+#import "ScreenShotManager.h"
+
 
 #define BanerHeight SCREEN_HEIGHT * 0.3
 //九宫格尺寸
@@ -133,6 +135,9 @@
 #define   SCREEN_MAX_LENGTH   (MAX(SCREEN_WIDTH, SCREEN_HEIGHT))
 
 #define detailViewHeaderHeight 60
+
+#define ZZTTextMindString @"赶紧评论秀才华~"
+
 
 #define ZZTAccessKey @"otsMMnYSaZw9UgT-OUFSc46m3UOVaqr-ysR07Dwq"
 #define ZZTSecretKey @"cJqacuOHqDq_zR4R4m2LUdFMRFMGUf8HC-1owpAw"

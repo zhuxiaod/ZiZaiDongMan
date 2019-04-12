@@ -174,9 +174,6 @@ NSString *SuggestionView = @"SuggestionView";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
-    
-    
-    
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
     
     self.navigationController.navigationBar.alpha = 0;

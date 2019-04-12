@@ -1,16 +1,58 @@
 {
   "images" : [
     {
+      "resizing" : {
+        "mode" : "9-part",
+        "center" : {
+          "mode" : "tile",
+          "width" : 1,
+          "height" : 1
+        },
+        "cap-insets" : {
+          "bottom" : 35,
+          "top" : 34,
+          "right" : 35,
+          "left" : 34
+        }
+      },
       "idiom" : "universal",
       "filename" : "头像.png",
       "scale" : "1x"
     },
     {
+      "resizing" : {
+        "mode" : "9-part",
+        "center" : {
+          "mode" : "tile",
+          "width" : 1,
+          "height" : 1
+        },
+        "cap-insets" : {
+          "bottom" : 70,
+          "top" : 70,
+          "right" : 70,
+          "left" : 70
+        }
+      },
       "idiom" : "universal",
       "filename" : "头像@2x.png",
       "scale" : "2x"
     },
     {
+      "resizing" : {
+        "mode" : "9-part",
+        "center" : {
+          "mode" : "tile",
+          "width" : 1,
+          "height" : 1
+        },
+        "cap-insets" : {
+          "bottom" : 105,
+          "top" : 105,
+          "right" : 105,
+          "left" : 105
+        }
+      },
       "idiom" : "universal",
       "filename" : "头像@3x.png",
       "scale" : "3x"

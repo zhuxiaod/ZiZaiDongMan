@@ -10,6 +10,32 @@
 
 @implementation SBAFHTTPSessionManager
 
+//单例
++ (instancetype)sharedManager {
+    
+    static SBAFHTTPSessionManager *iapManager = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        iapManager = [SBAFHTTPSessionManager new];
+    });
+    
+    return iapManager;
+}
+
+- (NSString *)userID{
+    if(_userID == nil){
+        _userID = [NSString stringWithFormat:@"%ld",(long)[Utilities GetNSUserDefaults].id];
+    }
+    return _userID;
+}
+
+- (AFHTTPSessionManager *)networkManager{
+    if(_networkManager == nil){
+        _networkManager = [SBAFHTTPSessionManager getManager];
+    }
+    return _networkManager;
+}
+
 static AFHTTPSessionManager *manager;
 
 + (AFHTTPSessionManager *)getManager{
@@ -35,9 +61,83 @@ static AFHTTPSessionManager *manager;
         [manager.responseSerializer setAcceptableContentTypes:[NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript",@"text/html",@"text/css",@"text/plain", @"application/javascript",@"image/jpeg", @"text/vnd.wap.wml", @"application/x-javascript",@"image/png", nil]];
         
         [manager.requestSerializer setValue:@"application/x-www-form-urlencoded;charset=UTF-8" forHTTPHeaderField:@"Content-Type"];
-        
     });
     return manager;
 }
 
+//POST请求
+-(void)loadPostRequest:(NSString *)urlString paramDict:(NSDictionary *)paramDict finished:(void (^)(id responseObject,NSError * error))finished{
+    [self.networkManager POST:[ZZTAPI stringByAppendingString:urlString] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        finished(responseObject,nil);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        finished(nil,error);
+    }];
+}
+
+//读取漫画内容
+-(void)loadCartoonContentData:(NSString *)urlString id:(NSString *)bookId finished:(void (^)(id responseObject,NSError * error))finished{
+    NSDictionary *paramDict = @{
+                                @"userId":[UserInfoManager share].ID,
+                                @"id":bookId,
+                                @"pageNum":@"0",
+                                @"pageSize":@"500"
+                                };
+    [self.networkManager POST:[ZZTAPI stringByAppendingString:urlString] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        finished(responseObject,nil);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        finished(nil,error);
+    }];
+}
+
+//读取漫画评论内容
+-(void)loadCartoonCommentData:(NSString *)urlString chapterId:(NSString *)chapterId type:(NSString *)type finished:(void (^)(NSDictionary *commentDict,NSError * error))finished{
+    NSDictionary *dict = @{
+                           @"chapterId":chapterId,
+                           @"type":type,
+                           @"userId":_userID,
+                           @"pageNum":@"0",
+                           @"pageSize":@"10",
+                           @"host":@"1"
+                           };
+    [self.networkManager POST:[ZZTAPI stringByAppendingString:urlString] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *commenDdic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+        finished(commenDdic[@"list"],nil);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        finished(nil,error);
+    }];
+}
+
+//上下篇章
+-(void)loadUpDownData:(NSString *)urlString cartoonId:(NSString *)cartoonId chapterId:(NSString *)chapterId code:(NSString *)code upDown:(NSInteger)upDown finished:(void (^)(id  _Nullable responseObject,NSError * error))finished{
+    NSString *upDownState = upDown == 1?@"2" : @"1";
+    NSDictionary *dic = @{
+                          @"cartoonId":cartoonId,//书ID
+                          @"chapterId":chapterId,//章节ID
+                          @"upDown":upDownState,//1.下 2.上
+                          @"code":code,//1.漫画 2.章节
+                          @"userId":self.userID
+                          };
+    [self.networkManager POST:[ZZTAPI stringByAppendingString:urlString] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        finished(responseObject,nil);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        finished(nil,error);
+    }];
+}
+
+//点赞
+-(void)cartoonGiveGood:(NSString *)urlString type:(NSString *)type typeId:(NSString *)typeId cartoonId:(NSString *)cartoonId finished:(void (^)(id  _Nullable responseObject,NSError * error))finished{
+    NSDictionary *dic = @{
+                          @"type":type,
+                          @"typeId":typeId,
+                      
+                          @"userId":self.userID,
+                          @"cartoonId":cartoonId
+                          };
+    [self.networkManager POST:[ZZTAPI stringByAppendingString:urlString] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        finished(responseObject,nil);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        finished(nil,error);
+    }];
+    
+}
 @end

@@ -40,6 +40,7 @@
     [_leftBtn setTitle:@"上一篇" forState:UIControlStateNormal];
     [_leftBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.contentView addSubview:_leftBtn];
+    [_leftBtn setTag:1];
     [_leftBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
     [_leftBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 8)];
     
@@ -50,6 +51,7 @@
     [_rightBtn setTitle:@"下一篇" forState:UIControlStateNormal];
     [_rightBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.contentView addSubview:_rightBtn];
+    [_rightBtn setTag:2];
     [_rightBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 60)];
     [_rightBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 80, 0, 0)];
     

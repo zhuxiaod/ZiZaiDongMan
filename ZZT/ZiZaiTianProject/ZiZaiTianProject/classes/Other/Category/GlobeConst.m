@@ -23,3 +23,7 @@ NSString * const sectionLabView = @"sectionLabView";
 NSString * const moreFooterView = @"moreFooterView";
 
 NSString * const airViewId = @"airViewId";
+
+NSString * const GET = @"GET";
+
+NSString * const POST = @"POST";

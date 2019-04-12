@@ -50,6 +50,7 @@
     
     [self addSubview:cycleScrollView];
 }
+
 - (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index{
     ZZTCarttonDetailModel *md = [self.dataArray objectAtIndex:index];
     if([md.cartoonType isEqualToString:@"1"]){

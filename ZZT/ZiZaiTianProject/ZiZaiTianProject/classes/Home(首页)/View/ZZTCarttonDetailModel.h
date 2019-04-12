@@ -59,8 +59,6 @@
 @property (nonatomic,strong) NSString *serialize;
 
 //素材
-
-
 @property (nonatomic,strong) NSString *img;
 
 @property (nonatomic,strong) NSString *fodderType;

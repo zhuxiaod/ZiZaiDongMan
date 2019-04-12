@@ -24,5 +24,8 @@
 -(void)addLineSpacing:(UILabel *)label;
 //无字btn
 +(UIButton *)createButtionWithImg:(NSString *)img selTaget:(SEL)selTaget;
++(UIButton *)initButton:(UIButton*)btn;
+
++(UITextView *)initTextViewWithBgColor:(UIColor *)BgColor fontSize:(NSInteger)fontSize text:(NSString *)text textColor:(UIColor *)textColor;
 
 @end
