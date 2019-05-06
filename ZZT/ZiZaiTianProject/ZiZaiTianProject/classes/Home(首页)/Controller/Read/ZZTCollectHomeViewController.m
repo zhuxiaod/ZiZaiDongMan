@@ -115,19 +115,13 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     ZZTCarttonDetailModel *md = self.dataArray[indexPath.row];
-    if([md.cartoonType isEqualToString:@"1"]){
+    
         ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
         detailVC.isId = NO;
         detailVC.cartoonDetail = md;
         detailVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:detailVC animated:YES];
-    }else{
-        ZZTMulWordDetailViewController *detailVC = [[ZZTMulWordDetailViewController alloc]init];
-        detailVC.isId = NO;
-        detailVC.cartoonDetail = md;
-        detailVC.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:detailVC animated:YES];
-    }
+
 }
 
 //加载数据

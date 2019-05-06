@@ -7,7 +7,6 @@
 //
 
 #import "ZZTWordsDetailHeadView.h"
-#import "ZZTWordsDetailViewController.h"
 #import "ZXDCartoonFlexoBtn.h"
 @interface ZZTWordsDetailHeadView()
 
@@ -27,7 +26,7 @@
 
 @property (strong, nonatomic) UIScrollView *scrollView;
 
-@property (nonatomic,weak) ZZTWordsDetailViewController *myVc;
+//@property (nonatomic,weak) ZZTWordsDetailViewController *myVc;
 
 @property (nonatomic,assign) BOOL show;
 
@@ -38,6 +37,8 @@
 @property (weak, nonatomic) IBOutlet SBStrokeLabel *collectLab;
 @property (weak, nonatomic) IBOutlet SBStrokeLabel *creatLab;
 @property (weak, nonatomic) IBOutlet UIButton *creatBtn;
+
+@property (weak, nonatomic) IBOutlet SBStrokeLabel *xuHuaLab;
 
 @end
 
@@ -143,15 +144,19 @@ static NSString * const offsetKeyPath = @"contentOffset";
     [[self findResponderWithClass:[UINavigationController class]] popViewControllerAnimated:YES];
 }
 
-//懒加载
-- (ZZTWordsDetailViewController *)myVc {
-    
-    if (!_myVc) {
-        _myVc = [self findResponderWithClass:[ZZTWordsDetailViewController class]];
-    }
-    return _myVc;
+////懒加载
+//- (ZZTWordsDetailViewController *)myVc {
+//
+//    if (!_myVc) {
+//        _myVc = [self findResponderWithClass:[ZZTWordsDetailViewController class]];
+//    }
+//    return _myVc;
+//}
+
+
+-(void)setXuHuaNum:(NSInteger)xuHuaNum{
+    _xuHuaNum = xuHuaNum;
+    _xuHuaLab.text = [NSString stringWithFormat:@"%ld人",xuHuaNum];
+    [_xuHuaLab labOutline];
 }
-
-
-
 @end

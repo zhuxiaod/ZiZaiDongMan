@@ -77,17 +77,15 @@ NSString *SuggestionView1 = @"SuggestionView1";
 }
 
 -(void)loadMoreData{
-    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
-    NSDictionary *dict = @{
-                           @"pageNum":[NSString stringWithFormat:@"%ld",self.pageNumber],
-                           @"pageSize":@"10",
-                           };
-    [manager POST:[ZZTAPI stringByAppendingString:self.model.url] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [self changeDict:@"pageNum" addNum:1];
+    
+    [self loadNewArray:self.model.parameters url:self.model.url finished:^(id  _Nullable responseObject, NSError *error) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+        
         NSArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
         
         NSInteger total = [[NSString stringWithFormat:@"%@",[dic objectForKey:@"total"]] integerValue];
-
+        
         [self.cartoons addObjectsFromArray:array];
         
         [self.collectionView reloadData];
@@ -98,37 +96,46 @@ NSString *SuggestionView1 = @"SuggestionView1";
             [self.collectionView.mj_footer endRefreshing];
         }
         self.pageSize += 10;
-        self.pageNumber++;
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        [self.collectionView.mj_header endRefreshing];
+        [self changeDict:@"pageSize" addNum:10];
+
+        [self changeDict:@"pageNum" addNum:1];
     }];
+}
+
+-(void)changeDict:(NSString *)key addNum:(NSInteger)addNum{
+    NSString *value = [self.model.parameters objectForKey:key];
+    NSString *pageSize1 = [NSString stringWithFormat:@"%ld",[value integerValue] + addNum];
+    [self.model.parameters setValue:pageSize1 forKey:key];
 }
 
 -(void)loadNewData{
     
+    [self loadNewArray:self.model.parameters url:self.model.url finished:^(id  _Nullable responseObject, NSError *error) {
+        [self handleResponseObject:responseObject];
+    }];
+   
+}
+
+-(void)loadNewArray:(NSDictionary *)dict url:(NSString *)url finished:(void (^)(id  _Nullable responseObject,NSError * error))finished{
     AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
 
-    NSDictionary *dict = @{
-                           @"pageNum":@"1",
-                           @"pageSize":[NSString stringWithFormat:@"%ld",self.pageSize]
-                           };
-    [manager POST:[ZZTAPI stringByAppendingString:self.model.url] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
-        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
-        
-        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
-        
-        self.cartoons = array;
-        
-        [self.collectionView reloadData];
-
-        [self.collectionView.mj_header endRefreshing];
-
+    [manager POST:[ZZTAPI stringByAppendingString:url] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        finished(responseObject,nil);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
-        [self.collectionView.mj_header endRefreshing];
-        
+        finished(nil,error);
     }];
+}
+
+-(void)handleResponseObject:(id)responseObject{
+    NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+    
+    NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
+    
+    self.cartoons = array;
+    
+    [self.collectionView reloadData];
+    
+    [self.collectionView.mj_header endRefreshing];
 }
 
 -(void)setArray:(NSArray *)array{
@@ -159,16 +166,22 @@ NSString *SuggestionView1 = @"SuggestionView1";
         make.height.mas_equalTo(50);
     }];
     
+    self.viewNavBar.rightButton.hidden = ![_model.title isEqualToString:@"同人创作"];
+    
     [self.viewNavBar.rightButton addTarget:self action:sel forControlEvents:UIControlEventTouchUpInside];
     return self.viewNavBar.rightButton;
 }
 
 #pragma mark - NavRightBtnTarget
 -(void)gotoParticipation{
+    if([[UserInfoManager share] hasLogin] == NO){
+        return;
+    }
     //同人创作
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjects:@[@"1",@"10",SBAFHTTPSessionManager.sharedManager.userID] forKeys:@[@"pageNum",@"pageSize",@"userId"]];
     ZZTCartoonViewController *bookVC = [[ZZTCartoonViewController alloc] init];
     bookVC.hidesBottomBarWhenPushed = YES;
-    bookVC.model = [ZZTHomeTableViewModel initHotVCModel:@"great/userCollect" title:@"参与的作品"];
+    bookVC.model = [ZZTHomeTableViewModel initHotVCModel:@"cartoon/getUserParticipateWriting" title:@"参与的作品" parameters:dict];
     [self.navigationController pushViewController:bookVC animated:YES];
 }
 
@@ -221,18 +234,11 @@ NSString *SuggestionView1 = @"SuggestionView1";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     ZZTCarttonDetailModel *md = self.cartoons[indexPath.row];
-    if([md.cartoonType isEqualToString:@"1"]){
-        ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
-        detailVC.isId = YES;
-        detailVC.cartoonDetail = md;
-        detailVC.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:detailVC animated:YES];
-    }else{
-        ZZTMulWordDetailViewController *detailVC = [[ZZTMulWordDetailViewController alloc]init];
-        detailVC.isId = YES;
-        detailVC.cartoonDetail = md;
-        detailVC.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:detailVC animated:YES];
-    }
+    ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
+    detailVC.isId = YES;
+    detailVC.cartoonDetail = md;
+    detailVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:detailVC animated:YES];
+
 }
 @end

@@ -13,7 +13,7 @@
 #import "ZZTVIPViewController.h"
 #import "ImageClipViewController.h"
 #import "ZZTChapterPayViewController.h"
-#import "ZZTCreatCartoonViewController.h"
+//#import "ZZTCreatCartoonViewController.h"
 #import "ZZTMallDetailViewController.h"
 
 @interface ZZTMeHomeViewController ()<UIScrollViewDelegate>

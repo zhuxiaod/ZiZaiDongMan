@@ -108,7 +108,7 @@
     [_userName mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.userImg.mas_top);
         make.left.equalTo(self.userImg.mas_right).offset(8);
-        make.width.mas_equalTo(100);
+//        make.width.mas_equalTo(100);
         make.height.mas_equalTo(20);
     }];
     

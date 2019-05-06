@@ -8,7 +8,6 @@
 
 #import "ZZTCollectView.h"
 #import "ZZTWordDetailViewController.h"
-#import "ZZTMulWordDetailViewController.h"
 #import "ZZTCarttonDetailModel.h"
 
 @interface ZZTCollectView()<UICollectionViewDelegate,UICollectionViewDataSource>
@@ -106,19 +105,13 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     ZZTCarttonDetailModel *md = self.dataArray[indexPath.row];
-    if([md.cartoonType isEqualToString:@"1"]){
+    
         ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
         detailVC.isId = NO;
         detailVC.cartoonDetail = md;
         detailVC.hidesBottomBarWhenPushed = YES;
         [[self myViewController].navigationController pushViewController:detailVC animated:YES];
-    }else{
-        ZZTMulWordDetailViewController *detailVC = [[ZZTMulWordDetailViewController alloc]init];
-        detailVC.isId = NO;
-        detailVC.cartoonDetail = md;
-        detailVC.hidesBottomBarWhenPushed = YES;
-        [[self myViewController].navigationController pushViewController:detailVC animated:YES];
-    }
+ 
 }
 
 @end

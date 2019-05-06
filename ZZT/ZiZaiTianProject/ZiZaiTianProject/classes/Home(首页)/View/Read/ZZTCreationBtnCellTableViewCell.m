@@ -10,9 +10,9 @@
 #import "ZZTSecondBtn.h"
 #import "ZZTSecondCell.h"
 #import "ZZTEasyBtnModel.h"
-#import "ZZTCreatCartoonViewController.h"
+//#import "ZZTCreatCartoonViewController.h"
 #import "ZZTCreationEntranceModel.h"
-#import "ZZTCreatPlayViewController.h"
+//#import "ZZTCreatPlayViewController.h"
 #import "ZZTHomeViewController.h"
 
 @interface ZZTCreationBtnCellTableViewCell ()<UICollectionViewDelegate,UICollectionViewDataSource>

@@ -22,6 +22,7 @@
     NSString *TXTFileName;
     ZZTStoryModel *storyModel;
     UserInfo *autherData;
+    NSString *chapterType;
 }
 
 @property (nonatomic,assign) NSInteger chapterIndex;
@@ -46,6 +47,7 @@
 
 @property (nonatomic,strong) UserInfo *autherData;
 
+@property (nonatomic,strong) NSString *chapterType;
 /*
  1.chapterId            书ID
  2.chapterName          书名
@@ -57,6 +59,9 @@
  8.imageHeightCache     高度缓存
  */
 +(instancetype)initCarttonChapter:(NSInteger )chapterId chapterName:(NSString *)chapterName autherData:(UserInfo *)autherData chapterPage:(NSString *)chapterPage chapterIndex:(NSInteger )chapterIndex readPoint:(CGPoint)readPoint imageUrlArray:(NSMutableArray *)imageUrlArray imageHeightCache:(NSMutableArray *)imageHeightCache;
+
+
++(instancetype)initJxydChapterModel:(ZZTChapterlistModel *)chapterData userData:(UserInfo *)userData  readPoint:(CGPoint)readPoint imageUrlArray:(NSMutableArray *)imageUrlArray imageHeightCache:(NSMutableArray *)imageHeightCache;
 
 /*
  1.chapterId            书ID

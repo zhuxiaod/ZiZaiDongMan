@@ -56,6 +56,8 @@
         NSString *keyString = [NSString stringWithFormat:@"%@%@.jpg",keyTime,keyRandom];
         NSLog(@"keyString = %@", keyString);
         
+//        [imageMString appendFormat:@"%@,", keyString];
+
         [imageMString appendFormat:@"http://img.cdn.zztian.cn/%@,", keyString];
         
         AFNHttpTool *tool = [[AFNHttpTool alloc] init];

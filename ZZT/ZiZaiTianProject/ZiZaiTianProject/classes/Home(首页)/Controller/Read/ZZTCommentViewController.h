@@ -8,12 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+@class ZZTChapterlistModel;
+
 @interface ZZTCommentViewController : BaseViewController
 
 @property (nonatomic,strong) NSString *chapterId;
 
 @property (nonatomic,strong) NSString *cartoonType;
 
+@property (nonatomic,strong) ZZTChapterlistModel *model;
 //世界评论页
 @property (nonatomic,assign) BOOL isFind;
 

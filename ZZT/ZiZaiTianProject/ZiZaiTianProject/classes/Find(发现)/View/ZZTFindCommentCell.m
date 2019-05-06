@@ -303,7 +303,6 @@
     _reportBtn.zoneModel = model;
     _reportBtn.hidden = [Utilities GetNSUserDefaults].id == [self.model.userId integerValue];
     
-    
 //    CGFloat replyCountWidth = [_userName.text getTextWidthWithFont:self.userName.font];
 //    replyCountWidth += 30;
 //    [_userName mas_updateConstraints:^(MASConstraintMaker *make) {

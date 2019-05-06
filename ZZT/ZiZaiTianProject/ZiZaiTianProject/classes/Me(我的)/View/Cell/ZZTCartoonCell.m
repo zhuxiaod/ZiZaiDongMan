@@ -93,12 +93,6 @@
     
     _rightImg.hidden = [cartoon.cartoonType isEqualToString:@"2"] ? NO:YES;
 
-//    [self setupImgStyle];
-
-    
-//    NSLog(@"self.cartoonName.text:%@",self.cartoonName.text);
-    
-//    [self addLineSpacing:self.cartoonName];
 }
 
 -(void)setMaterialModel:(ZZTDetailModel *)materialModel{

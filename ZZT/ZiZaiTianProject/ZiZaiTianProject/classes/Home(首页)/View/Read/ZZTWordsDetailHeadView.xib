@@ -142,6 +142,7 @@
                 <outlet property="likeLab" destination="e6a-zy-cJ7" id="7hB-r4-QBC"/>
                 <outlet property="shareBtn" destination="D5l-VJ-Otb" id="G3L-gN-f0P"/>
                 <outlet property="titleView" destination="wei-do-Gho" id="QMA-IV-34e"/>
+                <outlet property="xuHuaLab" destination="bDY-6G-bS6" id="d8r-sj-vFD"/>
             </connections>
             <point key="canvasLocation" x="-80.5" y="-123"/>
         </view>

@@ -26,7 +26,6 @@
 
 @property (assign, nonatomic) BOOL isDown;
 
-@property (strong, nonatomic) NSArray *imgArray;
 
 
 @end
@@ -205,4 +204,8 @@
     [self.collectionView reloadData];
 }
 
+-(void)setImgArray:(NSArray *)imgArray{
+    _imgArray = imgArray;
+    [self.collectionView reloadData];
+}
 @end

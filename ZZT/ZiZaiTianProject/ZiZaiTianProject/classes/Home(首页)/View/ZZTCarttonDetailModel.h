@@ -75,4 +75,7 @@
 
 @property (nonatomic,strong) NSString *fodderName;
 
+@property (nonatomic,assign) CGFloat rowHeight;
+
+
 @end

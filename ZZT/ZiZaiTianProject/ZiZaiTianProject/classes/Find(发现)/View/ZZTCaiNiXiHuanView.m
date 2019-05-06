@@ -37,12 +37,15 @@
 
 -(void)layoutSubviews{
     [super layoutSubviews];
+    
     [self.topView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.contentView);
         make.right.left.equalTo(self.contentView);
-        make.height.equalTo(self.contentView).multipliedBy(0.48);
+        make.height.mas_equalTo(106 * SCREEN_WIDTH / 360);
     }];
-    CGFloat midViewH = (SCREEN_WIDTH - 20) / 5;;
+    
+    CGFloat midViewH = (SCREEN_WIDTH - 20) / 5;
+    
     [self.midView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.topView.mas_bottom).offset(0);
         make.right.left.equalTo(self.contentView);
@@ -53,8 +56,8 @@
     [self.updataBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.midView.mas_bottom).offset(8);
         make.centerX.equalTo(self.contentView);
-        make.height.equalTo(self.contentView).multipliedBy(0.14);
-        make.width.mas_equalTo(BtnW);
+        make.height.mas_equalTo(60);
+        make.width.mas_equalTo(60);
     }];
 }
 
@@ -134,6 +137,7 @@
         [_topView setImage:[UIImage imageNamed:@"推荐-猜你喜欢"]];
         _topView.contentMode = UIViewContentModeScaleAspectFill;
         [self.contentView addSubview:_topView];
+        
     }
     return _topView;
 }

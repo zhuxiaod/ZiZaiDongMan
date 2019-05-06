@@ -9,8 +9,11 @@
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
+@class ZZTChapterlistModel;
 
 @interface ZZTXuHuaCell : UICollectionViewCell
+
+@property (nonatomic,strong)ZZTChapterlistModel *model;
 
 @end
 

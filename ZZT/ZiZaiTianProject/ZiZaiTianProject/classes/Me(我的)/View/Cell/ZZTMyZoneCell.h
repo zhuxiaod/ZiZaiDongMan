@@ -8,23 +8,22 @@
 
 #import <UIKit/UIKit.h>
 
-@class ZZTMyZoneModel;
-
-typedef void (^LongPressBlock) (ZZTMyZoneModel *message);
+@class ZZTStatusViewModel;
 
 @interface ZZTMyZoneCell : UITableViewCell
 
-@property (nonatomic,copy) LongPressBlock LongPressBlock;
 
-@property (nonatomic,assign) NSInteger indexRow;
+@property (nonatomic,strong) ZZTStatusViewModel *model;
 
-@property (nonatomic,strong) ZZTMyZoneModel *model;
+@property (weak, nonatomic) IBOutlet ZZTReportBtn *reportBtn;
 
-@property (nonatomic,copy) void (^update)(void);
+
+@property (nonatomic,strong) void(^reloadDataBlock)(void);
+
+@property (nonatomic,strong) void(^longPressBlock)(ZZTStatusViewModel *model);
+
+
 
 + (ZZTMyZoneCell *)dynamicCellWithTable:(UITableView *)table;
-
-//举报
-@property (strong, nonatomic) ZZTReportBtn *reportBtn;
 
 @end

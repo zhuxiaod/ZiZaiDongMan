@@ -17,6 +17,14 @@
 @synthesize chapterListRow;
 @synthesize lastReadData;
 
++(instancetype)initJxydBook:(ZZTCarttonDetailModel*)model{
+    ZZTJiXuYueDuModel *book = [[ZZTJiXuYueDuModel alloc] init];
+    book.bookName = model.bookName;
+    book.bookId = model.id;
+    return book;
+}
+
+
 -(NSMutableArray *)chapterArray{
     if(!chapterArray){
         chapterArray = [NSMutableArray array];

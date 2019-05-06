@@ -130,7 +130,8 @@ static NSString *AttentionCell = @"AttentionCell";
 #pragma mark - 创建CollectionView
 -(void)setupCollectionView:(UICollectionViewFlowLayout *)layout
 {
-    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, navHeight, Screen_Width, Screen_Height) collectionViewLayout:layout];
+    CGFloat bottomSpace = Height_NavBar;
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, bottomSpace, Screen_Width, Screen_Height - bottomSpace) collectionViewLayout:layout];
     collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView = collectionView;
     [self.view addSubview:self.collectionView];

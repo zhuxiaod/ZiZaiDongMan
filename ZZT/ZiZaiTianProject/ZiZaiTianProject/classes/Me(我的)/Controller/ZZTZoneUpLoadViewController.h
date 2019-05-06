@@ -18,4 +18,6 @@
 
 @property (nonatomic,strong) NSArray *addPhotosArray;
 
+@property (nonatomic, strong) ZZTChapterlistModel *xuHuaModel;
+
 @end

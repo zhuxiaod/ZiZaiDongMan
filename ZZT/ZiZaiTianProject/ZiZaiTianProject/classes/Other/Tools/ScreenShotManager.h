@@ -14,7 +14,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 +(instancetype)manager;
 
--(void)screenShotAndShare:(UITableView *)tableView lbCover:(NSString *)lbCover;
+-(void)openSharePlatformWithbookDetail:(ZZTCarttonDetailModel *)bookDetail;
+
+-(void)shareTextToPlatform:(UMSocialPlatformType)plaform bookDetail:(ZZTCarttonDetailModel *)bookDetail;
 
 @end
 

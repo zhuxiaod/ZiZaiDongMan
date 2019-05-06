@@ -8,7 +8,6 @@
 
 #import "ZZTChapterlistModel.h"
 
-
 @implementation ZZTChapterlistModel
 
 @synthesize id;
@@ -30,7 +29,7 @@
 @synthesize listTotal;
 @synthesize chapterMoney;
 @synthesize isSelect;
-
+@synthesize chapterType;
 // 归档属性
 - (void)encodeWithCoder:(nonnull NSCoder *)aCoder {
     // c语言特点：函数的参数如果是基本数据类型，基本是需要函数内部修改他的值
@@ -65,6 +64,15 @@
         } free(ivars);
         
     } return self;
+}
+
++(instancetype)initXuhuaModel:(ZZTCarttonDetailModel *)book chapterPage:(NSString *)page chapterId:(NSString *)chapterId{
+    ZZTChapterlistModel *model = [[ZZTChapterlistModel alloc] init];
+    model.chapterPage = page;
+    model.cartoonId = book.id;
+    model.bookName = book.bookName;
+    model.chapterId = chapterId;
+    return model;
 }
 
 @end

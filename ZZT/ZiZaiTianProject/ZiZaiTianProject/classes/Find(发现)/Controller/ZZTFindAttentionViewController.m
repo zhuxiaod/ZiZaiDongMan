@@ -8,10 +8,11 @@
 
 #import "ZZTFindAttentionViewController.h"
 #import "ZZTCaiNiXiHuanView.h"
-#import "ZZTFindCommentCell.h"
 #import "ZZTMyZoneModel.h"
 #import "ZZTFindAttentionView.h"
+#import "ZZTStatusViewModel.h"
 #import "ZZTMyZoneViewController.h"
+#import "ZZTStatusTabCell.h"
 
 @interface ZZTFindAttentionViewController ()<UITableViewDelegate,UITableViewDataSource,ZZTReportBtnDelegate>
 
@@ -91,11 +92,14 @@ static NSString *findCommentCell = @"findCommentCell";
     contentView.backgroundColor = [UIColor whiteColor];
     contentView.contentInset = UIEdgeInsetsMake(Height_TabbleViewInset, 0, 0, 0);
     contentView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    contentView.estimatedRowHeight = 0;
+    
+    contentView.rowHeight = UITableViewAutomaticDimension;
+    contentView.estimatedRowHeight = 200;
+    
     contentView.estimatedSectionFooterHeight = 0;
     contentView.estimatedSectionHeaderHeight = 0;
     _contentView = contentView;
-    [contentView registerClass:[ZZTFindCommentCell class] forCellReuseIdentifier:findCommentCell];
+    [contentView registerNib:[UINib nibWithNibName:@"ZZTStatusTabCell" bundle:nil] forCellReuseIdentifier:findCommentCell];
     [self.view addSubview:contentView];
     
 }
@@ -115,36 +119,31 @@ static NSString *findCommentCell = @"findCommentCell";
 }
 
 -(void)loadMoreData{
-    UserInfo *user = [Utilities GetNSUserDefaults];
-    //请求世界数据
-    NSDictionary *dic = @{
-                          @"pageNum":[NSString stringWithFormat:@"%ld",self.pageNumber],
-                          @"pageSize":@"10",
-                          @"userId":[NSString stringWithFormat:@"%ld",user.id],
-                          @"type":@"2"//1.世界 2.关注
-                          };
-    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
-    [manager POST:[ZZTAPI stringByAppendingString:@"circle/selDiscover"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [SBAFHTTPSessionManager.sharedManager loadStatusOrAttentionData:[NSString stringWithFormat:@"%ld",self.pageNumber] pageSize:@"10" type:@"2" finished:^(id  _Nullable responseObject, NSError *error) {
+        [self.contentView.mj_footer endRefreshing];
         
+        if (error != nil) {
+            NSLog(@"%@",error);
+            return;
+        }
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         
         NSInteger total = [[NSString stringWithFormat:@"%@",[dic objectForKey:@"total"]] integerValue];
         
         NSMutableArray *array = [ZZTMyZoneModel mj_objectArrayWithKeyValuesArray:[dic objectForKey:@"list"]];
         
-        [self.dataArray addObjectsFromArray:array];
+        for (ZZTMyZoneModel *model in array) {
+            ZZTStatusViewModel *viewModel = [ZZTStatusViewModel initViewModel:model];
+            [self.dataArray addObject:viewModel];
+        }
         
-        [self.contentView reloadData];
+        [self cacheImages:self.dataArray];
         
         if(self.dataArray.count >= total){
             [self.contentView.mj_footer endRefreshingWithNoMoreData];
-        }else{
-            [self.contentView.mj_footer endRefreshing];
         }
         self.pageNumber++;
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        [self.contentView.mj_footer endRefreshing];
-        [self.contentView.mj_header endRefreshing];
+        self.pageSize += 10;
     }];
 }
 -(void)loadCaiNiXiHuanData{
@@ -162,40 +161,52 @@ static NSString *findCommentCell = @"findCommentCell";
 }
 
 -(void)loadData{
-    UserInfo *user = [Utilities GetNSUserDefaults];
-    //请求世界数据
-    NSDictionary *dic = @{
-                          @"pageNum":@"1",
-                          @"pageSize":[NSString stringWithFormat:@"%ld",self.pageSize],
-                          @"userId":[NSString stringWithFormat:@"%ld",user.id],
-                          @"type":@"2"//1.世界 2.关注
-                          };
-    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
-    [manager POST:[ZZTAPI stringByAppendingString:@"circle/selDiscover"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
-        if(dic.count > 6){
-//        if([[dic allKeys] containsObject:@"total"]){
-            NSInteger total = [[NSString stringWithFormat:@"%@",[dic objectForKey:@"total"]] integerValue];
-            
-            NSMutableArray *array = [ZZTMyZoneModel mj_objectArrayWithKeyValuesArray:[dic objectForKey:@"list"]];
-            
-            self.dataArray = array;
-            [self.contentView reloadData];
-            
-            if(self.dataArray.count >= total){
-                //            [self.contentView.mj_footer setHidden:YES];
-                [self.contentView.mj_header endRefreshing];
-            }else{
-                [self.contentView.mj_header endRefreshing];
-            }
-            self.pageSize += 10;
-        }else{
-            NSLog(@"bug");
-        }
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        [self.contentView.mj_footer endRefreshing];
+    [SBAFHTTPSessionManager.sharedManager loadStatusOrAttentionData:@"1" pageSize:[NSString stringWithFormat:@"%ld",self.pageSize] type:@"2" finished:^(id  _Nullable responseObject, NSError *error) {
         [self.contentView.mj_header endRefreshing];
+        if (error != nil) {
+            NSLog(@"%@",error);
+            return;
+        }
+        NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
+        
+        NSInteger total = [[NSString stringWithFormat:@"%@",[dic objectForKey:@"total"]] integerValue];
+        
+        NSMutableArray *array = [ZZTMyZoneModel mj_objectArrayWithKeyValuesArray:[dic objectForKey:@"list"]];
+        //将里面的模型数据都处理好
+        [self.dataArray removeAllObjects];
+        for (ZZTMyZoneModel *model in array) {
+            ZZTStatusViewModel *viewModel = [ZZTStatusViewModel initViewModel:model];
+            [self.dataArray addObject:viewModel];
+        }
+        
+        //下载图片
+        [self cacheImages:self.dataArray];
+        
+        if(self.dataArray.count >= total){
+            
+            [self.contentView.mj_footer endRefreshingWithNoMoreData];
+        }
     }];
+}
+
+-(void)cacheImages:(NSArray *)imgUrls{
+    dispatch_group_t group = dispatch_group_create();
+    for (ZZTStatusViewModel *model in imgUrls) {
+        //下载图片
+        for (NSString *imgUrl in model.imgArray) {
+            dispatch_group_enter(group);
+            [SDWebImageManager.sharedManager loadImageWithURL:[NSURL URLWithString:imgUrl] options:0 progress:nil
+                                                    completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
+                                                        dispatch_group_leave(group);
+                                                    }];
+        }
+    }
+    
+    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+        
+        [self.contentView reloadData];
+        
+    });
 }
 
 #pragma mark - 设置组数
@@ -207,14 +218,20 @@ static NSString *findCommentCell = @"findCommentCell";
     [self.contentView.mj_footer setHidden:NO];
     return self.dataArray.count;
 }
+
 #pragma mark - 内容设置
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    ZZTFindCommentCell *cell = [tableView dequeueReusableCellWithIdentifier:findCommentCell forIndexPath:indexPath];
-    ZZTMyZoneModel *model = self.dataArray[indexPath.row];
-    model.index = indexPath.row;
-    cell.model = model;
-    cell.reportBtn.delegate = self;
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    //展示数据
+    ZZTStatusTabCell *cell = [tableView dequeueReusableCellWithIdentifier:findCommentCell];
+    ZZTStatusViewModel *model = self.dataArray[indexPath.row];
+    model.modelIndex = indexPath.row;
+    cell.viewModel = model;
+    cell.reportBtn.reportblock = ^(ZZTReportModel *model) {
+        [self shieldingMessage:model.index];
+    };
+    cell.reloadDataBlock = ^{
+        [self loadData];
+    };
     return cell;
 }
 
@@ -223,39 +240,6 @@ static NSString *findCommentCell = @"findCommentCell";
     [_dataArray removeObject:model];
     [self.contentView reloadData];
 }
-
-//-(void)reportUserData:(ZZTMyZoneModel *)messageData{
-//    //弹出举报框
-//    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-//    UIAlertAction *reportBtn = [UIAlertAction actionWithTitle:@"举报" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-//
-////        NSLog(@"%@ : %@",messageData.nickName,messageData.content);
-//        [self gotoReportVCWithModel:messageData];
-//
-//    }];
-//    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-//        NSLog(@"点击了取消");
-//    }];
-//
-//    [actionSheet addAction:reportBtn];
-//    [actionSheet addAction:action2];
-//
-//
-//    [self presentViewController:actionSheet animated:YES completion:nil];
-//}
-//
-//-(void)gotoReportVCWithModel:(ZZTMyZoneModel *)reportMessage{
-//    ZZTReportViewController *reportVC = [[ZZTReportViewController alloc] init];
-//    reportVC.reportData = reportMessage;
-//    [self.navigationController pushViewController:reportVC animated:YES];
-//}
-
-#pragma mark 高度设置
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    ZZTMyZoneModel *model = _dataArray[indexPath.row];
-    return  [GlobalUI cellHeightWithModel:model];
-}
-
 
 #pragma mark - headView
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
@@ -301,7 +285,7 @@ static NSString *findCommentCell = @"findCommentCell";
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
-    return SCREEN_HEIGHT * 0.34;
+    return 60 + (SCREEN_WIDTH - 20) / 5 + 106 * SCREEN_WIDTH / 360;
 }
 
 -(ZZTCaiNiXiHuanView *)caiNiXiHuanView{

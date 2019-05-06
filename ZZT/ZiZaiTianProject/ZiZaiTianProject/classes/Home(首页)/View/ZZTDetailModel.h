@@ -10,7 +10,7 @@
 
 @interface ZZTDetailModel : NSObject
 
-@property (nonatomic,assign) NSInteger id;
+@property (nonatomic,strong) NSString *id;
 
 @property (nonatomic,strong) NSString *img;
 
@@ -24,7 +24,7 @@
 
 @property (nonatomic,assign) NSInteger ifCollect;
 
-@property (nonatomic,assign) NSInteger fodderId;
+@property (nonatomic,strong) NSString *fodderId;
 
 @property (nonatomic,strong) NSString *money;
 

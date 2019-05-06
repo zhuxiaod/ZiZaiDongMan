@@ -414,7 +414,6 @@ typedef NS_ENUM(NSInteger,UMSocialPlatformType)
  */
 @interface UMSocialCloudViewConfig : NSObject
 
-
 /**
  授权页面
  */

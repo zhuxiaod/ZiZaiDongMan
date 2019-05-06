@@ -46,6 +46,8 @@
     NSInteger chapterMoney;
     
     NSInteger isSelect;
+    
+    NSString *chapterType;
 }
 
 @property(nonatomic,assign)NSInteger id;
@@ -87,5 +89,12 @@
 @property(nonatomic,assign)NSInteger chapterMoney;
 
 @property(nonatomic,assign)NSInteger isSelect;
+
+@property(nonatomic,strong)NSString *chapterType;
+
+@property(nonatomic,strong)NSString *bookName;
+
+
++(instancetype)initXuhuaModel:(ZZTCarttonDetailModel *)book chapterPage:(NSString *)page chapterId:(NSString *)chapterId;
 
 @end

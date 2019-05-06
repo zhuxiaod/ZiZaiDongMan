@@ -9,7 +9,6 @@
 #import "ZZTMoreViewController.h"
 #import "ZZTWordCell.h"
 #import "ZZTWordDetailViewController.h"
-#import "ZZTMulWordDetailViewController.h"
 #import "ZZTDetailModel.h"
 #import "ZZTMallDetailViewController.h"
 
@@ -94,7 +93,7 @@ NSString *WordCell = @"WordCell";
 #pragma mark - 创建CollectionView
 -(void)setupCollectionView:(UICollectionViewFlowLayout *)layout
 {
-    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 64, Screen_Width, Screen_Height) collectionViewLayout:layout];
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, Height_NavBar, Screen_Width, Screen_Height) collectionViewLayout:layout];
     collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView = collectionView;
     collectionView.dataSource = self;
@@ -295,19 +294,11 @@ NSString *WordCell = @"WordCell";
         [self.navigationController pushViewController:vc animated:YES];
     }else{
         ZZTCarttonDetailModel *md = self.dataArray[indexPath.row];
-        if([md.cartoonType isEqualToString:@"1"]){
             ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
             detailVC.isId = YES;
             detailVC.cartoonDetail = md;
             detailVC.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:detailVC animated:YES];
-        }else{
-            ZZTMulWordDetailViewController *detailVC = [[ZZTMulWordDetailViewController alloc]init];
-            detailVC.isId = YES;
-            detailVC.cartoonDetail = md;
-            detailVC.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:detailVC animated:YES];
-        }
     }
 }
 

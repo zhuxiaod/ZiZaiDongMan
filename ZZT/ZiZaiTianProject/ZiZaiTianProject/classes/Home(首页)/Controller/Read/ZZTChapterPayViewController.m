@@ -320,7 +320,7 @@
             //更新上一页的数据
             self.model.ifbuy = @"1";
             ZZTCartoonDetailViewController *carDetailVC = [[ZZTCartoonDetailViewController alloc] init];
-            carDetailVC.dataModel = self.model;
+            carDetailVC.chapterData = self.model;
             //干掉自己这一页
             [self dismissViewControllerAnimated:NO completion:nil];
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

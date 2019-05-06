@@ -29,7 +29,12 @@
 @property (nonatomic,strong) NSString *chapterListRow;
 
 @property (nonatomic,strong) NSString *arrayIndex;
-//最后一次读的书
+//最后一次读的原版书
 @property (nonatomic,strong) ZZTChapterlistModel *lastReadData;
+//最后一次读的同人书
+@property (nonatomic,strong) ZZTChapterlistModel *lastMultiReadData;
+
+
++(instancetype)initJxydBook:(ZZTCarttonDetailModel*)model;
 
 @end

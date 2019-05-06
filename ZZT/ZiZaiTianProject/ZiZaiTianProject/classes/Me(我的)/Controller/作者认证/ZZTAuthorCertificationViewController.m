@@ -343,7 +343,7 @@ static NSString *AuthorMeInputOneCell = @"AuthorMeInputOneCell";
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     if(indexPath.section == 0){
-        return 60;
+        return 70;
     }else if(indexPath.section == 1){
         if(indexPath.row == 0){
             return _cellHeight[0];

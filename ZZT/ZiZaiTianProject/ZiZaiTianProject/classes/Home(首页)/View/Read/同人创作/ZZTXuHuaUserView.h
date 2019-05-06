@@ -12,6 +12,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ZZTXuHuaUserView : UICollectionView
 
+@property (nonatomic,strong) NSArray *dataArray;
+
+@property (nonatomic,strong) ZZTJiXuYueDuModel *lastReadModel;
+
+@property (nonatomic,strong) ZZTCarttonDetailModel *bookDetail;
+
+//didItem
+@property (nonatomic,copy) void (^didUserItem)(ZZTChapterlistModel *xuHuaChapter);
+
+
 @end
 
 NS_ASSUME_NONNULL_END

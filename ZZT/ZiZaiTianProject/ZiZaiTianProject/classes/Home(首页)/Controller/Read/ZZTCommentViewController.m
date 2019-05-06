@@ -8,7 +8,7 @@
 
 #import "ZZTCommentViewController.h"
 #import "ZZTNavBarTitleView.h"
-
+#import "ZZTChapterlistModel.h"
 #import "ZZTNewestCommentView.h"
 #import "ZZTCircleModel.h"
 #import "customer.h"
@@ -83,9 +83,10 @@
 }
 
 -(void)setupMainView{
-    CGFloat mainViewHeight = self.view.height - navHeight;
+    CGFloat navH = Height_NavBar;
+    CGFloat mainViewHeight = self.view.height - navH;
     
-    UIScrollView *mainView = [[UIScrollView alloc] initWithFrame:CGRectMake(0,navHeight, self.view.width,mainViewHeight)];
+    UIScrollView *mainView = [[UIScrollView alloc] initWithFrame:CGRectMake(0,Height_NavBar, self.view.width,mainViewHeight)];
     mainView.scrollEnabled = NO;
     mainView.contentSize   = CGSizeMake(mainView.width * 2, 0);
     mainView.pagingEnabled = YES;
@@ -155,33 +156,33 @@
     };
     
     //nav
-    ZXDNavBar *navbar = [[ZXDNavBar alloc]init];
-    self.navbar = navbar;
-    navbar.backgroundColor = [UIColor whiteColor];
-    [self.view addSubview:navbar];
+//    ZXDNavBar *navbar = [[ZXDNavBar alloc]init];
+//    self.navbar = navbar;
+    self.viewNavBar.backgroundColor = [UIColor whiteColor];
+//    [self.view addSubview:navbar];
     
-    [self.navbar mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.equalTo(self.view);
-        make.top.equalTo(self.view);
-        make.height.equalTo(@(navHeight));
-    }];
+//    [self.navbar mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.right.equalTo(self.view);
+//        make.top.equalTo(self.view);
+//        make.height.equalTo(@(navHeight));
+//    }];
     
     //返回
-    [navbar.leftButton setImage:[UIImage imageNamed:@"navigationbar_close"] forState:UIControlStateNormal];
-    navbar.leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 17);
-    [navbar.leftButton addTarget:self action:@selector(dismissVC) forControlEvents:UIControlEventTouchUpInside];
+    [self.viewNavBar.leftButton setImage:[UIImage imageNamed:@"navigationbar_close"] forState:UIControlStateNormal];
+    self.viewNavBar.leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 17);
+    [self.viewNavBar.leftButton addTarget:self action:@selector(dismissVC) forControlEvents:UIControlEventTouchUpInside];
     
     //中间
-    [navbar.mainView addSubview:titleView];
+    [self.viewNavBar.mainView addSubview:titleView];
     
     [titleView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(navbar.mainView);
+        make.centerX.equalTo(self.viewNavBar.mainView);
         make.width.mas_equalTo(SCREEN_WIDTH * 0.42);
         make.height.mas_equalTo(30);
-        make.bottom.equalTo(navbar.mainView).offset(-10);
+        make.bottom.equalTo(self.viewNavBar.mainView).offset(-10);
     }];
 
-    navbar.showBottomLabel = YES;
+    self.viewNavBar.showBottomLabel = YES;
 }
 //返回
 -(void)dismissVC{
@@ -240,6 +241,11 @@
     [publishBtn addTarget:self action:@selector(sendMessage) forControlEvents:UIControlEventTouchUpInside];
 }
 
+-(void)setModel:(ZZTChapterlistModel *)model{
+    _model = model;
+    self.chapterId = [NSString stringWithFormat:@"%ld",model.id];
+    self.cartoonType = model.type;
+}
 //发送信息
 -(void)sendMessage{
     if([[UserInfoManager share] hasLogin] == NO){

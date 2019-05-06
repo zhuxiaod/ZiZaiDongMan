@@ -14,7 +14,6 @@
 #import "ZZTEasyBtnModel.h"
 #import "CaiNiXiHuanCell.h"
 #import "ZZTCartoonHeaderView.h"
-#import "ZZTWordsDetailViewController.h"
 #import "ZZTCarttonDetailModel.h"
 
 @interface ZZTReadTableView()<UITableViewDataSource,UITableViewDelegate,DCPicScrollViewDelegate,DCPicScrollViewDataSource>

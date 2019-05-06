@@ -8,14 +8,12 @@
 
 #import "ZZTCartoonViewController.h"
 #import "ZZTCartoonCell.h"
-#import "ZZTAttentionCell.h"
-#import "ZZTMyCircleCellCollectionViewCell.h"
 #import "ZZTHomeTableViewModel.h"
 
 //请求192.168.0.165:8888/great/daiti?id=daiti
 @interface ZZTCartoonViewController ()<UICollectionViewDataSource,UICollectionViewDelegate>
 @property (nonatomic,strong) UICollectionView *collectionView;
-@property (nonatomic,strong) AFHTTPSessionManager *manager;
+
 @property (nonatomic,strong) EncryptionTools *encryptionManager;
 //获得数据
 @property (nonatomic,strong) NSString *getData;
@@ -64,14 +62,6 @@
     return _books;
 }
 
--(AFHTTPSessionManager *)manager{
-    if(!_manager){
-//        _manager = [AFHTTPSessionManager manager];
-        _manager = [[AFHTTPSessionManager alloc] init];
-
-    }
-    return _manager;
-}
 //cell注册(控制)
 static NSString *collectionID = @"collectionID";
 static NSString *AttentionCell = @"AttentionCell";
@@ -90,15 +80,10 @@ static NSString *circleCell = @"circleCell";
     //注册cell
     [self registerCell];
     
-    self.navigationItem.title = self.viewTitle;
-    
-    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithTitle:@"清空" target:self action:@selector(removeAllBook) titleColor:[UIColor whiteColor]];
-    
-//    [self addBackBtn];
-    
     [self.viewNavBar.centerButton setTitle:@"书柜" forState:UIControlStateNormal];
 
     [self.viewNavBar.rightButton setTitle:@"清空" forState:UIControlStateNormal];
+    
     [self.viewNavBar.rightButton addTarget:self action:@selector(removeAllBook) forControlEvents:UIControlEventTouchUpInside];
     
     [self setMeNavBarStyle];
@@ -124,7 +109,7 @@ static NSString *circleCell = @"circleCell";
 }
 
 -(void)loadRemoveBook:(NSString *)string{
-//    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+
     AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     UserInfo *user = [Utilities GetNSUserDefaults];
     NSDictionary *dic = @{
@@ -151,19 +136,15 @@ static NSString *circleCell = @"circleCell";
 }
 
 -(void)loadData{
+    self.viewNavBar.rightButton.hidden = [self.model.url isEqualToString:@"cartoon/getUserParticipateWriting"];
+    
     //请求参数
-    NSDictionary *paramDict = @{
-                                @"userId":[NSString stringWithFormat:@"%ld",self.user.id],
-                                };
-    [self.manager POST:[ZZTAPI stringByAppendingString:self.model.url] parameters:paramDict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
+    [SBAFHTTPSessionManager.sharedManager loadPostRequest:self.model.url paramDict:self.model.parameters finished:^(id responseObject, NSError *error) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
-        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic];
+        NSMutableArray *array = [ZZTCarttonDetailModel mj_objectArrayWithKeyValuesArray:dic[@"list"]];
         self.cartoons = array;
         [self addCartoonId:array];
         [self.collectionView reloadData];
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        NSLog(@"请求失败 -- %@",error);
     }];
 }
 
@@ -183,7 +164,6 @@ static NSString *circleCell = @"circleCell";
     //修改尺寸(控制)
     layout.itemSize = CGSizeMake(SCREEN_WIDTH/3 - 10,200);
     
-//    layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     //行距
     layout.minimumLineSpacing = 0;
     layout.minimumInteritemSpacing = 5;
@@ -194,7 +174,7 @@ static NSString *circleCell = @"circleCell";
 #pragma mark - 创建CollectionView
 -(void)setupCollectionView:(UICollectionViewFlowLayout *)layout
 {
-    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, navHeight, Screen_Width, Screen_Height) collectionViewLayout:layout];
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, [GlobalUI getNavibarHeight], Screen_Width, Screen_Height - [GlobalUI getNavibarHeight]) collectionViewLayout:layout];
     collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView = collectionView;
     [self.view addSubview:self.collectionView];
@@ -219,19 +199,11 @@ static NSString *circleCell = @"circleCell";
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     ZZTCarttonDetailModel *md = self.cartoons[indexPath.row];
-    if([md.cartoonType isEqualToString:@"1"]){
-        ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
-        detailVC.isId = NO;
-        detailVC.cartoonDetail = md;
-        detailVC.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:detailVC animated:YES];
-    }else{
-        ZZTMulWordDetailViewController *detailVC = [[ZZTMulWordDetailViewController alloc]init];
-        detailVC.isId = NO;
-        detailVC.cartoonDetail = md;
-        detailVC.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:detailVC animated:YES];
-    }
+    ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
+    detailVC.isId = NO;
+    detailVC.cartoonDetail = md;
+    detailVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:detailVC animated:YES];
 }
 
 //加载数据

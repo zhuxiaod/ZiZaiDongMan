@@ -76,9 +76,9 @@
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     
     self.window.backgroundColor = [UIColor whiteColor];
+    
     //2.设置窗口根控制器
     ZZTTabBarViewController *tabBarVC = [[ZZTTabBarViewController alloc]init];
-//    RTRootNavigationController *tabBarVC = [[RTRootNavigationController alloc]init];
 
     self.window.rootViewController = tabBarVC;
     
@@ -101,13 +101,11 @@
     /**启动IAP工具类*/
     [[SBIAPManager manager] startManager];
     
-    
     return YES;
 }
 
 - (void)configUSharePlatforms
 {
-    
     [UMSocialGlobal shareInstance].isClearCacheWhenGetUserInfo = NO;
 
     [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_WechatSession appKey:@"wx2fbe30919aa330fb" appSecret:@"e4bdca08caa0c788208e17d8e873119e" redirectURL:nil];
@@ -173,9 +171,7 @@
 void uncaughtExceptionHandler(NSException *exception) {
     
     NSLog(@"reason: %@", exception);
-    
-    // Internal error reporting
-    
+
 }
 
 -(void)application:(UIApplication *)application didReceiveRemoteNotification:(nonnull NSDictionary *)userInfo fetchCompletionHandler:(nonnull void (^)(UIBackgroundFetchResult))completionHandler{
@@ -211,6 +207,7 @@ void uncaughtExceptionHandler(NSException *exception) {
         // Fallback on earlier versions
     }
 }
+
 // 支持所有iOS系统
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
@@ -240,13 +237,11 @@ void uncaughtExceptionHandler(NSException *exception) {
     }
     return result;
 }
+
 //被关闭时
 -(void)applicationWillTerminate:(UIApplication *)application{
     /**结束IAP工具类*/
     [[SBIAPManager manager] stopManager];
-
 }
-
-
 
 @end

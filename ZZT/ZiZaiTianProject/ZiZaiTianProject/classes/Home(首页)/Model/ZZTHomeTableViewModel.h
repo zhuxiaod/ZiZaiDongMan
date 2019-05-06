@@ -30,6 +30,7 @@
 //block
 @property (nonatomic,strong) void(^block)(void);
 
+@property (nonatomic,strong) NSMutableDictionary *parameters;
 /*---------------------------------------------*/
 
 //headerWH
@@ -47,6 +48,6 @@
 
 +(instancetype)initHomeTableViewModelWithName:(NSString *)headerName cellArray:(NSArray *)cellArray url:(NSString *)urlStr cellNum:(NSString *)cellNum;
 
-+(instancetype)initHotVCModel:(NSString *)Url title:(NSString *)title;
++(instancetype)initHotVCModel:(NSString *)Url title:(NSString *)title parameters:(NSDictionary *)parameters;
 
 @end

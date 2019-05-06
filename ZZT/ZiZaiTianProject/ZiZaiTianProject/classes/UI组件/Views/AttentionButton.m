@@ -27,8 +27,6 @@ static NSString *pressedImageName = @"已关注";
 
 -(void)setup{
     [self addTarget:self action:@selector(like) forControlEvents:UIControlEventTouchUpInside];
-    
-//    self.isAttention = false;
 }
 
 -(void)setIsAttention:(BOOL)isAttention{

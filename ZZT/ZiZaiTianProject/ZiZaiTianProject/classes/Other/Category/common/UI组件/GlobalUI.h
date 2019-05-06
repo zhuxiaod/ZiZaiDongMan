@@ -28,4 +28,6 @@
 
 +(UITextView *)initTextViewWithBgColor:(UIColor *)BgColor fontSize:(NSInteger)fontSize text:(NSString *)text textColor:(UIColor *)textColor;
 
++(CGFloat)getNavibarHeight;
+
 @end

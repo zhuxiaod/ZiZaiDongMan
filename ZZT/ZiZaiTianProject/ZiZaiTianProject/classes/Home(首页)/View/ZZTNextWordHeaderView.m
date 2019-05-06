@@ -106,15 +106,18 @@
     
     if([chapterModel.chapterId integerValue] - 1 == 0){
         //上一页变灰 colorWithRGB:
-        [_leftBtn setImage:[UIImage imageNamed:@"lastPage_gray"] forState:UIControlStateNormal];
-        [_leftBtn setTitleColor:[UIColor colorWithRGB:@"127,127,127"] forState:UIControlStateNormal];
+        [self changeBtnColorToGray:_leftBtn];
     }
 
     if([chapterModel.chapterId integerValue] == _listTotal){
         //下一页变灰
-        [_rightBtn setImage:[UIImage imageNamed:@"nextPage_gray"] forState:UIControlStateNormal];
-        [_rightBtn setTitleColor:[UIColor colorWithRGB:@"127,127,127"] forState:UIControlStateNormal];
+        [self changeBtnColorToGray:_rightBtn];
     }
 }
 
+-(void)changeBtnColorToGray:(UIButton *)button{
+    NSString *imageStr = button.tag == 2?@"nextPage_gray":@"lastPage_gray";
+    [button setImage:[UIImage imageNamed:imageStr] forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor colorWithRGB:@"127,127,127"] forState:UIControlStateNormal];
+}
 @end

@@ -7,13 +7,7 @@
 //
 
 #import "ZZTMeWalletViewController.h"
-#import "ZZTVIPTopView.h"
-#import "ZZTWalletCell.h"
 #import "ZZTFreeBiModel.h"
-#import "ZZTShoppingButtomCell.h"
-#import "ZZTWalletTopView.h"
-#import "ZZTTopUpView.h"
-#import "ZZTVIPBtView.h"
 #import "MLIAPManager.h"
 #import <SVProgressHUD.h>
 #import "ZZTZBView.h"
@@ -56,9 +50,6 @@ NSString *XYStoreiTunesSandboxVerifyReceiptURL1 = @"https://sandbox.itunes.apple
 
 @implementation ZZTMeWalletViewController
 
-NSString *zztWalletCell = @"zztWalletCell";
-
-NSString *zzTShoppingButtomCell = @"ZZTShoppingButtomCell";
 
 
 -(NSArray *)dataArray{

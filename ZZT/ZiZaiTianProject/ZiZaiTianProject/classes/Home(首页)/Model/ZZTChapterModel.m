@@ -7,6 +7,7 @@
 //
 
 #import "ZZTChapterModel.h"
+#import "ZZTChapterlistModel.h"
 
 @implementation ZZTChapterModel
 
@@ -21,6 +22,7 @@
 @synthesize storyModel;
 @synthesize imageHeightCache;
 @synthesize autherData;
+@synthesize chapterType;
 
 -(NSMutableArray *)imageUrlArray{
     if(!imageUrlArray){
@@ -70,6 +72,20 @@
         } free(ivars);
         
     } return self;
+}
+
++(instancetype)initJxydChapterModel:(ZZTChapterlistModel *)chapterData userData:(UserInfo *)userData  readPoint:(CGPoint)readPoint imageUrlArray:(NSMutableArray *)imageUrlArray imageHeightCache:(NSMutableArray *)imageHeightCache{
+    ZZTChapterModel *model = [[ZZTChapterModel alloc] init];
+    model.chapterName = chapterData.chapterName;//章节名
+    model.chapterPage = chapterData.chapterPage;//章节字数  多少画
+    model.chapterType = chapterData.chapterType;
+//    model.chapterIndex = chapterIndex;//第几行
+    model.chapterId = chapterData.id;//章节id
+    model.readPoint = readPoint;
+    model.autherData = userData;
+    model.imageUrlArray = imageUrlArray;
+    model.imageHeightCache = imageHeightCache;
+    return model;
 }
 
 +(instancetype)initCarttonChapter:(NSInteger)chapterId chapterName:(NSString *)chapterName autherData:(UserInfo *)autherData chapterPage:(NSString *)chapterPage chapterIndex:(NSInteger)chapterIndex readPoint:(CGPoint)readPoint imageUrlArray:(NSMutableArray *)imageUrlArray imageHeightCache:(NSMutableArray *)imageHeightCache{

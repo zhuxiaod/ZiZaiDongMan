@@ -36,6 +36,9 @@
                             <state key="normal" title="新建同人" image="笔">
                                 <color key="titleColor" red="0.5450980392" green="0.54901960780000003" blue="0.87843137250000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </state>
+                            <connections>
+                                <action selector="creatNewWord:" destination="iN0-l3-epB" eventType="touchUpInside" id="oOR-V5-wj4"/>
+                            </connections>
                         </button>
                         <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="N1v-8c-2TH" customClass="ZZTXuHuaUserView">
                             <rect key="frame" x="88" y="7.5" width="232" height="90"/>
@@ -85,7 +88,7 @@
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>
                 <outlet property="xuHuaBtn" destination="S3n-Cw-XDh" id="4e7-B5-6m3"/>
-                <outlet property="xuHuaUserView" destination="N1v-8c-2TH" id="sb4-hM-Sqg"/>
+                <outlet property="xuHuaUserView" destination="N1v-8c-2TH" id="T2N-Vc-GEh"/>
             </connections>
             <point key="canvasLocation" x="-385.60000000000002" y="34.632683658170919"/>
         </view>

@@ -50,4 +50,9 @@
 
 @property (nonatomic,strong) NSString *wide;
 
+@property (nonatomic,assign) BOOL userVip;//是否vip：1会员，0普通
+
+
+
+
 @end

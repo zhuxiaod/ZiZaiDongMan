@@ -30,7 +30,7 @@
 
 @property (nonatomic,strong) UIButton *collectViewBtn;
 
-@property (nonatomic,assign) NSInteger superId;
+@property (nonatomic,strong) NSString *superId;
 
 @property(nonatomic,weak)id<ZZTEditorMaterialDetailViewDelegate>   delegate;
 

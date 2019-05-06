@@ -23,7 +23,6 @@
 #import "ZZTUserModel.h"
 //#import "BAKit_PickerViewConfig.h"
 #import "ZZTUserShoppingModel.h"
-#import "DCNewWelfareLayout.h"
 #import "UIView+Extension.h"
 #import "CommonMacro.h"
 #import "BaseViewController.h"
@@ -35,7 +34,6 @@
 #import "UITableView+FDTemplateLayoutCell.h"
 #import "PYSearch.h"
 #import "ZZTCarttonDetailModel.h"
-#import "ZZTWordsDetailViewController.h"
 #import "ZZTMoreViewController.h"
 #import <RTRootNavigationController/RTRootNavigationController.h>
 #import "UIBarButtonItem+Item.h"
@@ -64,7 +62,6 @@
 
 #import <JGProgressHUD.h>
 #import "ZZTWordDetailViewController.h"
-#import "ZZTMulWordDetailViewController.h"
 #import "ZZTRemindView.h"
 #import <UMShare/UMShare.h>
 #import <UShareUI/UShareUI.h>
@@ -75,11 +72,11 @@
 #import "ZZTCommentHeaderView.h"
 #import <TTTAttributedLabel.h>
 #import "UIColor+SKYExtension.h"
-#import "MCButton.h"
 #import "UIButton+LXMImagePosition.h"
 #import "IQKeyboardManager.h"
 #import "ZXDNavBar.h"
 #import "ZZTChapterModel.h"
+#import "ZZTChapterlistModel.h"
 #import "MBProgressHUD+XMG.h"
 #import "SectionFooterView.h"
 #import "TypeButton.h"
@@ -114,7 +111,6 @@
 #import "CMInputView.h"
 #import "ZZTCell.h"
 #import "ZZTCarttonDetailModel.h"
-#import "IAPManager.h"
 #import "SBIAPManager.h"
 #import "ZZTEditorCartoonViewController.h"
 #import "ZXDCheckContent.h"
@@ -126,6 +122,10 @@
 #import "SBAFHTTPSessionManager.h"
 #import "ZZTHomeTableViewModel.h"
 #import "ScreenShotManager.h"
+#import "ContinueReadManager.h"
+#import "ZZTXuHuaUserView.h"
+#import "SBAFHTTPSessionManager.h"
+#import "ZZTAlertController.h"
 
 
 #define BanerHeight SCREEN_HEIGHT * 0.3
@@ -138,10 +138,8 @@
 
 #define ZZTTextMindString @"赶紧评论秀才华~"
 
-
 #define ZZTAccessKey @"otsMMnYSaZw9UgT-OUFSc46m3UOVaqr-ysR07Dwq"
 #define ZZTSecretKey @"cJqacuOHqDq_zR4R4m2LUdFMRFMGUf8HC-1owpAw"
-
 
 #define MyLog(...) NSLog(__VA_ARGS__);
 #define ZZTColor(r, g, b) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:1.0]

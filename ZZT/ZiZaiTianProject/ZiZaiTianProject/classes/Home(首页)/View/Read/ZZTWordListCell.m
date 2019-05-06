@@ -10,15 +10,19 @@
 #import "ZZTChapterlistModel.h"
 @interface ZZTWordListCell()
 @property (nonatomic,strong) UIImageView *headImg;
+
 @property (nonatomic,strong) UIImageView *headBounds;
+
 @property (nonatomic,strong) UILabel *chapterLab;
+
 @property (nonatomic,strong) UILabel *pageLab;
-@property (nonatomic,strong) UIImageView *likeImg;
-@property (nonatomic,strong) UILabel *likeNum;
+
+@property (nonatomic,strong) UIButton *likeView;
+
 @property (nonatomic,strong) UIButton *commentView;
-@property (nonatomic,strong) UILabel *commentLab;
+
 @property (nonatomic,strong) UIView *bottomView;
-@property (nonatomic,strong) UILabel *xuHuaLab;
+
 @property (nonatomic,strong) UIImageView *VIPChapterImg;
 
 @property (nonatomic, assign) CGFloat imageW;
@@ -56,17 +60,6 @@
     _pageLab = pageLab;
     [self.contentView addSubview:pageLab];
     
-    //赞
-    UIImageView *likeImg = [[UIImageView alloc] init];
-    _likeImg = likeImg;
-    [likeImg setImage:[UIImage imageNamed:@"catoonDetail_like"]];
-    [self.contentView addSubview:likeImg];
-    
-    UILabel *likeNum = [[UILabel alloc] init];
-    [likeNum setTextColor:[UIColor colorWithHexString:@"#F0F0F0"]];
-    _likeNum = likeNum;
-    [self.contentView addSubview:likeNum];
-    
     //底线
     UIView *bottomView = [[UIView alloc] init];
     bottomView.backgroundColor = [UIColor grayColor];
@@ -79,6 +72,8 @@
     _VIPChapterImg = VIPChapterImg;
     [self.contentView addSubview:VIPChapterImg];
     VIPChapterImg.hidden = YES;
+    
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
 }
 
 -(void)goToCommentView{
@@ -120,6 +115,7 @@
     [self.VIPChapterImg mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.contentView).offset(10);
         make.right.equalTo(self.contentView.mas_right).offset(-8);
+        make.width.height.mas_offset(46);
         
     }];
     
@@ -128,7 +124,8 @@
         make.left.equalTo(self.headImg.mas_right).offset(10);
 //        make.right.equalTo(self).with.offset(-10);
         make.height.mas_equalTo(20);
-        make.width.mas_equalTo(100);
+//        make.width.mas_equalTo(100);
+        make.right.equalTo(self.VIPChapterImg.mas_left).offset(-10);
     }];
     
     [self.pageLab mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -144,27 +141,14 @@
         make.right.equalTo(self.contentView).offset(-8);
         make.bottom.equalTo(self.contentView).offset(-10);
         make.height.mas_equalTo(20);
-//        make.width.mas_equalTo(100);
+        make.width.mas_equalTo(60);
     }];
     
-//    [self.commentView.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.equalTo(self.commentView.mas_left);
-//        make.bottom.equalTo(self.commentView.mas_bottom);
-//        make.height.mas_equalTo(20);
-//    }];
-    
-    [self.likeNum mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.contentView.mas_right).with.offset(-80);
-        make.bottom.equalTo(self.bottomView.mas_top).with.offset(-10);
+    [self.likeView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.commentView);
+        make.right.equalTo(self.contentView.mas_right).offset(-100);
         make.height.mas_equalTo(20);
-        make.width.mas_equalTo(50);
-    }];
-    
-    [self.likeImg mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.likeNum.mas_left).with.offset(-5);
-        make.bottom.equalTo(self.bottomView.mas_top).with.offset(-11);
-        make.height.mas_equalTo(16);
-        make.width.mas_equalTo(16);
+        make.width.mas_equalTo(60);
     }];
 }
 
@@ -195,9 +179,8 @@
     }
     self.chapterLab.textColor = [UIColor blackColor];
     
+    [self.likeView setTitle:[NSString stringWithFormat:@"%ld",model.praiseNum] forState:UIControlStateNormal];
     
-    self.likeNum.text = [NSString stringWithFormat:@"%ld",model.praiseNum];
-    self.likeNum.textColor = [UIColor grayColor];
     //如果是章节 显示页 漫画 显示画
     if([model.type isEqualToString:@"2"]){
         if(model.wordNum / 10000 > 0){
@@ -208,21 +191,22 @@
     }else{
         if(model.chapterPage)self.pageLab.text = [NSString stringWithFormat:@"%@画",model.chapterPage];
     }
+    
     self.pageLab.textColor = [UIColor grayColor];
     
     NSString *replayCountText = [NSString makeTextWithCount:model.commentNum.integerValue];
 
     [self.commentView setTitle:replayCountText forState:UIControlStateNormal];
-    
-    CGFloat replyCountWidth = [replayCountText getTextWidthWithFont:self.commentView.titleLabel.font] + 30;
-    //设置宽度
-    [self.commentView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.contentView).offset(-8);
-        make.bottom.equalTo(self.contentView).offset(-10);
-        make.height.mas_equalTo(20);
-        make.width.mas_equalTo(replyCountWidth);
-    }];
-    [self.likeImg setImage:[UIImage imageNamed:@"catoonDetail_like"]];
+//    
+//    CGFloat replyCountWidth = [replayCountText getTextWidthWithFont:self.commentView.titleLabel.font] + 30;
+//    //设置宽度
+//    [self.commentView mas_remakeConstraints:^(MASConstraintMaker *make) {
+//        make.right.equalTo(self.contentView).offset(-8);
+//        make.bottom.equalTo(self.contentView).offset(-10);
+//        make.height.mas_equalTo(20);
+//        make.width.mas_equalTo(replyCountWidth);
+//    }];
+
     
     //VIP章节
     if(model.ifrelease == 2){
@@ -257,20 +241,30 @@
 
 - (UIButton *)commentView {
     if (!_commentView) {
-        
-        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        
-        btn.titleLabel.font = [UIFont systemFontOfSize:12];
-        
-        [btn setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
-        [btn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-        [btn setImage:[UIImage imageNamed:@"commentImg"] forState:UIControlStateNormal];
-        [btn addTarget:self action:@selector(goToCommentView) forControlEvents:UIControlEventTouchUpInside];
-        [self.contentView addSubview:btn];
-        
-        _commentView = btn;
+        _commentView = [self createButtonWithImg:@"commentImg" sel:@selector(goToCommentView)];
     }
-    
     return _commentView;
+}
+
+- (UIButton *)likeView {
+    if (!_likeView) {
+        _likeView = [self createButtonWithImg:@"catoonDetail_like" sel:nil];
+    }
+    return _likeView;
+}
+
+- (UIButton *)createButtonWithImg:(NSString *)img sel:(SEL)sel{
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    
+    btn.titleLabel.font = [UIFont systemFontOfSize:12];
+    
+    [btn setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
+    [btn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 8)];
+    
+    [btn setTitleColor:ZZTSubColor forState:UIControlStateNormal];
+    [btn setImage:[UIImage imageNamed:img] forState:UIControlStateNormal];
+    [btn addTarget:self action:sel forControlEvents:UIControlEventTouchUpInside];
+    [self.contentView addSubview:btn];
+    return btn;
 }
 @end

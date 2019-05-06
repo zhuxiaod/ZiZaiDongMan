@@ -118,9 +118,9 @@
         make.bottom.equalTo(self.contentView).offset(-20);
     }];
     
-//    [_backgroundBtn.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.right.left.bottom.equalTo(self.backgroundBtn);
-//    }];
+    [_backgroundBtn.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.right.left.bottom.equalTo(self.backgroundBtn);
+    }];
     
     [_userHead mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(self.contentView.mas_bottom);

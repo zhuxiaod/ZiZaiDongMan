@@ -194,7 +194,7 @@
         make.top.equalTo(self).offset(10);
         make.right.equalTo(self).offset(-26);
         make.left.equalTo(self).offset(26);
-        make.height.equalTo(self).multipliedBy(0.6);
+//        make.height.equalTo(self).multipliedBy(0.6);
     }];
     
     [self.boxOne mas_makeConstraints:^(MASConstraintMaker *make) {

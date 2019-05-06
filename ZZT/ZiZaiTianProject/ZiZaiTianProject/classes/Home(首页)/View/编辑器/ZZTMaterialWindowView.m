@@ -294,7 +294,7 @@
     
     AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dict = @{
-                           @"fodderId":[NSString stringWithFormat:@"%ld",model.id]
+                           @"fodderId":model.id
                            };
     [manager POST:[ZZTAPI stringByAppendingString:@"fodder/deleteUserSeekFodder"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         

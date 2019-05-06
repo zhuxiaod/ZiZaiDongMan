@@ -37,5 +37,6 @@ typedef void (^centerBtnBlock) (void);
 @property (nonatomic,assign) ZZTChapterlistModel *chapterModel;
 
 //@property (nonatomic, copy) void (^ centerBtnBlock)(void);
+-(void)changeBtnColorToGray:(UIButton *)button;
 
 @end

@@ -18,10 +18,11 @@
 }
 
 //热门数据Model
-+(instancetype)initHotVCModel:(NSString *)Url title:(NSString *)title{
++(instancetype)initHotVCModel:(NSString *)Url title:(NSString *)title parameters:(NSDictionary *)parameters{
     ZZTHomeTableViewModel *model = [[ZZTHomeTableViewModel alloc] init];
     model.title = title;
     model.url = Url;
+    model.parameters = parameters;
     return model;
 }
 
@@ -36,11 +37,12 @@
 
 
 //按钮
-+(instancetype)initBtnModelWithImgUrl:(NSString *)url title:(NSString *)btnTitle{
++(instancetype)initBtnModelWithImgUrl:(NSString *)url title:(NSString *)btnTitle {
     ZZTHomeTableViewModel *model = [[ZZTHomeTableViewModel alloc] init];
     model.btnImgUrl = url;
     model.title = btnTitle;
     return model;
+    
 }
 
 //数据

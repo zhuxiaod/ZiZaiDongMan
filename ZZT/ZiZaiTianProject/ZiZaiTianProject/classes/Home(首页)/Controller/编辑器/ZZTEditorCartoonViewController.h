@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@class ZZTChapterlistModel;
+
 @interface ZZTEditorCartoonViewController : BaseViewController
+
+@property (nonatomic, strong) ZZTChapterlistModel *xuHuaModel;
 
 @end

@@ -150,12 +150,12 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
         //取出来的
 //        model = self.wordList[[self.model.chapterIndex integerValue]];
 //        cartoonDetailVC.indexRow = [self.model.chapterIndex integerValue];
-        cartoonDetailVC.testModel = self.model;
+        cartoonDetailVC.JXYDModel = self.model;
     }
-    cartoonDetailVC.cartoonModel = _cartoonDetail;
+//    cartoonDetailVC.cartoonModel = _cartoonDetail;
     cartoonDetailVC.hidesBottomBarWhenPushed = YES;
-    cartoonDetailVC.dataModel = model;
-    cartoonDetailVC.cartoonModel = _cartoonDetail;
+    cartoonDetailVC.chapterData = model;
+//    cartoonDetailVC.cartoonModel = _cartoonDetail;
     [self.navigationController pushViewController:cartoonDetailVC animated:YES];
 }
 
@@ -371,8 +371,8 @@ NSString *zztMulPlayCell = @"zztMulPlayCell";
     
     cartoonDetailVC.indexRow = indexPath.row;
 
-    cartoonDetailVC.dataModel = model;
-    cartoonDetailVC.cartoonModel = _cartoonDetail;
+    cartoonDetailVC.chapterData = model;
+//    cartoonDetailVC.cartoonModel = _cartoonDetail;
  
     [self.navigationController pushViewController:cartoonDetailVC animated:YES];
 }

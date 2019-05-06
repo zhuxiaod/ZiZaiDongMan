@@ -7,7 +7,7 @@
 //
 
 #import "ZZTMeTopView.h"
-#import "ZZTSignInViewController.h"
+
 
 @interface ZZTMeTopView ()
 @property (weak, nonatomic) IBOutlet UIButton *backgroundBtn;

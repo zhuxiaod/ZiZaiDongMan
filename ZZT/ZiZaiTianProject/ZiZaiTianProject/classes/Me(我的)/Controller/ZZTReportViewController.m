@@ -7,7 +7,6 @@
 //
 
 #import "ZZTReportViewController.h"
-#import "ZZTMyZoneModel.h"
 #import "ZZTCircleModel.h"
 #import "customer.h"
 

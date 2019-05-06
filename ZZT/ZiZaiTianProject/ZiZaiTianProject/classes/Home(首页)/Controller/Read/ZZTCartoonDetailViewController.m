@@ -17,7 +17,6 @@
 #import "ZZTStoryModel.h"
 #import "UITableView+FDTemplateLayoutCell.h"
 #import "ZZTJiXuYueDuModel.h"
-#import "ZZTCreationCartoonTypeViewController.h"
 #import "ZZTChapterlistModel.h"
 #import "ZZTCarttonDetailModel.h"
 #include <sys/time.h>
@@ -27,7 +26,6 @@
 #import "ZZTChapterModel.h"
 #import "ZZTNextWordHeaderView.h"
 #import "UITableView+ZFTableViewSnapshot.h"
-#import "TJLongImgCut.h"
 #import "ZZTLikeCollectShareHeaderView.h"
 #import "ZZTAuthorHeaderView.h"
 #import "ZZTCommentAirView.h"
@@ -39,6 +37,7 @@
 #import "ZZTCartoonDetailRightBtnView.h"
 #import "ZZTCartInfoModel.h"
 #import "ZZTTextFiledView.h"
+
 
 @interface ZZTCartoonDetailViewController ()<UITableViewDelegate,UITableViewDataSource,CircleCellDelegate,ZZTCommentHeaderViewDelegate,UITextViewDelegate,NSURLSessionDataDelegate,ZZTCartoonContentCellDelegate,ZZTStoryDetailCellDelegate,ZZTStatusCellDelegate,ZZTStatusFooterViewDelegate,ZZTReportBtnDelegate,ZZTChapterPayViewDelegate>
 
@@ -57,8 +56,6 @@
 @property (nonatomic,assign) BOOL isOnce;
 
 @property (nonatomic,assign) BOOL isJXYD;
-
-@property (nonatomic,strong) ZZTJiXuYueDuModel *model;
 
 @property (nonatomic,strong) UserInfo *author;
 //剧本
@@ -136,6 +133,9 @@
 //右边btnView
 @property (nonatomic,weak) ZZTCartoonDetailRightBtnView *rightBtnView;
 
+@property (nonatomic,strong) ZZTContinueToDrawHeadView *xuhuaView;
+
+
 @end
 
 static NSString *CartoonContentCellIdentifier = @"CartoonContentCellIdentifier";
@@ -176,6 +176,14 @@ static bool needHide = false;
         _replyer = [[customer alloc] init];
     }
     return _replyer;
+}
+
+-(ZZTContinueToDrawHeadView *)xuhuaView{
+    if(_xuhuaView == nil){
+        _xuhuaView = [ZZTContinueToDrawHeadView ContinueToDrawHeadView];
+   
+    }
+    return _xuhuaView;
 }
 
 //初始化图片高度 如果有缓存使用缓存高度
@@ -246,11 +254,10 @@ static bool needHide = false;
     self.isNavHide = NO;
     
 #warning 待改
-//    [self setupTitleView];
     
     self.isOnce = NO;
     
-    if(self.model){
+    if(self.JXYDModel){
         self.isOnce = YES;
     }
 
@@ -282,6 +289,7 @@ static bool needHide = false;
     
     //监听键盘
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hiddenKeyboard) name:UIKeyboardWillHideNotification object:nil];
+    
 }
 
 -(void)hiddenKeyboard{
@@ -295,9 +303,9 @@ static bool needHide = false;
     _rightBtnView = rightBtnView;
     //数据传进来
     //收藏
-    _rightBtnView.collectStatus = _collectModel.ifCollect;
+    _rightBtnView.collectStatus = _bookData.ifCollect;
     //是否关注作者
-    _rightBtnView.attentionStatus = _collectModel.ifauthor;
+    _rightBtnView.attentionStatus = _bookData.ifauthor;
     //点赞
     weakself(self);
     _rightBtnView.collectBtnBlock = ^(NSInteger tag) {
@@ -321,8 +329,9 @@ static bool needHide = false;
                         @"userId":SBAFHTTPSessionManager.sharedManager.userID,
                            @"authorId":[NSString stringWithFormat:@"%ld",self.author.id]
                            };
-    [SBAFHTTPSessionManager.sharedManager loadPostRequest:@"record/ifUserAtAuthor" paramDict:dict finished:nil];
-
+    [SBAFHTTPSessionManager.sharedManager loadPostRequest:@"record/ifUserAtAuthor" paramDict:dict finished:^(id responseObject, NSError *error) {
+        
+    }];
 }
 
 -(void)chapterPayViewDismissLastViewController{
@@ -349,12 +358,11 @@ static bool needHide = false;
     ZZTCommentViewController *commentView = [[ZZTCommentViewController alloc] init];
     ZZTNavigationViewController *nav = [[ZZTNavigationViewController alloc] initWithRootViewController:commentView];
 
-    commentView.chapterId = [NSString stringWithFormat:@"%ld",self.dataModel.id];
-    commentView.cartoonType = self.cartoonModel.type;
+    commentView.chapterId = [NSString stringWithFormat:@"%ld",self.chapterData.id];
+    commentView.cartoonType = self.bookData.type;
     [self presentViewController:nav animated:YES completion:nil];
 
     [table endRefreshing];
-
 }
 
 //下拉评论接口
@@ -366,8 +374,8 @@ static bool needHide = false;
     UserInfo *user = [Utilities GetNSUserDefaults];
     AFHTTPSessionManager *session = [[AFHTTPSessionManager alloc] init];
     NSDictionary *commentDict = @{
-                                  @"itemId":[NSString stringWithFormat:@"%ld",self.dataModel.id],
-                                  @"type":self.cartoonModel.type,
+                                  @"itemId":[NSString stringWithFormat:@"%ld",self.chapterData.id],
+                                  @"type":self.bookData.type,
                                   @"pageNum":[NSString stringWithFormat:@"%ld",_moreCommentPage],
                                   @"pageSize":@"10",
                                   @"userId":[NSString stringWithFormat:@"%ld",user.id]
@@ -427,7 +435,7 @@ static bool needHide = false;
     self.viewNavBar.leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 17);
     
     //中间
-    [self.viewNavBar.centerButton setTitle:[NSString stringWithFormat:@"%@第%@",_cartoonModel.bookName,self.dataModel.chapterName] forState:UIControlStateNormal];
+    [self.viewNavBar.centerButton setTitle:[NSString stringWithFormat:@"%@第%@",_bookData.bookName,self.chapterData.chapterName] forState:UIControlStateNormal];
     [self.viewNavBar.centerButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
     [self.viewNavBar.rightButton setImage:[UIImage imageNamed:@"cartoonDetail_share"] forState:UIControlStateNormal];
@@ -473,7 +481,7 @@ static bool needHide = false;
 
     //点赞完了以后 重新请求一次获取点赞的接口  刷新点赞图标
  
-    [self loadLikeDataWithCartoonId:_cartoonModel.id];
+    [self loadLikeDataWithCartoonId:_bookData.id];
 }
 
 #pragma mark - tableViewDelegate
@@ -481,7 +489,7 @@ static bool needHide = false;
     if(self.commentArray.count > 0){
         return self.commentArray.count + 4;
     }else{
-        return 4;
+        return 4;//有问题
     }
 }
 
@@ -500,28 +508,13 @@ static bool needHide = false;
             }
             break;
     }
-//    //漫画内容
-//    if(section == 0){
-//        return self.cartoonDetailArray.count;
-//    //空cell
-//    }else if (section == 1 || section == 2 || section == 3){
-//        return 0;
-//    }else{
-//        if(_isHasComment){
-//            //没有评论的时候
-//            return 0;
-//        }else{
-//            ZZTCircleModel *model = self.commentArray[section - 4];
-//            return model.replyComment.count;
-//        }
-//    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    NSLog(@"indexRow:%ld",(long)indexPath.row);
+
     if(indexPath.section == 0){
         //漫画   是这里的数据
-        if([self.cartoonModel.type isEqualToString:@"1"]){
+        if([self.bookData.type isEqualToString:@"1"]){
             //数据源
             ZZTCartoonContentCell *cell = [tableView dequeueReusableCellWithIdentifier:CartoonContentCellIdentifier];
             cell.delegate = self;
@@ -551,7 +544,7 @@ static bool needHide = false;
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if(indexPath.section == 0){
         //漫画高度
-        if([self.cartoonModel.type isEqualToString:@"1"]){
+        if([self.bookData.type isEqualToString:@"1"]){
             return [self.imageCellHeightCache[indexPath.row] doubleValue];
         }else{
             //小说高度
@@ -577,18 +570,20 @@ static bool needHide = false;
 
     [self loadCommentData];
 
-    [self loadLikeDataWithCartoonId:_cartoonModel.id];
+    [self loadLikeDataWithCartoonId:_bookData.id];
     //显示作者信息
     self.authorHeaderView.userModel = self.author;
     //没有本地连接
-    if(!self.chapterModel.TXTFileName){
+//    if(!self.chapterModel.TXTFileName){
         //下载地址
 //        [self downloadTxT];
-    }else{
+//    }else{
 //            [self.tableView reloadData];
-    }
+//    }
     [self.tableView reloadData];
 
+    //请求同人章节数据
+    [self loadMultiChapter];
 }
 
 #warning 上下页btn样式
@@ -637,17 +632,16 @@ static bool needHide = false;
 //把请求单独的抽出来
 -(void)loadContentData{
 
-    if([self.cartoonModel.type isEqualToString:@"1"]){
-        //漫画
+    if([self.bookData.type isEqualToString:@"1"]){
+        //漫画  曾经阅读
         if(self.chapterModel.imageUrlArray.count > 0){
-            
             self.cartoonDetailArray = self.chapterModel.imageUrlArray;
             self.imageUrlArray = self.cartoonDetailArray;
             self.author = self.chapterModel.autherData;
             [self reloadCellWithIndex];
         }else{
             //加载内容信息
-            [SBAFHTTPSessionManager.sharedManager loadCartoonContentData:@"cartoon/getCartoonCenter" id:[NSString stringWithFormat:@"%ld",_dataModel.id] finished:^(id responseObject, NSError *error) {
+            [SBAFHTTPSessionManager.sharedManager loadCartoonContentData:@"cartoon/getCartoonCenter" id:[NSString stringWithFormat:@"%ld",_chapterData.id] finished:^(id responseObject, NSError *error) {
                 if(error != nil){
                     NSLog(@"%@",error);
                     return;
@@ -667,19 +661,20 @@ static bool needHide = false;
                 [self reloadCellWithIndex];
             }];
         }
-    }else{
-        if(self.chapterModel.TXTFileName){
-            
-            ZZTStoryModel *model = [[ZZTStoryModel alloc] init];
-            model = self.chapterModel.storyModel;
-            model.content = self.chapterModel.TXTFileName;
-            [self.cartoonDetailArray addObject:model];
-            self.fileName = self.chapterModel.TXTFileName;
-            self.stroyModel = model;
-            self.author = self.chapterModel.autherData;
-            [self reloadCellWithIndex];
+    }
+//    else{
+//        if(self.chapterModel.TXTFileName){
+//
+//            ZZTStoryModel *model = [[ZZTStoryModel alloc] init];
+//            model = self.chapterModel.storyModel;
+//            model.content = self.chapterModel.TXTFileName;
+//            [self.cartoonDetailArray addObject:model];
+//            self.fileName = self.chapterModel.TXTFileName;
+//            self.stroyModel = model;
+//            self.author = self.chapterModel.autherData;
+//            [self reloadCellWithIndex];
 
-        }else{
+//        }else{
 //            //章节
 //            NSDictionary *paramDict = @{
 //                                        @"chapterinfoId":[NSString stringWithFormat:@"%ld",_dataModel.id],
@@ -705,14 +700,14 @@ static bool needHide = false;
 //            } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
 //
 //            }];
-        }
-    }
+//        }
+//    }
 }
 
 -(void)loadLikeDataWithCartoonId:(NSString *)cartoonId{
     NSDictionary *likeDict = @{
-                               @"chapterId":[NSString stringWithFormat:@"%ld",self.dataModel.id],
-                               @"userId":SBAFHTTPSessionManager.sharedManager.userID
+                               @"chapterId":[NSString stringWithFormat:@"%ld",self.chapterData.id],
+                            @"userId":SBAFHTTPSessionManager.sharedManager.userID
                                };
     [SBAFHTTPSessionManager.sharedManager loadPostRequest:@"cartoon/getChapterPraise" paramDict:likeDict finished:^(id responseObject, NSError *error) {
         if(error != nil){
@@ -731,7 +726,7 @@ static bool needHide = false;
 -(void)loadCommentData{
     _isHasComment = NO;
     
-    [SBAFHTTPSessionManager.sharedManager loadCartoonCommentData:@"cartoon/cartoonComment" chapterId:[NSString stringWithFormat:@"%ld",self.dataModel.id] type:self.cartoonModel.type finished:^(NSDictionary *commentDict, NSError *error) {
+    [SBAFHTTPSessionManager.sharedManager loadCartoonCommentData:@"cartoon/cartoonComment" chapterId:[NSString stringWithFormat:@"%ld",self.chapterData.id] type:self.bookData.type finished:^(NSDictionary *commentDict, NSError *error) {
         if(error != nil){
             NSLog(@"%@",error);
             return;
@@ -754,7 +749,7 @@ static bool needHide = false;
 }
 
 -(void)loadAuthorData{
-    if(![self.cartoonModel.type isEqualToString:@"1"]){
+    if(![self.bookData.type isEqualToString:@"1"]){
         UserInfo *user = [[UserInfo alloc] init];
         user.headimg = self.stroyModel.headimg;
         user.nickName = self.stroyModel.nickName;
@@ -765,6 +760,21 @@ static bool needHide = false;
     }
 }
 
+-(void)loadMultiChapter{
+    [SBAFHTTPSessionManager.sharedManager loadMultiChapterData:self.bookData.id chapterId:self.chapterData.chapterId finished:^(id responseObject, NSError *error) {
+        if(error != nil){
+            NSLog(@"%@",error);
+            return;
+        }
+        NSMutableArray *array = [ZZTChapterlistModel mj_objectArrayWithKeyValuesArray:responseObject];
+        //赋数据
+        self.xuhuaView.array = array;
+//        //续画人数
+
+//
+        [self.tableView reloadData];
+    }];
+}
 //下载txt
 //-(void)downLoadTxt:(NSString *)txtUrl{
 //    NSError *error;
@@ -791,14 +801,11 @@ static bool needHide = false;
 //    return responseJSON;
 //}
 
--(void)setDataModel:(ZZTChapterlistModel *)dataModel{
-    _dataModel = dataModel; // 你的问题在哪里  是没有数据还是数据错乱
+//设置有关章节的数据
+-(void)setChapterData:(ZZTChapterlistModel *)chapterData{
+    _chapterData = chapterData; // 你的问题在哪里  是没有数据还是数据错乱
     //设置总数 方便进行下一页判断
-    self.listTotal = dataModel.listTotal;
-}
-
--(void)setCartoonModel:(ZZTCarttonDetailModel *)cartoonModel{
-    _cartoonModel = cartoonModel;
+    self.listTotal = chapterData.listTotal;
 }
 
 //请求数据后显示那一行
@@ -832,7 +839,7 @@ static bool needHide = false;
             break;
         default:{
             ZZTCircleModel *model = self.commentArray[section - 4];
-            return _isHasComment?SCREEN_HEIGHT * 0.31:model.headerHeight;
+            return _isHasComment?196 * SCREEN_WIDTH / 360:model.headerHeight;
             }
             break;
     }
@@ -853,7 +860,7 @@ static bool needHide = false;
         if(!likeCollectView){
             likeCollectView = [[ZZTLikeCollectShareHeaderView alloc] initWithReuseIdentifier:likeCollectShareHeaderView];
         }
-        likeCollectView.collectModel = self.collectModel;
+        likeCollectView.collectModel = self.bookData;
         weakself(self);
         //点赞
         likeCollectView.likeBtnBlock = ^{
@@ -929,12 +936,22 @@ static bool needHide = false;
         [_nextWordView.rightBtn addTarget:self action:@selector(nextWordWithBtn:) forControlEvents:UIControlEventTouchUpInside];
         [_nextWordView.leftBtn addTarget:self action:@selector(nextWordWithBtn:) forControlEvents:UIControlEventTouchUpInside];
         _nextWordView.listTotal = self.listTotal;
-        _nextWordView.chapterModel = self.dataModel;
+        _nextWordView.chapterModel = self.chapterData;
         return _nextWordView;
     }else if (section == 2){
 //        //同人创作
-        ZZTContinueToDrawHeadView *headerView = [ZZTContinueToDrawHeadView ContinueToDrawHeadView];
-        return headerView;
+        weakself(self);
+        self.xuhuaView.hidden = [_bookData.cartoonType isEqualToString:@"1"];
+        _xuhuaView.xuHuaUserView.didUserItem = ^(ZZTChapterlistModel *xuHuaChapter) {
+            //内容跳转  类似上下章
+            [self reloadNewChapterCartoon:xuHuaChapter];
+        };
+        _xuhuaView.xuHuaBtnBlock = ^{
+            
+            [weakSelf.xuhuaView pushMultiCartoonEditorVC:[ZZTChapterlistModel initXuhuaModel:weakSelf.bookData chapterPage:weakSelf.chapterData.chapterPage chapterId:weakSelf.chapterData.chapterId]];
+            
+        };
+        return _xuhuaView;
     }else if(section == 3){
         return [[UIView alloc] init];
     }else{
@@ -947,14 +964,13 @@ static bool needHide = false;
             if(!footerView){
                 footerView = [[ZZTStatusFooterView alloc] initWithReuseIdentifier:statusFooterView];
             }
-//            footerView.isFind = NO;
             footerView.delegate = self;
             footerView.update = ^{
                 //更新评论数据
                 [self loadCommentData];
             };
             footerView.reportBtn.delegate = self;
-            footerView.bookId = self.cartoonModel.id;
+            footerView.bookId = self.bookData.id;
             ZZTCircleModel *model = self.commentArray[section - 4];
             footerView.model = model;
             return footerView;
@@ -973,13 +989,13 @@ static bool needHide = false;
 
     switch (section) {
         case 0: case 3:
-            return 0;
+            return 0.1;
             break;
         case 1:
             return SCREEN_HEIGHT * 0.12;
             break;
         case 2:
-            return 146;
+            return [self.bookData.cartoonType isEqualToString:@"1"]?0:146;
             break;
         default:
             return 30;
@@ -990,60 +1006,44 @@ static bool needHide = false;
 #pragma mark - ZZTNextWordHeaderView target
 -(void)nextWordWithBtn:(UIButton *)btn{
     
-    [SBAFHTTPSessionManager.sharedManager loadUpDownData:@"cartoon/getupDown" cartoonId:self.cartoonModel.id chapterId:self.dataModel.chapterId code:self.cartoonModel.type upDown:btn.tag finished:^(id  _Nullable responseObject, NSError *error) {
+    [SBAFHTTPSessionManager.sharedManager loadUpDownData:@"cartoon/getupDown" cartoonId:self.bookData.id chapterId:self.chapterData.chapterId code:self.bookData.type authorId:self.author.id upDown:btn.tag finished:^(id  _Nullable responseObject, NSError *error) {
+        [self continueReading];
         if(error != nil){
             NSLog(@"%@",error);
             return ;
         }
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];
         if(dic){
-            //准备跳转  --->   初始化数据源
-            //            [self.cartoonDetailArray removeAllObjects];
-            self.cartoonDetailArray = nil;
-            self.imageCellHeightCache = nil;
-            //            [self.headerMuArr removeAllObjects];
-            self.headerMuArr = nil;
-            self.commentArray = nil;
-            self.tableView = nil;
             //获得内容id
-            ZZTChapterlistModel *model = [ZZTChapterlistModel mj_objectWithKeyValues:dic];
-            self.dataModel.id = model.id;
-            //最近观看改一下
-            self.dataModel.chapterPage = model.chapterPage;
-            self.dataModel.chapterName = model.chapterName;
-            self.dataModel.chapterId = model.chapterId;
-            self.dataModel.ifbuy = model.ifbuy;
-            //清空当前存储的章节历史信息
-            self.chapterModel = nil;
-            //通过书id 找到这本书的id
-            self.testModel = [self getJuXuYueDuModelWithBookId:self.cartoonModel.id];
-            [self.viewNavBar.centerButton setTitle:self.dataModel.chapterName forState:UIControlStateNormal];
-            [self.view bringSubviewToFront:self.viewNavBar];
-            [self loadContent];
-            [self viewWillAppear:YES];
+            ZZTChapterlistModel *chapterModel = [ZZTChapterlistModel mj_objectWithKeyValues:dic];
+            chapterModel.nickName = self.chapterData.nickName;
+            chapterModel.chapterType = self.chapterData.chapterType;
+//            chapterModel.listTotal = _bookData.
+            [self reloadNewChapterCartoon:chapterModel];
         }else{
             //显示错误信息
             [MBProgressHUD showError:@"已经没有章节"];
+            [self.nextWordView changeBtnColorToGray:btn];
         }
         [self.tableView reloadData];
     }];
 }
 
--(ZZTJiXuYueDuModel *)getJuXuYueDuModelWithBookId:(NSString *)bookId{
-    NSMutableArray *arrayDict = [NSKeyedUnarchiver unarchiveObjectWithFile:JiXuYueDuAPI];
-    if (arrayDict == nil) {
-        arrayDict = [NSMutableArray array];
-    }
-    ZZTJiXuYueDuModel *model = [[ZZTJiXuYueDuModel alloc] init];
-    for (int i = 0; i < arrayDict.count; i++) {
-        //看这个数组里面的模型是否有这本书
-        model = arrayDict[i];
-        if([model.bookId isEqualToString:bookId]){
-            self.model = model;
-            break;
-        }
-    }
-    return model;
+-(void)reloadNewChapterCartoon:(ZZTChapterlistModel *)model{
+    self.chapterData = model;
+    //准备跳转  --->   初始化数据源
+    self.cartoonDetailArray = nil;
+    self.imageCellHeightCache = nil;
+    self.headerMuArr = nil;
+    self.commentArray = nil;
+    self.tableView = nil;
+    //清空当前存储的章节历史信息
+    self.chapterModel = nil;
+    //通过书id 找到这本书的id
+    self.JXYDModel =  [ContinueReadManager.sharedInstance getJuXuYueDuModelWithBookId:self.bookData.id];
+    [self.viewNavBar.centerButton setTitle:self.chapterData.chapterName forState:UIControlStateNormal];
+    [self loadContent];
+    [self viewWillAppear:YES];
 }
 
 //点赞
@@ -1053,8 +1053,8 @@ static bool needHide = false;
         return;
     }
     
-    [SBAFHTTPSessionManager.sharedManager cartoonGiveGood:@"great/cartoonPraise" type:self.cartoonModel.type typeId:[NSString stringWithFormat:@"%ld",self.dataModel.id] cartoonId:self.cartoonModel.id finished:^(id  _Nullable responseObject, NSError *error) {
-        [self loadLikeDataWithCartoonId:self.cartoonModel.id];
+    [SBAFHTTPSessionManager.sharedManager cartoonGiveGood:@"great/cartoonPraise" type:self.bookData.type typeId:[NSString stringWithFormat:@"%ld",self.chapterData.id] cartoonId:self.bookData.id finished:^(id  _Nullable responseObject, NSError *error) {
+        [self loadLikeDataWithCartoonId:self.bookData.id];
     }];
 }
 
@@ -1062,7 +1062,7 @@ static bool needHide = false;
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
     //准确估算卡通高度
     if(indexPath.section == 0){
-        if([self.cartoonModel.type isEqualToString:@"1"]){
+        if([self.bookData.type isEqualToString:@"1"]){
             return [self.imageCellHeightCache[indexPath.row] doubleValue];
         }else{
             //估算文章高度
@@ -1160,7 +1160,6 @@ static bool needHide = false;
     UserInfo *user = [Utilities GetNSUserDefaults];
     if([circleItem.customer.id isEqualToString:[NSString stringWithFormat:@"%ld",user.id]]){
         [self deleteReplyActionView:@"1" comentId:circleItem.id];
-
     }
 }
 
@@ -1180,11 +1179,6 @@ static bool needHide = false;
     self.viewNavBar.hidden = needHide;
     
     offset = needhide == YES? -navHeight : navHeight;
-    
-//
-//    [self.viewNavBar mas_updateConstraints:^(MASConstraintMaker *make) {    //隐藏底部视图
-//        make.top.equalTo(self.view).offset(offset);
-//    }];
     
     //隐藏动画
     [UIView animateWithDuration:0.25 animations:^{
@@ -1221,109 +1215,55 @@ static bool needHide = false;
     [self continueReading];
 }
 
-//继续浏览
+#pragma mark - 继续阅读
 -(void)continueReading{
     //继续阅读业务
-    //获取已经存储的继续阅读数据
-    NSMutableArray *arrayDict = [NSKeyedUnarchiver unarchiveObjectWithFile:JiXuYueDuAPI];
-    if (arrayDict == nil) {
-        arrayDict = [NSMutableArray array];
-    }
-    
-//    NSLog(@"arrayDict:%@",arrayDict);
-    
-    //直接存这本书
-    //创建书模型
-    ZZTJiXuYueDuModel *model = [[ZZTJiXuYueDuModel alloc] init];
-    //书名
-    model.bookName = _cartoonModel.bookName;
-    //书ID
-    model.bookId = _cartoonModel.id;    //判断那本书
-    model.chapterListRow = [NSString stringWithFormat:@"%ld",self.indexRow];//位于第几章节第几行
-    
     //章节模型 信息
     ZZTChapterModel *chapterModel = [[ZZTChapterModel alloc] init];
-    
-    if([self.cartoonModel.type isEqualToString:@"1"]){
-        
-        chapterModel = [ZZTChapterModel initCarttonChapter:self.dataModel.id chapterName:self.dataModel.chapterName autherData:self.author chapterPage:self.dataModel.chapterPage chapterIndex:self.indexRow readPoint:self.readPoint imageUrlArray:self.imageUrlArray imageHeightCache:self.imageCellHeightCache];
+    //漫画
+    if([self.bookData.type isEqualToString:@"1"]){
+
+        chapterModel = [ZZTChapterModel initJxydChapterModel:self.chapterData userData:self.author readPoint:self.readPoint imageUrlArray:self.imageUrlArray imageHeightCache:self.imageCellHeightCache];
         
     }else{
 
-        chapterModel = [ZZTChapterModel initTxtChapter:self.dataModel.id chapterName:self.dataModel.chapterName autherData:self.author chapterPage:self.dataModel.chapterPage chapterIndex:self.indexRow readPoint:self.readPoint TxTContent:self.TXTURL TXTFileName:self.fileName storyModel:self.stroyModel];
+        chapterModel = [ZZTChapterModel initTxtChapter:self.chapterData.id chapterName:self.chapterData.chapterName autherData:self.author chapterPage:self.chapterData.chapterPage chapterIndex:self.indexRow readPoint:self.readPoint TxTContent:self.TXTURL TXTFileName:self.fileName storyModel:self.stroyModel];
     }
     
+    NSInteger isHave = [ContinueReadManager.sharedInstance isHaveThisBook:_bookData];
     
-    //先看有没有这篇文章
-    BOOL isHave = NO;
-    int arrayIndex = 0;
-    //因为有很多本书 所以会有很多对象
-    for (int i = 0; i < arrayDict.count; i++) {
-        ZZTJiXuYueDuModel *bookModel = arrayDict[i];
-        if([bookModel.bookId isEqualToString:_cartoonModel.id]){
-            //证明有这一本书
-            isHave = YES;
-            arrayIndex = i;
-            break;
-        }
-    }
-    
-   
-
-    //如果有 就修改
-    if(isHave == YES){
-        //取出这本书
-        ZZTJiXuYueDuModel *readModel = arrayDict[arrayIndex];
-        
-        //查有没有这个章节
-        BOOL isChapterHave = NO;
-        NSInteger index = 0;
-        for (int i = 0; i < readModel.chapterArray.count; i++) {
-            ZZTChapterModel *chapterM = readModel.chapterArray[i];
-            if(chapterModel.chapterId == chapterM.chapterId){
-                isChapterHave = YES;
-                index = i;
-                break;
-            }
-        }
-        //如果有这个章节
-        if(isChapterHave == YES){
-            readModel.arrayIndex = [NSString stringWithFormat:@"%ld",index];
-            [readModel.chapterArray replaceObjectAtIndex:index withObject:chapterModel];
-        }else{
-            readModel.arrayIndex = [NSString stringWithFormat:@"%ld",readModel.chapterArray.count];
-            [readModel.chapterArray addObject:chapterModel];
-        }
-        
-        readModel.lastReadData = self.dataModel;
-
-        readModel.chapterListRow = [NSString stringWithFormat:@"%ld",self.indexRow];
-        [arrayDict replaceObjectAtIndex:arrayIndex withObject:readModel];
+    if(isHave >= 0){
+        //替换
+        /*
+         1.新建章节信息
+         2.书信息
+         3.是否存在 存在第几位
+         5.此章节信息
+         */
+        [ContinueReadManager.sharedInstance replaceReadedBookWithChapter:chapterModel bookModel:_bookData readedIndex:isHave chapterData:self.chapterData];
     }else{
+        //添加
+        /*
+         1.新建章节信息
+         2.书信息
+         */
+        [ContinueReadManager.sharedInstance addReadedBookWithChapter:self.chapterData bookModel:_bookData chapterModel:chapterModel];
         
-        model.lastReadData = self.dataModel;
-
-        [model.chapterArray addObject:chapterModel];
-        [arrayDict addObject:model];
     }
- 
 
-    //存
-    NSString *path = JiXuYueDuAPI;
-    [NSKeyedArchiver archiveRootObject:arrayDict toFile:path];
 }
 
-//继续阅读本地文件
--(void)setTestModel:(ZZTJiXuYueDuModel *)testModel{
-    _testModel = testModel;
-    if(testModel){
+//处理继续阅读
+-(void)setJXYDModel:(ZZTJiXuYueDuModel *)JXYDModel{
+    _JXYDModel = JXYDModel;
+    if(JXYDModel){
         self.isJXYD = YES;//是否继续阅读
-        self.model = testModel;
-        if(self.model.chapterArray.count > 0){
+
+        if(self.JXYDModel.chapterArray.count > 0){
             //通过比对id 得到当前这本书的历史数据
-            for (int i = 0; i < self.model.chapterArray.count; i++) {
-                ZZTChapterModel *chapterModel = testModel.chapterArray[i];
-                if(chapterModel.chapterId == self.dataModel.id){
+            for (int i = 0; i < self.JXYDModel.chapterArray.count; i++) {
+                ZZTChapterModel *chapterModel = JXYDModel.chapterArray[i];
+                if(chapterModel.chapterId == self.chapterData.id && [chapterModel.chapterType isEqualToString:self.chapterData.chapterType]){
                     self.chapterModel = chapterModel;
                     break;
                 }
@@ -1334,12 +1274,6 @@ static bool needHide = false;
     }
 }
 
--(ZZTJiXuYueDuModel *)model{
-    if(!_model){
-        _model = [[ZZTJiXuYueDuModel alloc] init];
-    }
-    return _model;
-}
 //滑动时候 隐藏视图的逻辑
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     CGRect sectionRect = [self.tableView rectForSection:1];
@@ -1383,11 +1317,11 @@ static bool needHide = false;
 
 //是否购买
 -(void)isPayCartoon{
-    if([_dataModel.ifbuy isEqualToString:@"0"] && _dataModel.ifrelease == 2){
+    if([_chapterData.ifbuy isEqualToString:@"0"] && _chapterData.ifrelease == 2){
         //        NSLog(@"没有购买 弹出界面");
         ZZTChapterPayViewController *CPVC = [[ZZTChapterPayViewController alloc] init];
         CPVC.delegate = self;
-        CPVC.model = self.dataModel;
+        CPVC.model = self.chapterData;
         ZZTNavigationViewController *nav = [[ZZTNavigationViewController alloc] initWithRootViewController:CPVC];
         nav.modalPresentationStyle = UIModalPresentationOverCurrentContext;
         [self presentViewController:nav animated:YES completion:nil];
@@ -1410,7 +1344,9 @@ static bool needHide = false;
     }
     ZZTCircleModel *item = self.commentArray[section];
     
-    [SBAFHTTPSessionManager.sharedManager cartoonGiveGood:@"great/cartoonPraise" type:@"3" typeId:item.id cartoonId:self.cartoonModel.id finished:nil];
+    [SBAFHTTPSessionManager.sharedManager cartoonGiveGood:@"great/cartoonPraise" type:@"3" typeId:item.id cartoonId:self.bookData.id finished:^(id  _Nullable responseObject, NSError *error) {
+        
+    }];
 }
 
 #pragma mark cartCell代理
@@ -1471,8 +1407,8 @@ static bool needHide = false;
         [MBProgressHUD showMessage:@"正在发布..." toView:self.view];
         NSDictionary *dic = @{
                               @"userId":SBAFHTTPSessionManager.sharedManager.userID,
-                              @"chapterId":[NSString stringWithFormat:@"%ld",self.dataModel.id],
-                              @"type":self.cartoonModel.type,
+                              @"chapterId":[NSString stringWithFormat:@"%ld",self.chapterData.id],
+                              @"type":self.bookData.type,
                               @"content":self.kTextView.text
                               };
         [SBAFHTTPSessionManager.sharedManager loadPostRequest:@"cartoon/insertComment" paramDict:dic finished:^(id responseObject, NSError *error) {
@@ -1517,9 +1453,8 @@ static bool needHide = false;
         [UserInfoManager needLogin];
         return;
     }
-    [ScreenShotManager.manager screenShotAndShare:self.tableView lbCover:self.collectModel.lbCover];
+    [[ScreenShotManager manager] openSharePlatformWithbookDetail:self.bookData];
 }
-
 
 #pragma mark 预加载
 //当view开始减速的时候
@@ -1669,7 +1604,7 @@ static bool needHide = false;
         [self.tableView registerClass:[ZZTStoryDetailCell class] forCellReuseIdentifier:story];
         
         self.tableView.tableFooterView = [UIView new];
-        [self.view bringSubviewToFront:self.navbar];
+        [self.view bringSubviewToFront:self.viewNavBar];
         [self.view bringSubviewToFront:self.kInputView];
     }
     return _tableView;
@@ -1683,7 +1618,7 @@ static bool needHide = false;
     }
     UserInfo *userInfo = [Utilities GetNSUserDefaults];
     NSDictionary *dic = @{
-                          @"cartoonId":_cartoonModel.id,
+                          @"cartoonId":_bookData.id,
                           @"userId":[NSString stringWithFormat:@"%ld",userInfo.id]
                           };
     AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
@@ -1698,9 +1633,9 @@ static bool needHide = false;
         if(array.count > 0){
             ZZTCartInfoModel *model = array[0];
             if([model.status isEqualToString:@"1"]){
-                self.collectModel.collectNum += 1;
+                self.bookData.collectNum += 1;
             }else{
-                self.collectModel.collectNum -= 1;
+                self.bookData.collectNum -= 1;
             }
         }
         //关注
@@ -1751,4 +1686,5 @@ static bool needHide = false;
     //弹出键盘
     [self startComment];
 }
+
 @end

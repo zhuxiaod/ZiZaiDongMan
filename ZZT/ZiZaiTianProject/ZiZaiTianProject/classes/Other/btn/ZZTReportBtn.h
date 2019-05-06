@@ -27,4 +27,12 @@
 
 @property (nonatomic,strong)ZZTCircleModel *circleModel;
 
+@property (nonatomic,strong) ZZTReportModel *model;
+
+@property (nonatomic,strong) void(^reportblock)(ZZTReportModel *model);
+
+
+-(void)reportUserData;
+
+
 @end

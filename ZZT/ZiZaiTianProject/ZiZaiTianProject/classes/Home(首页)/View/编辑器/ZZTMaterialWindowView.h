@@ -24,7 +24,7 @@ typedef void (^collectViewBtnBlock)(UIButton *btn);//给block重命名,方便调
 
 - (void)materialContentView:(UICollectionView *)materialContentView materialModel:(ZZTDetailModel *)model kindIndex:(NSInteger)index materialIndex:(NSInteger)materialIndex materialImage:(UIImage *)materialImage;
 
-- (void)createEditorMaterialDetailViewWithID:(NSInteger)materialId superModel:(ZZTDetailModel*)superModel kindIndex:(NSInteger)kindIndex;
+- (void)createEditorMaterialDetailViewWithID:(NSString *)materialId superModel:(ZZTDetailModel*)superModel kindIndex:(NSInteger)kindIndex;
 
 - (void)materialWindowHidden;
 

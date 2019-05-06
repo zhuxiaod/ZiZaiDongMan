@@ -7,14 +7,13 @@
 //
 
 #import "ZZTContinueToDrawHeadView.h"
-#import "ZZTXuHuaBtn.h"
 #import "ZZTCartoonModel.h"
 #import "ZZTChapterlistModel.h"
 #import "ZZTXuHuaUserView.h"
 
 @interface ZZTContinueToDrawHeadView ()<UICollectionViewDataSource,UICollectionViewDelegate>
 
-@property (weak, nonatomic) IBOutlet ZZTXuHuaUserView *xuHuaUserView;
+
 @property (weak, nonatomic) IBOutlet UIButton *xuHuaBtn;
 
 @end
@@ -42,12 +41,36 @@
     [super awakeFromNib];
     
     [GlobalUI initButton:self.xuHuaBtn];
+    
+     
 
 }
 
 - (IBAction)creatNewWord:(UIButton *)sender {
-  
-    
+    if(self.xuHuaBtnBlock){
+        self.xuHuaBtnBlock();
+    }
 }
 
+-(void)setArray:(NSArray *)array{
+    _array = array;
+    _xuHuaUserView.dataArray = array;
+}
+
+-(void)setBookDetail:(ZZTCarttonDetailModel *)bookDetail{
+    _bookDetail = bookDetail;
+    _xuHuaUserView.bookDetail = bookDetail;
+}
+-(void)setLastReadModel:(ZZTJiXuYueDuModel *)lastReadModel{
+    _xuHuaUserView.lastReadModel = lastReadModel;
+}
+
+-(void)pushMultiCartoonEditorVC:(ZZTChapterlistModel *)model{
+    //bookID
+    //页码
+    ZZTEditorCartoonViewController *ecVC = [[ZZTEditorCartoonViewController alloc] init];
+    ecVC.xuHuaModel = model;
+    ecVC.hidesBottomBarWhenPushed = YES;
+    [[self myViewController].navigationController pushViewController:ecVC animated:YES];
+}
 @end

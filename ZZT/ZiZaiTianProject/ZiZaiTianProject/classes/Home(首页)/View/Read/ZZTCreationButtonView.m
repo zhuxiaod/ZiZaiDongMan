@@ -8,7 +8,7 @@
 
 #import "ZZTCreationButtonView.h"
 #import "ZXDCartoonFlexoBtn.h"
-#import "ZZTCreationCartoonTypeViewController.h"
+//#import "ZZTCreationCartoonTypeViewController.h"
 #import "ZZTWritingSequelViewController.h"
 
 @interface ZZTCreationButtonView ()
@@ -72,12 +72,12 @@
 }
 
 -(void)didCartoon{
-    ZZTCreationCartoonTypeViewController *cartoonVC = [[ZZTCreationCartoonTypeViewController alloc] init];
-//    cartoonVC.viewTitle = @"创建漫画";
-    cartoonVC.type = @"1";
-    [self myViewController].hidesBottomBarWhenPushed = YES;
-    [[self myViewController].navigationController pushViewController:cartoonVC animated:YES];
-    [self myViewController].hidesBottomBarWhenPushed = NO;
+//    ZZTCreationCartoonTypeViewController *cartoonVC = [[ZZTCreationCartoonTypeViewController alloc] init];
+////    cartoonVC.viewTitle = @"创建漫画";
+//    cartoonVC.type = @"1";
+//    [self myViewController].hidesBottomBarWhenPushed = YES;
+//    [[self myViewController].navigationController pushViewController:cartoonVC animated:YES];
+//    [self myViewController].hidesBottomBarWhenPushed = NO;
 }
 
 -(void)didPlay{

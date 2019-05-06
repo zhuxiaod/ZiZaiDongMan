@@ -14,17 +14,17 @@
 
 @interface ZZTMallDetailViewController ()<UICollectionViewDataSource,UICollectionViewDelegate>
 
-@property (nonatomic,weak)ZZTChapterPayViewController *chapterPayVC;
+@property (nonatomic,strong) ZZTChapterPayViewController *chapterPayVC;
 
-@property (nonatomic,weak)UIView *payView;
+@property (nonatomic,strong) UIView *payView;
 
-@property (nonatomic,weak)UIView *goodsView;
+@property (nonatomic,strong) UIView *goodsView;
 
-@property (nonatomic,weak) UICollectionView *collectionView;
+@property (nonatomic,strong) UICollectionView *collectionView;
 
 @property (nonatomic,strong) NSArray *materialArray;
 
-@property (nonatomic,weak) ZZTPayTureView *payTureView;
+@property (nonatomic,strong) ZZTPayTureView *payTureView;
 
 @end
 
@@ -86,7 +86,7 @@
     AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dict = @{
                            @"userId":[NSString stringWithFormat:@"%ld",[Utilities GetNSUserDefaults].id],
-                           @"fodderId":[NSString stringWithFormat:@"%ld",self.model.id],//素材的id
+                           @"fodderId":self.model.id,//素材的id
                            @"zbNum":zbNum//Zb价格
                            };
     [manager POST:[ZZTAPI stringByAppendingString:@"zztMall/userBuyFodder"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -110,13 +110,14 @@
 
 #pragma mark - 设置内容布局
 -(void)setupContentView{
-    UIView *payView = [[UIView alloc] initWithFrame:CGRectMake(0, Screen_Height - 300, SCREEN_WIDTH, 300)];
+    CGFloat bottomSpace = Screen_Height == 812.0f? 44: 0;
+    UIView *payView = [[UIView alloc] initWithFrame:CGRectMake(0, Screen_Height - 300 - bottomSpace, SCREEN_WIDTH, 300)];
     _payView = payView;
-    NSLog(@"payView:%f",payView.height);
     payView.backgroundColor = [UIColor yellowColor];
     [self.view addSubview:payView];
     
-    UIView *goodsView = [[UIView alloc] initWithFrame:CGRectMake(0, navHeight, SCREEN_WIDTH, Screen_Height - navHeight - 300)];
+    CGFloat nav_Height = Height_NavBar;
+    UIView *goodsView = [[UIView alloc] initWithFrame:CGRectMake(0, nav_Height, SCREEN_WIDTH, Screen_Height - nav_Height - 300 - bottomSpace)];
     _goodsView = goodsView;
     goodsView.backgroundColor = [UIColor redColor];
     [self.view addSubview:goodsView];
@@ -134,7 +135,7 @@
 -(void)loadMaterialData{
     AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSDictionary *dict = @{
-                           @"fodderId":[NSString stringWithFormat:@"%ld",self.model.id]
+                           @"fodderId":self.model.id
                            };
     [manager POST:[ZZTAPI stringByAppendingString:@"zztMall/getFodderGoodsSuite"] parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *dic = [[EncryptionTools alloc] decry:responseObject[@"result"]];

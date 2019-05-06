@@ -7,9 +7,6 @@
 //
 
 #import "ZZTVIPViewController.h"
-#import "ZZTVIPTopView.h"
-#import "ZZTVIPMidView.h"
-#import "ZZTVIPBtView.h"
 #import "MLIAPManager.h"
 #import <SVProgressHUD.h>
 #import <MBProgressHUD.h>

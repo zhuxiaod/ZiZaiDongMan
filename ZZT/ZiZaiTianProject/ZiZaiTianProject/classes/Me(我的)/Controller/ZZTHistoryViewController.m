@@ -101,7 +101,7 @@ static NSString *zztCartoonHistoryCell = @"zztCartoonHistoryCell";
 }
 
 -(void)setupTableView{
-    UITableView *contentView = [[UITableView alloc] initWithFrame:CGRectMake(0, navHeight, self.view.width, self.view.height - 64) style:UITableViewStylePlain];
+    UITableView *contentView = [[UITableView alloc] initWithFrame:CGRectMake(0, [GlobalUI getNavibarHeight], self.view.width, self.view.height - [GlobalUI getNavibarHeight]) style:UITableViewStylePlain];
     contentView.backgroundColor = [UIColor whiteColor];
     contentView.delegate = self;
     contentView.dataSource = self;
@@ -110,7 +110,8 @@ static NSString *zztCartoonHistoryCell = @"zztCartoonHistoryCell";
 //    self.automaticallyAdjustsScrollViewInsets = YES;
     self.contentView = contentView;
     //注册cell
-    [contentView registerClass:[ZZTCartoonHistoryCell class] forCellReuseIdentifier:zztCartoonHistoryCell];
+    [contentView registerNib:[UINib nibWithNibName:@"ZZTCartoonHistoryCell" bundle:nil] forCellReuseIdentifier:zztCartoonHistoryCell];
+    
     [self.view addSubview:contentView];
 }
 
@@ -120,7 +121,7 @@ static NSString *zztCartoonHistoryCell = @"zztCartoonHistoryCell";
     NSDictionary *paramDict = @{
                                 @"userId":[NSString stringWithFormat:@"%ld",user.id]
                                 };
-//    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
+
     AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     [manager POST:[ZZTAPI stringByAppendingString:@"record/selBrowsehistory"] parameters:paramDict progress:nil
           success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -156,7 +157,6 @@ static NSString *zztCartoonHistoryCell = @"zztCartoonHistoryCell";
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     ZZTCartoonHistoryCell *cell = [tableView dequeueReusableCellWithIdentifier:zztCartoonHistoryCell];
-//    ZZTWordListCell *cell = [tableView dequeueReusableCellWithIdentifier:zztWordListCell];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     ZZTCarttonDetailModel *car = self.cartoons[indexPath.row];
     cell.model = car;
@@ -164,24 +164,27 @@ static NSString *zztCartoonHistoryCell = @"zztCartoonHistoryCell";
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    ZZTCarttonDetailModel *car = self.cartoons[indexPath.row];
-    ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
-    //yes 就是有Id
-    detailVC.isId = NO;
-    detailVC.cartoonDetail = car;
-    detailVC.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:detailVC animated:YES];
+    ZZTCarttonDetailModel *model = self.cartoons[indexPath.row];
+    //漫画
+    if(model.cover){
+        ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
+        //yes 就是有Id
+        detailVC.isId = NO;
+        detailVC.cartoonDetail = model;
+        detailVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:detailVC animated:YES];
+    }else{
+        //空间
+        ZZTMyZoneViewController *zoneView = [[ZZTMyZoneViewController alloc] init];
+        zoneView.userId = model.userId;
+        [self.navigationController pushViewController:zoneView animated:NO];
+    }
+
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     ZZTCarttonDetailModel *model = self.cartoons[indexPath.row];
-    if(model.cover){
-        return SCREEN_HEIGHT * 0.25;
-    }else{
-        ZZTCarttonDetailModel *model = _cartoons[indexPath.row];
-        NSArray *imgs = [model.contentImg componentsSeparatedByString:@","];
-        return  [ZZTCartoonHistoryCell cellHeightWithStr:model.content imgs:imgs];
-    }
+    return model.rowHeight;
 }
 
 @end

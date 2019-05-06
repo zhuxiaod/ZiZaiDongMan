@@ -29,6 +29,8 @@
     
 }
 
+#define textSpace 20
+
 //2条控制边
 @property (nonatomic,strong) UIView *rightBorder;
 
@@ -70,31 +72,13 @@
     //禁止旋转
     [self Editor_BasisViewClosePichGesture];
     
+    //显示图
     UIImageView *imageView = [[UIImageView alloc] init];
     imageView.userInteractionEnabled = YES;
     _imageView = imageView;
     imageView.layer.borderColor = [UIColor whiteColor].CGColor;
     imageView.layer.borderWidth = 1.0f;
     [self addSubview:imageView];
-    
-    
-    
-//    //通过2条边 来控制自身的大小
-//    UIView *rightBorder = [[UIView alloc] init];
-//    _rightBorder = rightBorder;
-//    rightBorder.tag = 1;
-//    [self addSubview:rightBorder];
-//
-//    UIView *leftBorder = [[UIView alloc] init];
-//    _leftBorder = leftBorder;
-//    leftBorder.tag = 2;
-//    [self addSubview:leftBorder];
-//
-//    //边手势
-//    UIPanGestureRecognizer *borderGestureOne = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(tapTarget:)];
-//    UIPanGestureRecognizer *borderGestureTwo = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(tapTarget:)];
-//    [rightBorder addGestureRecognizer:borderGestureOne];
-//    [leftBorder addGestureRecognizer:borderGestureTwo];
     
     //lab
     UILabel *textLab = [[UILabel alloc] init];
@@ -106,8 +90,8 @@
     
     //边线
 //    self.layer.cornerRadius = 10.0f;
-    self.layer.borderColor = [UIColor blackColor].CGColor;
-    self.layer.borderWidth = 1.0f;
+    textLab.layer.borderColor = [UIColor blackColor].CGColor;
+    textLab.layer.borderWidth = 1.0f;
     
     //删除按钮
     UIButton *closeImageView = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -168,10 +152,7 @@
 
 -(void)layoutSubviews{
     
-    [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.left.equalTo(self).offset(1);
-        make.bottom.right.equalTo(self).offset(-1);
-    }];
+   
     
     [self.moveImg mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self);
@@ -200,7 +181,12 @@
 //        make.left.mas_equalTo(10);
 //    }];
 
-    self.textLab.frame = CGRectMake(10, 0, self.bounds.size.width - 20, self.bounds.size.height);
+    self.textLab.frame = CGRectMake(10, 10, self.bounds.size.width - 20, self.bounds.size.height - 20);
+    
+    [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.left.equalTo(self.textLab).offset(-1);
+        make.bottom.right.equalTo(self.textLab).offset(1);
+    }];
     
     [self.closeImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self).offset(2);
@@ -211,7 +197,7 @@
     self.lineView.frame = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height);
 }
 
-#pragma mark - 对边操作
+#pragma mark - 拖动按钮改变
 -(void)tapTarget:(UIPanGestureRecognizer *)panGesture{
     
     //改变变量
@@ -275,11 +261,9 @@
         }
         
         if(self.textLab.text){
-            height = [self.textLab.text heightWithWidth:width - 20 font:self.fontSize];
-            height += 20;
+            height = [self.textLab.text heightWithWidth:width - textSpace font:self.fontSize];
+            height += textSpace;
         }
-        
-        
         
         //得到当前的Width
         self.frame = CGRectMake(x, y, width, height);
@@ -290,7 +274,7 @@
 -(CGFloat)minimumlimit:(CGFloat)num{
     //能放下当前一个字号 _fontSize
     CGFloat replyCountWidth = [@"宽" getTextWidthWithFont:self.textLab.font];
-    replyCountWidth += 20;
+    replyCountWidth += textSpace;
     if(num < replyCountWidth){
         num = replyCountWidth;
     }
@@ -320,9 +304,9 @@
     _type = type;
     //背景透明的
     if(type == editorTextViewTypeBGClear){
-//        [self setNeedsDisplay];
+        self.textLab.backgroundColor = [UIColor clearColor];
     }else if (type == editorTextViewTypeBGWhite){
-        self.backgroundColor = [UIColor clearColor];
+        self.textLab.backgroundColor = [UIColor whiteColor];
     }else{
         //无边框  输入完成后
     }
@@ -348,17 +332,20 @@
     self.textLab.font = [UIFont systemFontOfSize:fontSize];
     
     //取到第一行有多少字
-    NSArray *array = [self getLinesArrayOfStringInLabel:self.textLab];
-    NSString *str = array[0];
+//    NSArray *array = [self getLinesArrayOfStringInLabel:self.textLab];
+    
+//    NSString *str = array[0];
 
-    NSString *textStr = [NSString stringWithFormat:@"%@宽",str];
+//    NSString *textStr = [NSString stringWithFormat:@"%@宽",str];
     
     //计算会用到的宽度
-    CGFloat replyCountWidth = [textStr getTextWidthWithFont:self.textLab.font];
+//    CGFloat replyCountWidth = [textStr getTextWidthWithFont:self.textLab.font];
     
-    replyCountWidth = [self minimumlimit:replyCountWidth];
+//    replyCountWidth = [self minimumlimit:replyCountWidth];
 
-    self.frame = CGRectMake(self.x, self.y, replyCountWidth, self.bounds.size.height);
+//    self.frame = CGRectMake(self.x, self.y, replyCountWidth + 20, self.bounds.size.height);
+    
+    self.frame = CGRectMake(self.x, self.y, self.bounds.size.width, self.bounds.size.height);
 
     [self setupViewHeight];
 }
@@ -387,8 +374,7 @@
     //适应高度
     CGFloat height = [self.textLab.text heightWithWidth:self.width - 20 font:self.fontSize];
     
-    self.frame = CGRectMake(self.x, self.y, self.width, height + 20);
-    NSLog(@"height:%f",height);
+    self.frame = CGRectMake(self.x, self.y, self.width, height + textSpace);
 
     if(_textLab.text.length == 0){
         self.frame = CGRectMake(self.x, self.y, self.width, 30);
@@ -443,7 +429,7 @@
     
     [self.moveImg setHidden:YES];
     
-    self.layer.borderColor = [UIColor clearColor].CGColor;
+    self.textLab.layer.borderColor = [UIColor clearColor].CGColor;
     
     _imageView.layer.borderColor = [UIColor clearColor].CGColor;
 }
@@ -454,7 +440,7 @@
     
     [self.moveImg setHidden:NO];
 
-    self.layer.borderColor = [UIColor blackColor].CGColor;
+    self.textLab.layer.borderColor = [UIColor blackColor].CGColor;
     
     _imageView.layer.borderColor = [UIColor whiteColor].CGColor;
 }

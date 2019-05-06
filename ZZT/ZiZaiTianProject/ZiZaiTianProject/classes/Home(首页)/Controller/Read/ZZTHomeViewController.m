@@ -12,7 +12,6 @@
 #import "ZZTReadTableView.h"
 #import "ZZTCycleCell.h"
 #import "ZZTEasyBtnModel.h"
-#import "ZZTCreationTableView.h"
 #import "PYSearchSuggestionViewController.h"
 #import "ZZTCarttonDetailModel.h"
 #import "ZZTUpdateViewController.h"
@@ -24,7 +23,6 @@
 //search
 #import "ZZTSearchCartoonCell.h"
 #import "ZZTSearchZoneCell.h"
-#import "ZZTFindCommentCell.h"
 #import "ZXDSearchViewController.h"
 
 static NSString *findCommentCell = @"findCommentCell";
@@ -34,7 +32,6 @@ static NSString *findCommentCell = @"findCommentCell";
 @property (nonatomic,weak) UIView *customNavBar;
 //@property (nonatomic,weak) ListView *listView;
 @property (nonatomic,weak) ZZTReadHomeViewController *ReadView;
-@property (nonatomic,weak) ZZTCreationTableView *CreationView;
 @property (nonatomic,weak) ZZTCollectHomeViewController *collectView;
 @property (nonatomic,weak) ZZTCycleCell *cycleCell;
 //@property (nonatomic,weak) UIScrollView *mainView;
@@ -46,7 +43,7 @@ static NSString *findCommentCell = @"findCommentCell";
 @property (nonatomic,strong) NSMutableArray *cartoonArray;
 @property (nonatomic,weak) ZZTRemindView *remindView;
 //导航条
-@property (nonatomic,weak) ZXDNavBar *navBar;
+//@property (nonatomic,weak) ZXDNavBar *navBar;
 //titleView
 @property (nonatomic,weak) ZZTNavBarTitleView *titleView;
 
@@ -210,26 +207,26 @@ NSString *SuggestionView = @"SuggestionView";
     
     [titleView.rightBtn addTarget:self action:@selector(clickMenu:) forControlEvents:UIControlEventTouchUpInside];
     
-    ZXDNavBar *navBar = [[ZXDNavBar alloc] init];
-    _navBar = navBar;
-    navBar.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:navBar];
+//    ZXDNavBar *navBar = [[ZXDNavBar alloc] init];
+//    _navBar = navBar;
+    self.viewNavBar.backgroundColor = [UIColor clearColor];
+//    [self.view addSubview:navBar];
     
-    [self.navBar mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.equalTo(self.view);
-        make.top.equalTo(self.view);
-        make.height.equalTo(@(navHeight));
-    }];
+//    [self.navBar mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.right.equalTo(self.view);
+//        make.top.equalTo(self.view);
+//        make.height.equalTo(@(navHeight));
+//    }];
     
     //返回
-    [navBar.leftButton setImage:[UIImage imageNamed:@"Home_readHistory"] forState:UIControlStateNormal];
-    [navBar.leftButton addTarget:self action:@selector(history) forControlEvents:UIControlEventTouchUpInside];
+    [self.viewNavBar.leftButton setImage:[UIImage imageNamed:@"Home_readHistory"] forState:UIControlStateNormal];
+    [self.viewNavBar.leftButton addTarget:self action:@selector(history) forControlEvents:UIControlEventTouchUpInside];
 //    navBar.leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 17);
 
     //搜索
-    [navBar.rightButton setImage:[UIImage imageNamed:@"Home_search"] forState:UIControlStateNormal];
+    [self.viewNavBar.rightButton setImage:[UIImage imageNamed:@"Home_search"] forState:UIControlStateNormal];
 //    navBar.rightButton.imageEdgeInsets = UIEdgeInsetsMake(0, -17, 0, 0);
-    [navBar.rightButton addTarget:self action:@selector(search) forControlEvents:UIControlEventTouchUpInside];
+    [self.viewNavBar.rightButton addTarget:self action:@selector(search) forControlEvents:UIControlEventTouchUpInside];
     
     //删除
     UIButton *deleteBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -238,27 +235,27 @@ NSString *SuggestionView = @"SuggestionView";
     [deleteBtn setImage:[UIImage imageNamed:@"Home_removeBook"] forState:UIControlStateNormal];
 //    deleteBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, -33);
     [deleteBtn addTarget:self action:@selector(showRemindView) forControlEvents:UIControlEventTouchUpInside];
-    [navBar addSubview:deleteBtn];
+    [self.viewNavBar addSubview:deleteBtn];
     
     [deleteBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.navBar.rightButton.mas_top);
-        make.right.equalTo(self.navBar.rightButton.mas_right);
+        make.top.equalTo(self.viewNavBar.rightButton.mas_top);
+        make.right.equalTo(self.viewNavBar.rightButton.mas_right);
         make.width.mas_equalTo(50);
         make.height.mas_equalTo(40);
     }];
     
     //中间
-    [navBar.mainView addSubview:titleView];
+    [self.viewNavBar.mainView addSubview:titleView];
     
     [titleView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(navBar.mainView);
+        make.centerX.equalTo(self.viewNavBar.mainView);
         make.width.mas_equalTo(SCREEN_WIDTH * 0.34);
         make.height.mas_equalTo(30);
 //        make.bottom.equalTo(navBar.mainView).offset(-10);
-        make.centerY.equalTo(navBar.leftButton.mas_centerY);
+        make.centerY.equalTo(self.viewNavBar.leftButton.mas_centerY);
     }];
     
-    navBar.showBottomLabel = NO;
+    self.viewNavBar.showBottomLabel = NO;
 }
 
 - (void)showRemindView{
@@ -301,16 +298,16 @@ NSString *SuggestionView = @"SuggestionView";
 
 - (void)showHomeView{
     //显示搜索
-    self.navBar.leftButton.hidden = NO;
-    self.navBar.rightButton.hidden = NO;
+    self.viewNavBar.leftButton.hidden = NO;
+    self.viewNavBar.rightButton.hidden = NO;
     self.deleteBtn.hidden = YES;
     [self.titleView selectBtn:self.titleView.leftBtn];
 }
 
 - (void)showDeletBtn{
     //显示删除
-    self.navBar.leftButton.hidden = YES;
-    self.navBar.rightButton.hidden = YES;
+    self.viewNavBar.leftButton.hidden = YES;
+    self.viewNavBar.rightButton.hidden = YES;
     self.deleteBtn.hidden = NO;
     [self.titleView selectBtn:self.titleView.rightBtn];
     

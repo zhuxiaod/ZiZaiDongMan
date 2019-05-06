@@ -146,19 +146,11 @@
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     ZZTCarttonDetailModel *md = self.cartoons[indexPath.row];//type 2 漫画 剧本
-    if([md.cartoonType isEqualToString:@"1"]){
         ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
         detailVC.isId = NO;
         detailVC.cartoonDetail = md;
         detailVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:detailVC animated:YES];
-    }else{
-        ZZTMulWordDetailViewController *detailVC = [[ZZTMulWordDetailViewController alloc]init];
-        detailVC.isId = NO;
-        detailVC.cartoonDetail = md;
-        detailVC.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:detailVC animated:YES];
-    }
 }
 //边距设置:整体边距的优先级，始终高于内部边距的优先级
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {

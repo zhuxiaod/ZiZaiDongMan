@@ -122,9 +122,14 @@
     editorDeskView.delegate = self;
     _editorDeskView = editorDeskView;
     [self.view addSubview:editorDeskView];
+    //如果是X那么
+    CGFloat topSpace = SCREEN_HEIGHT == 812.0f?30:0;
+    CGFloat bottomSpace = SCREEN_HEIGHT == 812.0f?-49:0;
     
     [editorDeskView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.right.left.bottom.equalTo(self.view);
+        make.right.left.equalTo(self.view);
+        make.top.equalTo(self.view).offset(topSpace);
+        make.bottom.equalTo(self.view).offset(bottomSpace);
     }];
     
     [_deskArray addObject:editorDeskView];
@@ -140,8 +145,9 @@
     [topView.previewBtn addTarget:self action:@selector(previewCurrentView) forControlEvents:UIControlEventTouchUpInside];
     [topView.releaseBtn addTarget:self action:@selector(releaseCartoon) forControlEvents:UIControlEventTouchUpInside];
     
+
     [topView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.view);
+        make.top.equalTo(self.view).offset(topSpace);
         make.left.right.equalTo(self.view);
         make.height.mas_equalTo(ZZTLayoutDistance(100));
     }];
@@ -155,8 +161,10 @@
     [bottomView.paletteBtn addTarget:self action:@selector(paletteTheView) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:bottomView];
     
+
     [bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.right.left.equalTo(self.view);
+        make.bottom.equalTo(self.view).offset(bottomSpace);
+        make.right.left.equalTo(self.view);
         make.height.mas_equalTo(ZZTLayoutDistance(130));
     }];
     
@@ -900,7 +908,7 @@
         //旁白框
         if(model.modelType == 12 || model.modelType == 13){
             //旁白
-            ZZTEditorTextView *textView = [[ZZTEditorTextView alloc] initWithFrame:CGRectMake(50, 50, 70, 142)];
+            ZZTEditorTextView *textView = [[ZZTEditorTextView alloc] initWithFrame:CGRectMake(50, 50, 100, 142)];
             //不同的对话框
             textView.type = model.modelType;
             textView.kindIndex = [NSString stringWithFormat:@"%ld",index];
@@ -937,7 +945,7 @@
 
 
 #pragma mark - 创建分组框
-- (void)createEditorMaterialDetailViewWithID:(NSInteger)materialId superModel:(ZZTDetailModel *)superModel kindIndex:(NSInteger)kindIndex{
+- (void)createEditorMaterialDetailViewWithID:(NSString *)materialId superModel:(ZZTDetailModel *)superModel kindIndex:(NSInteger)kindIndex{
     [_materialDetailView removeFromSuperview];
     //隐藏素材的按钮
     self.materialWindow.collectViewBtn.hidden = YES;
@@ -1067,6 +1075,7 @@
         newImageView.imageUrl = model.img;
     }else{
         [newImageView.imageView setImage:img];
+        newImageView.originalImg = [CIImage imageWithCGImage:img.CGImage];
     }
     [self addViewToDeskOrSRView:newImageView];
     return newImageView;
@@ -1404,6 +1413,8 @@
     
     ZZTZoneUpLoadViewController *uploadVC = [[ZZTZoneUpLoadViewController alloc] init];
     
+    uploadVC.xuHuaModel = self.xuHuaModel;
+    
     uploadVC.addPhotosArray = self.releseImgArray;
     
     [self presentViewController:uploadVC animated:YES completion:nil];
@@ -1489,7 +1500,7 @@
     
     UIImage *image = [UIImage imageNamed:@"watermark"];
    //2.0几倍大小
-    UIGraphicsBeginImageContextWithOptions(self.editorDeskView.frame.size, YES, 8.0);
+    UIGraphicsBeginImageContextWithOptions(self.editorDeskView.frame.size, YES, 2.0);
     
     [self.editorDeskView.layer renderInContext:UIGraphicsGetCurrentContext()];
     
@@ -1597,4 +1608,7 @@
     _editorDeskView = editorDeskView;
 }
 
+-(void)setXuHuaModel:(ZZTChapterlistModel *)xuHuaModel{
+    _xuHuaModel = xuHuaModel;
+}
 @end

@@ -262,4 +262,8 @@
     return _saturation;
 }
 
+-(void)setImageView:(UIImageView *)imageView{
+    _imageView = imageView;
+    
+}
 @end

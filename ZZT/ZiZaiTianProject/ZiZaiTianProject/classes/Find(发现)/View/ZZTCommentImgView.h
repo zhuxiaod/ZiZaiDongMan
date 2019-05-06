@@ -15,6 +15,8 @@
 
 @property (nonatomic,strong) ZZTMyZoneModel *model;
 
+@property (strong, nonatomic) NSArray *imgArray;
+
 
 -(CGFloat)getIMGHeight:(NSInteger)imgNum;
 

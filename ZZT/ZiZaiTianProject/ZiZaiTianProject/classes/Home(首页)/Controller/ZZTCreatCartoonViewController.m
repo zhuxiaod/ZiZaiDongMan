@@ -19,7 +19,6 @@
 #import "ZZTFangKuangModel.h"
 #import "ZZTBubbleImageView.h"
 #import "ZZTChapterlistModel.h"
-#import "ColorInButton.h"
 #import "ToolBtn.h"
 #import "ZZTRemindView.h"
 #import "ZZTColorPickerView.h"
@@ -103,7 +102,6 @@
 //下一页索引为0是允许执行
 @property (nonatomic,assign) BOOL isNext;
 
-@property (weak, nonatomic) IBOutlet ColorInButton *coloInBtn;
 
 @property (nonatomic,strong) UIImageView *imageView;
 
@@ -198,11 +196,7 @@
     //UICollectionView
     [self setupCollectionView];
 
-    //方框初始化
-//    [self setupRectangleView];
-//    ColorInButton *btn = [ColorInButton ColorInButtonView];
-//    btn.viewColor = [UIColor yellowColor];
-//    self.coloInBtn = btn;
+
 }
 
 -(void)setupRectangleView{

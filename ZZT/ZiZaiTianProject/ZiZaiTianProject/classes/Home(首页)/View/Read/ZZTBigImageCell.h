@@ -16,6 +16,5 @@
 @property (nonatomic,strong) ZZTCarttonDetailModel *model;
 
 
-//@property (nonatomic,strong) ZZTMallListModel *ListModel;
 
 @end

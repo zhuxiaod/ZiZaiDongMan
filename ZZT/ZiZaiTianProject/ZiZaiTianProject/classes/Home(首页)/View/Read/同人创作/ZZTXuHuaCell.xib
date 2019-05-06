@@ -32,15 +32,15 @@
                         </constraints>
                     </imageView>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="catoonDetail_like_select" translatesAutoresizingMaskIntoConstraints="NO" id="UmE-lP-uHa">
-                        <rect key="frame" x="5" y="68" width="14" height="14"/>
+                        <rect key="frame" x="5" y="72" width="14" height="14"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="14" id="0n9-yf-YTU"/>
                             <constraint firstAttribute="height" constant="14" id="AzT-RG-RlM"/>
                         </constraints>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GIO-Gf-OFh">
-                        <rect key="frame" x="21" y="68" width="40" height="14"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GIO-Gf-OFh">
+                        <rect key="frame" x="21" y="72" width="40" height="14"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
@@ -54,7 +54,7 @@
                 <constraint firstItem="GIO-Gf-OFh" firstAttribute="centerY" secondItem="UmE-lP-uHa" secondAttribute="centerY" id="GRa-04-kGp"/>
                 <constraint firstAttribute="trailing" secondItem="vMX-2j-U1F" secondAttribute="trailing" constant="3" id="LBW-1C-fXl"/>
                 <constraint firstItem="vMX-2j-U1F" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="3" id="QzW-uW-lL0"/>
-                <constraint firstItem="UmE-lP-uHa" firstAttribute="top" secondItem="7UG-HN-0ov" secondAttribute="bottom" constant="4" id="Sba-MB-7AD"/>
+                <constraint firstItem="UmE-lP-uHa" firstAttribute="top" secondItem="7UG-HN-0ov" secondAttribute="bottom" constant="8" id="Sba-MB-7AD"/>
                 <constraint firstItem="GIO-Gf-OFh" firstAttribute="leading" secondItem="UmE-lP-uHa" secondAttribute="trailing" constant="2" id="Xyt-or-feJ"/>
                 <constraint firstAttribute="trailing" secondItem="7UG-HN-0ov" secondAttribute="trailing" id="pye-HS-8Pw"/>
                 <constraint firstItem="7UG-HN-0ov" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="voX-VA-gsp"/>

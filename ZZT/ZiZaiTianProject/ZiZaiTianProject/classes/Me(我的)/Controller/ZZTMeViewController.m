@@ -5,7 +5,7 @@
 //  Created by mac on 2018/6/26.
 //  Copyright © 2018年 zxd. All rights reserved.
 //
-#import "ZZTSignInView.h"
+
 #import "ZZTMeViewController.h"
 #import "ZZTMeTopView.h"
 #import "ZZTMeCell.h"
@@ -34,7 +34,7 @@
 #import "ZZTMeTableModel.h"
 
 
-@interface ZZTMeViewController ()<UITableViewDataSource,UITableViewDelegate,ZZTSignInViewDelegate>
+@interface ZZTMeViewController ()<UITableViewDataSource,UITableViewDelegate>
 
 @property(nonatomic,strong) UITableView *tableView;
 //cell数据
@@ -46,8 +46,6 @@
 @property (nonatomic,strong) EncryptionTools *encryptionManager;
 
 @property (nonatomic,strong) UserInfo *userData;
-
-@property (nonatomic,strong) ZZTSignInView *signView;
 
 @property (nonatomic,strong) ZZTMeTopView *topView;
 
@@ -405,11 +403,12 @@ NSString *bannerID = @"MeCell";
 #pragma mark - 我的书柜
 -(void)gotoBookVC{
     //我的书柜
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjects:@[@"1",@"10",SBAFHTTPSessionManager.sharedManager.userID] forKeys:@[@"pageNum",@"pageSize",@"userId"]];
     ZZTCartoonViewController *bookVC = [[ZZTCartoonViewController alloc] init];
     bookVC.hidesBottomBarWhenPushed = YES;
     bookVC.viewTitle = @"书柜";
     bookVC.viewType = @"2";
-    bookVC.model = [ZZTHomeTableViewModel initHotVCModel:@"great/userCollect" title:@"书柜"];
+    bookVC.model = [ZZTHomeTableViewModel initHotVCModel:@"great/userCollect" title:@"书柜" parameters:dict];
     [self.navigationController pushViewController:bookVC animated:YES];
 }
 

@@ -7,22 +7,15 @@
 //
 
 #import "ZZTShoppingMallViewController.h"
-#import "ZZTShoppingMallCell.h"
 #import "ZZTShoppingBtnModel.h"
-#import "ZZTShoppingHeader.h"
-#import "ZZTShoppingBtnCell.h"
-#import "ZZTMaterialCell.h"
-#import "ZZTShoppingHeaderView.h"
 #import <SDCycleScrollView.h>
 #import "ZXDCartoonFlexoBtn.h"
-#import "ZZTMallRecommendView.h"
 
 #import "ZZTBigImageCell.h"
 #import "ZZTCartoonCell.h"
 #import "ZZTCollectionCycleView.h"
 #import "ZZTSectionLabView.h"
 #import "ZZTMoreFooterView.h"
-#import "ZZTMallListModel.h"
 #import "ZZTMallDetailViewController.h"
 #import "ZZTDetailModel.h"
 #import "ZZTMeWalletViewController.h"
@@ -215,8 +208,9 @@
 #pragma mark - 创建CollectionView
 -(void)setupCollectionView:(UICollectionViewFlowLayout *)layout
 {
-    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, navHeight, Screen_Width, SCREEN_HEIGHT - navHeight) collectionViewLayout:layout];
-    [collectionView setContentInset:UIEdgeInsetsMake(-Height_TabbleViewInset, 0, Height_TabBar, 0)];
+    CGFloat nav_Height = Height_NavBar;
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, nav_Height, Screen_Width, SCREEN_HEIGHT - nav_Height) collectionViewLayout:layout];
+//    [collectionView setContentInset:UIEdgeInsetsMake(-Height_TabbleViewInset, 0, Height_TabBar, 0)];
 //    collectionVie
     collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView = collectionView;
@@ -409,6 +403,7 @@
 #pragma mark - 数据加载
 //换一批
 -(void)loadBookData{
+    
     ZZTMallFooterModel *model1 = self.footerArray[0];
     [self.moreVC loadDataWithPageNum:model1.pageNum url:model1.footerUrl resultBlock:^(NSArray *array) {
         model1.footerArray = array;
@@ -437,7 +432,6 @@
     [self.moreVC loadDataWithPageNum:model.pageNum url:model.footerUrl resultBlock:^(NSArray *array) {
         model.footerArray = array;
         model.pageNum++;
-        //判断是那一组的 将数据赋值
     }];
 }
 

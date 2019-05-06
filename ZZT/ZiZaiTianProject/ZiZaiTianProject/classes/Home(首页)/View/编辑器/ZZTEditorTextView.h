@@ -9,8 +9,8 @@
 #import <UIKit/UIKit.h>
 
 typedef NS_ENUM(NSInteger, editorTextViewType) {
-    editorTextViewTypeBGClear = 12,//背景透明
-    editorTextViewTypeBGWhite = 13,//背景不透明
+    editorTextViewTypeBGWhite = 12,//背景白色
+    editorTextViewTypeBGClear = 13,//背景不透明
     editorTextViewTypeNoBoder = 2 //无边框
 };
 

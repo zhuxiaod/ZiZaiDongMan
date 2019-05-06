@@ -153,4 +153,9 @@
     return kTextView;
     
 }
+
+//naviba的高度
++(CGFloat)getNavibarHeight{
+    return Height_NavBar;
+}
 @end

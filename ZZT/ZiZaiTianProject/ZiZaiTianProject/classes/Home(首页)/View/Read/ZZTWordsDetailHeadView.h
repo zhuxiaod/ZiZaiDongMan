@@ -19,6 +19,9 @@ typedef void(^ButtonClick)(ZZTCarttonDetailModel * detailModel);
 @property (nonatomic,copy) ButtonClick buttonAction;
 
 @property (nonatomic,strong) ZZTCarttonDetailModel *detailModel;
+
+@property (nonatomic,assign) NSInteger xuHuaNum;
+
 @property (weak, nonatomic) IBOutlet UIButton *shareBtn;
 
 

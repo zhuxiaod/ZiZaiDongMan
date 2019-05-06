@@ -62,9 +62,7 @@
     [_WaveView addWaves:@[secondWave1]];
     [self.contentView addSubview:_WaveView];
 
-    
-    
-    
+
     _userHead = [[ZZTUserHeadView alloc] initWithFrame:CGRectZero];
     [_userHead.viewClick addTarget:self action:@selector(print) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:_userHead];

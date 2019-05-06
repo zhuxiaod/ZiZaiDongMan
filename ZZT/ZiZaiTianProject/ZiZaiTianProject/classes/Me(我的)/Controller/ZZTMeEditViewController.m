@@ -10,7 +10,7 @@
 #import "ZZTMeEditTopView.h"
 #import "ZZTMeEditButtomView.h"
 #import "TypeButton.h"
-#import "ZZTMePersonalView.h"
+
 #import "TZImageCropManager.h"
 #import "PhotoTweaksViewController.h"
 #import "SBDatePickerView.h"

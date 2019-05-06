@@ -265,20 +265,12 @@ static NSString *homeBtnView = @"homeBtnView";
     model = tableViewModel.cellArray[indexPath.row];
     
     //独创
-    if([model.cartoonType isEqualToString:@"1"]){
-        ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
-        //yes 就是有Id
-        detailVC.isId = YES;
-        detailVC.cartoonDetail = model;
-        detailVC.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:detailVC animated:YES];
-    }else{
-        ZZTMulWordDetailViewController *detailVC = [[ZZTMulWordDetailViewController alloc]init];
-        detailVC.isId = YES;
-        detailVC.cartoonDetail = model;
-        detailVC.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:detailVC animated:YES];
-    }
+    ZZTWordDetailViewController *detailVC = [[ZZTWordDetailViewController alloc]init];
+    //yes 就是有Id
+    detailVC.isId = YES;
+    detailVC.cartoonDetail = model;
+    detailVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:detailVC animated:YES];
 }
 
 //头
@@ -374,8 +366,9 @@ static NSString *homeBtnView = @"homeBtnView";
     ZZTHomeTableViewModel *btn1 = [ZZTHomeTableViewModel initBtnModelWithImgUrl:@"hotIcon" title:@"热门"];
     btn1.block = ^{
         //热门
+        NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithObjects:@[@"1",@"10"] forKeys:@[@"pageNum",@"pageSize"]];
         ZZTProductionShowViewController *productionVC = [[ZZTProductionShowViewController alloc] init];
-        productionVC.model = [ZZTHomeTableViewModel initHotVCModel:@"cartoon/getHostCartoon" title:@"热门"];
+        productionVC.model = [ZZTHomeTableViewModel initHotVCModel:@"cartoon/getHostCartoon" title:@"热门" parameters:dic];
         self.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:productionVC animated:YES];
         self.hidesBottomBarWhenPushed = NO;
@@ -402,9 +395,10 @@ static NSString *homeBtnView = @"homeBtnView";
     
     ZZTHomeTableViewModel *btn4 = [ZZTHomeTableViewModel initBtnModelWithImgUrl:@"创作图标-分类入口" title:@"众创"];
     btn4.block = ^{
+        NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithObjects:@[@"1",@"10",@"2",@"2"] forKeys:@[@"pageNum",@"pageSize",@"cartoonType",@"bookType"]];
         //热门
         ZZTProductionShowViewController *productionVC = [[ZZTProductionShowViewController alloc] init];
-        productionVC.model = [ZZTHomeTableViewModel initHotVCModel:@"cartoon/getHostCartoon" title:@"同人创作"];
+        productionVC.model = [ZZTHomeTableViewModel initHotVCModel:@"cartoon/cartoonlist" title:@"同人创作" parameters:dic];
         self.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:productionVC animated:YES];
         self.hidesBottomBarWhenPushed = NO;
@@ -421,7 +415,7 @@ static NSString *homeBtnView = @"homeBtnView";
 
 #pragma - mark collectHeaderFooterItemWH
 -(void)loadCollectHeaderFooterItemWH{
-    ZZTHomeTableViewModel *section0 = [ZZTHomeTableViewModel initHomeCollectionViewWH:CGSizeMake(SCREEN_WIDTH, [Utilities getBannerH])  footerWH:CGSizeMake(SCREEN_WIDTH, 10) itemWH:CGSizeMake(80, 80)];
+    ZZTHomeTableViewModel *section0 = [ZZTHomeTableViewModel initHomeCollectionViewWH:CGSizeMake(SCREEN_WIDTH, [Utilities getBannerH])  footerWH:CGSizeMake(SCREEN_WIDTH, 10) itemWH:CGSizeMake((SCREEN_WIDTH - 66) / 4, 80)];
     ZZTHomeTableViewModel *section1 = [ZZTHomeTableViewModel initHomeCollectionViewWH:CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT * 0.052) footerWH:CGSizeMake(SCREEN_WIDTH, 120) itemWH:CGSizeMake((SCREEN_WIDTH - 36) / 3 , [Utilities getCarChapterH] + 24)];
     ZZTHomeTableViewModel *section2 = [ZZTHomeTableViewModel initHomeCollectionViewWH:CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT * 0.052) footerWH:CGSizeMake(SCREEN_WIDTH, 60) itemWH:CGSizeMake((SCREEN_WIDTH - 36) / 3 , [Utilities getCarChapterH] + 24)];
     ZZTHomeTableViewModel *section3 = [ZZTHomeTableViewModel initHomeCollectionViewWH:CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT * 0.052) footerWH:CGSizeMake(SCREEN_WIDTH, 60) itemWH:CGSizeMake((SCREEN_WIDTH - 36) / 3 , [Utilities getCarChapterH] + 24)];

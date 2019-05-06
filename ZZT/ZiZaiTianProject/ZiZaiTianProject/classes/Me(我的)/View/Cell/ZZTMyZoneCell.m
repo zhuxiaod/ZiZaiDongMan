@@ -7,184 +7,113 @@
 //
 
 #import "ZZTMyZoneCell.h"
-#import "ZZTMyZoneModel.h"
+#import "ZZTCommentBtn.h"
 #import "HZPhotoBrowser.h"
-#import "ZZTCommentImgView.h"
+#import "ZZTStatusViewModel.h"
+#import "ZZTStatusPicView.h"
 
 @interface ZZTMyZoneCell ()
+@property (weak, nonatomic) IBOutlet UILabel *dateLab;
+@property (weak, nonatomic) IBOutlet UILabel *contentLab;
+@property (weak, nonatomic) IBOutlet ZZTStatusPicView *picView;
 
-@property (nonatomic,strong) UILabel *dateLab;
-@property (nonatomic,strong) UILabel *contentLab;
-@property (nonatomic,strong) ZZTCommentImgView  *bgImgsView; // 9张图片bgView
-@property (nonatomic,strong) NSMutableArray * groupImgArr;
-@property (nonatomic,strong) NSArray *imgArray;
-@property (nonatomic,strong) UIView *bottomView;
+@property (weak, nonatomic) IBOutlet UIButton *likeBtn;
+@property (weak, nonatomic) IBOutlet ZZTCommentBtn *commentBtn;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *picViewH;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *picViewW;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *contentLabW;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *picViewBCons;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *contentLabCons;
 
-//评论
-@property (strong, nonatomic) likeCountView *replyCountView;
-//点赞
-@property (strong, nonatomic) likeCountView *likeCountView;
-
-@property (assign, nonatomic) CGFloat bgH;
 
 @end
 
 @implementation ZZTMyZoneCell
 
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        [self setupUI];
-    }
-    return self;
-}
+static CGFloat edgeMargin = 15;
+static CGFloat itemMargin = 10;
 
--(void)setupUI{
+- (void)awakeFromNib {
+    [super awakeFromNib];
+    
+    self.contentLabW.constant = SCREEN_WIDTH - 2 * 12;
+    
     self.selectionStyle = UITableViewCellSelectionStyleNone;
-
-    //时间lab
-    _dateLab = [GlobalUI createLabelFont:14 titleColor:[UIColor blackColor] bgColor:[UIColor whiteColor]];
     
-    //内容lab
-    _contentLab = [GlobalUI createLabelFont:MomentFontSize titleColor:[UIColor blackColor] bgColor:[UIColor whiteColor]];
-    _contentLab.numberOfLines = 0;
-    
-    //多图
-    _bgImgsView = [[ZZTCommentImgView alloc] init];
-    
-    [self.contentView addSubview:_dateLab];
-    [self.contentView addSubview:_contentLab];
-    [self.contentView addSubview:_bgImgsView];
-    
-    _groupImgArr = [NSMutableArray array];
-    
-    _bottomView = [[UIView alloc] init];
-    _bottomView.backgroundColor = [UIColor colorWithRGB:@"239,239,239"];
-    [self.contentView addSubview:_bottomView];
-    
-    //举报
-    _reportBtn = [[ZZTReportBtn alloc] init];
-    [self.contentView addSubview:_reportBtn];
-    
-    self.bgH = 0.0f;
-    
-    UILongPressGestureRecognizer *tapGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(delMomment)];
-    [self addGestureRecognizer:tapGesture];
+    //长按删除
+    UILongPressGestureRecognizer * longPressGesture = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(cellLongPress:)];
+    longPressGesture.minimumPressDuration = 1.5f;//设置长按 时间
+    [self addGestureRecognizer:longPressGesture];
 }
 
--(void)delMomment{
-    //显示删除UI
-    //点击删除时  删除
-    if(self.LongPressBlock){
-        self.LongPressBlock(self.model);
+-(void)cellLongPress:(UIGestureRecognizer *)gesture{
+    if(self.longPressBlock){
+        self.longPressBlock(self.model);
     }
 }
 
--(void)layoutSubviews{
-    [super layoutSubviews];
-    
-    [_dateLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.contentView).offset(SafetyW);
-        make.left.equalTo(self.contentView).offset(SafetyW);
-        make.width.mas_equalTo(100);
-        make.height.mas_equalTo(50);
-    }];
-
-    [_contentLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.dateLab.mas_bottom).offset(6);
-        make.left.equalTo(self.contentView).offset(SafetyW);
-        make.right.equalTo(self.contentView).offset(-SafetyW);
-    }];
-
-    [_bgImgsView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.contentLab.mas_bottom).offset(6);
-        make.left.equalTo(self.contentLab.mas_left);
-        make.right.equalTo(self.contentLab.mas_right);
-    }];
-
-    [self.replyCountView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.contentLab.mas_right);
-        make.width.mas_equalTo(60);
-        make.top.equalTo(self.bgImgsView.mas_bottom).offset(SafetyW);
-        make.height.mas_equalTo(20);
-    }];
-
-    [self.likeCountView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(self.replyCountView);
-        make.right.equalTo(self.replyCountView.mas_left).offset(-8);
-        make.width.mas_equalTo(60);
-        make.height.mas_equalTo(20);
-    }];
-
-    //举报
-    [self.reportBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(self.replyCountView);
-        make.right.equalTo(self.likeCountView.mas_left).offset(-54);
-        make.height.mas_equalTo(20);
-    }];
-
-    [self.bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.left.bottom.equalTo(self.contentView);
-        make.height.mas_equalTo(1);
-    }];
-}
-
-
-- (void)setModel:(ZZTMyZoneModel *)model{
+-(void)setModel:(ZZTStatusViewModel *)model{
     _model = model;
-
+    
+    _dateLab.attributedText = [self getPriceAttribute:model.publishtime];
+    
     _contentLab.text = model.content;
+    
+    _contentLabCons.constant = _contentLab.text.length == 0?0:8;
 
-    //更新内容高度
-    CGFloat contentHeight = 0.0f;
+    //设置Size
+    CGSize picViewSize = [self calculatePicViewSize:model.imgArray.count];
+    _picViewW.constant = picViewSize.width;
+    _picViewH.constant = picViewSize.height;
+    _picView.imgArray = model.imgArray;
+    
+    //评论按钮
+    [_commentBtn setTitle:model.replyCount forState:UIControlStateNormal];
+    
+    //点赞
+    [_likeBtn setTitle:model.praisecount forState:UIControlStateNormal];
+    
+    [_likeBtn setSelected:model.ifPraise];
+    
+    _reportBtn.hidden = model.isUser;
+}
 
-    if([model.content isEqualToString:@""]){
-        contentHeight = 0;
-    }else{
-       contentHeight = [_contentLab.text heightWithWidth:CGRectGetWidth(self.contentView.bounds) - 24 font:MomentFontSize];
-        contentHeight += 10;
-    }
+//评论
+- (IBAction)commentBtnClick:(ZZTCommentBtn *)sender {
+    [sender gotoCommentViewWithId:_model.userId];
+}
 
-    [_contentLab mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo(contentHeight);
+//点赞
+- (IBAction)likeBtnClick:(UIButton *)sender {
+    [SBAFHTTPSessionManager.sharedManager sendUserLikeData:_model.statusId finished:^(id  _Nullable responseObject, NSError *error) {
+        if(error != nil){
+            NSLog(@"%@",error);
+            [MBProgressHUD showSuccess:@"点赞失败"];
+            return;
+        }
+        if(self.reloadDataBlock){
+            self.reloadDataBlock();
+        }
     }];
+}
 
-    //图片
-    _bgImgsView.model = model;
-
-    _imgArray = [model.contentImg componentsSeparatedByString:@","];
-
-    CGFloat bgH = [_bgImgsView getIMGHeight:_imgArray.count];
-
-    [self.bgImgsView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo(bgH);
-    }];
-
-    //时间戳显示
-    NSString *time = [NSString timeWithStr:[NSString stringWithFormat:@"%@",model.publishtime]];
-
-    NSArray *times = [time componentsSeparatedByString:@"-"];
-    time = [NSString stringWithFormat:@"%@%@月",times[2],times[1]];
-
-    _dateLab.attributedText = [self getPriceAttribute:time];;
-
-    //评论
-    self.replyCountView.likeCount = model.replycount;
-
-    //设置赞
-    self.likeCountView.islike  = [model.ifpraise integerValue];
-    self.likeCountView.requestID = model.userId;
-    self.likeCountView.likeCount = model.praisecount;
-
-    _reportBtn.hidden = NO;
-    _reportBtn.zoneModel = model;
-    _reportBtn.hidden = [Utilities GetNSUserDefaults].id == [self.model.userId integerValue];
-
+//举报
+- (IBAction)reportBtnClick:(ZZTReportBtn *)sender {
+    ZZTReportModel *model = [ZZTReportModel initWithName:_model.nickName Content:_model.content Index:_model.modelIndex];
+    sender.model = model;
+    [sender reportUserData];
 }
 
 //年月混排
 -(NSMutableAttributedString *)getPriceAttribute:(NSString *)string{
-    NSMutableAttributedString *attribut = [[NSMutableAttributedString alloc]initWithString:string];
+    //时间
+    NSString *time = [NSString timeWithStr:[NSString stringWithFormat:@"%@",string]];
+    
+    NSArray *times = [time componentsSeparatedByString:@"-"];
+    
+    time = [NSString stringWithFormat:@"%@%@月",times[2],times[1]];
+    
+    NSMutableAttributedString *attribut = [[NSMutableAttributedString alloc]initWithString:time];
     //目的是想改变 ‘/’前面的字体的属性，所以找到目标的range
     NSRange pointRange = NSMakeRange(0, 2);
     NSMutableDictionary *dic = [NSMutableDictionary dictionary];
@@ -195,84 +124,53 @@
     return attribut;
 }
 
-- (likeCountView *)likeCountView {
-    if (!_likeCountView) {
-        likeCountView *lcv = [[likeCountView alloc] init];
-        
-        [self.contentView addSubview:lcv];
-        
-        [lcv likeCountViewWithImg:LikeIconImg selectImg:LikeIconImg_Select];
-        
-        //发现点赞
-        [lcv setOnClick:^(likeCountView *btn) {
-            [self findLikeTarget];
-        }];
-        
-        _likeCountView = lcv;
+-(CGSize)calculatePicViewSize:(NSInteger)count{
+    if(count == 0){
+        _picViewBCons.constant = 0;
+        return CGSizeZero;
     }
-    return _likeCountView;
-}
-
-//发现点赞
--(void)findLikeTarget{
-    UserInfo *user = [Utilities GetNSUserDefaults];
-    AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
-    NSDictionary *dic = @{
-                          @"type":@"1",//外面1 里面2
-                          @"typeId":_model.id,
-                          @"userId":[NSString stringWithFormat:@"%ld",user.id],
-                          };
-    [manager POST:[ZZTAPI stringByAppendingString:@"great/praises"] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if(self.update){
-            self.update();
+    
+    _picViewBCons.constant = 8;
+    
+    UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)self.picView.collectionViewLayout;
+    
+    if(count == 1){
+        NSString *urlStr = _model.imgArray.lastObject;
+        UIImage *img = [SDWebImageManager.sharedManager.imageCache imageFromDiskCacheForKey:urlStr];
+        CGFloat W = 0.0;
+        CGFloat H = 0.0;
+        if(img.size.width == 0 && img.size.height == 0){
+            return CGSizeMake(0,0);
         }
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
-    }];
-}
-
-//评论
-- (likeCountView *)replyCountView {
-    if (!_replyCountView) {
-        
-        likeCountView *lcv = [[likeCountView alloc] init];
-        
-        [self.contentView addSubview:lcv];
-        
-        [lcv likeCountViewWithImg:CommentIconImg selectImg:CommentIconImg_Select];
-        
-        _replyCountView = lcv;
-        
-        [lcv setOnClick:^(likeCountView *btn) {
-            [self gotoCommentView];
-        }];
-    }
-    return _replyCountView;
-}
-
--(void)gotoCommentView{
-    
-    if([[UserInfoManager share] hasLogin] == NO){
-        [UserInfoManager needLogin];
-        return;
+        if(img.size.width > img.size.height){
+            CGFloat height = 120;
+            W = height * img.size.width / img.size.height;
+            H = height;
+        }else{
+            CGFloat width = 120;
+            H = width * img.size.height / img.size.width;
+            W = width;
+        }
+        NSLog(@"W:%f,H:%f",W,H);
+        layout.itemSize = CGSizeMake(W, H);
+        return CGSizeMake(W, H);
     }
     
-    ZZTCommentViewController *commentView = [[ZZTCommentViewController alloc] init];
-//    [commentView hiddenTitleView];
-    ZZTNavigationViewController *nav = [[ZZTNavigationViewController alloc] initWithRootViewController:commentView];
-    commentView.isFind = YES;
-    commentView.chapterId = _model.id;
-    commentView.cartoonType = @"3";
-//    commentView.ishiddenTitleView = YES;
-    commentView.hiddenTitleView = YES;
-    commentView.ishiddenTitleView = YES;
-    [[self myViewController].navigationController presentViewController:nav animated:YES completion:nil];
+    CGFloat imageViewHW = (SCREEN_WIDTH - 2 * edgeMargin - 2 * itemMargin) / 3;
     
-}
-
-
-
--(void)setIndexRow:(NSInteger)indexRow{
-    _indexRow = indexRow;
+    layout.itemSize = CGSizeMake(imageViewHW, imageViewHW);
+    
+    if(count == 4){
+        CGFloat picViewWH = imageViewHW * 2 + itemMargin;
+        return CGSizeMake(picViewWH + 2, picViewWH);
+    }
+    
+    NSInteger rows = (count - 1) / 3 + 1;
+    
+    CGFloat picViewH = rows * imageViewHW + (rows - 1) * itemMargin;
+    
+    CGFloat picViewW = SCREEN_WIDTH - 2 * edgeMargin;
+    
+    return CGSizeMake(picViewW, picViewH);
 }
 @end

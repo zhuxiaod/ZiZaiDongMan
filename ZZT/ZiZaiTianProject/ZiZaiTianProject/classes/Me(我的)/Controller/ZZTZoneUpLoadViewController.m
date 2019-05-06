@@ -40,6 +40,8 @@
 
 @property (nonatomic,strong) NSMutableArray *selectedAssets;
 
+@property (nonatomic,strong) NSString *placeholderStr;
+
 @end
 
 @implementation ZZTZoneUpLoadViewController
@@ -68,6 +70,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    if(_xuHuaModel == nil){
+        self.placeholderStr = @"这一刻的想法...";
+    }
+    
     self.view.backgroundColor = [UIColor whiteColor];
     
     //创建scrollView
@@ -81,7 +87,8 @@
     
     //照片View
     [self setupImageView];
-
+    
+  
 }
 
 -(void)setupImageView{
@@ -116,7 +123,7 @@
 -(void)setupTextView{
     UITextView *textView = [[UITextView alloc] init];
     textView.layer.cornerRadius = 5;
-    textView.text = @"这一刻的想法...";
+    textView.text = self.placeholderStr;
     textView.textColor = [UIColor grayColor];
     NSMutableParagraphStyle *paragraphStyle = [NSMutableParagraphStyle new];
     paragraphStyle.lineSpacing = 5;// 字体的行间距
@@ -189,11 +196,11 @@
     AFHTTPSessionManager *manager = [SBAFHTTPSessionManager getManager];
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     [dict setObject:[NSString stringWithFormat:@"%ld",user.id] forKey:@"userId"];
-    if([self.textView.text isEqualToString:@"这一刻的想法..."]){
+    if([self.textView.text isEqualToString:self.placeholderStr]){
         self.textView.text = @"";
     }
     [dict setObject:self.textView.text forKey:@"content"];
-    [dict setObject:str forKey: @"contentImg"];
+    [dict setObject:str forKey:@"contentImg"];
     if(self.selectedPhotos.count == 1){
         UIImage *imge = _selectedPhotos[0];
         high = [NSNumber numberWithFloat:imge.size.height];
@@ -217,21 +224,32 @@
         imageParms = [SYQiniuUpload QiniuPutImageArray:array complete:nil uploadComplete:nil];
     }
 
-    //上传
-    [self uploadSeverWithImageStr:imageParms];
+    if(self.xuHuaModel == nil){
+        //上传
+        [self uploadSeverWithImageStr:imageParms];
+    }else{
+        [self uploadMultiCartoon:imageParms];
+    }
 }
 
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
+#pragma mark - 新建续写同人漫画
+-(void)uploadMultiCartoon:(NSString *)str{
     
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    NSDictionary *dict = @{
+                           @"userId":SBAFHTTPSessionManager.sharedManager.userID,
+                               @"cartoonId":self.xuHuaModel.cartoonId,
+                               @"chapterId":self.xuHuaModel.chapterId,
+                           @"contentImg":str,
+                           @"content":self.textView.text,
+                               @"page":self.xuHuaModel.chapterPage
+                           };
+    [SBAFHTTPSessionManager.sharedManager loadPostRequest:@"cartoon/comicSequel" paramDict:dict finished:^(id responseObject, NSError *error) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+
+    }];
+
 }
 
--(void)viewWillDisappear:(BOOL)animated{
-    [super viewWillDisappear:animated];
-    
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-}
 
 //已经展示
 - (void)viewDidLayoutSubviews {
@@ -572,14 +590,14 @@
 #pragma mark - UITextViewDelegate
 - (void)textViewDidEndEditing:(UITextView *)textView {
     if(textView.text.length < 1){
-        textView.text = @"这一刻的想法...";
+        textView.text = self.placeholderStr;
         textView.textColor = [UIColor grayColor];
     }
 }
 
 - (void)textViewDidBeginEditing:(UITextView *)textView {
     
-    if([textView.text isEqualToString:@"这一刻的想法..."]){
+    if([textView.text isEqualToString:self.placeholderStr]){
         textView.text = @"";
         textView.textColor = [UIColor blackColor];
     }
@@ -606,6 +624,7 @@
     [self.selectedPhotos addObjectsFromArray:addPhotosArray];
     [self.collectionView reloadData];
 }
+
 //相机返回代理
 - (void)imagePickerController:(UIImagePickerController*)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     //相机返回照片
@@ -630,6 +649,22 @@
     }];
 }
 
+-(void)setXuHuaModel:(ZZTChapterlistModel *)xuHuaModel{
+    _xuHuaModel = xuHuaModel;
+    if(xuHuaModel != nil){
+        self.placeholderStr = [NSString stringWithFormat:@"我参与了 %@ 续画",xuHuaModel.bookName];
+    }
+}
 
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+}
 
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+}
 @end

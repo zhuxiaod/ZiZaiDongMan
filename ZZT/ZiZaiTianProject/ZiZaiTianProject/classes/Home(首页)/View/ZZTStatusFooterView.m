@@ -55,7 +55,7 @@
     [self.timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.contentView);
         make.height.mas_equalTo(22);
-        make.width.mas_equalTo(40);
+//        make.width.mas_equalTo(40);
         make.left.equalTo(self.contentView).offset(70);
     }];
     
